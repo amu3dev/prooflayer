@@ -1,0 +1,14 @@
+import { auditSourcesAndEvidence } from "./privacy.js";
+import { type CareerProfile, type Claim, type EvidenceItem, type Source } from "./schemas.js";
+export declare function workspaceRoot(cwd?: string): string;
+export declare function resolveWorkspace(workspace?: string): string;
+export declare function initWorkspace(workspace: string): Promise<void>;
+export declare function ingestSources(workspace: string): Promise<Source[]>;
+export declare function normalizeEvidence(workspace: string): Promise<EvidenceItem[]>;
+export declare function generateClaims(workspace: string): Promise<Claim[]>;
+export declare function generateClaimsFromEvidence(evidenceItems: EvidenceItem[], existingClaims?: Claim[]): Claim[];
+export declare function buildProfile(workspace: string): Promise<CareerProfile>;
+export declare function auditPrivacy(workspace: string): Promise<ReturnType<typeof auditSourcesAndEvidence>>;
+export declare function rebuild(workspace: string): Promise<void>;
+export declare function extractEvidenceFromSource(source: Source, text: string): EvidenceItem[];
+export declare function isClaimCandidate(item: EvidenceItem): boolean;

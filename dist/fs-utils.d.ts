@@ -1,0 +1,14 @@
+export declare function ensureDir(dir: string): Promise<void>;
+export declare function pathExists(target: string): Promise<boolean>;
+export declare function readJson<T>(filePath: string, fallback: T): Promise<T>;
+export declare function writeJson(filePath: string, value: unknown): Promise<void>;
+export declare function writeJsonAtomic(filePath: string, value: unknown): Promise<void>;
+export declare function writeBufferAtomic(filePath: string, value: Uint8Array): Promise<void>;
+export declare function writeText(filePath: string, value: string): Promise<void>;
+export declare function hashFile(filePath: string): Promise<string>;
+export declare function hashBuffer(value: Uint8Array): string;
+export declare function hashText(value: string): string;
+export declare function walkFiles(dir: string): Promise<string[]>;
+export declare function toPosixRelative(base: string, target: string): string;
+export declare function stableId(prefix: string, parts: string[]): string;
+export declare function uniqueSorted(values: string[]): string[];

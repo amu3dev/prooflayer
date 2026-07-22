@@ -1,0 +1,68 @@
+import type { RoleKey } from "./role-variants.js";
+export declare const RESUME_EXPORT_ROOT = "outputs/exports";
+export declare const AI_PRODUCT_EXPORT_DIRECTORY = "outputs/exports/ai-product";
+export declare const AI_PRODUCT_EXPORT_MARKDOWN = "outputs/exports/ai-product/Ahmed_Yosry_AI_Product_Manager_Final.md";
+export declare const AI_PRODUCT_EXPORT_DOCX = "outputs/exports/ai-product/Ahmed_Yosry_AI_Product_Manager_Final.docx";
+export declare const AI_PRODUCT_EXPORT_PDF = "outputs/exports/ai-product/Ahmed_Yosry_AI_Product_Manager_Final.pdf";
+export declare const AI_PRODUCT_EXPORT_MANIFEST = "outputs/exports/ai-product/export-manifest.json";
+export declare const AI_PRODUCT_FINAL_RESUME = "outputs/variants/ai-product/final-resume.md";
+export declare const AI_PRODUCT_FINAL_MANIFEST = "outputs/variants/ai-product/final-manifest.json";
+export declare const AI_PRODUCT_READINESS_REVIEW = "outputs/reports/ai-product-final-export-readiness-review.md";
+export declare const TPM_EXPORT_DIRECTORY = "outputs/exports/tpm";
+export declare const TPM_EXPORT_MARKDOWN = "outputs/exports/tpm/Ahmed_Yosry_TPM_Final.md";
+export declare const TPM_EXPORT_DOCX = "outputs/exports/tpm/Ahmed_Yosry_TPM_Final.docx";
+export declare const TPM_EXPORT_PDF = "outputs/exports/tpm/Ahmed_Yosry_TPM_Final.pdf";
+export declare const TPM_EXPORT_MANIFEST = "outputs/exports/tpm/export-manifest.json";
+export declare const TPM_FINAL_RESUME = "outputs/variants/tpm/final-resume.md";
+export declare const TPM_FINAL_MANIFEST = "outputs/variants/tpm/final-manifest.json";
+export declare const TPM_READINESS_REVIEW = "outputs/variants/tpm/final-public-checklist.md";
+export type ResumeExportManifest = {
+    schemaVersion: 2;
+    outputId: string;
+    roleKey: RoleKey;
+    sourceMarkdownPath: string;
+    sourceMarkdownHash: string;
+    exportedMarkdownPath: string;
+    exportedMarkdownHash: string;
+    exportedAt: string;
+    generatedFiles: string[];
+    exportToolUsed: string;
+    profileFingerprint: string;
+    finalManifestPath: string;
+    readinessReviewPath: string;
+    freshness: "current" | "stale";
+    verification: {
+        exportedMarkdownMatchesSource: boolean;
+    };
+};
+export type ResumeExportStatus = {
+    roleKey: RoleKey;
+    generated: boolean;
+    freshness: "current" | "stale" | "not_generated";
+    exportedAt?: string;
+    path: string;
+    sourceMarkdownPath: string;
+    sourceMarkdownHash?: string;
+    filesPresent: boolean;
+    markdownPresent: boolean;
+    markdownCurrent: boolean;
+    docxPresent: boolean;
+    docxCurrent: boolean;
+    pdfPresent: boolean;
+    pdfCurrent: boolean;
+    sourceExportMarkdownHashMatch: boolean;
+    reasons: string[];
+};
+export type ExportToolName = "pandoc" | "soffice";
+export type ResumeExportOptions = {
+    now?: () => Date;
+    resolveTool?: (tool: ExportToolName) => Promise<string | null>;
+    runTool?: (executable: string, args: string[], options: {
+        cwd: string;
+        env?: NodeJS.ProcessEnv;
+    }) => Promise<void>;
+};
+export declare function exportFinalResume(workspace: string, roleKeyInput: string, options?: ResumeExportOptions): Promise<ResumeExportManifest>;
+export declare function getResumeExportStatus(workspace: string, roleKeyInput: string): Promise<ResumeExportStatus>;
+export declare function inspectResumeExportStatus(workspace: string, roleKey: RoleKey): Promise<ResumeExportStatus>;
+export declare function formatResumeExportStatus(status: ResumeExportStatus): string;
