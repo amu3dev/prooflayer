@@ -186,6 +186,29 @@ describe("Slice 2.6B role resume draft proposal", () => {
     });
   });
 
+  it("derives proposal identity from content and a deterministic refresh ordinal, never timestamps", async () => {
+    const firstFixture = await scaffoldFixture();
+    const secondFixture = await scaffoldFixture();
+    const firstPayload = await validDraftPayload(firstFixture.workspace, firstFixture.targetId);
+    const secondPayload = await validDraftPayload(secondFixture.workspace, secondFixture.targetId);
+    const first = await generateRoleResumeDraftProposal(firstFixture.workspace, firstFixture.targetId, {
+      provider: new FakeInterpretationModelProvider(JSON.stringify(firstPayload)),
+      now: () => new Date(FIRST_TIME),
+    });
+    const sameContentDifferentTime = await generateRoleResumeDraftProposal(secondFixture.workspace, secondFixture.targetId, {
+      provider: new FakeInterpretationModelProvider(JSON.stringify(secondPayload)),
+      now: () => new Date(SECOND_TIME),
+    });
+    const refreshed = await generateRoleResumeDraftProposal(firstFixture.workspace, firstFixture.targetId, {
+      provider: new FakeInterpretationModelProvider(JSON.stringify(firstPayload)),
+      refresh: true,
+      now: () => new Date(SECOND_TIME),
+    });
+
+    expect(sameContentDifferentTime.proposalId).toBe(first.proposalId);
+    expect(refreshed.proposalId).not.toBe(first.proposalId);
+  });
+
   describe("strict proposal validation", () => {
     let shared: Awaited<ReturnType<typeof scaffoldFixture>>;
     beforeAll(async () => {

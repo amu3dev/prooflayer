@@ -51,11 +51,7 @@ export async function generateRoleResumeDraftProposal(workspace, targetId, optio
         throw new Error("Model provider returned an empty response.");
     const now = (options.now ?? (() => new Date()))().toISOString();
     const rawResponseSha256 = hashText(response.rawText);
-    const proposalId = `role-resume-draft-proposal_${hashText([
-        requestFingerprint,
-        rawResponseSha256,
-        now,
-    ].join("\0")).slice(0, 16)}`;
+    const proposalId = await nextRoleResumeDraftProposalId(workspace, targetId, requestFingerprint, rawResponseSha256);
     const paths = roleResumeDraftProposalPaths(workspace, targetId, proposalId);
     const normalized = normalizeRoleResumeDraftResponse(response.rawText, proposalId, scaffold, context, draftScaffoldSha256);
     const proposal = RoleResumeDraftProposalSchema.parse({
@@ -911,6 +907,23 @@ function proposalResult(proposal, result) {
 async function findCachedProposal(workspace, targetId, fingerprint) {
     return (await listRoleResumeDraftProposals(workspace, targetId))
         .find((entry) => entry.requestFingerprint === fingerprint && entry.status === "ready-for-review");
+}
+async function nextRoleResumeDraftProposalId(workspace, targetId, requestFingerprint, rawResponseSha256) {
+    for (let ordinal = 1;; ordinal += 1) {
+        const proposalId = `role-resume-draft-proposal_${hashText([
+            requestFingerprint,
+            rawResponseSha256,
+            String(ordinal),
+        ].join("\0")).slice(0, 16)}`;
+        const paths = roleResumeDraftProposalPaths(workspace, targetId, proposalId);
+        const occupied = await Promise.all([
+            pathExists(paths.proposalPath),
+            pathExists(paths.manifestPath),
+            pathExists(paths.rawPath),
+        ]);
+        if (!occupied.some(Boolean))
+            return proposalId;
+    }
 }
 export function roleResumeDraftProposalPaths(workspace, targetId, proposalId, relativeOnly = false) {
     const root = `targets/roles/${targetId}/resume-drafting/proposals/${proposalId}`;

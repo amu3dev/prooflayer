@@ -1022,7 +1022,7 @@ npm run dev -- target resume-plan approved-status role-engineering-manager
 
 Deterministic and approved plans have separate manifests and lifecycle states: `missing`, `current`, `stale`, and `invalid`. Input hashes cover the target, approved interpretation and manifest, approved matching and manifest, evidence snapshot, approved assessment and manifest, resolved ID sets, and policy version. Approved plans additionally bind the proposal and review hashes. Unchanged input returns `already-current` without rewriting IDs or timestamps. Stale or invalid replacement requires `--rebuild`.
 
-Proposal fingerprints also include provider, model, generation settings, prompt template/policy versions, deterministic-plan hash, and normalized-input hash. A valid cache hit makes no provider call or rewrite. `--refresh` creates a new preserved proposal. Replay uses exact stored raw response bytes, makes no provider call, and verifies normalized proposal reproduction. API keys are never persisted.
+Proposal fingerprints also include provider, model, generation settings, prompt template/policy versions, deterministic-plan hash, and normalized-input hash. Proposal IDs combine that request fingerprint, the exact raw-response hash, and a deterministic preserved-proposal ordinal; they never depend on timestamps, randomness, absolute paths, or filesystem ordering. A valid cache hit makes no provider call or rewrite. `--refresh` creates a new preserved proposal. Replay uses exact stored raw response bytes, makes no provider call, and verifies normalized proposal reproduction. API keys are never persisted.
 
 Artifacts live under:
 

@@ -120,11 +120,12 @@ export async function generateRoleResumeDraftProposal(
   if (!response.rawText.length) throw new Error("Model provider returned an empty response.");
   const now = (options.now ?? (() => new Date()))().toISOString();
   const rawResponseSha256 = hashText(response.rawText);
-  const proposalId = `role-resume-draft-proposal_${hashText([
+  const proposalId = await nextRoleResumeDraftProposalId(
+    workspace,
+    targetId,
     requestFingerprint,
     rawResponseSha256,
-    now,
-  ].join("\0")).slice(0, 16)}`;
+  );
   const paths = roleResumeDraftProposalPaths(workspace, targetId, proposalId);
   const normalized = normalizeRoleResumeDraftResponse(
     response.rawText,
@@ -1073,6 +1074,27 @@ function proposalResult(
 async function findCachedProposal(workspace: string, targetId: string, fingerprint: string) {
   return (await listRoleResumeDraftProposals(workspace, targetId))
     .find((entry) => entry.requestFingerprint === fingerprint && entry.status === "ready-for-review");
+}
+async function nextRoleResumeDraftProposalId(
+  workspace: string,
+  targetId: string,
+  requestFingerprint: string,
+  rawResponseSha256: string,
+) {
+  for (let ordinal = 1; ; ordinal += 1) {
+    const proposalId = `role-resume-draft-proposal_${hashText([
+      requestFingerprint,
+      rawResponseSha256,
+      String(ordinal),
+    ].join("\0")).slice(0, 16)}`;
+    const paths = roleResumeDraftProposalPaths(workspace, targetId, proposalId);
+    const occupied = await Promise.all([
+      pathExists(paths.proposalPath),
+      pathExists(paths.manifestPath),
+      pathExists(paths.rawPath),
+    ]);
+    if (!occupied.some(Boolean)) return proposalId;
+  }
 }
 export function roleResumeDraftProposalPaths(
   workspace: string,
