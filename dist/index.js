@@ -18,6 +18,10 @@ import { addManualEvidenceMatch, formatApprovedMatchingStatus, formatManualMatch
 import { formatMatchProposalList, formatMatchProposalResult, formatMatchProposalStatus, generateEvidenceMatchProposal, getEvidenceMatchProposalStatus, listEvidenceMatchProposals, replayEvidenceMatchProposal, showEvidenceMatchProposal, } from "./evidence-match-proposal.js";
 import { completeEvidenceMatchReview, formatEvidenceMatchReviewStatus, getEvidenceMatchReviewStatus, initializeEvidenceMatchReview, readEditedEvidenceMatchFile, setEvidenceCoverageReviewDecision, setEvidenceMatchReviewDecision, showEvidenceMatchReview, } from "./evidence-match-review.js";
 import { approveEvidenceMatchProposal, formatApproveEvidenceMatchingResult, } from "./approved-evidence-matching.js";
+import { buildFitAssessment, formatBuildFitAssessmentResult, formatFitAssessmentStatus, getFitAssessmentStatus, showFitAssessment, } from "./fit-assessment.js";
+import { formatFitAssessmentProposalList, formatFitAssessmentProposalResult, formatFitAssessmentProposalStatus, generateFitAssessmentProposal, getFitAssessmentProposalStatus, listFitAssessmentProposals, replayFitAssessmentProposal, showFitAssessmentProposal, } from "./fit-assessment-proposal.js";
+import { completeFitAssessmentReview, formatFitAssessmentReviewStatus, getFitAssessmentReviewStatus, initializeFitAssessmentReview, readEditedFitAssessmentFile, readEditedFitAssessmentSummaryFile, setFitAssessmentReviewDecision, setFitAssessmentSummaryReviewDecision, showFitAssessmentReview, } from "./fit-assessment-review.js";
+import { approveFitAssessmentProposal, formatApproveFitAssessmentResult, } from "./approved-fit-assessment.js";
 const program = new Command();
 program
     .name("prooflayer")
@@ -527,6 +531,143 @@ approvedMatching
     .description("Inspect approved matching integrity and dependency freshness.")
     .action(async (targetId) => {
     console.log(formatApprovedMatchingStatus(await getApprovedEvidenceMatchingStatus(getWorkspace(), targetId)));
+});
+const assess = target.command("assess").description("Build and inspect deterministic fit and proof assessments from current approved inputs.");
+assess
+    .command("build <target-id>")
+    .option("--rebuild", "explicitly rebuild a stale or invalid deterministic assessment")
+    .description("Build expectation-level support and proof analysis without generating resume or application content.")
+    .action(async (targetId, options) => {
+    console.log(formatBuildFitAssessmentResult(await buildFitAssessment(getWorkspace(), targetId, { rebuild: options.rebuild })));
+});
+assess
+    .command("show <target-id>")
+    .description("Print the deterministic fit and proof assessment as stable JSON.")
+    .action(async (targetId) => {
+    process.stdout.write(`${JSON.stringify(await showFitAssessment(getWorkspace(), targetId, "deterministic"), null, 2)}\n`);
+});
+assess
+    .command("status <target-id>")
+    .description("Inspect deterministic assessment integrity and dependency freshness.")
+    .action(async (targetId) => {
+    console.log(formatFitAssessmentStatus(await getFitAssessmentStatus(getWorkspace(), targetId, "deterministic")));
+});
+const assessProposal = target.command("assess-proposal").description("Generate, inspect, replay, and review optional model-assisted assessment proposals.");
+assessProposal
+    .command("generate <target-id>")
+    .option("--refresh", "bypass a valid cached proposal and call the configured provider again")
+    .description("Generate an assessment proposal only; no output is approved automatically.")
+    .action(async (targetId, options) => {
+    console.log(formatFitAssessmentProposalResult(await generateFitAssessmentProposal(getWorkspace(), targetId, { refresh: options.refresh })));
+});
+assessProposal
+    .command("list <target-id>")
+    .description("List stored fit assessment proposals for a target.")
+    .action(async (targetId) => {
+    console.log(formatFitAssessmentProposalList(await listFitAssessmentProposals(getWorkspace(), targetId)));
+});
+assessProposal
+    .command("show <proposal-id>")
+    .description("Print one normalized fit assessment proposal as stable JSON.")
+    .action(async (proposalId) => {
+    process.stdout.write(`${JSON.stringify(await showFitAssessmentProposal(getWorkspace(), proposalId), null, 2)}\n`);
+});
+assessProposal
+    .command("status <proposal-id>")
+    .description("Inspect proposal integrity, dependencies, and review eligibility.")
+    .action(async (proposalId) => {
+    console.log(formatFitAssessmentProposalStatus(await getFitAssessmentProposalStatus(getWorkspace(), proposalId)));
+});
+assessProposal
+    .command("replay <proposal-id>")
+    .description("Replay strict normalization from the exact stored raw response without a provider call.")
+    .action(async (proposalId) => {
+    const result = await replayFitAssessmentProposal(getWorkspace(), proposalId);
+    console.log(`Proposal ID: ${result.proposalId}`);
+    console.log(`Original SHA-256: ${result.originalSha256}`);
+    console.log(`Replay SHA-256: ${result.replaySha256}`);
+    console.log(`Replay matches: ${result.matches ? "yes" : "no"}`);
+});
+assessProposal
+    .command("review-init <proposal-id>")
+    .option("--reviewer <name>", "optional human reviewer name")
+    .description("Initialize pending decisions for every proposed assessment and its summary.")
+    .action(async (proposalId, options) => {
+    console.log(formatFitAssessmentReviewStatus(await initializeFitAssessmentReview(getWorkspace(), proposalId, { reviewerName: options.reviewer })));
+});
+assessProposal
+    .command("review-show <proposal-id>")
+    .description("Print the complete assessment review as stable JSON.")
+    .action(async (proposalId) => {
+    process.stdout.write(`${JSON.stringify(await showFitAssessmentReview(getWorkspace(), proposalId), null, 2)}\n`);
+});
+assessProposal
+    .command("review-status <proposal-id>")
+    .description("Inspect assessment decision counts and manifest integrity.")
+    .action(async (proposalId) => {
+    console.log(formatFitAssessmentReviewStatus(await getFitAssessmentReviewStatus(getWorkspace(), proposalId)));
+});
+assessProposal
+    .command("review-set <proposal-id> <expectation-assessment-id>")
+    .option("--accept", "accept the proposed expectation assessment unchanged")
+    .option("--reject", "reject and use the deterministic fallback")
+    .option("--edit-file <path>", "JSON file containing complete reviewed assessment fields")
+    .option("--note <note>", "optional review note")
+    .description("Set exactly one pending expectation-assessment decision.")
+    .action(async (proposalId, assessmentId, options) => {
+    const choices = Number(Boolean(options.accept)) + Number(Boolean(options.reject)) + Number(Boolean(options.editFile));
+    if (choices !== 1)
+        throw new Error("Choose exactly one of --accept, --reject, or --edit-file.");
+    const editedAssessment = options.editFile ? await readEditedFitAssessmentFile(options.editFile) : undefined;
+    console.log(formatFitAssessmentReviewStatus(await setFitAssessmentReviewDecision(getWorkspace(), proposalId, assessmentId, {
+        decision: options.accept ? "accept" : options.reject ? "reject" : "edit",
+        editedAssessment,
+        reviewNote: options.note,
+    })));
+});
+assessProposal
+    .command("review-set-summary <proposal-id>")
+    .option("--accept", "accept the proposed summary unchanged")
+    .option("--reject", "reject and use the deterministic summary")
+    .option("--edit-file <path>", "JSON file containing a complete reviewed role or job summary")
+    .option("--note <note>", "optional review note")
+    .description("Set the pending assessment-summary decision.")
+    .action(async (proposalId, options) => {
+    const choices = Number(Boolean(options.accept)) + Number(Boolean(options.reject)) + Number(Boolean(options.editFile));
+    if (choices !== 1)
+        throw new Error("Choose exactly one of --accept, --reject, or --edit-file.");
+    const editedSummary = options.editFile ? await readEditedFitAssessmentSummaryFile(options.editFile) : undefined;
+    console.log(formatFitAssessmentReviewStatus(await setFitAssessmentSummaryReviewDecision(getWorkspace(), proposalId, {
+        decision: options.accept ? "accept" : options.reject ? "reject" : "edit",
+        editedSummary,
+        reviewNote: options.note,
+    })));
+});
+assessProposal
+    .command("review-complete <proposal-id>")
+    .description("Complete review only after every expectation and summary has one decision.")
+    .action(async (proposalId) => {
+    console.log(formatFitAssessmentReviewStatus(await completeFitAssessmentReview(getWorkspace(), proposalId)));
+});
+const assessment = target.command("assessment").description("Approve and inspect human-reviewed fit and proof assessments.");
+assessment
+    .command("approve <proposal-id>")
+    .option("--rebuild", "explicitly rebuild a stale approved assessment after reviewing dependency changes")
+    .description("Create an approved assessment without a provider call.")
+    .action(async (proposalId, options) => {
+    console.log(formatApproveFitAssessmentResult(await approveFitAssessmentProposal(getWorkspace(), proposalId, { rebuild: options.rebuild })));
+});
+assessment
+    .command("approved-show <target-id>")
+    .description("Print the current approved fit and proof assessment as stable JSON.")
+    .action(async (targetId) => {
+    process.stdout.write(`${JSON.stringify(await showFitAssessment(getWorkspace(), targetId, "approved"), null, 2)}\n`);
+});
+assessment
+    .command("approved-status <target-id>")
+    .description("Inspect approved assessment integrity and dependency freshness.")
+    .action(async (targetId) => {
+    console.log(formatFitAssessmentStatus(await getFitAssessmentStatus(getWorkspace(), targetId, "approved")));
 });
 program
     .command("refresh")

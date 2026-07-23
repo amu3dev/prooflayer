@@ -36,6 +36,8 @@ Phase 2 Slice 2.3A adds a separately versioned semantic interpretation contract 
 
 Phase 2 Slice 2.4 links current approved target expectations to reviewed active candidate evidence without calculating overall fit or generating application content.
 
+Phase 2 Slice 2.5 interprets approved evidence matching into expectation-level fit and proof assessments, with optional model proposals and an explicit human approval boundary.
+
 ## What Slice 1 Does
 
 ProofLayer turns a messy local folder of career files into a structured career knowledge base:
@@ -64,13 +66,14 @@ It creates:
 - `workspace/targets/jobs/{target-id}/target.json`
 - `workspace/targets/jobs/{target-id}/job-description.md`
 - `workspace/targets/{roles|jobs}/{target-id}/matching/`
+- `workspace/targets/{roles|jobs}/{target-id}/assessment/`
 
 ## What It Does Not Do Yet
 
-This slice does not include:
+ProofLayer does not yet include:
 
-- Aggregate job-fit assessment
-- Fit or confidence scoring
+- Numeric fit, hiring-probability, or candidate-ranking scores
+- Role/job resume construction from approved assessments
 - Final website publishing
 - Job-description-specific generation
 - Dashboard UI
@@ -628,6 +631,93 @@ Lifecycle status is `missing`, `current`, `stale`, or `invalid`. Matching is loc
 
 This slice does not generate resumes, application materials, fit percentages, proof-readiness scores, strengths or weaknesses reports, or hiring recommendations. Job descriptions remain target inputs and never become candidate evidence.
 
+## Phase 2 Slice 2.5 Fit And Proof Assessment
+
+Fit and Proof Assessment interprets approved evidence matching. It does not generate new candidate claims. Its primary result is an expectation-by-expectation assessment, not a fit percentage or hiring prediction.
+
+Both target workflows use the same assessment contract:
+
+- Role targets receive a `role-positioning` assessment for future role-specific construction.
+- Job targets receive a `job-specific` assessment for future opportunity-specific application construction.
+
+Each expectation records support status, proof quality, evidence sufficiency, defensibility, freshness risk, contradiction risk, gap type, assessment confidence, materiality, exact approved match/evidence IDs, provenance, and recommended evidence actions. Assessment confidence applies to the assessment record, not to hiring probability.
+
+Support status is bounded to `strongly-supported`, `supported`, `partially-supported`, `unsupported`, `conflicting`, or `not-assessed`. Unsupported means the reviewed evidence base does not currently prove an expectation. It does not prove the candidate lacks the capability.
+
+Role summaries use qualitative categories such as `well-supported`, `supported-with-gaps`, `partially-supported`, `insufficient-evidence`, `conflicting`, and `incomplete`. Job summaries use `strong-alignment`, `credible-alignment`, `mixed-alignment`, `weak-evidence-alignment`, `material-conflict`, and `incomplete`. These labels are deterministic summaries of reviewed proof coverage; they are not percentages, employment probabilities, or recommendations to apply, screen, interview, or hire.
+
+### Deterministic Assessment
+
+Build, inspect, and check a deterministic assessment:
+
+```bash
+prooflayer target assess build <target-id>
+prooflayer target assess show <target-id>
+prooflayer target assess status <target-id>
+```
+
+The versioned `fit-proof-assessment-policy` derives all fields from the current approved interpretation and current approved matching. It never reads job descriptions as candidate evidence and never calls a model. A complete role assessment may become structurally usable for future resume construction; a complete job assessment may become structurally usable for future application construction. Partial matching can produce an inspectable draft assessment, but its downstream construction flags remain false.
+
+Assessment artifacts are separate from interpretation and matching:
+
+```text
+workspace/targets/{roles|jobs}/<target-id>/assessment/
+  deterministic/
+    target-fit-assessment.json
+    assessment-manifest.json
+  proposals/<proposal-id>/
+    proposal.json
+    proposal-manifest.json
+    raw-model-response.txt
+  reviews/<proposal-id>/
+    review.json
+    review-manifest.json
+  approved/
+    target-fit-assessment.json
+    assessment-manifest.json
+```
+
+Manifests pin the target, approved interpretation, approved matching, reviewed evidence snapshot, expectation and match sets, policy, proposal, and review hashes. Stable inputs preserve IDs and timestamps and avoid rewrites. Dependency changes make artifacts stale; malformed content, broken provenance, or hash disagreement makes them invalid. Explicit `--rebuild` or `--refresh` is required where replacement is allowed.
+
+### Optional Model Proposals
+
+A model may propose a stricter qualitative interpretation of the deterministic assessment, but it cannot add expectations, matches, evidence, candidate facts, metrics, resume language, application recommendations, or hiring predictions:
+
+```bash
+prooflayer target assess-proposal generate <target-id>
+prooflayer target assess-proposal generate <target-id> --refresh
+prooflayer target assess-proposal list <target-id>
+prooflayer target assess-proposal show <proposal-id>
+prooflayer target assess-proposal status <proposal-id>
+prooflayer target assess-proposal replay <proposal-id>
+```
+
+The normalized request includes only current approved expectations, approved matching, deterministic assessment fields, exact IDs/provenance, and the assessment policy. Request fingerprints include all dependencies, provider/model/settings, prompt identity/version, and normalized input hash. An unchanged valid request is a cache hit with no provider call or rewrite. `--refresh` creates a new proposal. Replay performs no provider call and revalidates the exact stored raw response. Raw responses are preserved byte-for-byte and hashed; credentials are never persisted.
+
+### Review And Approved Assessment
+
+Model proposals remain untrusted until every expectation assessment and the overall summary receive a human decision:
+
+```bash
+prooflayer target assess-proposal review-init <proposal-id> --reviewer "Reviewer Name"
+prooflayer target assess-proposal review-show <proposal-id>
+prooflayer target assess-proposal review-status <proposal-id>
+prooflayer target assess-proposal review-set <proposal-id> <expectation-assessment-id> --accept
+prooflayer target assess-proposal review-set <proposal-id> <expectation-assessment-id> --reject
+prooflayer target assess-proposal review-set <proposal-id> <expectation-assessment-id> --edit-file reviewed-assessment.json
+prooflayer target assess-proposal review-set-summary <proposal-id> --accept
+prooflayer target assess-proposal review-set-summary <proposal-id> --reject
+prooflayer target assess-proposal review-set-summary <proposal-id> --edit-file reviewed-summary.json
+prooflayer target assess-proposal review-complete <proposal-id>
+prooflayer target assessment approve <proposal-id>
+prooflayer target assessment approved-show <target-id>
+prooflayer target assessment approved-status <target-id>
+```
+
+Accepted records become `human-approved`; edited records become `human-edited`; rejected records fall back to the current deterministic assessment as `deterministic-approved`. Review cannot change expectation, match, evidence, or source-provenance identities. Approval makes no provider call and refuses incomplete review, stale dependencies, unsafe edits, or mismatched hashes.
+
+Evidence actions are proof-maintenance suggestions such as clarifying, corroborating, refreshing, or resolving reviewed evidence. They are not instructions to invent claims or metrics. Slice 2.5 produces no resumes, cover letters, screening answers, application recommendations, ATS optimization, fit percentages, or hiring predictions.
+
 ## Slice 1.1 Resume Parser Hardening
 
 Markdown resumes are parsed by section before evidence is generated. The parser recognizes summary, strengths, technical fluency, current initiatives, professional experience, enterprise experience, education/certifications, and additional information sections.
@@ -843,6 +933,6 @@ Slice 1.8 currently exports `ai-product` and `tpm`. It does not alter review dec
 
 Likely next slices:
 
-1. Slice 2.5: deterministic fit and proof-readiness assessment over approved matching, without resume generation.
-2. Role and job-specific resume construction after assessment contracts are reviewed.
+1. Slice 2.6: reviewed role and job-specific resume construction from current approved assessments.
+2. Application-package generation only after construction provenance and safety contracts are validated.
 3. Website content JSON and local dashboard only when the CLI workflow becomes limiting.
