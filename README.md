@@ -981,7 +981,7 @@ Themes are derived only from approved expectation capability tags and evidence. 
 
 Recency remains visible. Recent evidence may support present positioning; historical evidence may establish depth but cannot imply current hands-on depth without corroboration. Project evidence remains project-scoped and cannot silently become employment ownership. The plan also prohibits inferred seniority, current employment, direct-report counts, hiring authority, budgets, executive reporting lines, organization scale, enterprise-wide ownership, or unreviewed metrics.
 
-The artifact includes machine-readable exclusions, risks, warnings, and ambiguities. These identify unsupported/conflicting expectations, missing metrics, limited or historical evidence, incomplete provenance, caution-required positioning, unclear leadership/seniority boundaries, and section decisions that need review. Completeness is structural only. `usableForResumeDrafting` means a future Slice 2.6B may consume the plan; it does not claim competitiveness or permission to invent missing content.
+The artifact includes machine-readable exclusions, risks, warnings, and ambiguities. These identify unsupported/conflicting expectations, missing metrics, limited or historical evidence, incomplete provenance, caution-required positioning, unclear leadership/seniority boundaries, and section decisions that need review. Completeness is structural only. `usableForResumeDrafting` means Slice 2.6B may consume the plan; it does not claim competitiveness or permission to invent missing content.
 
 Optional model-assisted planning reuses the existing `InterpretationModelProvider`:
 
@@ -1045,10 +1045,121 @@ workspace/targets/roles/<target-id>/resume-planning/
 
 The approved plan is a constraint system for future drafting, not finished resume content. This slice does not generate headlines, summaries, bullets, resumes, cover letters, screening answers, applications, ATS optimization, fit percentages, hiring probabilities, or application recommendations. It creates no new candidate claims and does not mutate targets, reviewed evidence, interpretation, matching, assessment, existing resumes, or exports.
 
+## Slice 2.6B Role Resume Draft Proposal
+
+Role Resume Draft Proposal converts one current approved Role Resume Content Plan into reviewed, structured resume wording. It supports role-based market positioning only. Job Targets and Job Descriptions are rejected, and no opportunity-specific tailoring occurs.
+
+The approved Role Resume Content Plan is a constraint system. Drafting may not exceed it. The pipeline is:
+
+```text
+Current approved Role artifacts
+-> deterministic prose-free scaffold
+-> optional model-assisted structured proposal
+-> strict validation
+-> human review
+-> approved structured Role Resume Draft
+```
+
+The explicit drafting policy is `role-resume-drafting-policy` version `1`. The prompt identity is `target-role-resume-draft-proposal` version `1`. Model-assisted drafting reuses the existing `InterpretationModelProvider`; API keys and credentials are never persisted.
+
+Build and inspect the deterministic scaffold:
+
+```bash
+npm run dev -- target resume-draft scaffold-build role-engineering-manager
+npm run dev -- target resume-draft scaffold-show role-engineering-manager
+npm run dev -- target resume-draft scaffold-status role-engineering-manager
+```
+
+The scaffold preserves the plan's exact included, optional, and excluded sections; order; objectives; content limits; selected expectations and evidence; claim boundaries; metric permissions; required qualifiers; cautions; exclusions; and prohibited inferences. It creates item slots and deterministic constraints, not resume prose. A stale or invalid scaffold requires explicit `--rebuild`; unchanged input returns `already-current` without changing IDs or timestamps.
+
+Generate, inspect, and replay a structured proposal:
+
+```bash
+npm run dev -- target resume-draft-proposal generate role-engineering-manager
+npm run dev -- target resume-draft-proposal generate role-engineering-manager --refresh
+npm run dev -- target resume-draft-proposal list role-engineering-manager
+npm run dev -- target resume-draft-proposal show <proposal-id>
+npm run dev -- target resume-draft-proposal status <proposal-id>
+npm run dev -- target resume-draft-proposal replay <proposal-id>
+```
+
+Model input is limited to the Role Target, current approved interpretation, matching, assessment, plan, deterministic scaffold, selected reviewed evidence, claim boundaries, qualifiers, metric references, section limits, and policy. It excludes Job Descriptions, stale or rejected artifacts, arbitrary prior resumes, unrelated biography, unreviewed sources, market keyword lists, and application instructions.
+
+The model must return strict JSON with one structured item per proposed statement. Every substantive resume statement must retain claim-to-evidence provenance: target, plan and section, expectation, assessment, approved match, evidence, claim boundary, policy, proposal, model/prompt identity, artifact hashes, and review decision. Evidence is linked narrowly to the statement it supports, not attached indiscriminately.
+
+Validation enforces:
+
+- Only plan-approved sections, order, item types, item counts, content types, expectations, matches, evidence, and claim boundaries may appear.
+- The target role title is positioning context. It is not historical employment evidence.
+- Project evidence remains project-scoped unless reviewed evidence explicitly supports a broader claim.
+- Responsibilities are not achievements unless reviewed outcome evidence exists.
+- Leadership wording cannot infer people management, direct reports, hiring authority, budgets, executive reporting, or organization-wide authority.
+- Technical wording cannot upgrade historical use, experimentation, repository presence, or familiarity into current production expertise.
+- Quantified wording is allowed only when the exact reviewed `verified_metric` is referenced with its unit and attribution. Metrics are never estimated, rounded, combined, extrapolated, or converted.
+- Dates and durations must come from reviewed evidence. Aggregate years of experience are not calculated in this slice.
+- Headline and summary wording must use approved themes, avoid current-employment assertions and unsupported seniority, and remain within policy length limits.
+- Experience bullets carry one primary defensible claim and cannot silently strengthen cautious action verbs.
+- Education and certification wording preserves reviewed facts and cannot infer completion or active status.
+- Unsupported employers, projects, technologies, dates, metrics, team sizes, revenue, customers, users, adoption, production scope, seniority, or authority are rejected.
+- Inflated language, duplicated claims, repeated opening verbs, ATS scores, hiring probabilities, application advice, cover letters, and screening answers are rejected or flagged.
+
+The proposal contains a machine-readable claim ledger and evidence-usage ledger. Claim entries bind exact statement hashes to expectation, assessment, match, evidence, boundary, metric, scope, and validation states. Evidence usage identifies relevant usage, overuse, prohibited use, and selected evidence that was not used. Risks, warnings, and ambiguities remain explicit; the validator never strengthens text silently to resolve uncertainty.
+
+Proposal fingerprints include all approved dependency hashes, evidence snapshot, scaffold, policy, provider/model settings, prompt identity, generation settings, and normalized model input. A cache hit makes no provider call and does not rewrite artifacts. `--refresh` calls the provider and preserves a distinct proposal. Replay uses the exact stored raw bytes, makes no provider call, and verifies the normalized proposal hash and validation outcome.
+
+Human review is mandatory:
+
+```bash
+npm run dev -- target resume-draft-proposal review-init <proposal-id> --reviewer "Reviewer"
+npm run dev -- target resume-draft-proposal review-show <proposal-id>
+npm run dev -- target resume-draft-proposal review-status <proposal-id>
+npm run dev -- target resume-draft-proposal review-set-section <proposal-id> <item-id> --accept
+npm run dev -- target resume-draft-proposal review-set-draft-item <proposal-id> <item-id> --edit-file edit.json
+npm run dev -- target resume-draft-proposal review-set-claim-ledger <proposal-id> <item-id> --accept
+npm run dev -- target resume-draft-proposal review-set-section-order <proposal-id> <item-id> --accept
+npm run dev -- target resume-draft-proposal review-set-ambiguity <proposal-id> <item-id> --reject
+npm run dev -- target resume-draft-proposal review-complete <proposal-id>
+```
+
+Each review item supports exactly one of `--accept`, `--reject`, or `--edit-file`. Human editing does not bypass evidence, provenance, or claim-boundary validation. Edited text and references undergo the same strict checks as model output. Review does not mutate the proposal.
+
+Approval is deterministic and makes no model call:
+
+```bash
+npm run dev -- target resume-draft approve <proposal-id>
+npm run dev -- target resume-draft approved-show role-engineering-manager
+npm run dev -- target resume-draft approved-status role-engineering-manager
+```
+
+Accepted statements become `human-approved`; validated edits become `human-edited`; rejected model wording is omitted. `model-proposed` and rejected wording cannot enter the approved artifact. Approval requires a complete current review, current dependencies, complete claim ledger, complete provenance, valid required sections, and no unresolved critical issue. Completeness is structural: `usableForRendering` means a future renderer may consume the structured artifact, not that the candidate is qualified or the output is job-specific.
+
+Artifacts live under:
+
+```text
+workspace/targets/roles/<target-id>/resume-drafting/
+  scaffold/
+    role-resume-draft-scaffold.json
+    scaffold-manifest.json
+  proposals/<proposal-id>/
+    proposal.json
+    proposal-manifest.json
+    raw-model-response.txt
+  reviews/<proposal-id>/
+    review.json
+    review-manifest.json
+  approved/
+    role-resume-draft.json
+    draft-manifest.json
+```
+
+Scaffolds, proposals, reviews, and approved drafts use stable content-derived IDs, stable JSON, atomic persistence, integrity manifests, and `missing`, `current`, `stale`, or `invalid` lifecycle states. Approved artifacts are never silently regenerated after an upstream dependency changes.
+
+This slice creates structured draft content. It does not render or export DOCX, PDF, HTML, or Markdown resumes. It also does not create job-specific content, ATS optimization, fit scores, hiring probabilities, application recommendations, cover letters, or screening answers. Known limitations include deliberately conservative token-based hallucination checks and exact-text duplicate detection; ambiguous semantic similarity remains a human-review concern.
+
 ## Next Slices
 
 Likely next slices:
 
-1. Slice 2.6B: structured role resume draft proposals constrained by a current approved Role Resume Content Plan, with statement-level evidence provenance and human review.
+1. Slice 2.6C: deterministic Role Resume rendering and export from only a current approved structured draft, without rewriting claims or calling a model.
 2. Application-package generation only after construction provenance and safety contracts are validated.
 3. Website content JSON and local dashboard only when the CLI workflow becomes limiting.

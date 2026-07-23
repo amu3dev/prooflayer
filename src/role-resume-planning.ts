@@ -715,7 +715,14 @@ function deriveSections(
   ];
   let nextOrder = 0;
   return specs.map(([type, status, allowed, objective, maximumItemCount]) => {
-    const relevant = selected.filter((entry) => entry.allowedSections.includes(type));
+    const relevant = status === "exclude"
+      ? []
+      : type === "selected-impact"
+        ? selected.filter((entry) => boundaries.some((boundary) =>
+          boundary.expectationId === entry.expectationId &&
+          boundary.allowedClaimTypes.some((claimType) =>
+            ["achievement", "delivery-outcome", "product-outcome", "business-outcome", "quantified-outcome"].includes(claimType))))
+        : selected.filter((entry) => entry.allowedSections.includes(type));
     const order = status === "exclude" ? specs.length + nextOrder++ : nextOrder++;
     return {
       id: `section-plan_${hashText([planId, type, ROLE_RESUME_PLANNING_POLICY_VERSION].join("\0")).slice(0, 16)}`,
