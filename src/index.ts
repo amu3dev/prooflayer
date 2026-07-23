@@ -156,6 +156,37 @@ import {
   approveFitAssessmentProposal,
   formatApproveFitAssessmentResult,
 } from "./approved-fit-assessment.js";
+import {
+  buildRoleResumePlan,
+  formatBuildRoleResumePlanResult,
+  formatRoleResumePlanStatus,
+  getRoleResumePlanStatus,
+  showRoleResumePlan,
+} from "./role-resume-planning.js";
+import {
+  formatRoleResumePlanProposalList,
+  formatRoleResumePlanProposalResult,
+  formatRoleResumePlanProposalStatus,
+  generateRoleResumePlanProposal,
+  getRoleResumePlanProposalStatus,
+  listRoleResumePlanProposals,
+  replayRoleResumePlanProposal,
+  showRoleResumePlanProposal,
+} from "./role-resume-plan-proposal.js";
+import {
+  completeRoleResumePlanReview,
+  formatRoleResumePlanReviewStatus,
+  getRoleResumePlanReviewStatus,
+  initializeRoleResumePlanReview,
+  readRoleResumePlanReviewEdit,
+  setRoleResumePlanReviewDecision,
+  showRoleResumePlanReview,
+} from "./role-resume-plan-review.js";
+import {
+  approveRoleResumePlanProposal,
+  formatApproveRoleResumePlanResult,
+} from "./approved-role-resume-plan.js";
+import type { RoleResumePlanReviewDecision } from "./role-resume-plan-schemas.js";
 
 const program = new Command();
 
@@ -932,6 +963,146 @@ assessment
   .description("Inspect approved assessment integrity and dependency freshness.")
   .action(async (targetId: string) => {
     console.log(formatFitAssessmentStatus(await getFitAssessmentStatus(getWorkspace(), targetId, "approved")));
+  });
+
+const resumePlan = target.command("resume-plan").description("Build, approve, and inspect role-positioning resume content plans without writing resume prose.");
+
+resumePlan
+  .command("build <target-id>")
+  .option("--rebuild", "explicitly rebuild a stale or invalid deterministic plan")
+  .option("--allow-partial", "allow an explicitly partial planning artifact that remains unusable for drafting")
+  .description("Build a deterministic Role Resume Content Plan from current approved role artifacts.")
+  .action(async (targetId: string, options: { rebuild?: boolean; allowPartial?: boolean }) => {
+    console.log(formatBuildRoleResumePlanResult(await buildRoleResumePlan(getWorkspace(), targetId, { rebuild: options.rebuild, allowPartial: options.allowPartial })));
+  });
+
+resumePlan
+  .command("show <target-id>")
+  .description("Print the deterministic Role Resume Content Plan as stable JSON.")
+  .action(async (targetId: string) => {
+    process.stdout.write(`${JSON.stringify(await showRoleResumePlan(getWorkspace(), targetId), null, 2)}\n`);
+  });
+
+resumePlan
+  .command("status <target-id>")
+  .description("Inspect deterministic role resume plan integrity and dependency freshness.")
+  .action(async (targetId: string) => {
+    console.log(formatRoleResumePlanStatus(await getRoleResumePlanStatus(getWorkspace(), targetId)));
+  });
+
+resumePlan
+  .command("approve <proposal-id>")
+  .option("--rebuild", "explicitly rebuild a stale approved plan after reviewing dependency changes")
+  .description("Create an approved Role Resume Content Plan without a provider call.")
+  .action(async (proposalId: string, options: { rebuild?: boolean }) => {
+    console.log(formatApproveRoleResumePlanResult(await approveRoleResumePlanProposal(getWorkspace(), proposalId, { rebuild: options.rebuild })));
+  });
+
+resumePlan
+  .command("approved-show <target-id>")
+  .description("Print the current approved Role Resume Content Plan as stable JSON.")
+  .action(async (targetId: string) => {
+    process.stdout.write(`${JSON.stringify(await showRoleResumePlan(getWorkspace(), targetId, "approved"), null, 2)}\n`);
+  });
+
+resumePlan
+  .command("approved-status <target-id>")
+  .description("Inspect approved role resume plan integrity and dependency freshness.")
+  .action(async (targetId: string) => {
+    console.log(formatRoleResumePlanStatus(await getRoleResumePlanStatus(getWorkspace(), targetId, "approved")));
+  });
+
+const resumePlanProposal = target.command("resume-plan-proposal").description("Generate, inspect, replay, and review optional model-assisted Role Resume Content Plan proposals.");
+
+resumePlanProposal
+  .command("generate <target-id>")
+  .option("--refresh", "bypass a valid cached proposal and call the configured provider again")
+  .description("Generate a structured plan proposal only; no output is approved automatically.")
+  .action(async (targetId: string, options: { refresh?: boolean }) => {
+    console.log(formatRoleResumePlanProposalResult(await generateRoleResumePlanProposal(getWorkspace(), targetId, { refresh: options.refresh })));
+  });
+
+resumePlanProposal
+  .command("list <target-id>")
+  .description("List stored Role Resume Content Plan proposals.")
+  .action(async (targetId: string) => {
+    console.log(formatRoleResumePlanProposalList(await listRoleResumePlanProposals(getWorkspace(), targetId)));
+  });
+
+resumePlanProposal
+  .command("show <proposal-id>")
+  .description("Print one normalized Role Resume Content Plan proposal as stable JSON.")
+  .action(async (proposalId: string) => {
+    process.stdout.write(`${JSON.stringify(await showRoleResumePlanProposal(getWorkspace(), proposalId), null, 2)}\n`);
+  });
+
+resumePlanProposal
+  .command("status <proposal-id>")
+  .description("Inspect proposal integrity, dependencies, and review eligibility.")
+  .action(async (proposalId: string) => {
+    console.log(formatRoleResumePlanProposalStatus(await getRoleResumePlanProposalStatus(getWorkspace(), proposalId)));
+  });
+
+resumePlanProposal
+  .command("replay <proposal-id>")
+  .description("Replay strict normalization from the exact stored raw response without a provider call.")
+  .action(async (proposalId: string) => {
+    const result = await replayRoleResumePlanProposal(getWorkspace(), proposalId);
+    console.log(`Proposal ID: ${result.proposalId}`);
+    console.log(`Original SHA-256: ${result.originalSha256}`);
+    console.log(`Replay SHA-256: ${result.replaySha256}`);
+    console.log(`Replay matches: ${result.matches ? "yes" : "no"}`);
+  });
+
+resumePlanProposal
+  .command("review-init <proposal-id>")
+  .option("--reviewer <name>", "optional human reviewer name")
+  .description("Initialize pending decisions for every proposed plan element.")
+  .action(async (proposalId: string, options: { reviewer?: string }) => {
+    await initializeRoleResumePlanReview(getWorkspace(), proposalId, { reviewerName: options.reviewer });
+    console.log(formatRoleResumePlanReviewStatus(await getRoleResumePlanReviewStatus(getWorkspace(), proposalId)));
+  });
+
+resumePlanProposal
+  .command("review-show <proposal-id>")
+  .description("Print the complete Role Resume Content Plan review as stable JSON.")
+  .action(async (proposalId: string) => {
+    process.stdout.write(`${JSON.stringify(await showRoleResumePlanReview(getWorkspace(), proposalId), null, 2)}\n`);
+  });
+
+resumePlanProposal
+  .command("review-status <proposal-id>")
+  .description("Inspect plan decision counts and manifest integrity.")
+  .action(async (proposalId: string) => {
+    console.log(formatRoleResumePlanReviewStatus(await getRoleResumePlanReviewStatus(getWorkspace(), proposalId)));
+  });
+
+for (const itemType of ["positioning", "section", "expectation", "evidence", "claim-boundary", "exclusion"] as RoleResumePlanReviewDecision["itemType"][]) {
+  resumePlanProposal
+    .command(`review-set-${itemType} <proposal-id> <item-id>`)
+    .option("--accept", "accept the proposed plan element unchanged")
+    .option("--reject", "reject and use the deterministic fallback")
+    .option("--edit-file <path>", "JSON file containing the complete edited plan element")
+    .option("--note <note>", "optional review note")
+    .description(`Set exactly one pending ${itemType} plan decision.`)
+    .action(async (proposalId: string, itemId: string, options: { accept?: boolean; reject?: boolean; editFile?: string; note?: string }) => {
+      const choices = Number(Boolean(options.accept)) + Number(Boolean(options.reject)) + Number(Boolean(options.editFile));
+      if (choices !== 1) throw new Error("Choose exactly one of --accept, --reject, or --edit-file.");
+      const editedValue = options.editFile ? await readRoleResumePlanReviewEdit(options.editFile) : undefined;
+      await setRoleResumePlanReviewDecision(getWorkspace(), proposalId, itemType, itemId, {
+        decision: options.accept ? "accept" : options.reject ? "reject" : "edit",
+        editedValue,
+        reviewNote: options.note,
+      });
+      console.log(formatRoleResumePlanReviewStatus(await getRoleResumePlanReviewStatus(getWorkspace(), proposalId)));
+    });
+}
+
+resumePlanProposal
+  .command("review-complete <proposal-id>")
+  .description("Complete review only after every proposed plan element has one valid decision.")
+  .action(async (proposalId: string) => {
+    console.log(formatRoleResumePlanReviewStatus(await completeRoleResumePlanReview(getWorkspace(), proposalId)));
   });
 
 program

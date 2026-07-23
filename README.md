@@ -929,10 +929,126 @@ Exports are registered separately from draft and final Markdown outputs in `work
 
 Slice 1.8 currently exports `ai-product` and `tpm`. It does not alter review decisions, source evidence, final Markdown, or another role's export artifacts.
 
+## Slice 2.6A Role Resume Content Planning
+
+Role Resume Content Planning selects and structures approved content. It does not write the resume.
+
+The role-only planning pipeline consumes one current Role Target plus the current approved interpretation, evidence matching, and role fit/proof assessment for that same target. Job Targets are rejected. By default, the assessment must be complete and marked usable for resume construction. `--allow-partial` creates an explicitly partial plan that remains unusable for drafting.
+
+Build and inspect the deterministic plan:
+
+```bash
+npm run dev -- target resume-plan build role-engineering-manager
+npm run dev -- target resume-plan show role-engineering-manager
+npm run dev -- target resume-plan status role-engineering-manager
+```
+
+The explicit deterministic policy is `role-resume-content-planning-policy` version `1`. It applies ordered rules without hidden scores:
+
+- Critical or high-materiality expectations with supported, defensible proof become primary.
+- Credible medium-materiality expectations become secondary.
+- Lower-materiality supported expectations provide supporting context.
+- Partial or unclear proof is deferred.
+- Unsupported and conflicting expectations are excluded; they are not converted into resume claims.
+- Strong direct current evidence is preferred, adequate evidence is allowed, and historical or narrowly useful evidence is limited-use.
+- Contradictory, unrelated, weak, or unapproved evidence is excluded.
+- Claim boundaries are `allowed`, `allowed-with-caution`, `requires-review`, or `prohibited` and can never exceed approved evidence.
+- A quantified resume outcome may be planned only when a reviewed metric exists.
+
+The plan contains a conservative positioning scope:
+
+- `direct-role-positioning`: core material expectations have credible support.
+- `adjacent-role-positioning`: transferable evidence exists with important gaps.
+- `stretch-positioning`: positioning is plausible but material gaps require careful framing.
+- `insufficient-evidence`: the reviewed evidence base cannot support a defensible plan.
+
+Positioning scope describes the current evidence base, not employability or hiring probability. A target role title is a positioning target. It is not proof that the candidate currently holds or previously held that title.
+
+The section plan may structurally include headline, professional summary, core capabilities, selected impact, professional experience, selected projects, technical capabilities, leadership capabilities, education, certifications, and additional information. Each section records its objective, order, approved expectation/match/evidence references, allowed and prohibited content types, limits, cautions, and provenance. No headline wording, summary prose, role rewrite, transition, or resume bullet is generated.
+
+The default narrative architecture is:
+
+```text
+Target role identity
+-> Primary positioning themes
+-> Selected evidence-backed impact
+-> Relevant professional experience
+-> Supporting projects and technical depth
+-> Education and certifications
+```
+
+Themes are derived only from approved expectation capability tags and evidence. Duplicate themes are consolidated by stable expectation identity. Evidence reuse remains explicit through plan-element provenance, and a weak item is not promoted by repetition. The planner prefers useful leadership, delivery, technical, product, business, recent, and historical breadth when the evidence offers it, but never weakens proof to force diversity.
+
+Recency remains visible. Recent evidence may support present positioning; historical evidence may establish depth but cannot imply current hands-on depth without corroboration. Project evidence remains project-scoped and cannot silently become employment ownership. The plan also prohibits inferred seniority, current employment, direct-report counts, hiring authority, budgets, executive reporting lines, organization scale, enterprise-wide ownership, or unreviewed metrics.
+
+The artifact includes machine-readable exclusions, risks, warnings, and ambiguities. These identify unsupported/conflicting expectations, missing metrics, limited or historical evidence, incomplete provenance, caution-required positioning, unclear leadership/seniority boundaries, and section decisions that need review. Completeness is structural only. `usableForResumeDrafting` means a future Slice 2.6B may consume the plan; it does not claim competitiveness or permission to invent missing content.
+
+Optional model-assisted planning reuses the existing `InterpretationModelProvider`:
+
+```bash
+npm run dev -- target resume-plan-proposal generate role-engineering-manager
+npm run dev -- target resume-plan-proposal list role-engineering-manager
+npm run dev -- target resume-plan-proposal show <proposal-id>
+npm run dev -- target resume-plan-proposal status <proposal-id>
+npm run dev -- target resume-plan-proposal replay <proposal-id>
+```
+
+The prompt identity is `target-role-resume-plan-proposal` version `1`. Model input is bounded to approved role artifacts, reviewed evidence metadata, deterministic planning, and policy constraints. Strict JSON output may propose prioritization and planning changes, but it cannot add IDs, strengthen proof, generate resume prose, invent facts or metrics, infer organizational scope, tailor to a job, score ATS fit, predict hiring, or recommend an application. Model output remains a proposal and is never auto-approved.
+
+The model validator is intentionally conservative. New free-form vocabulary outside approved input and a small planning vocabulary can be rejected even when it might be harmless; revise the structured proposal rather than weakening the evidence boundary.
+
+Review supports one decision for positioning and every section, expectation selection, evidence selection, claim boundary, and exclusion:
+
+```bash
+npm run dev -- target resume-plan-proposal review-init <proposal-id> --reviewer "Reviewer"
+npm run dev -- target resume-plan-proposal review-show <proposal-id>
+npm run dev -- target resume-plan-proposal review-status <proposal-id>
+npm run dev -- target resume-plan-proposal review-set-positioning <proposal-id> <item-id> --accept
+npm run dev -- target resume-plan-proposal review-set-section <proposal-id> <item-id> --edit-file section.json
+npm run dev -- target resume-plan-proposal review-set-expectation <proposal-id> <item-id> --reject
+npm run dev -- target resume-plan-proposal review-set-evidence <proposal-id> <item-id> --accept
+npm run dev -- target resume-plan-proposal review-set-claim-boundary <proposal-id> <item-id> --accept
+npm run dev -- target resume-plan-proposal review-set-exclusion <proposal-id> <item-id> --reject
+npm run dev -- target resume-plan-proposal review-complete <proposal-id>
+```
+
+Accepted items become `human-approved`; valid edits become `human-edited`; rejected items use the `deterministic-approved` fallback. Review never mutates the proposal. Approval makes no model call:
+
+```bash
+npm run dev -- target resume-plan approve <proposal-id>
+npm run dev -- target resume-plan approved-show role-engineering-manager
+npm run dev -- target resume-plan approved-status role-engineering-manager
+```
+
+Deterministic and approved plans have separate manifests and lifecycle states: `missing`, `current`, `stale`, and `invalid`. Input hashes cover the target, approved interpretation and manifest, approved matching and manifest, evidence snapshot, approved assessment and manifest, resolved ID sets, and policy version. Approved plans additionally bind the proposal and review hashes. Unchanged input returns `already-current` without rewriting IDs or timestamps. Stale or invalid replacement requires `--rebuild`.
+
+Proposal fingerprints also include provider, model, generation settings, prompt template/policy versions, deterministic-plan hash, and normalized-input hash. A valid cache hit makes no provider call or rewrite. `--refresh` creates a new preserved proposal. Replay uses exact stored raw response bytes, makes no provider call, and verifies normalized proposal reproduction. API keys are never persisted.
+
+Artifacts live under:
+
+```text
+workspace/targets/roles/<target-id>/resume-planning/
+  deterministic/
+    role-resume-plan.json
+    plan-manifest.json
+  proposals/<proposal-id>/
+    proposal.json
+    proposal-manifest.json
+    raw-model-response.txt
+  reviews/<proposal-id>/
+    review.json
+    review-manifest.json
+  approved/
+    role-resume-plan.json
+    plan-manifest.json
+```
+
+The approved plan is a constraint system for future drafting, not finished resume content. This slice does not generate headlines, summaries, bullets, resumes, cover letters, screening answers, applications, ATS optimization, fit percentages, hiring probabilities, or application recommendations. It creates no new candidate claims and does not mutate targets, reviewed evidence, interpretation, matching, assessment, existing resumes, or exports.
+
 ## Next Slices
 
 Likely next slices:
 
-1. Slice 2.6: reviewed role and job-specific resume construction from current approved assessments.
+1. Slice 2.6B: structured role resume draft proposals constrained by a current approved Role Resume Content Plan, with statement-level evidence provenance and human review.
 2. Application-package generation only after construction provenance and safety contracts are validated.
 3. Website content JSON and local dashboard only when the CLI workflow becomes limiting.
