@@ -279,7 +279,7 @@ describe("Slice 2.5 fit and proof assessment", () => {
         for (const file of await allFiles(root)) {
             const text = await readFile(file, "utf8");
             expect(text).not.toContain("PROOFLAYER_MODEL_API_KEY");
-            expect(text).not.toContain("/Users/ayosry/");
+            expect(text).not.toContain("/Users/example/");
         }
     });
     it("keeps approved interpretation and matching hashes unchanged while assessing", async () => {

@@ -23,7 +23,7 @@ Claim review remains useful, but it should not become the main user experience. 
 
 ### career-evidence: dogfooding and source workspace
 
-`/Users/ayosry/work/career-evidence` is the original experiment and Ahmed-specific working corpus. It contains:
+`<repo-root>/../career-evidence` is the original experiment and Ahmed-specific working corpus. It contains:
 
 - GitHub and LinkedIn evidence analysis;
 - CV and resume variants;
@@ -37,7 +37,7 @@ This workspace should remain a reference implementation and source corpus. It is
 
 ### ayosry-portfolio: public publishing layer
 
-`/Users/ayosry/work/ayosry-portfolio` is Ahmed's public Astro website. It owns presentation, layout, visual design, deployment, and public download links.
+`<repo-root>/../ayosry-portfolio` is Ahmed's public Astro website. It owns presentation, layout, visual design, deployment, and public download links.
 
 It should eventually consume publication-ready artifacts produced by ProofLayer, such as:
 
@@ -50,7 +50,7 @@ The portfolio should never read raw evidence, private notes, LinkedIn exports, o
 
 ### prooflayer: reusable career intelligence engine
 
-`/Users/ayosry/work/prooflayer` is the product. It owns the repeatable pipeline from source material to a living career profile and generated opportunity-specific outputs.
+`<repo-root>` is the product. It owns the repeatable pipeline from source material to a living career profile and generated opportunity-specific outputs.
 
 ProofLayer should remain:
 
@@ -447,7 +447,7 @@ After Slice 1.3, the likely sequence is:
 You are implementing ProofLayer Slice 1.3: Living Knowledge Updates and Update Impact Report.
 
 Project path:
-/Users/ayosry/work/prooflayer
+<repo-root>
 
 Read first:
 - docs/PROOFLAYER_NEXT_DIRECTION.md
