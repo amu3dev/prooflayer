@@ -1239,3 +1239,7 @@ Likely next slices:
 1. Slice 2.7A: deterministic Job Target application-content planning from approved job interpretation, matching, and assessment, while preserving the same review and provenance boundaries.
 2. Application-package generation only after job-specific construction provenance and safety contracts are validated.
 3. Website content JSON and local dashboard only when the CLI workflow becomes limiting.
+
+## License
+
+ProofLayer is available under the [MIT License](LICENSE).
