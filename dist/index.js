@@ -30,6 +30,9 @@ import { buildRoleResumeDraftScaffold, formatBuildRoleResumeDraftScaffoldResult,
 import { formatRoleResumeDraftProposalList, formatRoleResumeDraftProposalResult, formatRoleResumeDraftProposalStatus, generateRoleResumeDraftProposal, getRoleResumeDraftProposalStatus, listRoleResumeDraftProposals, replayRoleResumeDraftProposal, showRoleResumeDraftProposal, } from "./role-resume-draft-proposal.js";
 import { completeRoleResumeDraftReview, formatRoleResumeDraftReviewStatus, getRoleResumeDraftReviewStatus, initializeRoleResumeDraftReview, readRoleResumeDraftReviewEdit, setRoleResumeDraftReviewDecision, showRoleResumeDraftReview, } from "./role-resume-draft-review.js";
 import { approveRoleResumeDraftProposal, formatApprovedRoleResumeDraftStatus, formatApproveRoleResumeDraftResult, getApprovedRoleResumeDraftStatus, showApprovedRoleResumeDraft, } from "./approved-role-resume-draft.js";
+import { composeRoleResumeRenderDocument, formatComposeRoleResumeResult, formatRoleResumeRenderDocumentStatus, getRoleResumeRenderDocumentStatus, normalizeRoleResumeRenderOptions, showRoleResumeRenderDocument, } from "./role-resume-rendering.js";
+import { exportAllRoleResume, exportRoleResume, formatExportAllRoleResumeResult, formatExportRoleResumeResult, formatRoleResumeExportList, formatRoleResumeExportStatus, getRoleResumeExportStatus, listRoleResumeExports, showRoleResumeExport, validateStoredRoleResumeExport, } from "./role-resume-render-export.js";
+import { RoleResumeDateFormatSchema, RoleResumeExportFormatSchema, RoleResumePageSizeSchema, RoleResumeRenderProfileNameSchema, } from "./role-resume-render-schemas.js";
 const program = new Command();
 program
     .name("prooflayer")
@@ -922,6 +925,86 @@ resumeDraftProposal
     .action(async (proposalId) => {
     console.log(formatRoleResumeDraftReviewStatus(await completeRoleResumeDraftReview(getWorkspace(), proposalId)));
 });
+const resumeRender = target.command("resume-render").description("Compose and export current approved Role Resume Drafts without changing approved wording.");
+resumeRender
+    .command("compose <target-id>")
+    .option("--profile <profile>", "ats-standard or compact-professional")
+    .option("--page-size <size>", "A4 or LETTER")
+    .option("--date-format <format>", "MMM-YYYY, YYYY, or exact-source")
+    .option("--rebuild", "explicitly replace a stale or invalid canonical render document")
+    .description("Compose the canonical deterministic render document from the current approved Role Resume Draft.")
+    .action(async (targetId, options) => {
+    console.log(formatComposeRoleResumeResult(await composeRoleResumeRenderDocument(getWorkspace(), targetId, parseResumeRenderOptions(options))));
+});
+resumeRender
+    .command("compose-show <target-id>")
+    .description("Print the canonical role resume render document as stable JSON.")
+    .action(async (targetId) => {
+    process.stdout.write(`${JSON.stringify(await showRoleResumeRenderDocument(getWorkspace(), targetId), null, 2)}\n`);
+});
+resumeRender
+    .command("compose-status <target-id>")
+    .option("--profile <profile>", "ats-standard or compact-professional")
+    .option("--page-size <size>", "A4 or LETTER")
+    .option("--date-format <format>", "MMM-YYYY, YYYY, or exact-source")
+    .description("Inspect canonical render integrity, approved-draft freshness, policy version, and requested options.")
+    .action(async (targetId, options) => {
+    console.log(formatRoleResumeRenderDocumentStatus(await getRoleResumeRenderDocumentStatus(getWorkspace(), targetId, normalizeRoleResumeRenderOptions(parseResumeRenderOptions(options)))));
+});
+resumeRender
+    .command("export <target-id>")
+    .requiredOption("--format <format>", "markdown, html, docx, or pdf")
+    .option("--profile <profile>", "ats-standard or compact-professional")
+    .option("--page-size <size>", "A4 or LETTER")
+    .option("--date-format <format>", "MMM-YYYY, YYYY, or exact-source")
+    .option("--output-dir <path>", "safe relative subdirectory below the target export root")
+    .option("--rebuild", "explicitly replace stale or invalid canonical/export artifacts")
+    .description("Export one faithful format from the canonical role resume render document.")
+    .action(async (targetId, options) => {
+    console.log(formatExportRoleResumeResult(await exportRoleResume(getWorkspace(), targetId, {
+        ...parseResumeRenderOptions(options),
+        format: RoleResumeExportFormatSchema.parse(options.format),
+        outputDir: options.outputDir,
+    })));
+});
+resumeRender
+    .command("export-all <target-id>")
+    .option("--profile <profile>", "ats-standard or compact-professional")
+    .option("--page-size <size>", "A4 or LETTER")
+    .option("--date-format <format>", "MMM-YYYY, YYYY, or exact-source")
+    .option("--output-dir <path>", "safe relative subdirectory below the target export root")
+    .option("--rebuild", "explicitly replace stale or invalid canonical/export artifacts")
+    .description("Export Markdown, HTML, DOCX, and PDF from one canonical render document.")
+    .action(async (targetId, options) => {
+    console.log(formatExportAllRoleResumeResult(await exportAllRoleResume(getWorkspace(), targetId, {
+        ...parseResumeRenderOptions(options),
+        outputDir: options.outputDir,
+    })));
+});
+resumeRender
+    .command("export-list <target-id>")
+    .description("List persisted role resume exports for one Role Target.")
+    .action(async (targetId) => {
+    console.log(formatRoleResumeExportList(await listRoleResumeExports(getWorkspace(), targetId)));
+});
+resumeRender
+    .command("export-show <export-id>")
+    .description("Print one role resume export manifest as stable JSON.")
+    .action(async (exportId) => {
+    process.stdout.write(`${JSON.stringify(await showRoleResumeExport(getWorkspace(), exportId), null, 2)}\n`);
+});
+resumeRender
+    .command("export-status <export-id>")
+    .description("Inspect output, source-map, canonical dependency, renderer, and validation freshness.")
+    .action(async (exportId) => {
+    console.log(formatRoleResumeExportStatus(await getRoleResumeExportStatus(getWorkspace(), exportId)));
+});
+resumeRender
+    .command("validate <export-id>")
+    .description("Re-run structural and extracted-text validation for one stored role resume export.")
+    .action(async (exportId) => {
+    process.stdout.write(`${JSON.stringify(await validateStoredRoleResumeExport(getWorkspace(), exportId), null, 2)}\n`);
+});
 program
     .command("refresh")
     .description("Refresh the knowledge base and explain changes since the last successful state.")
@@ -957,5 +1040,13 @@ program
 function getWorkspace() {
     const options = program.opts();
     return resolveWorkspace(options.workspace);
+}
+function parseResumeRenderOptions(options) {
+    return {
+        profile: options.profile ? RoleResumeRenderProfileNameSchema.parse(options.profile) : undefined,
+        pageSize: options.pageSize ? RoleResumePageSizeSchema.parse(options.pageSize) : undefined,
+        dateFormat: options.dateFormat ? RoleResumeDateFormatSchema.parse(options.dateFormat) : undefined,
+        rebuild: options.rebuild,
+    };
 }
 await program.parseAsync();

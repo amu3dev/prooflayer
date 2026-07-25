@@ -1156,10 +1156,84 @@ Scaffolds, proposals, reviews, and approved drafts use stable content-derived ID
 
 This slice creates structured draft content. It does not render or export DOCX, PDF, HTML, or Markdown resumes. It also does not create job-specific content, ATS optimization, fit scores, hiring probabilities, application recommendations, cover letters, or screening answers. Known limitations include deliberately conservative token-based hallucination checks and exact-text duplicate detection; ambiguous semantic similarity remains a human-review concern.
 
+## Slice 2.6C Deterministic Role Resume Rendering And Export
+
+Role Resume Rendering converts one current approved structured Role Resume Draft into faithful Markdown, self-contained HTML, DOCX, and PDF artifacts. The renderer is a compiler-style boundary: it controls hierarchy, layout, pagination rules, and format packaging, but it never rewrites approved wording or calls a model.
+
+The explicit rendering policy is `role-resume-rendering-policy` version `1`. Composition first creates one canonical JSON render document, then every format is generated from that same document:
+
+```text
+Current approved Role Resume Draft
+-> canonical render document and source map
+-> Markdown / HTML / DOCX / PDF
+-> format validation and export manifest
+```
+
+Compose and inspect the canonical document:
+
+```bash
+npm run dev -- target resume-render compose role-engineering-manager
+npm run dev -- target resume-render compose role-engineering-manager \
+  --profile compact-professional \
+  --page-size LETTER \
+  --date-format exact-source
+npm run dev -- target resume-render compose-show role-engineering-manager
+npm run dev -- target resume-render compose-status role-engineering-manager
+```
+
+Supported render profiles are `ats-standard` and `compact-professional`. Both use a one-column layout, a minimum 10-point base font, semantic headings and lists, no core-content tables, no decorative icons, and deterministic spacing. Supported page sizes are `A4` and `LETTER`. The `MMM-YYYY`, `YYYY`, and `exact-source` date options are versioned render inputs, but approved dates currently remain embedded in reviewed item text. The renderer records that ambiguity and never infers or reformats a date.
+
+Export one format or all formats:
+
+```bash
+npm run dev -- target resume-render export role-engineering-manager --format markdown
+npm run dev -- target resume-render export role-engineering-manager --format html
+npm run dev -- target resume-render export role-engineering-manager --format docx
+npm run dev -- target resume-render export role-engineering-manager --format pdf
+npm run dev -- target resume-render export-all role-engineering-manager
+npm run dev -- target resume-render export-list role-engineering-manager
+npm run dev -- target resume-render export-show <export-id>
+npm run dev -- target resume-render export-status <export-id>
+npm run dev -- target resume-render validate <export-id>
+```
+
+An optional `--output-dir <path>` creates a normalized relative subdirectory under the target's export root. Absolute paths, traversal, empty path segments, and uncontrolled replacement of unrelated files are rejected. `--rebuild` is required to replace stale or invalid canonical or export artifacts.
+
+Default local binary renderers are:
+
+- Markdown: ProofLayer's deterministic plain-text renderer.
+- HTML: a self-contained semantic document with inline CSS and no scripts or remote styles.
+- DOCX: Pandoc, followed by deterministic page settings, metadata cleanup, relationship checks, macro rejection, and normalized ZIP timestamps where local tooling permits.
+- PDF: LibreOffice from a normalized DOCX intermediate produced from the same canonical Markdown, with extracted-text, page-count, and selected page-size verification.
+
+Pandoc is required for DOCX and the PDF intermediate; LibreOffice is required for PDF conversion. PDF page geometry is verified directly from the persisted PDF page dictionary. Missing tools fail clearly; `export-all` reports unsupported failures without claiming complete success. DOCX and PDF binary bytes may vary across tool versions and platforms even when canonical IDs, visible content, provenance, and extracted-text hashes are stable. ProofLayer therefore records binary determinism as a format limitation rather than making an unsupported reproducibility claim.
+
+Artifacts live under:
+
+```text
+workspace/targets/roles/<target-id>/resume-rendering/
+  canonical/
+    role-resume-render-document.json
+    render-document-manifest.json
+  exports/
+    <export-id>/
+      role-resume-<role>-<profile>-<format>.<ext>
+      source-map.json
+      export-manifest.json
+```
+
+The canonical document preserves approved section and item order, exact visible item text, trust state, and narrow statement-level provenance. Deterministic heading labels are the only added visible structure. Source maps bind every visible block to its approved draft item, expectations, assessment, approved matches, evidence, claim boundaries, exact statement hash, and approved-draft hash. Internal IDs, hashes, local paths, and provenance never appear in visible resume content.
+
+Canonical IDs derive from approved-draft and manifest hashes, policy and composition-rule versions, profile name/version, page size, date format, and normalized options. Export IDs additionally bind the canonical document hash, output format, renderer version, and normalized output directory. Unchanged composition or export returns `already-current` without changing IDs, timestamps, hashes, or files. Changed dependencies or options become `stale`; malformed or hash-mismatched artifacts become `invalid`; stale or invalid replacement requires explicit `--rebuild`.
+
+Validation checks non-empty output, format structure, canonical visible-text equivalence, section order, first/last markers, source-map integrity, selected PDF page size, extractable DOCX/PDF text, and privacy boundaries. Long unbroken tokens and multi-page PDF output produce warnings rather than silent content changes. The renderer does not shrink fonts below profile limits, remove content to meet a page count, claim formal accessibility certification, guess candidate identity or contact data, add links, generate ATS scores, calculate hiring probability, or make application recommendations.
+
+Role Targets remain the only supported input. Job Targets and Job Descriptions are rejected. Slice 2.6C consumes only a current, complete, provenance-bearing approved Role Resume Draft and does not mutate the target, evidence, interpretation, matching, assessment, plan, draft, prior resumes, or exports.
+
 ## Next Slices
 
 Likely next slices:
 
-1. Slice 2.6C: deterministic Role Resume rendering and export from only a current approved structured draft, without rewriting claims or calling a model.
-2. Application-package generation only after construction provenance and safety contracts are validated.
+1. Slice 2.7A: deterministic Job Target application-content planning from approved job interpretation, matching, and assessment, while preserving the same review and provenance boundaries.
+2. Application-package generation only after job-specific construction provenance and safety contracts are validated.
 3. Website content JSON and local dashboard only when the CLI workflow becomes limiting.

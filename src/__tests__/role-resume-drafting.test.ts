@@ -84,6 +84,35 @@ import {
   setProposalReviewDecision,
 } from "../target-proposal-review.js";
 import { createJobTarget, createRoleTarget, showTarget } from "../targets.js";
+import {
+  canonicalVisibleText,
+  extractVisibleTextFromHtml,
+  extractVisibleTextFromMarkdown,
+} from "../role-resume-format-renderers.js";
+import {
+  exportAllRoleResume,
+  exportRoleResume,
+  getRoleResumeExportStatus,
+  listRoleResumeExports,
+  normalizeOutputDirectory,
+  showRoleResumeExport,
+  validateStoredRoleResumeExport,
+  type RoleResumeBinaryToolchain,
+} from "../role-resume-render-export.js";
+import {
+  composeRoleResumeRenderDocument,
+  getRoleResumeRenderDocumentStatus,
+  resolveRoleResumeRenderProfile,
+  roleResumeRenderDocumentPaths,
+  showRoleResumeRenderDocument,
+  ROLE_RESUME_RENDERING_POLICY_NAME,
+  ROLE_RESUME_RENDERING_POLICY_VERSION,
+} from "../role-resume-rendering.js";
+import {
+  RoleResumeDateFormatSchema,
+  RoleResumePageSizeSchema,
+  RoleResumeRenderProfileNameSchema,
+} from "../role-resume-render-schemas.js";
 
 const FIRST_TIME = "2026-07-23T12:00:00.000Z";
 const SECOND_TIME = "2026-07-23T13:00:00.000Z";
@@ -499,6 +528,270 @@ describe("Slice 2.6B role resume draft proposal", () => {
   });
 });
 
+describe("Slice 2.6C deterministic role resume rendering and export", () => {
+  it("composes a canonical document from only the current approved Role Resume Draft", async () => {
+    const fixture = await renderingFixture();
+    const upstream = await upstreamHashes(fixture.workspace, fixture.targetId);
+    const result = await composeRoleResumeRenderDocument(fixture.workspace, fixture.targetId, {
+      now: () => new Date(FIRST_TIME),
+    });
+    const document = await showRoleResumeRenderDocument(fixture.workspace, fixture.targetId);
+    const approved = await showApprovedRoleResumeDraft(fixture.workspace, fixture.targetId);
+
+    expect(result.result).toBe("created");
+    expect(document.renderingPolicy).toEqual({
+      name: ROLE_RESUME_RENDERING_POLICY_NAME,
+      version: ROLE_RESUME_RENDERING_POLICY_VERSION,
+    });
+    expect(document.sections.flatMap((section) => section.blocks).map((block) => block.text)).toEqual(
+      approved.sections
+        .filter((section) => section.status !== "excluded" && section.items.length)
+        .sort((a, b) => a.order - b.order || a.id.localeCompare(b.id))
+        .flatMap((section) => section.items.map((item) => item.text)),
+    );
+    expect(document.sourceMap).toHaveLength(document.sections.flatMap((section) => section.blocks).length);
+    expect(document.validation).toMatchObject({
+      status: "valid",
+      exactTextPreserved: true,
+      sectionOrderPreserved: true,
+      itemOrderPreserved: true,
+      sourceMapComplete: true,
+      privateMetadataAbsent: true,
+    });
+    expect(document.metadata.candidateName).toBeUndefined();
+    expect(document.validation.warnings.map((warning) => warning.code)).toEqual(expect.arrayContaining([
+      "NO_CANDIDATE_NAME_AVAILABLE",
+      "NO_CONTACT_INFORMATION_AVAILABLE",
+      "ACCESSIBILITY_NOT_FORMALLY_CERTIFIED",
+      "EXPORT_NOT_JOB_SPECIFIC",
+    ]));
+    expect(await upstreamHashes(fixture.workspace, fixture.targetId)).toEqual(upstream);
+  });
+
+  it("preserves canonical IDs, hashes, timestamps, and mtimes on unchanged reruns", async () => {
+    const fixture = await renderingFixture();
+    const first = await composeRoleResumeRenderDocument(fixture.workspace, fixture.targetId, {
+      now: () => new Date(FIRST_TIME),
+    });
+    const paths = roleResumeRenderDocumentPaths(fixture.workspace, fixture.targetId);
+    const documentHash = await hashFile(paths.documentPath);
+    const manifestHash = await hashFile(paths.manifestPath);
+    const mtime = (await stat(paths.documentPath)).mtimeMs;
+    const second = await composeRoleResumeRenderDocument(fixture.workspace, fixture.targetId, {
+      now: () => new Date(SECOND_TIME),
+    });
+
+    expect(second).toMatchObject({ result: "already-current", canonicalDocumentId: first.canonicalDocumentId });
+    expect(await hashFile(paths.documentPath)).toBe(documentHash);
+    expect(await hashFile(paths.manifestPath)).toBe(manifestHash);
+    expect((await stat(paths.documentPath)).mtimeMs).toBe(mtime);
+    expect((await getRoleResumeRenderDocumentStatus(fixture.workspace, fixture.targetId)).status).toBe("current");
+  });
+
+  it("treats profile, page, and date changes as stale and requires explicit rebuild", async () => {
+    const fixture = await renderingFixture();
+    await composeRoleResumeRenderDocument(fixture.workspace, fixture.targetId, {
+      profile: "ats-standard",
+      pageSize: "A4",
+      dateFormat: "MMM-YYYY",
+    });
+    const requested = { profile: "compact-professional" as const, pageSize: "LETTER" as const, dateFormat: "YYYY" as const };
+    expect((await getRoleResumeRenderDocumentStatus(fixture.workspace, fixture.targetId, requested)).status).toBe("stale");
+    await expect(composeRoleResumeRenderDocument(fixture.workspace, fixture.targetId, requested)).rejects.toThrow(/--rebuild/);
+    const rebuilt = await composeRoleResumeRenderDocument(fixture.workspace, fixture.targetId, { ...requested, rebuild: true });
+    const document = await showRoleResumeRenderDocument(fixture.workspace, fixture.targetId);
+    expect(rebuilt.result).toBe("rebuilt");
+    expect(document.profile).toMatchObject({ name: "compact-professional", page: { size: "LETTER" } });
+    expect(document.dateFormat).toBe("YYYY");
+  });
+
+  it("rejects Job Targets and never consumes Job Description content", async () => {
+    const workspace = await mkdtemp(path.join(tmpdir(), "prooflayer-render-job-"));
+    const source = path.join(workspace, "job.md");
+    await writeFile(source, "---\ntitle: Engineering Manager\n---\n\n## Requirements\n- Lead production delivery.\n", "utf8");
+    const job = await createJobTarget(workspace, { file: source });
+    await expect(composeRoleResumeRenderDocument(workspace, job.target.id)).rejects.toThrow(/Role Targets only/);
+    expect((await allFiles(workspace)).some((file) => file.includes("resume-rendering"))).toBe(false);
+  });
+
+  it("renders Markdown and self-contained HTML with exact normalized visible text", async () => {
+    const fixture = await renderingFixture();
+    await composeRoleResumeRenderDocument(fixture.workspace, fixture.targetId);
+    const document = await showRoleResumeRenderDocument(fixture.workspace, fixture.targetId);
+    const markdown = await exportRoleResume(fixture.workspace, fixture.targetId, { format: "markdown" });
+    const html = await exportRoleResume(fixture.workspace, fixture.targetId, { format: "html" });
+    const markdownText = await readFile(path.join(fixture.workspace, markdown.outputPath), "utf8");
+    const htmlText = await readFile(path.join(fixture.workspace, html.outputPath), "utf8");
+
+    expect(extractVisibleTextFromMarkdown(markdownText)).toBe(canonicalVisibleText(document));
+    expect(extractVisibleTextFromHtml(htmlText)).toBe(canonicalVisibleText(document));
+    expect(htmlText).toContain("<!doctype html>");
+    expect(htmlText).toContain("@page { size: A4;");
+    expect(htmlText).not.toMatch(/<script\b|https?:\/\/[^"' )]+\.(?:css|js)/i);
+    expect(markdown.outputPath).toMatch(/role-resume-engineering-manager-ats-standard-markdown\.md$/);
+    expect(html.outputPath).toMatch(/role-resume-engineering-manager-ats-standard-html\.html$/);
+  });
+
+  it("exports all four formats from one canonical document with complete source maps", async () => {
+    const fixture = await renderingFixture();
+    await composeRoleResumeRenderDocument(fixture.workspace, fixture.targetId);
+    const document = await showRoleResumeRenderDocument(fixture.workspace, fixture.targetId);
+    const toolchain = fakeRoleResumeToolchain(canonicalVisibleText(document));
+    const result = await exportAllRoleResume(fixture.workspace, fixture.targetId, { toolchain });
+    const exports = await listRoleResumeExports(fixture.workspace, fixture.targetId);
+
+    expect(result.failed).toEqual([]);
+    expect(result.succeeded.map((entry) => entry.format).sort()).toEqual(["docx", "html", "markdown", "pdf"]);
+    expect(new Set(result.succeeded.map((entry) => entry.exportId)).size).toBe(4);
+    expect(new Set(exports.map((entry) => entry.canonicalDocumentId))).toEqual(new Set([document.id]));
+    expect(exports.every((entry) =>
+      entry.validation.status === "valid"
+      && entry.validation.visibleTextEquivalent
+      && entry.sourceMapSha256.match(/^[a-f0-9]{64}$/))).toBe(true);
+    expect(exports.find((entry) => entry.format === "pdf")?.validation).toMatchObject({
+      pageCount: 1,
+      pageSizeVerified: true,
+      textExtractable: true,
+    });
+  });
+
+  it("reuses current exports without rewrites and repairs tampering only with --rebuild", async () => {
+    const fixture = await renderingFixture();
+    const first = await exportRoleResume(fixture.workspace, fixture.targetId, {
+      format: "markdown",
+      now: () => new Date(FIRST_TIME),
+    });
+    const output = path.join(fixture.workspace, first.outputPath);
+    const manifest = path.join(fixture.workspace, first.manifestPath);
+    const mtime = (await stat(output)).mtimeMs;
+    const second = await exportRoleResume(fixture.workspace, fixture.targetId, {
+      format: "markdown",
+      now: () => new Date(SECOND_TIME),
+    });
+    expect(second.result).toBe("already-current");
+    expect((await stat(output)).mtimeMs).toBe(mtime);
+
+    await writeFile(output, "tampered", "utf8");
+    expect((await getRoleResumeExportStatus(fixture.workspace, first.exportId)).status).toBe("invalid");
+    await expect(exportRoleResume(fixture.workspace, fixture.targetId, { format: "markdown" })).rejects.toThrow(/--rebuild/);
+    const repaired = await exportRoleResume(fixture.workspace, fixture.targetId, { format: "markdown", rebuild: true });
+    expect(repaired.result).toBe("rebuilt");
+    expect((await getRoleResumeExportStatus(fixture.workspace, first.exportId)).status).toBe("current");
+    expect(await hashFile(manifest)).toMatch(/^[a-f0-9]{64}$/);
+  });
+
+  it("reports missing, stale, and invalid render/export lifecycle states", async () => {
+    const fixture = await renderingFixture();
+    expect((await getRoleResumeRenderDocumentStatus(fixture.workspace, fixture.targetId)).status).toBe("missing");
+    const exported = await exportRoleResume(fixture.workspace, fixture.targetId, { format: "html" });
+    expect((await getRoleResumeExportStatus(fixture.workspace, exported.exportId)).status).toBe("current");
+
+    const renderPaths = roleResumeRenderDocumentPaths(fixture.workspace, fixture.targetId);
+    const document = JSON.parse(await readFile(renderPaths.documentPath, "utf8"));
+    document.updatedAt = SECOND_TIME;
+    await writeJsonAtomic(renderPaths.documentPath, document);
+    expect((await getRoleResumeRenderDocumentStatus(fixture.workspace, fixture.targetId)).status).toBe("invalid");
+    expect((await getRoleResumeExportStatus(fixture.workspace, exported.exportId)).status).toBe("stale");
+    expect((await getRoleResumeExportStatus(fixture.workspace, "missing-export")).status).toBe("missing");
+  });
+
+  it("validates stored output fidelity and exposes complete deterministic manifests", async () => {
+    const fixture = await renderingFixture();
+    const exported = await exportRoleResume(fixture.workspace, fixture.targetId, { format: "markdown" });
+    const validation = await validateStoredRoleResumeExport(
+      fixture.workspace,
+      exported.exportId,
+      fakeRoleResumeToolchain("unused"),
+    );
+    const manifest = await showRoleResumeExport(fixture.workspace, exported.exportId);
+
+    expect(validation).toMatchObject({
+      status: "valid",
+      nonEmpty: true,
+      formatValid: true,
+      visibleTextEquivalent: true,
+      sectionOrderPreserved: true,
+      firstMarkerPresent: true,
+      lastMarkerPresent: true,
+      binaryDeterministic: true,
+    });
+    expect(manifest).toMatchObject({
+      targetId: fixture.targetId,
+      approvedDraftId: expect.any(String),
+      canonicalDocumentId: expect.any(String),
+      rendererName: "prooflayer-markdown",
+      rendererVersion: "1",
+      renderingPolicy: { name: ROLE_RESUME_RENDERING_POLICY_NAME, version: ROLE_RESUME_RENDERING_POLICY_VERSION },
+    });
+    expect(manifest.outputSha256).toBe(await hashFile(path.join(fixture.workspace, manifest.outputPath)));
+    expect(manifest.sourceMapSha256).toBe(await hashFile(path.join(fixture.workspace, manifest.sourceMapPath)));
+  });
+
+  it("preserves every metric, date, title, qualifier, and project-scoped statement exactly", async () => {
+    const fixture = await renderingFixture({ verifiedMetric: true });
+    await composeRoleResumeRenderDocument(fixture.workspace, fixture.targetId);
+    const approved = await showApprovedRoleResumeDraft(fixture.workspace, fixture.targetId);
+    const document = await showRoleResumeRenderDocument(fixture.workspace, fixture.targetId);
+    const approvedItems = approved.sections.flatMap((section) => section.items);
+    const renderedBlocks = document.sections.flatMap((section) => section.blocks);
+
+    expect(renderedBlocks.map((entry) => entry.text)).toEqual(approvedItems.map((entry) => entry.text));
+    for (const item of approvedItems) {
+      const block = renderedBlocks.find((entry) => entry.draftItemId === item.id)!;
+      expect(block.text).toBe(item.text);
+      expect(document.sourceMap.find((entry) => entry.draftItemId === item.id)).toMatchObject({
+        evidenceIds: item.evidenceIds,
+        claimBoundaryIds: item.claimBoundaryIds,
+      });
+    }
+    expect(JSON.stringify(document)).not.toMatch(/ATS score|hiring probability|application recommendation/i);
+  });
+
+  it("keeps render profiles ATS-safe, single-column, readable, and deterministic", () => {
+    const ats = resolveRoleResumeRenderProfile("ats-standard", "A4");
+    const compact = resolveRoleResumeRenderProfile("compact-professional", "LETTER");
+    for (const profile of [ats, compact]) {
+      expect(profile.layout).toMatchObject({ columns: 1, useTablesForCoreContent: false });
+      expect(profile.typography.minimumFontSizePt).toBeGreaterThanOrEqual(10);
+      expect(profile.typography.baseFontSizePt).toBeGreaterThanOrEqual(profile.typography.minimumFontSizePt);
+      expect(profile.accessibility).toMatchObject({
+        logicalHeadingHierarchy: true,
+        semanticLists: true,
+        colorOnlyMeaning: false,
+        iconsRequiredForMeaning: false,
+        singleColumnReadingOrder: true,
+        formalCertificationClaimed: false,
+      });
+    }
+    expect(resolveRoleResumeRenderProfile("ats-standard", "A4")).toEqual(ats);
+  });
+
+  it("rejects unsupported profiles, pages, date formats, formats, and unsafe output directories", () => {
+    expect(() => RoleResumeRenderProfileNameSchema.parse("decorative")).toThrow();
+    expect(() => RoleResumePageSizeSchema.parse("LEGAL")).toThrow();
+    expect(() => RoleResumeDateFormatSchema.parse("MM/DD")).toThrow();
+    for (const unsafe of ["../outside", "/tmp/outside", ".", "safe/../outside", "safe//../outside"]) {
+      expect(() => normalizeOutputDirectory(unsafe)).toThrow();
+    }
+    expect(normalizeOutputDirectory("./reviewed/exports/")).toBe("reviewed/exports");
+  });
+
+  it("does not persist absolute paths, private IDs, model content, or contact guesses into visible output", async () => {
+    const fixture = await renderingFixture();
+    const markdown = await exportRoleResume(fixture.workspace, fixture.targetId, { format: "markdown" });
+    const html = await exportRoleResume(fixture.workspace, fixture.targetId, { format: "html" });
+    const visible = [
+      await readFile(path.join(fixture.workspace, markdown.outputPath), "utf8"),
+      await readFile(path.join(fixture.workspace, html.outputPath), "utf8"),
+    ].join("\n");
+
+    expect(visible).not.toContain(fixture.workspace);
+    expect(visible).not.toMatch(/\/Users\/|\/home\/|evidence_[a-z0-9]|claim_[a-z0-9]|sha256/i);
+    expect(visible).not.toMatch(/@example\.com|\+\d[\d\s()-]{7,}/);
+    expect(visible).not.toMatch(/model-proposed|rawResponse|promptTemplate/i);
+  });
+});
+
 async function draftingFixture(options: { verifiedMetric?: boolean; promotePlan?: boolean } = {}) {
   const workspace = await mkdtemp(path.join(tmpdir(), "prooflayer-role-draft-"));
   const created = await createRoleTarget(workspace, { title: "Engineering Manager" }, { now: () => new Date(FIRST_TIME) });
@@ -592,6 +885,33 @@ async function completedReviewFixture(options: {
     now: () => new Date(SECOND_TIME),
   });
   return fixture;
+}
+
+async function renderingFixture(options: { verifiedMetric?: boolean } = {}) {
+  const fixture = await completedReviewFixture({
+    existing: await draftingFixture({ verifiedMetric: options.verifiedMetric }),
+  });
+  await approveRoleResumeDraftProposal(fixture.workspace, fixture.generated.proposalId, {
+    now: () => new Date(FIRST_TIME),
+  });
+  return fixture;
+}
+
+function fakeRoleResumeToolchain(extractedText: string): RoleResumeBinaryToolchain {
+  return {
+    async createDocx({ outputPath }) {
+      await writeFile(outputPath, Buffer.from([0x50, 0x4b, 0x03, 0x04, 0x50, 0x72, 0x6f, 0x6f, 0x66]));
+    },
+    async createPdf({ outputPath }) {
+      await writeFile(outputPath, Buffer.from("%PDF-1.7\n% ProofLayer deterministic test fixture\n", "utf8"));
+    },
+    async extractDocxText() {
+      return extractedText;
+    },
+    async extractPdf() {
+      return { text: extractedText, pageCount: 1, pageSizeVerified: true };
+    },
+  };
 }
 
 async function resolveReview(
