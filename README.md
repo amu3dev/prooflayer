@@ -4,6 +4,8 @@ ProofLayer is a local-first career evidence system.
 
 This repository contains MVP Slice 1: **Career Vault Builder v1**.
 
+Implementation agents and contributors should begin with [`AGENTS.md`](AGENTS.md), which links the reusable engineering, proof, testing, and Git policies under `docs/agent/`.
+
 Slice 1.1 hardens deterministic parsing for structured Markdown resumes so headings, dates, and fragments do not pollute the career profile.
 
 Slice 1.2 separates successful extraction from factual trust and public-output approval.
