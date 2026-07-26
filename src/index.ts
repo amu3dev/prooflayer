@@ -64,6 +64,39 @@ import {
   showTargetInterpretation
 } from "./target-interpretation.js";
 import {
+  buildJobRequirements,
+  formatBuildJobRequirementsResult,
+  formatJobRequirementModelStatus,
+  getJobRequirementModelStatus,
+  showJobRequirementModel,
+} from "./job-requirements.js";
+import {
+  formatJobRequirementProposalList,
+  formatJobRequirementProposalResult,
+  formatJobRequirementProposalStatus,
+  generateJobRequirementProposal,
+  getJobRequirementProposalStatus,
+  listJobRequirementProposals,
+  replayJobRequirementProposal,
+  showJobRequirementProposal,
+} from "./job-requirement-proposal.js";
+import {
+  completeJobRequirementReview,
+  formatJobRequirementReviewStatus,
+  getJobRequirementReviewStatus,
+  initializeJobRequirementReview,
+  readEditedJobRequirementFile,
+  setJobRequirementReviewDecision,
+  showJobRequirementReview,
+} from "./job-requirement-review.js";
+import {
+  approveJobRequirements,
+  formatApproveJobRequirementsResult,
+  formatApprovedJobRequirementsStatus,
+  getApprovedJobRequirementsStatus,
+  showApprovedJobRequirements,
+} from "./approved-job-requirements.js";
+import {
   formatProposalGenerationResult,
   formatProposalList,
   formatProposalStatus,
@@ -532,6 +565,200 @@ target
         await getTargetInterpretationStatus(workspace, targetId, options),
       ),
     );
+  });
+
+const jobRequirements = target
+  .command("job-requirements")
+  .description("Build, inspect, review, and approve Job Description requirement models.");
+
+jobRequirements
+  .command("build <target-id>")
+  .option("--rebuild", "explicitly rebuild a stale or invalid deterministic model")
+  .description("Build explicit deterministic requirements from a current Job Target analysis.")
+  .action(async (targetId: string, options: { rebuild?: boolean }) => {
+    console.log(formatBuildJobRequirementsResult(
+      await buildJobRequirements(getWorkspace(), targetId, options),
+    ));
+  });
+
+jobRequirements
+  .command("show <target-id>")
+  .description("Print the deterministic Job Requirement Model as stable JSON.")
+  .action(async (targetId: string) => {
+    process.stdout.write(
+      `${JSON.stringify(await showJobRequirementModel(getWorkspace(), targetId), null, 2)}\n`,
+    );
+  });
+
+jobRequirements
+  .command("status <target-id>")
+  .description("Inspect deterministic Job Requirement Model lifecycle and dependencies.")
+  .action(async (targetId: string) => {
+    console.log(formatJobRequirementModelStatus(
+      await getJobRequirementModelStatus(getWorkspace(), targetId),
+    ));
+  });
+
+jobRequirements
+  .command("approve <target-id>")
+  .option("--proposal <proposal-id>", "explicit completed proposal review to approve")
+  .option("--rebuild", "explicitly replace a stale or invalid approved model")
+  .description("Approve a completed human review without making a model call.")
+  .action(async (
+    targetId: string,
+    options: { proposal?: string; rebuild?: boolean },
+  ) => {
+    console.log(formatApproveJobRequirementsResult(
+      await approveJobRequirements(getWorkspace(), targetId, {
+        proposalId: options.proposal,
+        rebuild: options.rebuild,
+      }),
+    ));
+  });
+
+jobRequirements
+  .command("approved-show <target-id>")
+  .description("Print the human-reviewed approved Job Requirement Model as stable JSON.")
+  .action(async (targetId: string) => {
+    process.stdout.write(
+      `${JSON.stringify(await showApprovedJobRequirements(getWorkspace(), targetId), null, 2)}\n`,
+    );
+  });
+
+jobRequirements
+  .command("approved-status <target-id>")
+  .description("Inspect approved Job Requirement Model integrity and freshness.")
+  .action(async (targetId: string) => {
+    console.log(formatApprovedJobRequirementsStatus(
+      await getApprovedJobRequirementsStatus(getWorkspace(), targetId),
+    ));
+  });
+
+const jobRequirementProposal = target
+  .command("job-requirements-proposal")
+  .description("Generate and human-review optional model-assisted requirement proposals.");
+
+jobRequirementProposal
+  .command("generate <target-id>")
+  .option("--refresh", "bypass a current cached proposal and call the configured provider")
+  .description("Generate an untrusted proposal without candidate evidence or automatic approval.")
+  .action(async (targetId: string, options: { refresh?: boolean }) => {
+    console.log(formatJobRequirementProposalResult(
+      await generateJobRequirementProposal(getWorkspace(), targetId, options),
+    ));
+  });
+
+jobRequirementProposal
+  .command("list <target-id>")
+  .description("List stored Job Requirement Model proposals.")
+  .action(async (targetId: string) => {
+    console.log(formatJobRequirementProposalList(
+      await listJobRequirementProposals(getWorkspace(), targetId),
+    ));
+  });
+
+jobRequirementProposal
+  .command("show <proposal-id>")
+  .description("Print one normalized Job Requirement Model proposal as stable JSON.")
+  .action(async (proposalId: string) => {
+    process.stdout.write(
+      `${JSON.stringify(await showJobRequirementProposal(getWorkspace(), proposalId), null, 2)}\n`,
+    );
+  });
+
+jobRequirementProposal
+  .command("status <proposal-id>")
+  .description("Inspect Job Requirement Model proposal lifecycle and review eligibility.")
+  .action(async (proposalId: string) => {
+    console.log(formatJobRequirementProposalStatus(
+      await getJobRequirementProposalStatus(getWorkspace(), proposalId),
+    ));
+  });
+
+jobRequirementProposal
+  .command("replay <proposal-id>")
+  .description("Replay cached response normalization without a model call.")
+  .action(async (proposalId: string) => {
+    const replay = await replayJobRequirementProposal(getWorkspace(), proposalId);
+    console.log(`Proposal ID: ${replay.proposalId}`);
+    console.log(`Original SHA-256: ${replay.originalSha256}`);
+    console.log(`Replay SHA-256: ${replay.replaySha256}`);
+    console.log(`Replay matches: ${replay.matches ? "yes" : "no"}`);
+  });
+
+jobRequirementProposal
+  .command("review <proposal-id>")
+  .option("--reviewer <name>", "optional human reviewer name")
+  .description("Initialize a non-interactive review with pending decisions.")
+  .action(async (proposalId: string, options: { reviewer?: string }) => {
+    console.log(formatJobRequirementReviewStatus(
+      await initializeJobRequirementReview(getWorkspace(), proposalId, {
+        reviewerName: options.reviewer,
+      }),
+    ));
+  });
+
+jobRequirementProposal
+  .command("review-show <proposal-id>")
+  .description("Print a complete Job Requirement Model review as stable JSON.")
+  .action(async (proposalId: string) => {
+    process.stdout.write(
+      `${JSON.stringify(await showJobRequirementReview(getWorkspace(), proposalId), null, 2)}\n`,
+    );
+  });
+
+jobRequirementProposal
+  .command("review-status <proposal-id>")
+  .description("Inspect Job Requirement Model review decisions and integrity.")
+  .action(async (proposalId: string) => {
+    console.log(formatJobRequirementReviewStatus(
+      await getJobRequirementReviewStatus(getWorkspace(), proposalId),
+    ));
+  });
+
+jobRequirementProposal
+  .command("review-set <proposal-id> <requirement-id>")
+  .option("--accept", "accept the reviewed requirement unchanged")
+  .option("--reject", "exclude the reviewed requirement")
+  .option("--edit-file <path>", "JSON file containing reviewed normalized fields")
+  .option("--note <note>", "optional human review note")
+  .description("Set exactly one pending requirement review decision.")
+  .action(async (
+    proposalId: string,
+    requirementId: string,
+    options: { accept?: boolean; reject?: boolean; editFile?: string; note?: string },
+  ) => {
+    const choices =
+      Number(Boolean(options.accept)) +
+      Number(Boolean(options.reject)) +
+      Number(Boolean(options.editFile));
+    if (choices !== 1) {
+      throw new Error("Choose exactly one of --accept, --reject, or --edit-file.");
+    }
+    const editedRequirement = options.editFile
+      ? await readEditedJobRequirementFile(options.editFile)
+      : undefined;
+    console.log(formatJobRequirementReviewStatus(
+      await setJobRequirementReviewDecision(
+        getWorkspace(),
+        proposalId,
+        requirementId,
+        {
+          decision: options.accept ? "accept" : options.reject ? "reject" : "edit",
+          editedRequirement,
+          reviewNote: options.note,
+        },
+      ),
+    ));
+  });
+
+jobRequirementProposal
+  .command("review-complete <proposal-id>")
+  .description("Complete review after every deterministic and proposed requirement is decided.")
+  .action(async (proposalId: string) => {
+    console.log(formatJobRequirementReviewStatus(
+      await completeJobRequirementReview(getWorkspace(), proposalId),
+    ));
   });
 
 const proposal = target.command("proposal").description("Generate, inspect, replay, and review model-assisted interpretation proposals.");

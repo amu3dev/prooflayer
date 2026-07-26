@@ -312,8 +312,8 @@ export declare const RoleResumeDocumentMetadataSchema: z.ZodObject<{
         system: "ProofLayer";
     }>;
 }, "strict", z.ZodTypeAny, {
-    targetRoleTitle: string;
     language: "en";
+    targetRoleTitle: string;
     direction: "ltr";
     documentTitle: string;
     documentType: "role-resume";
@@ -332,8 +332,8 @@ export declare const RoleResumeDocumentMetadataSchema: z.ZodObject<{
         phone?: string | undefined;
     } | undefined;
 }, {
-    targetRoleTitle: string;
     language: "en";
+    targetRoleTitle: string;
     direction: "ltr";
     documentTitle: string;
     documentType: "role-resume";
@@ -1067,8 +1067,8 @@ export declare const RoleResumeRenderDocumentSchema: z.ZodObject<{
             system: "ProofLayer";
         }>;
     }, "strict", z.ZodTypeAny, {
-        targetRoleTitle: string;
         language: "en";
+        targetRoleTitle: string;
         direction: "ltr";
         documentTitle: string;
         documentType: "role-resume";
@@ -1087,8 +1087,8 @@ export declare const RoleResumeRenderDocumentSchema: z.ZodObject<{
             phone?: string | undefined;
         } | undefined;
     }, {
-        targetRoleTitle: string;
         language: "en";
+        targetRoleTitle: string;
         direction: "ltr";
         documentTitle: string;
         documentType: "role-resume";
@@ -1556,8 +1556,8 @@ export declare const RoleResumeRenderDocumentSchema: z.ZodObject<{
     };
     dateFormat: "MMM-YYYY" | "YYYY" | "exact-source";
     metadata: {
-        targetRoleTitle: string;
         language: "en";
+        targetRoleTitle: string;
         direction: "ltr";
         documentTitle: string;
         documentType: "role-resume";
@@ -1723,8 +1723,8 @@ export declare const RoleResumeRenderDocumentSchema: z.ZodObject<{
     };
     dateFormat: "MMM-YYYY" | "YYYY" | "exact-source";
     metadata: {
-        targetRoleTitle: string;
         language: "en";
+        targetRoleTitle: string;
         direction: "ltr";
         documentTitle: string;
         documentType: "role-resume";

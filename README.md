@@ -40,6 +40,8 @@ Phase 2 Slice 2.4 links current approved target expectations to reviewed active 
 
 Phase 2 Slice 2.5 interprets approved evidence matching into expectation-level fit and proof assessments, with optional model proposals and an explicit human approval boundary.
 
+Phase 2 Slice 2.7A builds deterministic, reviewable Job Requirement Models from current Job Targets and their preserved Job Descriptions without consuming candidate evidence or producing fit or application content.
+
 ## What Slice 1 Does
 
 ProofLayer turns a messy local folder of career files into a structured career knowledge base:
@@ -69,6 +71,7 @@ It creates:
 - `workspace/targets/jobs/{target-id}/job-description.md`
 - `workspace/targets/{roles|jobs}/{target-id}/matching/`
 - `workspace/targets/{roles|jobs}/{target-id}/assessment/`
+- `workspace/targets/jobs/{target-id}/requirements/`
 
 ## What It Does Not Do Yet
 
@@ -133,6 +136,9 @@ npm run dev -- target analysis-status role-engineering-manager
 npm run dev -- target interpret role-engineering-manager --role-profile workspace/role-profiles/engineering-manager.json
 npm run dev -- target interpretation-show role-engineering-manager
 npm run dev -- target interpretation-status role-engineering-manager
+npm run dev -- target job-requirements build job-exampleco-engineering-manager
+npm run dev -- target job-requirements show job-exampleco-engineering-manager
+npm run dev -- target job-requirements status job-exampleco-engineering-manager
 ```
 
 ## Folder Structure
@@ -176,6 +182,11 @@ workspace/
         interpretation/
           target-interpretation.json
           interpretation-manifest.json
+        requirements/
+          deterministic/
+          proposals/
+          reviews/
+          approved/
     jobs/
       job-exampleco-engineering-manager/
         target.json
@@ -1232,13 +1243,93 @@ Validation checks non-empty output, format structure, canonical visible-text equ
 
 Role Targets remain the only supported input. Job Targets and Job Descriptions are rejected. Slice 2.6C consumes only a current, complete, provenance-bearing approved Role Resume Draft and does not mutate the target, evidence, interpretation, matching, assessment, plan, draft, prior resumes, or exports.
 
+## Slice 2.7A Deterministic Job Requirement Modeling
+
+Job Requirement Modeling describes what one preserved vacancy asks for. It consumes only a current Job Target, the exact persisted `job-description.md`, and its current structural target analysis. Role Targets are rejected. The workflow never loads candidate evidence, claims, career profiles, matching, assessments, resumes, or exports.
+
+Build and inspect the deterministic model:
+
+```bash
+npm run dev -- target job-requirements build job-exampleco-engineering-manager
+npm run dev -- target job-requirements show job-exampleco-engineering-manager
+npm run dev -- target job-requirements status job-exampleco-engineering-manager
+npm run dev -- target job-requirements build job-exampleco-engineering-manager --rebuild
+```
+
+The deterministic policy is `job-requirement-modeling-policy` version `1`. It preserves each structural item as one unsplit requirement and applies only explicit, documented cues:
+
+- Required sections and phrases such as `must have`, `required`, `minimum of`, and `at least` produce `mandatory`.
+- Preferred sections and phrases such as `preferred`, `nice to have`, and `bonus` produce `preferred`.
+- Responsibilities and explicit role-context sections produce `contextual`.
+- Statements without a reliable cue remain `ambiguous`; vague wording is never silently hardened.
+- Explicit patterns identify experience/seniority, languages, location/travel/visa/work mode, screening, technical expectations, named technologies, domains, leadership, operating context, and stated metrics or scale.
+- Unknown statements remain `unknown` and receive auditable ambiguities, risks, and warnings.
+
+Every requirement has a stable content-derived ID, category, normalized label, exact source text, necessity, confidence, explicitness, relationships, named technologies, keywords, and source provenance. Provenance retains the structural analysis item and section IDs plus exact 1-based inclusive line ranges, source byte offsets, full-source SHA-256, and excerpt SHA-256 from the immutable persisted Job Description.
+
+Artifacts are separate from the Job Target and Job Description:
+
+```text
+workspace/targets/jobs/<target-id>/requirements/
+  deterministic/
+    job-requirement-model.json
+    job-requirement-model-manifest.json
+  proposals/<proposal-id>/
+    proposal.json
+    proposal-manifest.json
+    raw-model-response.txt
+  reviews/<proposal-id>/
+    review.json
+    review-manifest.json
+  approved/
+    approved-job-requirement-model.json
+    approved-job-requirement-manifest.json
+```
+
+The deterministic manifest pins the exact target, Job Description, structural analysis, structural-analysis manifest, normalized input, and policy hashes. Status is `missing`, `current`, `stale`, or `invalid`. An unchanged current build is not rewritten and preserves IDs, hashes, timestamps, and bytes. Changed dependencies or policy make the model stale; malformed artifacts, incomplete pairs, identity disagreement, or hash mismatch make it invalid. Stale or invalid deterministic or approved artifacts are never silently replaced; use `--rebuild` only after review.
+
+### Optional Requirement Proposals
+
+The optional model path reuses ProofLayer's provider abstraction:
+
+```bash
+npm run dev -- target job-requirements-proposal generate job-exampleco-engineering-manager
+npm run dev -- target job-requirements-proposal list job-exampleco-engineering-manager
+npm run dev -- target job-requirements-proposal show <proposal-id>
+npm run dev -- target job-requirements-proposal status <proposal-id>
+npm run dev -- target job-requirements-proposal replay <proposal-id>
+```
+
+The prompt is `target-job-requirement-model-proposal` version `1`. It receives only the deterministic Job Requirement Model and its Job Description provenance. It cannot access candidate evidence, assess a candidate, calculate fit, write resume/application content, or approve itself. A proposal must cite known deterministic requirements and structural analysis items, preserve exact source text and source references, and pass schema and provenance validation. Raw model responses are stored and hashed separately. Identical current requests use a no-call cache; replay revalidates the exact stored response without a model call.
+
+### Human Review And Approval
+
+Review covers both deterministic and proposed requirements:
+
+```bash
+npm run dev -- target job-requirements-proposal review <proposal-id> --reviewer "Reviewer Name"
+npm run dev -- target job-requirements-proposal review-show <proposal-id>
+npm run dev -- target job-requirements-proposal review-status <proposal-id>
+npm run dev -- target job-requirements-proposal review-set <proposal-id> <requirement-id> --accept
+npm run dev -- target job-requirements-proposal review-set <proposal-id> <requirement-id> --reject
+npm run dev -- target job-requirements-proposal review-set <proposal-id> <requirement-id> --edit-file reviewed-requirement.json
+npm run dev -- target job-requirements-proposal review-complete <proposal-id>
+npm run dev -- target job-requirements approve job-exampleco-engineering-manager --proposal <proposal-id>
+npm run dev -- target job-requirements approved-show job-exampleco-engineering-manager
+npm run dev -- target job-requirements approved-status job-exampleco-engineering-manager
+```
+
+Every deterministic and proposed requirement must receive one `accept`, `edit`, or `reject` decision. Human edits may correct normalized wording, category, necessity, confidence, explicitness, relationships, keywords, and notes, but cannot change source text or provenance and cannot add unsupported named technologies or candidate/application language. Approval is deterministic and makes no provider call. Accepted and edited requirements become `human-approved` or `human-edited`; rejected and pending items are excluded.
+
+Slice 2.7A models the job only. It does not perform requirement-to-evidence matching, candidate fit assessment, strengths/weaknesses/gaps analysis, confidence or hiring-probability scoring, resume planning or drafting, cover letters, screening answers, ATS optimization, or application recommendations.
+
 ## Next Slices
 
 Likely next slices:
 
-1. Slice 2.7A: deterministic Job Target application-content planning from approved job interpretation, matching, and assessment, while preserving the same review and provenance boundaries.
-2. Application-package generation only after job-specific construction provenance and safety contracts are validated.
-3. Website content JSON and local dashboard only when the CLI workflow becomes limiting.
+1. Slice 2.7B: Job Requirement-to-Evidence Matching using only a current approved requirement model and reviewed candidate evidence.
+2. Job-specific fit/proof assessment only after approved matching exists.
+3. Application-content planning and generation only after job-specific proof and provenance boundaries are validated.
 
 ## License
 
