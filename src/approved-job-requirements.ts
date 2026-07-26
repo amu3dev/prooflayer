@@ -123,7 +123,7 @@ export async function approveJobRequirements(
     policyName,
     policyVersion,
   });
-  const paths = approvedPaths(workspace, targetId);
+  const paths = approvedJobRequirementPaths(workspace, targetId);
   if (existingStatus.status === "current") {
     const manifest = ApprovedJobRequirementManifestSchema.parse(
       await readJson<unknown>(paths.manifestPath, null),
@@ -288,7 +288,7 @@ export async function showApprovedJobRequirements(
 ): Promise<ApprovedJobRequirementModel> {
   const target = await showTarget(workspace, targetId);
   if (target.type !== "job") throw new Error(`Job requirement approval rejects Role Target: ${targetId}`);
-  const paths = approvedPaths(workspace, targetId);
+  const paths = approvedJobRequirementPaths(workspace, targetId);
   if (!(await pathExists(paths.approvedModelPath))) {
     throw new Error(`Approved job requirement model not found for target: ${targetId}`);
   }
@@ -304,7 +304,7 @@ export async function getApprovedJobRequirementsStatus(
 ): Promise<ApprovedJobRequirementsStatus> {
   const target = await showTarget(workspace, targetId);
   if (target.type !== "job") throw new Error(`Job requirement approval rejects Role Target: ${targetId}`);
-  const paths = approvedPaths(workspace, targetId);
+  const paths = approvedJobRequirementPaths(workspace, targetId);
   const approvedModelExists = await pathExists(paths.approvedModelPath);
   const manifestExists = await pathExists(paths.manifestPath);
   const base = {
@@ -623,7 +623,7 @@ async function selectCompletedProposal(workspace: string, targetId: string): Pro
   return completed[0].proposalId;
 }
 
-function approvedPaths(workspace: string, targetId: string) {
+export function approvedJobRequirementPaths(workspace: string, targetId: string) {
   const root = `targets/jobs/${targetId}/requirements/approved`;
   const approvedModelRelativePath = `${root}/${APPROVED_FILE}`;
   const manifestRelativePath = `${root}/${MANIFEST_FILE}`;

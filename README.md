@@ -42,6 +42,8 @@ Phase 2 Slice 2.5 interprets approved evidence matching into expectation-level f
 
 Phase 2 Slice 2.7A builds deterministic, reviewable Job Requirement Models from current Job Targets and their preserved Job Descriptions without consuming candidate evidence or producing fit or application content.
 
+Phase 2 Slice 2.7B maps usable Job Requirements to approved, resume-ready, public-safe candidate evidence using explicit deterministic signals without calculating fit or generating application content.
+
 ## What Slice 1 Does
 
 ProofLayer turns a messy local folder of career files into a structured career knowledge base:
@@ -1323,13 +1325,67 @@ Every deterministic and proposed requirement must receive one `accept`, `edit`, 
 
 Slice 2.7A models the job only. It does not perform requirement-to-evidence matching, candidate fit assessment, strengths/weaknesses/gaps analysis, confidence or hiring-probability scoring, resume planning or drafting, cover letters, screening answers, ATS optimization, or application recommendations.
 
+## Slice 2.7B Deterministic Job Evidence Mapping
+
+Job Evidence Mapping answers one narrow question: which approved evidence explicitly supports each requirement in a usable Job Requirement Model? It does not decide whether the candidate is a good fit, whether they should apply, or how a resume should change.
+
+Build and inspect the deterministic map:
+
+```bash
+npm run dev -- target job-matching build job-exampleco-engineering-manager
+npm run dev -- target job-matching show job-exampleco-engineering-manager
+npm run dev -- target job-matching status job-exampleco-engineering-manager
+npm run dev -- target job-matching build job-exampleco-engineering-manager --rebuild
+```
+
+A complete, current deterministic Job Requirement Model is the default input. A complete, current human-reviewed model is an equivalent optional input:
+
+```bash
+npm run dev -- target job-matching build job-exampleco-engineering-manager --requirements-source approved
+```
+
+Role Targets, stale or invalid requirement models, incomplete models, and models with unresolved high-severity ambiguity or contradiction are rejected. The candidate side accepts only evidence connected to claims that are all of:
+
+- globally approved;
+- `resume_ready`;
+- public-safe;
+- not awaiting confirmation;
+- backed by active public non-Job-Description sources;
+- free of evidence privacy flags.
+
+Draft, proposed, rejected, blocked, private, unknown, inactive, and non-resume-ready material is excluded.
+
+The mapper is `job-evidence-mapper` version `1` under `job-evidence-mapping-policy` version `1`. It creates links only from explicit reviewed signals:
+
+- exact requirement wording present in approved claim wording or its linked reviewed evidence summary;
+- exact named-technology overlap;
+- exact reviewed domain overlap;
+- exact deterministic requirement-keyword overlap.
+
+It does not infer skills, experience, achievements, seniority, or semantic similarity. A link relationship is only `direct`, `supporting`, or `partial`. Evidence strength projects the existing evidence confidence (`high`, `medium`, or `low`) into `strong`, `medium`, or `weak`; link confidence is capped by relationship type and the existing evidence and factual-claim confidence. Ordering uses those reviewed metadata values followed by stable IDs, not a numeric ranking score. Requirements with no explicit link are marked `unsupported`.
+
+The persisted artifact exists because the later job fit/proof assessment needs a reproducible, provenance-bearing requirement-to-evidence boundary. Keeping it only in memory would prevent downstream lifecycle checks, stable replay, and auditable dependency validation. No proposal, review, approval, or model-provider artifact is introduced in this slice.
+
+```text
+workspace/targets/jobs/<target-id>/matching/
+  deterministic/
+    job-evidence-map.json
+    job-evidence-map-manifest.json
+```
+
+Every link has stable requirement, evidence, and claim IDs; relationship, evidence strength, and link confidence; the exact matched signals; Job Description source references; hashes for the requirement, evidence item, claim, and public source lineage. The manifest pins the Job Target, immutable Job Description, selected requirement model and manifest, source registry, evidence items, claims, eligible evidence set, normalized input, mapper, and policy.
+
+Status is `missing`, `current`, `stale`, or `invalid`. An unchanged build returns `already-current` without rewriting bytes or timestamps. Changed requirement, evidence, claim, source, policy, or mapper dependencies make the map stale. Malformed artifacts, hash mismatches, duplicate identities, broken coverage, or ineligible stored links make it invalid. Stale or invalid maps require explicit `--rebuild`.
+
+Slice 2.7B makes no model call and creates no aggregate confidence, fit, coverage percentage, hiring, ATS, competitiveness, recommendation, resume, or application output. Job Descriptions remain target inputs, never candidate evidence.
+
 ## Next Slices
 
 Likely next slices:
 
-1. Slice 2.7B: Job Requirement-to-Evidence Matching using only a current approved requirement model and reviewed candidate evidence.
-2. Job-specific fit/proof assessment only after approved matching exists.
-3. Application-content planning and generation only after job-specific proof and provenance boundaries are validated.
+1. Slice 2.7C: Job-specific fit/proof assessment using only a current deterministic Job Evidence Map.
+2. Application-content planning only after the job-specific proof and provenance boundaries are validated.
+3. Reviewed job-specific drafting and export without mutating reusable role artifacts.
 
 ## License
 

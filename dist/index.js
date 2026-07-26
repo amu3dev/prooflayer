@@ -15,6 +15,8 @@ import { buildJobRequirements, formatBuildJobRequirementsResult, formatJobRequir
 import { formatJobRequirementProposalList, formatJobRequirementProposalResult, formatJobRequirementProposalStatus, generateJobRequirementProposal, getJobRequirementProposalStatus, listJobRequirementProposals, replayJobRequirementProposal, showJobRequirementProposal, } from "./job-requirement-proposal.js";
 import { completeJobRequirementReview, formatJobRequirementReviewStatus, getJobRequirementReviewStatus, initializeJobRequirementReview, readEditedJobRequirementFile, setJobRequirementReviewDecision, showJobRequirementReview, } from "./job-requirement-review.js";
 import { approveJobRequirements, formatApproveJobRequirementsResult, formatApprovedJobRequirementsStatus, getApprovedJobRequirementsStatus, showApprovedJobRequirements, } from "./approved-job-requirements.js";
+import { buildJobEvidenceMap, formatBuildJobEvidenceMapResult, formatJobEvidenceMapStatus, getJobEvidenceMapStatus, showJobEvidenceMap, } from "./job-evidence-mapping.js";
+import { JobRequirementInputTypeSchema, } from "./job-evidence-map-schemas.js";
 import { formatProposalGenerationResult, formatProposalList, formatProposalStatus, generateInterpretationProposal, getInterpretationProposalStatus, listInterpretationProposals, replayInterpretationProposal, showInterpretationProposal } from "./target-proposal.js";
 import { completeProposalReview, formatProposalReviewStatus, getProposalReviewStatus, initializeProposalReview, readEditedExpectationFile, setProposalReviewDecision, showProposalReview } from "./target-proposal-review.js";
 import { approveInterpretationProposal, formatApprovalResult, formatApprovedInterpretationStatus, getApprovedInterpretationStatus, showApprovedTargetInterpretation } from "./approved-interpretation.js";
@@ -316,6 +318,32 @@ jobRequirements
     .description("Inspect approved Job Requirement Model integrity and freshness.")
     .action(async (targetId) => {
     console.log(formatApprovedJobRequirementsStatus(await getApprovedJobRequirementsStatus(getWorkspace(), targetId)));
+});
+const jobMatching = target
+    .command("job-matching")
+    .description("Build and inspect deterministic Job Requirement-to-evidence maps.");
+jobMatching
+    .command("build <target-id>")
+    .option("--rebuild", "explicitly rebuild a stale or invalid evidence map")
+    .option("--requirements-source <source>", "usable requirement source: deterministic (default) or approved", "deterministic")
+    .description("Map a usable Job Requirement Model to approved public-safe evidence.")
+    .action(async (targetId, options) => {
+    console.log(formatBuildJobEvidenceMapResult(await buildJobEvidenceMap(getWorkspace(), targetId, {
+        rebuild: options.rebuild,
+        requirementSource: JobRequirementInputTypeSchema.parse(options.requirementsSource),
+    })));
+});
+jobMatching
+    .command("show <target-id>")
+    .description("Print the deterministic Job Evidence Map as stable JSON.")
+    .action(async (targetId) => {
+    process.stdout.write(`${JSON.stringify(await showJobEvidenceMap(getWorkspace(), targetId), null, 2)}\n`);
+});
+jobMatching
+    .command("status <target-id>")
+    .description("Inspect Job Evidence Map integrity, dependencies, and lifecycle.")
+    .action(async (targetId) => {
+    console.log(formatJobEvidenceMapStatus(await getJobEvidenceMapStatus(getWorkspace(), targetId)));
 });
 const jobRequirementProposal = target
     .command("job-requirements-proposal")

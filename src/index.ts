@@ -97,6 +97,16 @@ import {
   showApprovedJobRequirements,
 } from "./approved-job-requirements.js";
 import {
+  buildJobEvidenceMap,
+  formatBuildJobEvidenceMapResult,
+  formatJobEvidenceMapStatus,
+  getJobEvidenceMapStatus,
+  showJobEvidenceMap,
+} from "./job-evidence-mapping.js";
+import {
+  JobRequirementInputTypeSchema,
+} from "./job-evidence-map-schemas.js";
+import {
   formatProposalGenerationResult,
   formatProposalList,
   formatProposalStatus,
@@ -631,6 +641,51 @@ jobRequirements
   .action(async (targetId: string) => {
     console.log(formatApprovedJobRequirementsStatus(
       await getApprovedJobRequirementsStatus(getWorkspace(), targetId),
+    ));
+  });
+
+const jobMatching = target
+  .command("job-matching")
+  .description("Build and inspect deterministic Job Requirement-to-evidence maps.");
+
+jobMatching
+  .command("build <target-id>")
+  .option("--rebuild", "explicitly rebuild a stale or invalid evidence map")
+  .option(
+    "--requirements-source <source>",
+    "usable requirement source: deterministic (default) or approved",
+    "deterministic",
+  )
+  .description("Map a usable Job Requirement Model to approved public-safe evidence.")
+  .action(async (
+    targetId: string,
+    options: { rebuild?: boolean; requirementsSource: string },
+  ) => {
+    console.log(formatBuildJobEvidenceMapResult(
+      await buildJobEvidenceMap(getWorkspace(), targetId, {
+        rebuild: options.rebuild,
+        requirementSource: JobRequirementInputTypeSchema.parse(
+          options.requirementsSource,
+        ),
+      }),
+    ));
+  });
+
+jobMatching
+  .command("show <target-id>")
+  .description("Print the deterministic Job Evidence Map as stable JSON.")
+  .action(async (targetId: string) => {
+    process.stdout.write(
+      `${JSON.stringify(await showJobEvidenceMap(getWorkspace(), targetId), null, 2)}\n`,
+    );
+  });
+
+jobMatching
+  .command("status <target-id>")
+  .description("Inspect Job Evidence Map integrity, dependencies, and lifecycle.")
+  .action(async (targetId: string) => {
+    console.log(formatJobEvidenceMapStatus(
+      await getJobEvidenceMapStatus(getWorkspace(), targetId),
     ));
   });
 

@@ -43,4 +43,10 @@ export declare function showApprovedJobRequirements(workspace: string, targetId:
 export declare function getApprovedJobRequirementsStatus(workspace: string, targetId: string, options?: Pick<ApproveOptions, "policyName" | "policyVersion">): Promise<ApprovedJobRequirementsStatus>;
 export declare function formatApproveJobRequirementsResult(result: ApproveJobRequirementsResult): string;
 export declare function formatApprovedJobRequirementsStatus(status: ApprovedJobRequirementsStatus): string;
+export declare function approvedJobRequirementPaths(workspace: string, targetId: string): {
+    approvedModelRelativePath: string;
+    approvedModelPath: string;
+    manifestRelativePath: string;
+    manifestPath: string;
+};
 export {};
