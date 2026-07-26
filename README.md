@@ -1387,6 +1387,10 @@ Likely next slices:
 2. Application-content planning only after the job-specific proof and provenance boundaries are validated.
 3. Reviewed job-specific drafting and export without mutating reusable role artifacts.
 
+## Architecture
+
+See the [canonical ProofLayer Capability Pipeline architecture](docs/architecture/PIPELINE_ARCHITECTURE.md).
+
 ## License
 
 ProofLayer is available under the [MIT License](LICENSE).
