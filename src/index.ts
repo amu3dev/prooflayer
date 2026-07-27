@@ -107,6 +107,13 @@ import {
   JobRequirementInputTypeSchema,
 } from "./job-evidence-map-schemas.js";
 import {
+  buildJobCoverage,
+  formatBuildJobCoverageResult,
+  formatJobCoverageStatus,
+  getJobCoverageStatus,
+  showJobCoverage,
+} from "./job-coverage.js";
+import {
   formatProposalGenerationResult,
   formatProposalList,
   formatProposalStatus,
@@ -686,6 +693,38 @@ jobMatching
   .action(async (targetId: string) => {
     console.log(formatJobEvidenceMapStatus(
       await getJobEvidenceMapStatus(getWorkspace(), targetId),
+    ));
+  });
+
+const jobCoverage = target
+  .command("job-coverage")
+  .description("Build and inspect deterministic per-requirement Job coverage.");
+
+jobCoverage
+  .command("build <target-id>")
+  .option("--rebuild", "explicitly rebuild stale or invalid coverage")
+  .description("Classify each requirement from the current stored Job Evidence Map.")
+  .action(async (targetId: string, options: { rebuild?: boolean }) => {
+    console.log(formatBuildJobCoverageResult(
+      await buildJobCoverage(getWorkspace(), targetId, options),
+    ));
+  });
+
+jobCoverage
+  .command("show <target-id>")
+  .description("Print deterministic Job Requirement Coverage as stable JSON.")
+  .action(async (targetId: string) => {
+    process.stdout.write(
+      `${JSON.stringify(await showJobCoverage(getWorkspace(), targetId), null, 2)}\n`,
+    );
+  });
+
+jobCoverage
+  .command("status <target-id>")
+  .description("Inspect Job Requirement Coverage integrity, dependencies, and lifecycle.")
+  .action(async (targetId: string) => {
+    console.log(formatJobCoverageStatus(
+      await getJobCoverageStatus(getWorkspace(), targetId),
     ));
   });
 

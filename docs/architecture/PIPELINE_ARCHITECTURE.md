@@ -393,9 +393,10 @@ The implemented Job workflow currently includes:
 - deterministic Job Target intake and exact Job Description preservation;
 - deterministic structural analysis;
 - deterministic requirement modeling with optional proposal, review, and approval escalation;
-- deterministic mapping from usable requirements to eligible reviewed evidence.
+- deterministic mapping from usable requirements to eligible reviewed evidence;
+- deterministic per-requirement coverage analysis from the current evidence map.
 
-Job-specific Coverage Analysis, Fit Assessment, Planning, Draft Construction, Rendering, and Export are planned. Existing Role artifacts must not be silently reused as job-specific outputs, and Job Description language must not alter reusable Role artifacts.
+Job-specific Fit Assessment, Planning, Draft Construction, Rendering, and Export are planned. Existing Role artifacts must not be silently reused as job-specific outputs, and Job Description language must not alter reusable Role artifacts.
 
 ## 6. Shared Components
 
@@ -490,18 +491,18 @@ Each extension must define its target, assessment, planning, drafting, review, r
 
 ## 10. Status
 
-Status through Slice 2.7B:
+Status through Slice 2.7C:
 
 | Capability | Role Pipeline | Job Pipeline |
 | --- | --- | --- |
 | Target Modeling | Completed | Completed |
 | Expectation Modeling | Completed | Completed as Job Requirement Modeling |
 | Evidence Mapping | Completed | Completed through Slice 2.7B |
-| Coverage Analysis | Completed within reviewed Role matching | Planned |
+| Coverage Analysis | Completed within reviewed Role matching | Completed through Slice 2.7C |
 | Assessment | Completed through Slice 2.5 | Planned |
 | Planning | Completed through Slice 2.6A | Planned |
 | Draft Construction | Completed through Slice 2.6B | Planned |
 | Rendering | Completed through Slice 2.6C | Planned |
 | Export | Completed through Slice 2.6C | Planned |
 
-The next known Job capability is Coverage Analysis and fit/proof assessment built from the deterministic Job Evidence Map. Slice 2.7C is not part of the current implementation.
+The next known Job capability is fit/proof assessment built from current deterministic Job Requirement Coverage.

@@ -1379,11 +1379,49 @@ Status is `missing`, `current`, `stale`, or `invalid`. An unchanged build return
 
 Slice 2.7B makes no model call and creates no aggregate confidence, fit, coverage percentage, hiring, ATS, competitiveness, recommendation, resume, or application output. Job Descriptions remain target inputs, never candidate evidence.
 
+## Slice 2.7C Deterministic Job Requirement Coverage
+
+Job Requirement Coverage answers one question for every modeled requirement: how completely is it supported by the links already present in the current Job Evidence Map? It never searches the evidence store, creates new links, calculates fit, recommends an application, or changes resume content.
+
+Build and inspect deterministic coverage:
+
+```bash
+npm run dev -- target job-coverage build job-exampleco-engineering-manager
+npm run dev -- target job-coverage show job-exampleco-engineering-manager
+npm run dev -- target job-coverage status job-exampleco-engineering-manager
+npm run dev -- target job-coverage build job-exampleco-engineering-manager --rebuild
+```
+
+The analyzer is `job-requirement-coverage` version `1` under `job-requirement-coverage-policy` version `1`. It consumes only a current usable Job Requirement Model and a current Job Evidence Map. Role Targets, missing maps, stale or invalid dependencies, broken hashes, incomplete requirement coverage, and broken requirement or link provenance are rejected.
+
+Each requirement receives exactly one controlled state:
+
+- `supported`: at least one direct link has sufficient existing reviewed evidence strength and link confidence.
+- `partially-supported`: stored links are only partial/supporting, or explicit compound components are not all supported.
+- `unsupported`: the current map contains no evidence links for an unambiguous requirement.
+- `contradicted`: reserved for an explicit approved contradiction relationship in the evidence map; absence is never treated as contradiction.
+- `indeterminate`: unresolved requirement ambiguity, weak direct support, or insufficient map detail prevents a defensible classification.
+
+Evidence quality uses only the existing relationship, reviewed evidence strength, and link-confidence metadata. The labels `strong`, `adequate`, `limited`, `mixed`, and `unavailable` describe support quality, not candidate quality or hiring likelihood. Multiple weak links are never upgraded into strong direct support. Explicit compound requirements retain only the minimal component detail needed to explain partial support; no separate component artifact is created.
+
+```text
+workspace/targets/jobs/<target-id>/coverage/
+  deterministic/
+    job-requirement-coverage.json
+    job-requirement-coverage-manifest.json
+```
+
+Coverage records preserve the requirement ID, category, necessity, mapped link IDs, link counts, evidence quality, exact Job Description provenance, hashes for the source requirement and evidence-map entries, concrete ambiguities, and controlled warnings. The manifest pins the target, Job Description, selected requirement model and manifest, evidence map and manifest, normalized input, analyzer, and policy.
+
+Status is `missing`, `current`, `stale`, or `invalid`. An unchanged build returns `already-current` without rewriting IDs, hashes, bytes, timestamps, or modification times. Requirement-model, evidence-map, dependency-manifest, analyzer, policy, or normalized-input changes make coverage stale. Malformed artifacts, hash disagreement, duplicate identities, or broken map provenance make it invalid. Stale or invalid coverage requires explicit `--rebuild`, and stale or invalid upstream artifacts must be repaired first.
+
+The persistent coverage artifact exists for the later Job Fit Assessment consumer and independent provenance/lifecycle validation. Slice 2.7C creates no aggregate coverage, percentages, fit or ATS scores, strengths/weaknesses, gap priorities, application recommendations, resume plans, drafts, or application content. It makes no model call and performs no evidence rematching.
+
 ## Next Slices
 
 Likely next slices:
 
-1. Slice 2.7C: Job-specific fit/proof assessment using only a current deterministic Job Evidence Map.
+1. Job-specific fit/proof assessment using only current deterministic Job Requirement Coverage.
 2. Application-content planning only after the job-specific proof and provenance boundaries are validated.
 3. Reviewed job-specific drafting and export without mutating reusable role artifacts.
 
