@@ -388,7 +388,7 @@ Job Target + Job Description
           Export
 ```
 
-The implemented Job workflow currently includes:
+The implemented Job workflow includes:
 
 - deterministic Job Target intake and exact Job Description preservation;
 - deterministic structural analysis;
@@ -398,8 +398,9 @@ The implemented Job workflow currently includes:
 - deterministic qualitative fit and proof assessment from current coverage and stored provenance;
 - deterministic job-specific resume content planning from the current assessment and reviewed mapped evidence.
 - constrained job-specific structured draft construction through a prose-free scaffold, explicit model proposal, strict validation, human review, and deterministic approval.
+- deterministic canonical rendering and faithful Markdown, HTML, DOCX, and adapter-based PDF export from the approved structured Job draft.
 
-Job-specific Rendering and Export are planned. Existing Role artifacts must not be silently reused as job-specific outputs, and Job Description language must not alter reusable Role artifacts.
+Role and Job pipelines share format-neutral presentation, profiles, format renderers, binary adapters, fidelity validation, and path-safety controls while retaining separate target types, rendering policies, provenance contracts, persistence roots, identities, and lifecycle state. Existing Role artifacts are never treated as job-specific outputs, and Job Description language never alters reusable Role artifacts.
 
 ## 6. Shared Components
 
@@ -494,7 +495,7 @@ Each extension must define its target, assessment, planning, drafting, review, r
 
 ## 10. Status
 
-Status through Slice 2.7F:
+Status through Slice 2.7G:
 
 | Capability | Role Pipeline | Job Pipeline |
 | --- | --- | --- |
@@ -505,7 +506,7 @@ Status through Slice 2.7F:
 | Assessment | Completed through Slice 2.5 | Completed through Slice 2.7D |
 | Planning | Completed through Slice 2.6A | Completed through Slice 2.7E |
 | Draft Construction | Completed through Slice 2.6B | Completed through Slice 2.7F |
-| Rendering | Completed through Slice 2.6C | Planned |
-| Export | Completed through Slice 2.6C | Planned |
+| Rendering | Completed through Slice 2.6C | Completed through Slice 2.7G |
+| Export | Completed through Slice 2.6C | Completed through Slice 2.7G |
 
-The next known Job capability is deterministic Rendering from the current approved structured Job Resume Draft.
+The canonical Job resume pipeline is complete through deterministic rendering and export. A controlled end-to-end pipeline validation is the next milestone before any post-2.7 refactoring or additional application artifact.

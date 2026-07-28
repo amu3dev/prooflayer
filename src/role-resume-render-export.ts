@@ -33,6 +33,7 @@ import {
   normalizeVisibleText,
   renderRoleResumeHtml,
   renderRoleResumeMarkdown,
+  type ResumeRenderDocumentLike,
   ROLE_RESUME_DOCX_RENDERER_VERSION,
   ROLE_RESUME_HTML_RENDERER_VERSION,
   ROLE_RESUME_MARKDOWN_RENDERER_VERSION,
@@ -81,13 +82,13 @@ export interface RoleResumeBinaryToolchain {
   createDocx(input: {
     markdownPath: string;
     outputPath: string;
-    document: RoleResumeRenderDocument;
+    document: ResumeRenderDocumentLike;
     temporaryDirectory: string;
   }): Promise<void>;
   createPdf(input: {
     htmlPath: string;
     outputPath: string;
-    document: RoleResumeRenderDocument;
+    document: ResumeRenderDocumentLike;
     temporaryDirectory: string;
   }): Promise<void>;
   extractDocxText(filePath: string): Promise<string>;
@@ -487,7 +488,7 @@ export function normalizeOutputDirectory(value?: string): string {
 }
 
 export async function validateRoleResumeOutput(
-  document: RoleResumeRenderDocument,
+  document: ResumeRenderDocumentLike,
   format: RoleResumeExportFormat,
   outputPath: string,
   toolchain: RoleResumeBinaryToolchain,
@@ -560,7 +561,7 @@ export async function validateRoleResumeOutput(
       if (!pageCount) addRisk("EMPTY_PAGE", "PDF has no non-empty pages.");
       if (!textExtractable) addRisk("PDF_TEXT_NOT_EXTRACTABLE", "PDF text is not extractable.");
       if (!pageSizeVerified) addRisk("PDF_INVALID", "PDF page size does not match the selected render profile.");
-      addWarning("PDF_BINARY_DETERMINISM_NOT_GUARANTEED", "Chrome may embed volatile package metadata; semantic and extracted-text determinism are enforced.");
+      addWarning("PDF_BINARY_DETERMINISM_NOT_GUARANTEED", "The local PDF adapter may embed volatile package metadata; semantic and extracted-text determinism are enforced.");
     }
   } catch (error) {
     formatValid = false;
@@ -717,7 +718,7 @@ async function locateRoleResumeExport(workspace: string, exportId: string) {
 
 async function normalizeDocxPackage(
   docxPath: string,
-  document: RoleResumeRenderDocument,
+  document: ResumeRenderDocumentLike,
   temporaryDirectory: string,
 ) {
   const unzip = await requireExecutable("unzip");
@@ -762,7 +763,7 @@ async function normalizeDocxPackage(
 
 async function verifyPdfPageSize(
   filePath: string,
-  expectedPageSize: RoleResumeRenderDocument["profile"]["page"]["size"],
+  expectedPageSize: ResumeRenderDocumentLike["profile"]["page"]["size"],
 ): Promise<boolean> {
   const pdf = (await readFile(filePath)).toString("latin1");
   const match = pdf.match(/\/MediaBox\s*\[\s*(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)\s*\]/i);

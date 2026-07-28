@@ -1,3 +1,4 @@
+import { type ResumeRenderDocumentLike } from "./role-resume-format-renderers.js";
 import { type RoleResumeExportFormat, type RoleResumeExportManifest, type RoleResumeExportValidationSummary, type RoleResumeRenderDocument } from "./role-resume-render-schemas.js";
 import { type RoleResumeRenderOptions } from "./role-resume-rendering.js";
 export interface RoleResumeExportOptions extends RoleResumeRenderOptions {
@@ -9,13 +10,13 @@ export interface RoleResumeBinaryToolchain {
     createDocx(input: {
         markdownPath: string;
         outputPath: string;
-        document: RoleResumeRenderDocument;
+        document: ResumeRenderDocumentLike;
         temporaryDirectory: string;
     }): Promise<void>;
     createPdf(input: {
         htmlPath: string;
         outputPath: string;
-        document: RoleResumeRenderDocument;
+        document: ResumeRenderDocumentLike;
         temporaryDirectory: string;
     }): Promise<void>;
     extractDocxText(filePath: string): Promise<string>;
@@ -78,5 +79,5 @@ export declare function formatRoleResumeExportList(manifests: RoleResumeExportMa
 export declare function formatRoleResumeExportStatus(status: RoleResumeExportStatus): string;
 export declare function deterministicResumeFilename(document: RoleResumeRenderDocument, format: RoleResumeExportFormat): string;
 export declare function normalizeOutputDirectory(value?: string): string;
-export declare function validateRoleResumeOutput(document: RoleResumeRenderDocument, format: RoleResumeExportFormat, outputPath: string, toolchain: RoleResumeBinaryToolchain, exportId: string): Promise<RoleResumeExportValidationSummary>;
+export declare function validateRoleResumeOutput(document: ResumeRenderDocumentLike, format: RoleResumeExportFormat, outputPath: string, toolchain: RoleResumeBinaryToolchain, exportId: string): Promise<RoleResumeExportValidationSummary>;
 export declare function defaultRoleResumeBinaryToolchain(): RoleResumeBinaryToolchain;

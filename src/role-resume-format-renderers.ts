@@ -1,7 +1,6 @@
 import type {
   RoleResumeRenderBlock,
   RoleResumeRenderDocument,
-  RoleResumeRenderSection,
 } from "./role-resume-render-schemas.js";
 
 export const ROLE_RESUME_MARKDOWN_RENDERER_VERSION = "1";
@@ -18,12 +17,30 @@ const BULLET_BLOCKS = new Set<RoleResumeRenderBlock["type"]>([
   "certification",
 ]);
 
-export function renderRoleResumeMarkdown(document: RoleResumeRenderDocument): string {
+export interface ResumeRenderBlockLike {
+  type: RoleResumeRenderBlock["type"];
+  text: string;
+  keepWithNext: boolean;
+  avoidBreakInside: boolean;
+}
+
+export interface ResumeRenderSectionLike {
+  heading: string | null;
+  blocks: ResumeRenderBlockLike[];
+}
+
+export interface ResumeRenderDocumentLike {
+  profile: RoleResumeRenderDocument["profile"];
+  metadata: Pick<RoleResumeRenderDocument["metadata"], "documentTitle" | "language" | "direction">;
+  sections: ResumeRenderSectionLike[];
+}
+
+export function renderRoleResumeMarkdown(document: ResumeRenderDocumentLike): string {
   const sections = document.sections.map((section) => renderMarkdownSection(section));
   return `${sections.filter(Boolean).join("\n\n").trim()}\n`;
 }
 
-export function renderRoleResumeHtml(document: RoleResumeRenderDocument): string {
+export function renderRoleResumeHtml(document: ResumeRenderDocumentLike): string {
   const profile = document.profile;
   const pageSize = profile.page.size === "LETTER" ? "Letter" : "A4";
   const sections = document.sections.map((section) => renderHtmlSection(section)).join("\n");
@@ -61,14 +78,14 @@ ${sections}
 `;
 }
 
-export function canonicalVisibleSegments(document: RoleResumeRenderDocument): string[] {
+export function canonicalVisibleSegments(document: ResumeRenderDocumentLike): string[] {
   return document.sections.flatMap((section) => [
     ...(section.heading ? [section.heading] : []),
     ...section.blocks.map((block) => block.text),
   ]);
 }
 
-export function canonicalVisibleText(document: RoleResumeRenderDocument): string {
+export function canonicalVisibleText(document: ResumeRenderDocumentLike): string {
   return normalizeVisibleText(canonicalVisibleSegments(document).join("\n"));
 }
 
@@ -104,11 +121,11 @@ export function normalizeVisibleText(value: string): string {
     .join("\n");
 }
 
-export function visibleTextEquivalent(document: RoleResumeRenderDocument, extractedText: string): boolean {
+export function visibleTextEquivalent(document: ResumeRenderDocumentLike, extractedText: string): boolean {
   return canonicalVisibleText(document) === normalizeVisibleText(extractedText);
 }
 
-export function firstAndLastMarkers(document: RoleResumeRenderDocument) {
+export function firstAndLastMarkers(document: ResumeRenderDocumentLike) {
   const segments = canonicalVisibleSegments(document).filter(Boolean);
   return {
     first: segments[0] ?? "",
@@ -116,7 +133,7 @@ export function firstAndLastMarkers(document: RoleResumeRenderDocument) {
   };
 }
 
-function renderMarkdownSection(section: RoleResumeRenderSection): string {
+function renderMarkdownSection(section: ResumeRenderSectionLike): string {
   const lines: string[] = [];
   if (section.heading) lines.push(`## ${escapeMarkdown(section.heading)}`);
   let bulletOpen = false;
@@ -139,7 +156,7 @@ function renderMarkdownSection(section: RoleResumeRenderSection): string {
   return stableBlankLines(lines);
 }
 
-function renderHtmlSection(section: RoleResumeRenderSection): string {
+function renderHtmlSection(section: ResumeRenderSectionLike): string {
   const content: string[] = [];
   if (section.heading) content.push(`<h2>${escapeHtml(section.heading)}</h2>`);
   let bullets: string[] = [];

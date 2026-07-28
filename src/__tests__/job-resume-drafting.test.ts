@@ -13,6 +13,28 @@ import {
   getApprovedJobResumeDraftStatus,
   showApprovedJobResumeDraft,
 } from "../approved-job-resume-draft.js";
+import {
+  exportAllJobResume,
+  exportJobResume,
+  getJobResumeExportStatus,
+  listJobResumeExports,
+  showJobResumeExport,
+  validateStoredJobResumeExport,
+} from "../job-resume-render-export.js";
+import {
+  composeJobResumeRenderDocument,
+  getJobResumeRenderDocumentStatus,
+  jobResumeRenderDocumentPaths,
+  showJobResumeRenderDocument,
+  JOB_RESUME_RENDERING_POLICY_NAME,
+  JOB_RESUME_RENDERING_POLICY_VERSION,
+} from "../job-resume-rendering.js";
+import {
+  canonicalVisibleText,
+  extractVisibleTextFromHtml,
+  extractVisibleTextFromMarkdown,
+} from "../role-resume-format-renderers.js";
+import type { RoleResumeBinaryToolchain } from "../role-resume-render-export.js";
 import { buildJobCoverage, jobCoveragePaths } from "../job-coverage.js";
 import { buildJobEvidenceMap, jobEvidenceMapPaths } from "../job-evidence-mapping.js";
 import {
@@ -459,6 +481,358 @@ describe("Slice 2.7F Job-specific Resume Draft Construction", () => {
   });
 });
 
+describe("Slice 2.7G deterministic Job resume rendering and export", () => {
+  it("composes one exact Job canonical document with complete statement provenance", async () => {
+    const fixture = await renderingWorkspace();
+    const upstream = await upstreamArtifactHashes(fixture.workspace, fixture.targetId);
+    const result = await composeJobResumeRenderDocument(
+      fixture.workspace,
+      fixture.targetId,
+      { now: () => new Date(FIRST_TIME) },
+    );
+    const document = await showJobResumeRenderDocument(
+      fixture.workspace,
+      fixture.targetId,
+    );
+    const approved = await showApprovedJobResumeDraft(
+      fixture.workspace,
+      fixture.targetId,
+    );
+    const approvedItems = approved.sections
+      .filter((section) => section.status !== "excluded" && section.items.length > 0)
+      .sort((left, right) => left.order - right.order || left.id.localeCompare(right.id))
+      .flatMap((section) => section.items);
+
+    expect(result.result).toBe("created");
+    expect(document).toMatchObject({
+      targetType: "job",
+      mode: "job-specific-resume",
+      renderingPolicy: {
+        name: JOB_RESUME_RENDERING_POLICY_NAME,
+        version: JOB_RESUME_RENDERING_POLICY_VERSION,
+      },
+      validation: {
+        status: "valid",
+        exactTextPreserved: true,
+        sectionOrderPreserved: true,
+        itemOrderPreserved: true,
+        sourceMapComplete: true,
+        privateMetadataAbsent: true,
+      },
+    });
+    expect(document.sections.flatMap((section) => section.blocks).map((block) => block.text))
+      .toEqual(approvedItems.map((item) => item.text));
+    expect(document.sourceMap).toHaveLength(approvedItems.length);
+    expect(document.sourceMap.every((entry) =>
+      entry.requirementIds.length > 0
+      && entry.coverageIds.length > 0
+      && entry.assessmentIds.length > 0
+      && entry.evidenceMapLinkIds.length > 0
+      && entry.evidenceIds.length > 0
+      && entry.claimIds.length > 0
+      && entry.claimBoundaryIds.length > 0
+      && entry.visibleTextSha256.length === 64
+    )).toBe(true);
+    expect(await upstreamArtifactHashes(fixture.workspace, fixture.targetId)).toEqual(upstream);
+  });
+
+  it("preserves canonical IDs, hashes, bytes, timestamps, and mtimes on unchanged reruns", async () => {
+    const fixture = await renderingWorkspace();
+    const first = await composeJobResumeRenderDocument(
+      fixture.workspace,
+      fixture.targetId,
+      { now: () => new Date(FIRST_TIME) },
+    );
+    const paths = jobResumeRenderDocumentPaths(fixture.workspace, fixture.targetId);
+    const before = {
+      document: await readFile(paths.documentPath),
+      manifest: await readFile(paths.manifestPath),
+      documentMtime: (await stat(paths.documentPath)).mtimeMs,
+      manifestMtime: (await stat(paths.manifestPath)).mtimeMs,
+    };
+    const second = await composeJobResumeRenderDocument(
+      fixture.workspace,
+      fixture.targetId,
+      { now: () => new Date(SECOND_TIME) },
+    );
+
+    expect(second).toMatchObject({
+      result: "already-current",
+      canonicalDocumentId: first.canonicalDocumentId,
+    });
+    expect(await readFile(paths.documentPath)).toEqual(before.document);
+    expect(await readFile(paths.manifestPath)).toEqual(before.manifest);
+    expect((await stat(paths.documentPath)).mtimeMs).toBe(before.documentMtime);
+    expect((await stat(paths.manifestPath)).mtimeMs).toBe(before.manifestMtime);
+    expect((await getJobResumeRenderDocumentStatus(
+      fixture.workspace,
+      fixture.targetId,
+    )).status).toBe("current");
+  });
+
+  it("supports both profiles and page sizes while requiring explicit rebuild for option changes", async () => {
+    const fixture = await renderingWorkspace();
+    await composeJobResumeRenderDocument(fixture.workspace, fixture.targetId, {
+      profile: "ats-standard",
+      pageSize: "A4",
+      dateFormat: "MMM-YYYY",
+    });
+    const requested = {
+      profile: "compact-professional" as const,
+      pageSize: "LETTER" as const,
+      dateFormat: "exact-source" as const,
+    };
+    await expect(composeJobResumeRenderDocument(
+      fixture.workspace,
+      fixture.targetId,
+      requested,
+    )).rejects.toThrow(/--rebuild/);
+    const rebuilt = await composeJobResumeRenderDocument(
+      fixture.workspace,
+      fixture.targetId,
+      { ...requested, rebuild: true },
+    );
+    const document = await showJobResumeRenderDocument(
+      fixture.workspace,
+      fixture.targetId,
+    );
+    expect(rebuilt.result).toBe("rebuilt");
+    expect(document.profile).toMatchObject({
+      name: "compact-professional",
+      page: { size: "LETTER" },
+      layout: { columns: 1, useTablesForCoreContent: false },
+      typography: { minimumFontSizePt: 10 },
+    });
+  });
+
+  it("accepts only current approved Job drafts and rejects Role Targets", async () => {
+    const workspace = await temporaryWorkspace();
+    const role = await createRoleTarget(workspace, { title: "Engineering Manager" });
+    await expect(composeJobResumeRenderDocument(
+      workspace,
+      role.target.id,
+    )).rejects.toThrow(/Job Targets only/);
+
+    const unapproved = await draftingWorkspace();
+    await expect(composeJobResumeRenderDocument(
+      unapproved.workspace,
+      unapproved.targetId,
+    )).rejects.toThrow(/Approved Job Resume Draft/);
+  });
+
+  it("renders byte-stable Markdown and HTML with exact approved visible text", async () => {
+    const fixture = await renderingWorkspace();
+    const markdown = await exportJobResume(
+      fixture.workspace,
+      fixture.targetId,
+      { format: "markdown", now: () => new Date(FIRST_TIME) },
+    );
+    const html = await exportJobResume(
+      fixture.workspace,
+      fixture.targetId,
+      { format: "html", now: () => new Date(FIRST_TIME) },
+    );
+    const document = await showJobResumeRenderDocument(
+      fixture.workspace,
+      fixture.targetId,
+    );
+    const markdownBytes = await readFile(path.join(fixture.workspace, markdown.outputPath));
+    const htmlBytes = await readFile(path.join(fixture.workspace, html.outputPath));
+    const markdownAgain = await exportJobResume(
+      fixture.workspace,
+      fixture.targetId,
+      { format: "markdown", now: () => new Date(SECOND_TIME) },
+    );
+    const htmlAgain = await exportJobResume(
+      fixture.workspace,
+      fixture.targetId,
+      { format: "html", now: () => new Date(SECOND_TIME) },
+    );
+
+    expect(extractVisibleTextFromMarkdown(markdownBytes.toString("utf8")))
+      .toBe(canonicalVisibleText(document));
+    expect(extractVisibleTextFromHtml(htmlBytes.toString("utf8")))
+      .toBe(canonicalVisibleText(document));
+    expect(markdownAgain.result).toBe("already-current");
+    expect(htmlAgain.result).toBe("already-current");
+    expect(await readFile(path.join(fixture.workspace, markdown.outputPath)))
+      .toEqual(markdownBytes);
+    expect(await readFile(path.join(fixture.workspace, html.outputPath)))
+      .toEqual(htmlBytes);
+    expect(markdown.outputPath).toMatch(
+      /job-resume-technical-product-manager-ats-standard-markdown\.md$/,
+    );
+    expect(htmlBytes.toString("utf8")).not.toMatch(
+      /<script\b|https?:\/\/[^"' )]+\.(?:css|js)/i,
+    );
+  });
+
+  it("exports all formats through the shared engine with cross-format fidelity", async () => {
+    const fixture = await renderingWorkspace();
+    await composeJobResumeRenderDocument(fixture.workspace, fixture.targetId);
+    const document = await showJobResumeRenderDocument(
+      fixture.workspace,
+      fixture.targetId,
+    );
+    const toolchain = fakeJobResumeToolchain(canonicalVisibleText(document));
+    const result = await exportAllJobResume(fixture.workspace, fixture.targetId, {
+      toolchain,
+    });
+    const exports = await listJobResumeExports(
+      fixture.workspace,
+      fixture.targetId,
+    );
+
+    expect(result.failed).toEqual([]);
+    expect(result.succeeded.map((entry) => entry.format).sort())
+      .toEqual(["docx", "html", "markdown", "pdf"]);
+    expect(new Set(result.succeeded.map((entry) => entry.exportId)).size).toBe(4);
+    expect(exports).toHaveLength(4);
+    expect(exports.every((entry) =>
+      entry.validation.status === "valid"
+      && entry.validation.visibleTextEquivalent
+      && entry.canonicalDocumentId === document.id
+      && entry.sourceMapSha256.length === 64
+    )).toBe(true);
+    expect(exports.find((entry) => entry.format === "pdf")?.validation).toMatchObject({
+      pageCount: 1,
+      pageSizeVerified: true,
+      textExtractable: true,
+    });
+  }, 15_000);
+
+  it("reports PDF adapter failure honestly without invalidating successful formats", async () => {
+    const fixture = await renderingWorkspace();
+    await composeJobResumeRenderDocument(fixture.workspace, fixture.targetId);
+    const document = await showJobResumeRenderDocument(
+      fixture.workspace,
+      fixture.targetId,
+    );
+    const toolchain = fakeJobResumeToolchain(canonicalVisibleText(document), {
+      failPdf: true,
+    });
+    const result = await exportAllJobResume(fixture.workspace, fixture.targetId, {
+      toolchain,
+    });
+
+    expect(result.succeeded.map((entry) => entry.format).sort())
+      .toEqual(["docx", "html", "markdown"]);
+    expect(result.failed).toHaveLength(1);
+    expect(result.failed[0]).toMatchObject({ format: "pdf" });
+    expect(result.failed[0].error).toMatch(/LibreOffice test adapter unavailable/);
+    expect((await listJobResumeExports(fixture.workspace, fixture.targetId))
+      .map((entry) => entry.format).sort()).toEqual(["docx", "html", "markdown"]);
+  }, 15_000);
+
+  it("validates manifests and repairs tampered exports only with explicit rebuild", async () => {
+    const fixture = await renderingWorkspace();
+    const exported = await exportJobResume(
+      fixture.workspace,
+      fixture.targetId,
+      { format: "markdown" },
+    );
+    const outputPath = path.join(fixture.workspace, exported.outputPath);
+    const manifest = await showJobResumeExport(fixture.workspace, exported.exportId);
+    const validation = await validateStoredJobResumeExport(
+      fixture.workspace,
+      exported.exportId,
+      fakeJobResumeToolchain("unused"),
+    );
+    expect(validation).toMatchObject({
+      status: "valid",
+      visibleTextEquivalent: true,
+      binaryDeterministic: true,
+    });
+    expect(manifest.outputSha256).toBe(await hashFile(outputPath));
+    expect(manifest.sourceMapSha256).toBe(
+      await hashFile(path.join(fixture.workspace, manifest.sourceMapPath)),
+    );
+
+    await writeFile(outputPath, "tampered", "utf8");
+    expect((await getJobResumeExportStatus(
+      fixture.workspace,
+      exported.exportId,
+    )).status).toBe("invalid");
+    await expect(exportJobResume(fixture.workspace, fixture.targetId, {
+      format: "markdown",
+    })).rejects.toThrow(/--rebuild/);
+    expect((await exportJobResume(fixture.workspace, fixture.targetId, {
+      format: "markdown",
+      rebuild: true,
+    })).result).toBe("rebuilt");
+  });
+
+  it("preserves approved metrics, titles, dates, qualifiers, and project scope without visible internals", async () => {
+    const fixture = await renderingWorkspace();
+    const approved = await showApprovedJobResumeDraft(
+      fixture.workspace,
+      fixture.targetId,
+    );
+    const markdown = await exportJobResume(
+      fixture.workspace,
+      fixture.targetId,
+      { format: "markdown" },
+    );
+    const document = await showJobResumeRenderDocument(
+      fixture.workspace,
+      fixture.targetId,
+    );
+    const visible = await readFile(
+      path.join(fixture.workspace, markdown.outputPath),
+      "utf8",
+    );
+    const approvedItems = approved.sections
+      .filter((section) => section.status !== "excluded")
+      .flatMap((section) => section.items);
+
+    expect(document.sections.flatMap((section) => section.blocks).map((block) => block.text))
+      .toEqual(approvedItems.map((item) => item.text));
+    expect(visible).not.toContain(fixture.workspace);
+    expect(visible).not.toMatch(
+      /requirement_|coverage_|assessment_|evidence_|claim_|sha256|ATS score|hiring probability|application recommendation/i,
+    );
+    expect(JSON.stringify(document.sourceMap)).toContain("requirementIds");
+  });
+
+  it("rejects unsafe output paths and exposes missing, current, stale, and invalid lifecycle states", async () => {
+    const fixture = await renderingWorkspace();
+    expect((await getJobResumeRenderDocumentStatus(
+      fixture.workspace,
+      fixture.targetId,
+    )).status).toBe("missing");
+    await expect(exportJobResume(fixture.workspace, fixture.targetId, {
+      format: "markdown",
+      outputDir: "../outside",
+    })).rejects.toThrow(/path traversal|relative/i);
+    const exported = await exportJobResume(
+      fixture.workspace,
+      fixture.targetId,
+      { format: "html" },
+    );
+    expect((await getJobResumeExportStatus(
+      fixture.workspace,
+      exported.exportId,
+    )).status).toBe("current");
+    expect((await getJobResumeExportStatus(
+      fixture.workspace,
+      "missing-job-export",
+    )).status).toBe("missing");
+
+    const paths = jobResumeRenderDocumentPaths(fixture.workspace, fixture.targetId);
+    const document = JSON.parse(await readFile(paths.documentPath, "utf8"));
+    document.updatedAt = SECOND_TIME;
+    await writeJsonAtomic(paths.documentPath, document);
+    expect((await getJobResumeRenderDocumentStatus(
+      fixture.workspace,
+      fixture.targetId,
+    )).status).toBe("invalid");
+    expect((await getJobResumeExportStatus(
+      fixture.workspace,
+      exported.exportId,
+    )).status).toBe("stale");
+  });
+});
+
 async function temporaryWorkspace() {
   return mkdtemp(path.join(tmpdir(), "prooflayer-job-resume-draft-"));
 }
@@ -510,6 +884,44 @@ async function completedReviewFixture() {
     now: () => new Date(FIRST_TIME),
   });
   return { ...fixture, review };
+}
+
+async function renderingWorkspace() {
+  const fixture = await completedReviewFixture();
+  await approveJobResumeDraft(fixture.workspace, fixture.targetId, {
+    now: () => new Date(FIRST_TIME),
+  });
+  return fixture;
+}
+
+function fakeJobResumeToolchain(
+  visibleText: string,
+  options: { failPdf?: boolean } = {},
+): RoleResumeBinaryToolchain {
+  return {
+    async createDocx({ outputPath }) {
+      await writeFile(outputPath, Buffer.from("PK\u0003\u0004ProofLayer Job DOCX fixture"));
+    },
+    async createPdf({ outputPath }) {
+      if (options.failPdf) {
+        throw new Error("LibreOffice test adapter unavailable");
+      }
+      await writeFile(
+        outputPath,
+        Buffer.from("%PDF-1.7\n% ProofLayer Job PDF fixture\n", "utf8"),
+      );
+    },
+    async extractDocxText() {
+      return visibleText;
+    },
+    async extractPdf(_filePath, expectedPageSize) {
+      return {
+        text: visibleText,
+        pageCount: 1,
+        pageSizeVerified: ["A4", "LETTER"].includes(expectedPageSize),
+      };
+    },
+  };
 }
 
 async function validDraftPayload(

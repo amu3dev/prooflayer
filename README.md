@@ -46,6 +46,8 @@ Phase 2 Slice 2.7B maps usable Job Requirements to approved, resume-ready, publi
 
 Phase 2 Slice 2.7F converts a current usable Job Resume Content Plan into a constrained structured draft through a prose-free scaffold, explicit model proposal, strict validation, human review, and deterministic approval.
 
+Phase 2 Slice 2.7G renders a current approved Job Resume Draft through one canonical document into faithful Markdown, HTML, DOCX, and adapter-based PDF exports.
+
 ## What Slice 1 Does
 
 ProofLayer turns a messy local folder of career files into a structured career knowledge base:
@@ -1573,12 +1575,56 @@ Scaffold, proposal, review, and approved draft artifacts expose explicit missing
 
 Slice 2.7F ends at the approved structured Job Resume Draft. It does not render Markdown, HTML, DOCX, or PDF, create cover letters or screening answers, calculate ATS or hiring scores, or recommend whether to apply.
 
-## Next Slices
+## Slice 2.7G Deterministic Job Resume Rendering And Export
 
-Likely next slices:
+Job Resume Rendering consumes only a current, complete approved structured Job Resume Draft with valid ledgers, provenance, dependencies, and `usableForRendering: true`. The `job-resume-rendering-policy` version `1` composes one format-neutral canonical document; Markdown, self-contained HTML, DOCX, and PDF all derive from that same document without rewriting approved text.
 
-1. Deterministic Job Resume Rendering from a current approved structured Job Resume Draft.
-2. Job Resume export adapters after rendering preserves wording and provenance.
+Compose and inspect a canonical Job resume:
+
+```bash
+npm run dev -- target job-resume-render compose job-exampleco-engineering-manager
+npm run dev -- target job-resume-render compose job-exampleco-engineering-manager \
+  --profile compact-professional --page-size LETTER --date-format exact-source
+npm run dev -- target job-resume-render compose-show job-exampleco-engineering-manager
+npm run dev -- target job-resume-render compose-status job-exampleco-engineering-manager
+```
+
+Export and validate formats:
+
+```bash
+npm run dev -- target job-resume-render export job-exampleco-engineering-manager --format markdown
+npm run dev -- target job-resume-render export job-exampleco-engineering-manager --format html
+npm run dev -- target job-resume-render export job-exampleco-engineering-manager --format docx
+npm run dev -- target job-resume-render export job-exampleco-engineering-manager --format pdf
+npm run dev -- target job-resume-render export-all job-exampleco-engineering-manager
+npm run dev -- target job-resume-render export-list job-exampleco-engineering-manager
+npm run dev -- target job-resume-render export-show <export-id>
+npm run dev -- target job-resume-render export-status <export-id>
+npm run dev -- target job-resume-render validate <export-id>
+```
+
+Profiles are `ats-standard` and `compact-professional`; page sizes are `A4` and `LETTER`. Both are single-column, use at least 10-point text, and avoid tables for core content. `--output-dir` accepts only a safe relative directory below the Job target export root. Stale or invalid canonical documents and exports require explicit `--rebuild`.
+
+```text
+workspace/targets/jobs/<target-id>/resume-rendering/
+  canonical/
+    job-resume-render-document.json
+    job-resume-render-document-manifest.json
+  exports/<export-id>/
+    job-resume-<role>-<profile>-<format>.<ext>
+    source-map.json
+    export-manifest.json
+```
+
+Every visible block maps back to the approved draft statement, Job requirement, coverage record, assessment record, evidence-map link, evidence, claim, claim boundary, and metric permission. Internal IDs and provenance remain in the sidecar source map and never appear in the visible resume. Unchanged composition and export reruns preserve IDs, hashes, bytes, timestamps, and modification times.
+
+Markdown and HTML are byte-deterministic. DOCX package metadata is normalized where the local Pandoc/ZIP toolchain permits, and extracted-text fidelity is enforced. PDF uses the existing local LibreOffice adapter; if conversion is unavailable or fails, no PDF is registered and `export-all` reports a partial failure while successful formats remain valid.
+
+Rendering makes no model call, does not reinterpret the Job Description, rematch evidence, recalculate coverage or assessment, replan content, or alter approved prose. It introduces no ATS score, hiring prediction, application recommendation, cover letter, or screening answer.
+
+## Next Milestone
+
+The next milestone should validate the completed Job pipeline end to end against a controlled real opportunity fixture before any post-2.7 refactoring or additional application artifact is introduced.
 
 ## Architecture
 

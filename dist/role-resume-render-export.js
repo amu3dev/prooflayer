@@ -412,7 +412,7 @@ export async function validateRoleResumeOutput(document, format, outputPath, too
                 addRisk("PDF_TEXT_NOT_EXTRACTABLE", "PDF text is not extractable.");
             if (!pageSizeVerified)
                 addRisk("PDF_INVALID", "PDF page size does not match the selected render profile.");
-            addWarning("PDF_BINARY_DETERMINISM_NOT_GUARANTEED", "Chrome may embed volatile package metadata; semantic and extracted-text determinism are enforced.");
+            addWarning("PDF_BINARY_DETERMINISM_NOT_GUARANTEED", "The local PDF adapter may embed volatile package metadata; semantic and extracted-text determinism are enforced.");
         }
     }
     catch (error) {

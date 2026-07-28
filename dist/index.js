@@ -24,6 +24,8 @@ import { buildJobResumeDraftScaffold, formatBuildJobResumeDraftScaffoldResult, f
 import { formatJobResumeDraftProposalList, formatJobResumeDraftProposalResult, formatJobResumeDraftProposalStatus, generateJobResumeDraftProposal, getJobResumeDraftProposalStatus, listJobResumeDraftProposals, replayJobResumeDraftProposal, showJobResumeDraftProposal, } from "./job-resume-draft-proposal.js";
 import { completeJobResumeDraftReview, formatJobResumeDraftReviewStatus, getJobResumeDraftReviewStatus, initializeJobResumeDraftReview, readJobResumeDraftReviewEdit, setJobResumeDraftReviewDecision, showJobResumeDraftReview, } from "./job-resume-draft-review.js";
 import { approveJobResumeDraft, formatApprovedJobResumeDraftStatus, formatApproveJobResumeDraftResult, getApprovedJobResumeDraftStatus, showApprovedJobResumeDraft, } from "./approved-job-resume-draft.js";
+import { composeJobResumeRenderDocument, formatComposeJobResumeResult, formatJobResumeRenderDocumentStatus, getJobResumeRenderDocumentStatus, showJobResumeRenderDocument, } from "./job-resume-rendering.js";
+import { exportAllJobResume, exportJobResume, formatExportAllJobResumeResult, formatExportJobResumeResult, formatJobResumeExportList, formatJobResumeExportStatus, getJobResumeExportStatus, listJobResumeExports, showJobResumeExport, validateStoredJobResumeExport, } from "./job-resume-render-export.js";
 import { formatProposalGenerationResult, formatProposalList, formatProposalStatus, generateInterpretationProposal, getInterpretationProposalStatus, listInterpretationProposals, replayInterpretationProposal, showInterpretationProposal } from "./target-proposal.js";
 import { completeProposalReview, formatProposalReviewStatus, getProposalReviewStatus, initializeProposalReview, readEditedExpectationFile, setProposalReviewDecision, showProposalReview } from "./target-proposal-review.js";
 import { approveInterpretationProposal, formatApprovalResult, formatApprovedInterpretationStatus, getApprovedInterpretationStatus, showApprovedTargetInterpretation } from "./approved-interpretation.js";
@@ -551,6 +553,88 @@ jobResumeDraftProposal
     .description("Complete review only after every required Job draft decision is valid and resolved.")
     .action(async (proposalId) => {
     console.log(formatJobResumeDraftReviewStatus(await completeJobResumeDraftReview(getWorkspace(), proposalId)));
+});
+const jobResumeRender = target
+    .command("job-resume-render")
+    .description("Compose and export current approved Job Resume Drafts without changing approved wording.");
+jobResumeRender
+    .command("compose <target-id>")
+    .option("--profile <profile>", "ats-standard or compact-professional")
+    .option("--page-size <size>", "A4 or LETTER")
+    .option("--date-format <format>", "MMM-YYYY, YYYY, or exact-source")
+    .option("--rebuild", "explicitly replace a stale or invalid canonical Job render document")
+    .description("Compose the canonical deterministic render document from the current approved Job Resume Draft.")
+    .action(async (targetId, options) => {
+    console.log(formatComposeJobResumeResult(await composeJobResumeRenderDocument(getWorkspace(), targetId, parseResumeRenderOptions(options))));
+});
+jobResumeRender
+    .command("compose-show <target-id>")
+    .description("Print the canonical Job resume render document as stable JSON.")
+    .action(async (targetId) => {
+    process.stdout.write(`${JSON.stringify(await showJobResumeRenderDocument(getWorkspace(), targetId), null, 2)}\n`);
+});
+jobResumeRender
+    .command("compose-status <target-id>")
+    .option("--profile <profile>", "ats-standard or compact-professional")
+    .option("--page-size <size>", "A4 or LETTER")
+    .option("--date-format <format>", "MMM-YYYY, YYYY, or exact-source")
+    .description("Inspect Job canonical render integrity, approved-draft freshness, policy version, and options.")
+    .action(async (targetId, options) => {
+    console.log(formatJobResumeRenderDocumentStatus(await getJobResumeRenderDocumentStatus(getWorkspace(), targetId, normalizeRoleResumeRenderOptions(parseResumeRenderOptions(options)))));
+});
+jobResumeRender
+    .command("export <target-id>")
+    .requiredOption("--format <format>", "markdown, html, docx, or pdf")
+    .option("--profile <profile>", "ats-standard or compact-professional")
+    .option("--page-size <size>", "A4 or LETTER")
+    .option("--date-format <format>", "MMM-YYYY, YYYY, or exact-source")
+    .option("--output-dir <path>", "safe relative subdirectory below the Job target export root")
+    .option("--rebuild", "explicitly replace stale or invalid canonical/export artifacts")
+    .description("Export one faithful format from the canonical Job resume render document.")
+    .action(async (targetId, options) => {
+    console.log(formatExportJobResumeResult(await exportJobResume(getWorkspace(), targetId, {
+        ...parseResumeRenderOptions(options),
+        format: RoleResumeExportFormatSchema.parse(options.format),
+        outputDir: options.outputDir,
+    })));
+});
+jobResumeRender
+    .command("export-all <target-id>")
+    .option("--profile <profile>", "ats-standard or compact-professional")
+    .option("--page-size <size>", "A4 or LETTER")
+    .option("--date-format <format>", "MMM-YYYY, YYYY, or exact-source")
+    .option("--output-dir <path>", "safe relative subdirectory below the Job target export root")
+    .option("--rebuild", "explicitly replace stale or invalid canonical/export artifacts")
+    .description("Export Markdown, HTML, DOCX, and PDF from one canonical Job render document.")
+    .action(async (targetId, options) => {
+    console.log(formatExportAllJobResumeResult(await exportAllJobResume(getWorkspace(), targetId, {
+        ...parseResumeRenderOptions(options),
+        outputDir: options.outputDir,
+    })));
+});
+jobResumeRender
+    .command("export-list <target-id>")
+    .description("List persisted Job resume exports for one Job Target.")
+    .action(async (targetId) => {
+    console.log(formatJobResumeExportList(await listJobResumeExports(getWorkspace(), targetId)));
+});
+jobResumeRender
+    .command("export-show <export-id>")
+    .description("Print one Job resume export manifest as stable JSON.")
+    .action(async (exportId) => {
+    process.stdout.write(`${JSON.stringify(await showJobResumeExport(getWorkspace(), exportId), null, 2)}\n`);
+});
+jobResumeRender
+    .command("export-status <export-id>")
+    .description("Inspect Job output, source-map, canonical dependency, renderer, and validation freshness.")
+    .action(async (exportId) => {
+    console.log(formatJobResumeExportStatus(await getJobResumeExportStatus(getWorkspace(), exportId)));
+});
+jobResumeRender
+    .command("validate <export-id>")
+    .description("Re-run structural and extracted-text validation for one stored Job resume export.")
+    .action(async (exportId) => {
+    process.stdout.write(`${JSON.stringify(await validateStoredJobResumeExport(getWorkspace(), exportId), null, 2)}\n`);
 });
 const jobRequirementProposal = target
     .command("job-requirements-proposal")
