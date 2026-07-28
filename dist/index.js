@@ -18,6 +18,7 @@ import { approveJobRequirements, formatApproveJobRequirementsResult, formatAppro
 import { buildJobEvidenceMap, formatBuildJobEvidenceMapResult, formatJobEvidenceMapStatus, getJobEvidenceMapStatus, showJobEvidenceMap, } from "./job-evidence-mapping.js";
 import { JobRequirementInputTypeSchema, } from "./job-evidence-map-schemas.js";
 import { buildJobCoverage, formatBuildJobCoverageResult, formatJobCoverageStatus, getJobCoverageStatus, showJobCoverage, } from "./job-coverage.js";
+import { buildJobFitProofAssessment, formatBuildJobFitProofAssessmentResult, formatJobFitProofAssessmentStatus, getJobFitProofAssessmentStatus, showJobFitProofAssessment, } from "./job-fit-proof-assessment.js";
 import { formatProposalGenerationResult, formatProposalList, formatProposalStatus, generateInterpretationProposal, getInterpretationProposalStatus, listInterpretationProposals, replayInterpretationProposal, showInterpretationProposal } from "./target-proposal.js";
 import { completeProposalReview, formatProposalReviewStatus, getProposalReviewStatus, initializeProposalReview, readEditedExpectationFile, setProposalReviewDecision, showProposalReview } from "./target-proposal-review.js";
 import { approveInterpretationProposal, formatApprovalResult, formatApprovedInterpretationStatus, getApprovedInterpretationStatus, showApprovedTargetInterpretation } from "./approved-interpretation.js";
@@ -367,6 +368,28 @@ jobCoverage
     .description("Inspect Job Requirement Coverage integrity, dependencies, and lifecycle.")
     .action(async (targetId) => {
     console.log(formatJobCoverageStatus(await getJobCoverageStatus(getWorkspace(), targetId)));
+});
+const jobAssessment = target
+    .command("job-assessment")
+    .description("Build and inspect deterministic Job fit and proof assessment.");
+jobAssessment
+    .command("build <target-id>")
+    .option("--rebuild", "explicitly rebuild stale or invalid assessment")
+    .description("Assess current Job coverage without rematching evidence.")
+    .action(async (targetId, options) => {
+    console.log(formatBuildJobFitProofAssessmentResult(await buildJobFitProofAssessment(getWorkspace(), targetId, options)));
+});
+jobAssessment
+    .command("show <target-id>")
+    .description("Print deterministic Job fit and proof assessment as stable JSON.")
+    .action(async (targetId) => {
+    process.stdout.write(`${JSON.stringify(await showJobFitProofAssessment(getWorkspace(), targetId), null, 2)}\n`);
+});
+jobAssessment
+    .command("status <target-id>")
+    .description("Inspect Job fit and proof assessment integrity and lifecycle.")
+    .action(async (targetId) => {
+    console.log(formatJobFitProofAssessmentStatus(await getJobFitProofAssessmentStatus(getWorkspace(), targetId)));
 });
 const jobRequirementProposal = target
     .command("job-requirements-proposal")

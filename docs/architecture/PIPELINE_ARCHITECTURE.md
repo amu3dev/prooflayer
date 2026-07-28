@@ -395,8 +395,9 @@ The implemented Job workflow currently includes:
 - deterministic requirement modeling with optional proposal, review, and approval escalation;
 - deterministic mapping from usable requirements to eligible reviewed evidence;
 - deterministic per-requirement coverage analysis from the current evidence map.
+- deterministic qualitative fit and proof assessment from current coverage and stored provenance.
 
-Job-specific Fit Assessment, Planning, Draft Construction, Rendering, and Export are planned. Existing Role artifacts must not be silently reused as job-specific outputs, and Job Description language must not alter reusable Role artifacts.
+Job-specific Planning, Draft Construction, Rendering, and Export are planned. Existing Role artifacts must not be silently reused as job-specific outputs, and Job Description language must not alter reusable Role artifacts.
 
 ## 6. Shared Components
 
@@ -491,7 +492,7 @@ Each extension must define its target, assessment, planning, drafting, review, r
 
 ## 10. Status
 
-Status through Slice 2.7C:
+Status through Slice 2.7D:
 
 | Capability | Role Pipeline | Job Pipeline |
 | --- | --- | --- |
@@ -499,10 +500,10 @@ Status through Slice 2.7C:
 | Expectation Modeling | Completed | Completed as Job Requirement Modeling |
 | Evidence Mapping | Completed | Completed through Slice 2.7B |
 | Coverage Analysis | Completed within reviewed Role matching | Completed through Slice 2.7C |
-| Assessment | Completed through Slice 2.5 | Planned |
+| Assessment | Completed through Slice 2.5 | Completed through Slice 2.7D |
 | Planning | Completed through Slice 2.6A | Planned |
 | Draft Construction | Completed through Slice 2.6B | Planned |
 | Rendering | Completed through Slice 2.6C | Planned |
 | Export | Completed through Slice 2.6C | Planned |
 
-The next known Job capability is fit/proof assessment built from current deterministic Job Requirement Coverage.
+The next known Job capability is application-content planning built from the current deterministic Job Fit and Proof Assessment.

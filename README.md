@@ -1417,13 +1417,50 @@ Status is `missing`, `current`, `stale`, or `invalid`. An unchanged build return
 
 The persistent coverage artifact exists for the later Job Fit Assessment consumer and independent provenance/lifecycle validation. Slice 2.7C creates no aggregate coverage, percentages, fit or ATS scores, strengths/weaknesses, gap priorities, application recommendations, resume plans, drafts, or application content. It makes no model call and performs no evidence rematching.
 
+## Slice 2.7D Deterministic Job Fit and Proof Assessment
+
+Job Fit and Proof Assessment converts current requirement coverage into a bounded qualitative assessment. It consumes only the current Job Requirement Model, Job Evidence Map, Job Requirement Coverage, and their stored provenance. It never searches or rematches evidence, reinterprets the Job Description, calculates a numeric score, predicts hiring outcomes, recommends whether to apply, or creates application content.
+
+Build and inspect the deterministic assessment:
+
+```bash
+npm run dev -- target job-assessment build job-exampleco-engineering-manager
+npm run dev -- target job-assessment show job-exampleco-engineering-manager
+npm run dev -- target job-assessment status job-exampleco-engineering-manager
+npm run dev -- target job-assessment build job-exampleco-engineering-manager --rebuild
+```
+
+The analyzer is `job-fit-proof-assessment` version `1` under `job-fit-proof-assessment-policy` version `1`. Each requirement receives exactly one assessment state:
+
+- `strength`: strong direct reviewed proof is present.
+- `supported`: defensible reviewed proof is present.
+- `partial`: current proof is partial or indirect.
+- `gap`: current reviewed evidence does not provide proof; this does not establish absence of capability.
+- `contradiction`: an explicit approved contradiction is present.
+- `indeterminate`: current coverage or requirement ambiguity prevents a defensible conclusion.
+
+Proof strength is separately labeled `strong`, `adequate`, `limited`, `unavailable`, or `conflicting`. Materiality is derived only from explicit requirement necessity and controlled assessment state: `critical`, `material`, `secondary`, `contextual`, or `unknown`. Gap types remain controlled and category-aware, including missing or partial proof, technology, domain, leadership, experience, language, location/work constraints, education/certification, contradiction, and ambiguity. Scope, depth, and recency gaps are emitted only when the upstream coverage explicitly identifies those limits.
+
+The overall result is one of `strong`, `credible`, `mixed`, `limited`, `insufficient`, or `indeterminate`. These are qualitative policy states, not percentages, weighted scores, ATS scores, application recommendations, or hiring probabilities. Machine-readable risks, warnings, ambiguities, and exact requirement/coverage/evidence-map provenance explain the boundary of each result.
+
+```text
+workspace/targets/jobs/<target-id>/assessment/
+  deterministic/
+    job-fit-proof-assessment.json
+    job-fit-proof-assessment-manifest.json
+```
+
+The manifest pins the Job Target, immutable Job Description, selected requirement model and manifest, evidence map and manifest, coverage and manifest, normalized input, analyzer, and policy. Status is `missing`, `current`, `stale`, or `invalid`. An unchanged build returns `already-current` without rewriting bytes, IDs, hashes, timestamps, or modification times. Dependency changes make the assessment stale; malformed artifacts, hash disagreement, identity mismatch, or deterministic semantic drift make it invalid. Stale or invalid assessments require explicit `--rebuild`, and non-current upstream coverage must be repaired first.
+
+Slice 2.7D creates one primary assessment artifact and its manifest. It introduces no model provider, proposal, review, approval, resume plan, draft, export, screening answer, or application recommendation.
+
 ## Next Slices
 
 Likely next slices:
 
-1. Job-specific fit/proof assessment using only current deterministic Job Requirement Coverage.
-2. Application-content planning only after the job-specific proof and provenance boundaries are validated.
-3. Reviewed job-specific drafting and export without mutating reusable role artifacts.
+1. Application-content planning using only the current Job Fit and Proof Assessment.
+2. Reviewed job-specific drafting without mutating reusable role artifacts.
+3. Shared rendering and export after the job-specific draft boundary is approved.
 
 ## Architecture
 
