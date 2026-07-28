@@ -397,8 +397,9 @@ The implemented Job workflow currently includes:
 - deterministic per-requirement coverage analysis from the current evidence map;
 - deterministic qualitative fit and proof assessment from current coverage and stored provenance;
 - deterministic job-specific resume content planning from the current assessment and reviewed mapped evidence.
+- constrained job-specific structured draft construction through a prose-free scaffold, explicit model proposal, strict validation, human review, and deterministic approval.
 
-Job-specific Draft Construction, Rendering, and Export are planned. Existing Role artifacts must not be silently reused as job-specific outputs, and Job Description language must not alter reusable Role artifacts.
+Job-specific Rendering and Export are planned. Existing Role artifacts must not be silently reused as job-specific outputs, and Job Description language must not alter reusable Role artifacts.
 
 ## 6. Shared Components
 
@@ -493,7 +494,7 @@ Each extension must define its target, assessment, planning, drafting, review, r
 
 ## 10. Status
 
-Status through Slice 2.7E:
+Status through Slice 2.7F:
 
 | Capability | Role Pipeline | Job Pipeline |
 | --- | --- | --- |
@@ -503,8 +504,8 @@ Status through Slice 2.7E:
 | Coverage Analysis | Completed within reviewed Role matching | Completed through Slice 2.7C |
 | Assessment | Completed through Slice 2.5 | Completed through Slice 2.7D |
 | Planning | Completed through Slice 2.6A | Completed through Slice 2.7E |
-| Draft Construction | Completed through Slice 2.6B | Planned |
+| Draft Construction | Completed through Slice 2.6B | Completed through Slice 2.7F |
 | Rendering | Completed through Slice 2.6C | Planned |
 | Export | Completed through Slice 2.6C | Planned |
 
-The next known Job capability is Draft Construction from the current deterministic Job Resume Content Plan.
+The next known Job capability is deterministic Rendering from the current approved structured Job Resume Draft.

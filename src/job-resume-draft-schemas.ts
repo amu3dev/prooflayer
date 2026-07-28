@@ -1,0 +1,476 @@
+import { z } from "zod";
+import { ModelGenerationSettingsSchema } from "./schemas.js";
+import {
+  JobPlanDependencySchema,
+  JobResumeContentTypeSchema,
+  JobResumeSectionTypeSchema,
+} from "./job-resume-plan-schemas.js";
+
+const Sha256Schema = z.string().regex(/^[a-f0-9]{64}$/);
+const RelativePathSchema = z.string().min(1).refine(
+  (value) => !value.startsWith("/") && !/^[A-Za-z]:[\\/]/.test(value),
+  "Path must be relative to the workspace",
+);
+const PolicyIdentitySchema = z.object({
+  name: z.string().min(1),
+  version: z.string().min(1),
+}).strict();
+const JobDraftReferences = {
+  requirementIds: z.array(z.string().min(1)),
+  coverageIds: z.array(z.string().min(1)),
+  assessmentIds: z.array(z.string().min(1)),
+  evidenceMapLinkIds: z.array(z.string().min(1)),
+  evidenceIds: z.array(z.string().min(1)),
+  claimIds: z.array(z.string().min(1)),
+  claimBoundaryIds: z.array(z.string().min(1)),
+  metricPermissionIds: z.array(z.string().min(1)),
+};
+
+export const JobResumeDraftingModeSchema = z.literal("job-specific-resume");
+export const JobResumeDraftTrustStateSchema = z.enum([
+  "model-proposed",
+  "human-approved",
+  "human-edited",
+]);
+export const JobResumeDraftItemTypeSchema = z.enum([
+  "headline",
+  "summary",
+  "capability",
+  "impact",
+  "experience-role",
+  "experience-bullet",
+  "project",
+  "technology",
+  "leadership-capability",
+  "education",
+  "certification",
+  "additional-information",
+]);
+export const JobResumeDraftValidationIssueSchema = z.object({
+  code: z.string().min(1),
+  message: z.string().min(1),
+  severity: z.enum(["critical", "high", "medium", "low"]),
+  sectionIds: z.array(z.string().min(1)).default([]),
+  draftItemIds: z.array(z.string().min(1)).default([]),
+  requirementIds: z.array(z.string().min(1)).default([]),
+  coverageIds: z.array(z.string().min(1)).default([]),
+  assessmentIds: z.array(z.string().min(1)).default([]),
+  evidenceMapLinkIds: z.array(z.string().min(1)).default([]),
+  evidenceIds: z.array(z.string().min(1)).default([]),
+  claimIds: z.array(z.string().min(1)).default([]),
+  claimBoundaryIds: z.array(z.string().min(1)).default([]),
+}).strict();
+export const JobResumeDraftItemValidationSchema = z.object({
+  status: z.enum(["valid", "invalid", "requires-review"]),
+  issues: z.array(JobResumeDraftValidationIssueSchema),
+}).strict();
+export const JobResumeMetricReferenceSchema = z.object({
+  metricPermissionId: z.string().min(1),
+  evidenceId: z.string().min(1),
+  claimId: z.string().min(1),
+  exactApprovedText: z.string().min(1),
+  permissionSha256: Sha256Schema,
+}).strict();
+export const JobResumeScopeReferenceSchema = z.object({
+  type: z.enum(["role", "project", "technical", "temporal", "domain"]),
+  value: z.string().min(1),
+  evidenceIds: z.array(z.string().min(1)),
+  status: z.enum(["approved", "qualified"]),
+}).strict();
+export const JobResumeDraftItemProvenanceSchema = z.object({
+  targetId: z.string().min(1),
+  planId: z.string().min(1),
+  planSectionId: z.string().min(1),
+  proposalId: z.string().min(1).optional(),
+  reviewDecisionId: z.string().min(1).optional(),
+  draftingPolicy: PolicyIdentitySchema,
+  artifactHashes: z.object({
+    requirementModelSha256: Sha256Schema,
+    evidenceMapSha256: Sha256Schema,
+    coverageSha256: Sha256Schema,
+    assessmentSha256: Sha256Schema,
+    contentPlanSha256: Sha256Schema,
+    scaffoldSha256: Sha256Schema,
+  }).strict(),
+  model: z.object({
+    provider: z.string().min(1),
+    model: z.string().min(1),
+    promptTemplateId: z.string().min(1),
+    promptTemplateVersion: z.string().min(1),
+  }).strict().optional(),
+  reviewDecision: z.object({
+    decision: z.enum(["accept", "edit"]),
+    reviewer: z.object({
+      type: z.literal("human"),
+      name: z.string().min(1).optional(),
+    }).strict(),
+  }).strict().optional(),
+}).strict();
+export const JobResumeDraftItemSchema = z.object({
+  id: z.string().min(1),
+  sectionId: z.string().min(1),
+  itemType: JobResumeDraftItemTypeSchema,
+  text: z.string().min(1),
+  ...JobDraftReferences,
+  claimTypes: z.array(JobResumeContentTypeSchema),
+  metricReferences: z.array(JobResumeMetricReferenceSchema),
+  scopeReferences: z.array(JobResumeScopeReferenceSchema),
+  qualifiers: z.array(z.string().min(1)),
+  trustState: JobResumeDraftTrustStateSchema,
+  validation: JobResumeDraftItemValidationSchema,
+  provenance: JobResumeDraftItemProvenanceSchema,
+}).strict();
+export const JobResumeDraftSectionSchema = z.object({
+  id: z.string().min(1),
+  planSectionId: z.string().min(1),
+  type: JobResumeSectionTypeSchema,
+  order: z.number().int().nonnegative(),
+  status: z.enum(["drafted", "empty", "excluded", "requires-review"]),
+  objectiveCode: z.string().min(1),
+  items: z.array(JobResumeDraftItemSchema),
+  provenance: z.object({
+    targetId: z.string().min(1),
+    planId: z.string().min(1),
+    planSectionId: z.string().min(1),
+    contentPlanSha256: Sha256Schema,
+    draftingPolicy: PolicyIdentitySchema,
+  }).strict(),
+}).strict();
+
+export const JobResumeDraftScaffoldSectionSchema = z.object({
+  id: z.string().min(1),
+  planSectionId: z.string().min(1),
+  sectionType: JobResumeSectionTypeSchema,
+  inclusion: z.enum(["include", "optional", "exclude"]),
+  order: z.number().int().nonnegative(),
+  objectiveCode: z.string().min(1),
+  allowedRequirementIds: z.array(z.string().min(1)),
+  allowedCoverageIds: z.array(z.string().min(1)),
+  allowedAssessmentIds: z.array(z.string().min(1)),
+  allowedEvidenceMapLinkIds: z.array(z.string().min(1)),
+  allowedEvidenceIds: z.array(z.string().min(1)),
+  allowedClaimIds: z.array(z.string().min(1)),
+  allowedClaimBoundaryIds: z.array(z.string().min(1)),
+  allowedMetricPermissionIds: z.array(z.string().min(1)),
+  allowedClaimTypes: z.array(JobResumeContentTypeSchema),
+  maximumItemCount: z.number().int().positive(),
+  maximumSentenceCount: z.number().int().positive().optional(),
+  requiredQualifierCodes: z.array(z.string().min(1)),
+  prohibitedInferenceCodes: z.array(z.string().min(1)),
+  exclusionIds: z.array(z.string().min(1)),
+  riskCodes: z.array(z.string().min(1)),
+  warningCodes: z.array(z.string().min(1)),
+  ambiguityIds: z.array(z.string().min(1)),
+  placeholderIds: z.array(z.string().min(1)),
+}).strict();
+export const JobResumeDraftingConstraintSchema = z.object({
+  id: z.string().min(1),
+  code: z.string().min(1),
+  description: z.string().min(1),
+  sectionIds: z.array(z.string().min(1)),
+  blocking: z.boolean(),
+}).strict();
+export const JobResumeDraftScaffoldProvenanceSchema = z.object({
+  targetSha256: Sha256Schema,
+  jobDescriptionSha256: Sha256Schema,
+  requirementModelSha256: Sha256Schema,
+  requirementManifestSha256: Sha256Schema,
+  evidenceMapSha256: Sha256Schema,
+  evidenceMapManifestSha256: Sha256Schema,
+  coverageSha256: Sha256Schema,
+  coverageManifestSha256: Sha256Schema,
+  assessmentSha256: Sha256Schema,
+  assessmentManifestSha256: Sha256Schema,
+  contentPlanSha256: Sha256Schema,
+  contentPlanManifestSha256: Sha256Schema,
+  selectedEvidenceSetSha256: Sha256Schema,
+  selectedClaimSetSha256: Sha256Schema,
+}).strict();
+export const JobResumeDraftScaffoldSchema = z.object({
+  schemaVersion: z.literal(1),
+  id: z.string().min(1),
+  targetId: z.string().min(1),
+  targetType: z.literal("job"),
+  mode: JobResumeDraftingModeSchema,
+  targetTitle: z.string().min(1),
+  positioningState: z.enum(["direct", "adjacent", "stretch", "insufficient-proof", "indeterminate"]),
+  contentPlan: JobPlanDependencySchema,
+  draftingPolicy: PolicyIdentitySchema,
+  sections: z.array(JobResumeDraftScaffoldSectionSchema),
+  draftingConstraints: z.array(JobResumeDraftingConstraintSchema),
+  provenance: JobResumeDraftScaffoldProvenanceSchema,
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
+}).strict();
+export const JobResumeDraftScaffoldManifestSchema = z.object({
+  schemaVersion: z.literal(1),
+  scaffoldId: z.string().min(1),
+  targetId: z.string().min(1),
+  scaffoldPath: RelativePathSchema,
+  scaffoldSha256: Sha256Schema,
+  policyName: z.string().min(1),
+  policyVersion: z.string().min(1),
+  provenance: JobResumeDraftScaffoldProvenanceSchema,
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
+}).strict();
+
+export const JobResumeDraftClaimLedgerEntrySchema = z.object({
+  id: z.string().min(1),
+  draftItemId: z.string().min(1),
+  statementText: z.string().min(1),
+  statementSha256: Sha256Schema,
+  ...JobDraftReferences,
+  supportStatus: z.enum(["direct", "qualified", "contextual"]),
+  metricStatus: z.enum(["verified-metric-used", "metric-prohibited", "not-applicable"]),
+  scopeStatus: z.enum(["within-approved-scope", "qualified-scope", "requires-review"]),
+  validationStatus: z.enum(["valid", "invalid", "requires-review"]),
+  validationIssues: z.array(JobResumeDraftValidationIssueSchema),
+  provenance: JobResumeDraftItemProvenanceSchema,
+}).strict();
+export const JobResumeDraftEvidenceUsageSchema = z.object({
+  id: z.string().min(1),
+  evidenceId: z.string().min(1),
+  allocation: z.enum(["primary", "secondary", "supporting", "defer", "exclude"]),
+  plannedRequirementIds: z.array(z.string().min(1)),
+  draftItemIds: z.array(z.string().min(1)),
+  sectionIds: z.array(z.string().min(1)),
+  usageCount: z.number().int().nonnegative(),
+  repeatedUse: z.boolean(),
+  status: z.enum(["within-plan", "overused", "unused-selected-evidence", "excluded"]),
+  warnings: z.array(z.string().min(1)),
+}).strict();
+const FindingReferences = {
+  sectionIds: z.array(z.string().min(1)),
+  draftItemIds: z.array(z.string().min(1)),
+  requirementIds: z.array(z.string().min(1)),
+  evidenceIds: z.array(z.string().min(1)),
+  claimIds: z.array(z.string().min(1)),
+  claimBoundaryIds: z.array(z.string().min(1)),
+};
+export const JobResumeDraftRiskSchema = z.object({
+  id: z.string().min(1),
+  code: z.string().min(1),
+  severity: z.enum(["critical", "high", "medium", "low"]),
+  message: z.string().min(1),
+  ...FindingReferences,
+}).strict();
+export const JobResumeDraftWarningSchema = z.object({
+  id: z.string().min(1),
+  code: z.string().min(1),
+  message: z.string().min(1),
+  ...FindingReferences,
+}).strict();
+export const JobResumeDraftAmbiguitySchema = z.object({
+  id: z.string().min(1),
+  code: z.string().min(1),
+  message: z.string().min(1),
+  resolved: z.boolean(),
+  resolutionRationale: z.string().min(1).optional(),
+  ...FindingReferences,
+}).strict();
+export const JobResumeDraftCompletenessSchema = z.object({
+  status: z.enum(["empty", "partial", "complete"]),
+  requiredSectionCount: z.number().int().nonnegative(),
+  completedRequiredSectionCount: z.number().int().nonnegative(),
+  draftItemCount: z.number().int().nonnegative(),
+  validatedDraftItemCount: z.number().int().nonnegative(),
+  claimLedgerComplete: z.boolean(),
+  evidenceUsageComplete: z.boolean(),
+  provenanceComplete: z.boolean(),
+  unresolvedCriticalIssueCount: z.number().int().nonnegative(),
+  unresolvedAmbiguityCount: z.number().int().nonnegative(),
+  reviewComplete: z.boolean(),
+  usableForRendering: z.boolean(),
+  blockingReasons: z.array(z.string().min(1)),
+}).strict();
+
+export const ModelJobResumeDraftPayloadSchema = z.object({
+  sections: z.array(JobResumeDraftSectionSchema),
+  warnings: z.array(JobResumeDraftWarningSchema).default([]),
+  ambiguities: z.array(JobResumeDraftAmbiguitySchema).default([]),
+}).strict();
+export const JobResumeDraftProposalSchema = z.object({
+  schemaVersion: z.literal(1),
+  id: z.string().min(1),
+  requestFingerprint: Sha256Schema,
+  targetId: z.string().min(1),
+  targetType: z.literal("job"),
+  mode: JobResumeDraftingModeSchema,
+  status: z.enum(["validation-failed", "ready-for-review", "reviewed"]),
+  draftingPolicy: PolicyIdentitySchema,
+  model: z.object({
+    provider: z.string().min(1),
+    model: z.string().min(1),
+    settings: ModelGenerationSettingsSchema,
+  }).strict(),
+  prompt: z.object({
+    templateId: z.string().min(1),
+    templateVersion: z.string().min(1),
+    policyVersion: z.string().min(1),
+    renderedPromptSha256: Sha256Schema,
+  }).strict(),
+  input: z.object({
+    targetSha256: Sha256Schema,
+    requirementModelSha256: Sha256Schema,
+    evidenceMapSha256: Sha256Schema,
+    coverageSha256: Sha256Schema,
+    assessmentSha256: Sha256Schema,
+    contentPlanSha256: Sha256Schema,
+    scaffoldSha256: Sha256Schema,
+    selectedEvidenceSetSha256: Sha256Schema,
+    selectedClaimSetSha256: Sha256Schema,
+    normalizedModelInputSha256: Sha256Schema,
+  }).strict(),
+  sections: z.array(JobResumeDraftSectionSchema),
+  claimLedger: z.array(JobResumeDraftClaimLedgerEntrySchema),
+  evidenceUsage: z.array(JobResumeDraftEvidenceUsageSchema),
+  warnings: z.array(JobResumeDraftWarningSchema),
+  ambiguities: z.array(JobResumeDraftAmbiguitySchema),
+  validationIssues: z.array(JobResumeDraftValidationIssueSchema),
+  rawResponsePath: RelativePathSchema,
+  rawResponseSha256: Sha256Schema,
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
+}).strict();
+export const JobResumeDraftProposalManifestSchema = z.object({
+  schemaVersion: z.literal(1),
+  proposalId: z.string().min(1),
+  requestFingerprint: Sha256Schema,
+  targetId: z.string().min(1),
+  proposalPath: RelativePathSchema,
+  proposalSha256: Sha256Schema,
+  rawResponsePath: RelativePathSchema,
+  rawResponseSha256: Sha256Schema,
+  provider: z.string().min(1),
+  model: z.string().min(1),
+  promptTemplateId: z.string().min(1),
+  promptTemplateVersion: z.string().min(1),
+  policyVersion: z.string().min(1),
+  renderedPromptSha256: Sha256Schema,
+  normalizedModelInputSha256: Sha256Schema,
+  targetSha256: Sha256Schema,
+  requirementModelSha256: Sha256Schema,
+  evidenceMapSha256: Sha256Schema,
+  coverageSha256: Sha256Schema,
+  assessmentSha256: Sha256Schema,
+  contentPlanSha256: Sha256Schema,
+  scaffoldSha256: Sha256Schema,
+  selectedEvidenceSetSha256: Sha256Schema,
+  selectedClaimSetSha256: Sha256Schema,
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
+}).strict();
+export const JobResumeDraftReviewDecisionSchema = z.object({
+  id: z.string().min(1),
+  itemType: z.enum(["section", "draft-item", "claim-ledger", "section-order", "ambiguity"]),
+  itemId: z.string().min(1),
+  decision: z.enum(["pending", "accept", "edit", "reject"]),
+  editedValue: z.unknown().optional(),
+  reviewNote: z.string().min(1).optional(),
+  decidedAt: z.string().datetime().optional(),
+}).strict();
+export const JobResumeDraftReviewSchema = z.object({
+  schemaVersion: z.literal(1),
+  id: z.string().min(1),
+  proposalId: z.string().min(1),
+  targetId: z.string().min(1),
+  status: z.enum(["in-progress", "completed"]),
+  decisions: z.array(JobResumeDraftReviewDecisionSchema),
+  reviewer: z.object({
+    type: z.literal("human"),
+    name: z.string().min(1).optional(),
+  }).strict(),
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
+}).strict();
+export const JobResumeDraftReviewManifestSchema = z.object({
+  schemaVersion: z.literal(1),
+  reviewId: z.string().min(1),
+  proposalId: z.string().min(1),
+  targetId: z.string().min(1),
+  reviewPath: RelativePathSchema,
+  reviewSha256: Sha256Schema,
+  proposalSha256: Sha256Schema,
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
+}).strict();
+
+export const ApprovedJobResumeDraftSchema = z.object({
+  schemaVersion: z.literal(1),
+  id: z.string().min(1),
+  targetId: z.string().min(1),
+  targetType: z.literal("job"),
+  mode: JobResumeDraftingModeSchema,
+  targetTitle: z.string().min(1),
+  positioningState: z.enum(["direct", "adjacent", "stretch", "insufficient-proof", "indeterminate"]),
+  contentPlan: JobPlanDependencySchema,
+  draftingPolicy: PolicyIdentitySchema,
+  prompt: z.object({
+    templateId: z.string().min(1),
+    templateVersion: z.string().min(1),
+  }).strict(),
+  sections: z.array(JobResumeDraftSectionSchema),
+  claimLedger: z.array(JobResumeDraftClaimLedgerEntrySchema),
+  evidenceUsage: z.array(JobResumeDraftEvidenceUsageSchema),
+  risks: z.array(JobResumeDraftRiskSchema),
+  warnings: z.array(JobResumeDraftWarningSchema),
+  ambiguities: z.array(JobResumeDraftAmbiguitySchema),
+  completeness: JobResumeDraftCompletenessSchema,
+  provenance: z.object({
+    targetSha256: Sha256Schema,
+    jobDescriptionSha256: Sha256Schema,
+    requirementModelSha256: Sha256Schema,
+    evidenceMapSha256: Sha256Schema,
+    coverageSha256: Sha256Schema,
+    assessmentSha256: Sha256Schema,
+    contentPlanSha256: Sha256Schema,
+    scaffoldSha256: Sha256Schema,
+    proposalSha256: Sha256Schema,
+    reviewSha256: Sha256Schema,
+  }).strict(),
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
+}).strict();
+export const ApprovedJobResumeDraftManifestSchema = z.object({
+  schemaVersion: z.literal(1),
+  draftId: z.string().min(1),
+  targetId: z.string().min(1),
+  draftPath: RelativePathSchema,
+  draftSha256: Sha256Schema,
+  policyName: z.string().min(1),
+  policyVersion: z.string().min(1),
+  targetSha256: Sha256Schema,
+  requirementModelSha256: Sha256Schema,
+  evidenceMapSha256: Sha256Schema,
+  coverageSha256: Sha256Schema,
+  assessmentSha256: Sha256Schema,
+  contentPlanSha256: Sha256Schema,
+  scaffoldSha256: Sha256Schema,
+  proposalId: z.string().min(1),
+  proposalSha256: Sha256Schema,
+  reviewId: z.string().min(1),
+  reviewSha256: Sha256Schema,
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
+}).strict();
+
+export type JobResumeDraftItemType = z.infer<typeof JobResumeDraftItemTypeSchema>;
+export type JobResumeDraftItem = z.infer<typeof JobResumeDraftItemSchema>;
+export type JobResumeDraftSection = z.infer<typeof JobResumeDraftSectionSchema>;
+export type JobResumeDraftScaffoldSection = z.infer<typeof JobResumeDraftScaffoldSectionSchema>;
+export type JobResumeDraftScaffold = z.infer<typeof JobResumeDraftScaffoldSchema>;
+export type JobResumeDraftScaffoldManifest = z.infer<typeof JobResumeDraftScaffoldManifestSchema>;
+export type JobResumeDraftValidationIssue = z.infer<typeof JobResumeDraftValidationIssueSchema>;
+export type JobResumeDraftClaimLedgerEntry = z.infer<typeof JobResumeDraftClaimLedgerEntrySchema>;
+export type JobResumeDraftEvidenceUsage = z.infer<typeof JobResumeDraftEvidenceUsageSchema>;
+export type JobResumeDraftWarning = z.infer<typeof JobResumeDraftWarningSchema>;
+export type JobResumeDraftRisk = z.infer<typeof JobResumeDraftRiskSchema>;
+export type JobResumeDraftAmbiguity = z.infer<typeof JobResumeDraftAmbiguitySchema>;
+export type JobResumeDraftCompleteness = z.infer<typeof JobResumeDraftCompletenessSchema>;
+export type ModelJobResumeDraftPayload = z.infer<typeof ModelJobResumeDraftPayloadSchema>;
+export type JobResumeDraftProposal = z.infer<typeof JobResumeDraftProposalSchema>;
+export type JobResumeDraftProposalManifest = z.infer<typeof JobResumeDraftProposalManifestSchema>;
+export type JobResumeDraftReviewDecision = z.infer<typeof JobResumeDraftReviewDecisionSchema>;
+export type JobResumeDraftReview = z.infer<typeof JobResumeDraftReviewSchema>;
+export type ApprovedJobResumeDraft = z.infer<typeof ApprovedJobResumeDraftSchema>;

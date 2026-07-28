@@ -128,6 +128,40 @@ import {
   showJobResumePlan,
 } from "./job-resume-planning.js";
 import {
+  buildJobResumeDraftScaffold,
+  formatBuildJobResumeDraftScaffoldResult,
+  formatJobResumeDraftScaffoldStatus,
+  getJobResumeDraftScaffoldStatus,
+  showJobResumeDraftScaffold,
+} from "./job-resume-drafting.js";
+import {
+  formatJobResumeDraftProposalList,
+  formatJobResumeDraftProposalResult,
+  formatJobResumeDraftProposalStatus,
+  generateJobResumeDraftProposal,
+  getJobResumeDraftProposalStatus,
+  listJobResumeDraftProposals,
+  replayJobResumeDraftProposal,
+  showJobResumeDraftProposal,
+} from "./job-resume-draft-proposal.js";
+import {
+  completeJobResumeDraftReview,
+  formatJobResumeDraftReviewStatus,
+  getJobResumeDraftReviewStatus,
+  initializeJobResumeDraftReview,
+  readJobResumeDraftReviewEdit,
+  setJobResumeDraftReviewDecision,
+  showJobResumeDraftReview,
+} from "./job-resume-draft-review.js";
+import {
+  approveJobResumeDraft,
+  formatApprovedJobResumeDraftStatus,
+  formatApproveJobResumeDraftResult,
+  getApprovedJobResumeDraftStatus,
+  showApprovedJobResumeDraft,
+} from "./approved-job-resume-draft.js";
+import type { JobResumeDraftReviewDecision } from "./job-resume-draft-schemas.js";
+import {
   formatProposalGenerationResult,
   formatProposalList,
   formatProposalStatus,
@@ -803,6 +837,192 @@ jobResumePlan
   .action(async (targetId: string) => {
     console.log(formatJobResumePlanStatus(
       await getJobResumePlanStatus(getWorkspace(), targetId),
+    ));
+  });
+
+const jobResumeDraft = target
+  .command("job-resume-draft")
+  .description("Build deterministic Job draft scaffolds and approve human-reviewed structured Job resumes.");
+
+jobResumeDraft
+  .command("scaffold-build <target-id>")
+  .option("--rebuild", "explicitly rebuild a stale or invalid Job draft scaffold")
+  .description("Build a prose-free scaffold from the current usable Job Resume Content Plan.")
+  .action(async (targetId: string, options: { rebuild?: boolean }) => {
+    console.log(formatBuildJobResumeDraftScaffoldResult(
+      await buildJobResumeDraftScaffold(getWorkspace(), targetId, options),
+    ));
+  });
+
+jobResumeDraft
+  .command("scaffold-show <target-id>")
+  .description("Print the deterministic Job resume draft scaffold as stable JSON.")
+  .action(async (targetId: string) => {
+    process.stdout.write(
+      `${JSON.stringify(await showJobResumeDraftScaffold(getWorkspace(), targetId), null, 2)}\n`,
+    );
+  });
+
+jobResumeDraft
+  .command("scaffold-status <target-id>")
+  .description("Inspect Job scaffold integrity and dependency freshness.")
+  .action(async (targetId: string) => {
+    console.log(formatJobResumeDraftScaffoldStatus(
+      await getJobResumeDraftScaffoldStatus(getWorkspace(), targetId),
+    ));
+  });
+
+jobResumeDraft
+  .command("approve <target-id>")
+  .option("--rebuild", "explicitly replace a stale approved Job draft after completed review")
+  .description("Create an approved structured Job Resume Draft without a model call or rendering.")
+  .action(async (targetId: string, options: { rebuild?: boolean }) => {
+    console.log(formatApproveJobResumeDraftResult(
+      await approveJobResumeDraft(getWorkspace(), targetId, options),
+    ));
+  });
+
+jobResumeDraft
+  .command("approved-show <target-id>")
+  .description("Print the current approved structured Job Resume Draft as stable JSON.")
+  .action(async (targetId: string) => {
+    process.stdout.write(
+      `${JSON.stringify(await showApprovedJobResumeDraft(getWorkspace(), targetId), null, 2)}\n`,
+    );
+  });
+
+jobResumeDraft
+  .command("approved-status <target-id>")
+  .description("Inspect approved Job draft integrity, provenance, and lifecycle.")
+  .action(async (targetId: string) => {
+    console.log(formatApprovedJobResumeDraftStatus(
+      await getApprovedJobResumeDraftStatus(getWorkspace(), targetId),
+    ));
+  });
+
+const jobResumeDraftProposal = target
+  .command("job-resume-draft-proposal")
+  .description("Generate, inspect, replay, and human-review model-assisted Job resume draft proposals.");
+
+jobResumeDraftProposal
+  .command("generate <target-id>")
+  .option("--refresh", "bypass a current cached proposal and call the configured provider")
+  .description("Generate untrusted structured Job resume wording; no output is auto-approved.")
+  .action(async (targetId: string, options: { refresh?: boolean }) => {
+    console.log(formatJobResumeDraftProposalResult(
+      await generateJobResumeDraftProposal(getWorkspace(), targetId, options),
+    ));
+  });
+
+jobResumeDraftProposal
+  .command("list <target-id>")
+  .description("List stored structured Job Resume Draft proposals.")
+  .action(async (targetId: string) => {
+    console.log(formatJobResumeDraftProposalList(
+      await listJobResumeDraftProposals(getWorkspace(), targetId),
+    ));
+  });
+
+jobResumeDraftProposal
+  .command("show <proposal-id>")
+  .description("Print one normalized structured Job Resume Draft proposal as stable JSON.")
+  .action(async (proposalId: string) => {
+    process.stdout.write(
+      `${JSON.stringify(await showJobResumeDraftProposal(getWorkspace(), proposalId), null, 2)}\n`,
+    );
+  });
+
+jobResumeDraftProposal
+  .command("status <proposal-id>")
+  .description("Inspect Job draft proposal integrity, dependencies, and review eligibility.")
+  .action(async (proposalId: string) => {
+    console.log(formatJobResumeDraftProposalStatus(
+      await getJobResumeDraftProposalStatus(getWorkspace(), proposalId),
+    ));
+  });
+
+jobResumeDraftProposal
+  .command("replay <proposal-id>")
+  .description("Replay exact stored response validation without a provider call.")
+  .action(async (proposalId: string) => {
+    const result = await replayJobResumeDraftProposal(getWorkspace(), proposalId);
+    console.log(`Proposal ID: ${result.proposalId}`);
+    console.log(`Original SHA-256: ${result.originalSha256}`);
+    console.log(`Replay SHA-256: ${result.replaySha256}`);
+    console.log(`Replay matches: ${result.matches ? "yes" : "no"}`);
+  });
+
+jobResumeDraftProposal
+  .command("review-create <proposal-id>")
+  .option("--reviewer <name>", "optional human reviewer name")
+  .description("Create pending section, statement, ledger, ordering, and ambiguity decisions.")
+  .action(async (proposalId: string, options: { reviewer?: string }) => {
+    const review = await initializeJobResumeDraftReview(getWorkspace(), proposalId, {
+      reviewerName: options.reviewer,
+    });
+    console.log(formatJobResumeDraftReviewStatus(
+      await getJobResumeDraftReviewStatus(getWorkspace(), review.id),
+    ));
+  });
+
+jobResumeDraftProposal
+  .command("review-show <review-id>")
+  .description("Print one complete Job Resume Draft review as stable JSON.")
+  .action(async (reviewId: string) => {
+    process.stdout.write(
+      `${JSON.stringify(await showJobResumeDraftReview(getWorkspace(), reviewId), null, 2)}\n`,
+    );
+  });
+
+jobResumeDraftProposal
+  .command("review-status <review-id>")
+  .description("Inspect Job draft decision counts and manifest integrity.")
+  .action(async (reviewId: string) => {
+    console.log(formatJobResumeDraftReviewStatus(
+      await getJobResumeDraftReviewStatus(getWorkspace(), reviewId),
+    ));
+  });
+
+for (const itemType of ["section", "draft-item", "claim-ledger", "section-order", "ambiguity"] as JobResumeDraftReviewDecision["itemType"][]) {
+  jobResumeDraftProposal
+    .command(`review-set-${itemType} <proposal-id> <item-id>`)
+    .option("--accept", "accept the proposed draft element unchanged")
+    .option("--reject", "reject the proposed draft element")
+    .option("--edit-file <path>", "file containing edited text or complete edited JSON")
+    .option("--note <note>", "optional review rationale")
+    .description(`Set exactly one pending ${itemType} Job draft decision.`)
+    .action(async (
+      proposalId: string,
+      itemId: string,
+      options: { accept?: boolean; reject?: boolean; editFile?: string; note?: string },
+    ) => {
+      const choices = Number(Boolean(options.accept)) +
+        Number(Boolean(options.reject)) +
+        Number(Boolean(options.editFile));
+      if (choices !== 1) {
+        throw new Error("Choose exactly one of --accept, --reject, or --edit-file.");
+      }
+      const editedValue = options.editFile
+        ? await readJobResumeDraftReviewEdit(options.editFile)
+        : undefined;
+      await setJobResumeDraftReviewDecision(getWorkspace(), proposalId, itemType, itemId, {
+        decision: options.accept ? "accept" : options.reject ? "reject" : "edit",
+        editedValue,
+        reviewNote: options.note,
+      });
+      const review = await showJobResumeDraftReview(getWorkspace(), proposalId);
+      console.log(formatJobResumeDraftReviewStatus(
+        await getJobResumeDraftReviewStatus(getWorkspace(), review.id),
+      ));
+    });
+}
+
+jobResumeDraftProposal
+  .command("review-complete <proposal-id>")
+  .description("Complete review only after every required Job draft decision is valid and resolved.")
+  .action(async (proposalId: string) => {
+    console.log(formatJobResumeDraftReviewStatus(
+      await completeJobResumeDraftReview(getWorkspace(), proposalId),
     ));
   });
 

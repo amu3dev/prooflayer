@@ -999,7 +999,7 @@ function deriveCompleteness(context, positioning, emphasis, sections, boundaries
         blockingReasons,
     };
 }
-async function loadJobResumePlanningContext(workspace, targetId) {
+export async function loadJobResumePlanningContext(workspace, targetId) {
     const target = await requireJobTarget(workspace, targetId);
     const assessmentStatus = await getJobFitProofAssessmentStatus(workspace, targetId);
     if (assessmentStatus.status !== "current") {

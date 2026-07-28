@@ -110,7 +110,7 @@ interface RequirementInput {
   manifestSha256: string;
 }
 
-interface JobResumePlanningContext {
+export interface JobResumePlanningContext {
   target: JobTarget;
   targetSha256: string;
   sourceSha256: string;
@@ -1741,7 +1741,7 @@ function deriveCompleteness(
   };
 }
 
-async function loadJobResumePlanningContext(
+export async function loadJobResumePlanningContext(
   workspace: string,
   targetId: string,
 ): Promise<JobResumePlanningContext> {

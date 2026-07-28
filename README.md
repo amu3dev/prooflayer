@@ -44,6 +44,8 @@ Phase 2 Slice 2.7A builds deterministic, reviewable Job Requirement Models from 
 
 Phase 2 Slice 2.7B maps usable Job Requirements to approved, resume-ready, public-safe candidate evidence using explicit deterministic signals without calculating fit or generating application content.
 
+Phase 2 Slice 2.7F converts a current usable Job Resume Content Plan into a constrained structured draft through a prose-free scaffold, explicit model proposal, strict validation, human review, and deterministic approval.
+
 ## What Slice 1 Does
 
 ProofLayer turns a messy local folder of career files into a structured career knowledge base:
@@ -1486,13 +1488,97 @@ The manifest pins every upstream artifact and manifest, the selected reviewed ev
 
 Slice 2.7E creates one primary planning artifact and its manifest. It makes no model call, performs no evidence rematching or assessment recalculation, writes no resume prose, and produces no application recommendation, ATS score, competitiveness score, or hiring prediction.
 
+## Slice 2.7F Job-Specific Resume Draft Construction
+
+Job-specific Resume Draft Construction treats the current usable Job Resume Content Plan as the sole planning authority. It does not reinterpret the Job Description, rematch evidence, recalculate coverage or assessment, or change requirement emphasis and evidence allocation.
+
+The drafting policy is `job-resume-drafting-policy` version `1`. The model prompt is `target-job-resume-draft-proposal` version `1`. The workflow is:
+
+```text
+Current Job Resume Content Plan
+  -> deterministic prose-free scaffold
+  -> explicit model proposal
+  -> strict validation
+  -> human review
+  -> approved structured Job Resume Draft
+```
+
+Build and inspect the deterministic scaffold:
+
+```bash
+npm run dev -- target job-resume-draft scaffold-build job-exampleco-engineering-manager
+npm run dev -- target job-resume-draft scaffold-show job-exampleco-engineering-manager
+npm run dev -- target job-resume-draft scaffold-status job-exampleco-engineering-manager
+npm run dev -- target job-resume-draft scaffold-build job-exampleco-engineering-manager --rebuild
+```
+
+The scaffold contains no resume prose. It pins section structure, requirement emphasis, selected evidence and claims, claim boundaries, exact verified-metric permissions, qualifiers, exclusions, risks, warnings, ambiguities, provenance, and dependency hashes.
+
+Model drafting is always explicit:
+
+```bash
+npm run dev -- target job-resume-draft-proposal generate job-exampleco-engineering-manager
+npm run dev -- target job-resume-draft-proposal list job-exampleco-engineering-manager
+npm run dev -- target job-resume-draft-proposal show <proposal-id>
+npm run dev -- target job-resume-draft-proposal status <proposal-id>
+npm run dev -- target job-resume-draft-proposal replay <proposal-id>
+```
+
+An unchanged request uses the current cache without a provider call or artifact rewrite. `--refresh` makes an explicit provider call and creates a distinct proposal. Replay uses the exact stored raw response bytes and makes no provider call.
+
+Proposals remain untrusted until every section, statement, claim-ledger entry, ordering decision, and ambiguity is reviewed:
+
+```bash
+npm run dev -- target job-resume-draft-proposal review-create <proposal-id> --reviewer "Reviewer Name"
+npm run dev -- target job-resume-draft-proposal review-show <review-id>
+npm run dev -- target job-resume-draft-proposal review-status <review-id>
+npm run dev -- target job-resume-draft-proposal review-set-draft-item <proposal-id> <item-id> --accept
+npm run dev -- target job-resume-draft-proposal review-set-draft-item <proposal-id> <item-id> --reject
+npm run dev -- target job-resume-draft-proposal review-set-draft-item <proposal-id> <item-id> --edit-file reviewed-item.json
+npm run dev -- target job-resume-draft-proposal review-complete <proposal-id>
+```
+
+Equivalent `review-set-section`, `review-set-claim-ledger`, `review-set-section-order`, and `review-set-ambiguity` commands use the same `--accept`, `--reject`, or `--edit-file` pattern. Human edits pass the same plan, provenance, claim, metric, scope, title-history, and project/employment checks as model output. A model proposal is never auto-approved.
+
+Approval is deterministic and makes no provider call:
+
+```bash
+npm run dev -- target job-resume-draft approve job-exampleco-engineering-manager
+npm run dev -- target job-resume-draft approved-show job-exampleco-engineering-manager
+npm run dev -- target job-resume-draft approved-status job-exampleco-engineering-manager
+```
+
+The approved draft contains structured sections, statement-level provenance, a claim ledger, an evidence-usage ledger, validation results, risks, warnings, ambiguities, completeness, and `usableForRendering`. Each substantive statement traces to the target, plan section, requirements, coverage, assessment, evidence-map links, evidence, claims, boundaries, metrics, proposal, review decision, policy, and dependency hashes.
+
+Only exact plan-authorized `verified_metric` wording may be used. Historical titles, dates, technologies, scope, and project/employment relationships remain bounded by approved evidence. Unsupported Job Description terminology, target-title history, project-as-employment wording, responsibility-as-achievement wording, unverified metrics, unsupported scope, ATS scores, hiring predictions, and application recommendations are rejected or flagged.
+
+```text
+workspace/targets/jobs/<target-id>/resume-drafting/
+  scaffold/
+    job-resume-draft-scaffold.json
+    scaffold-manifest.json
+  proposals/<proposal-id>/
+    proposal.json
+    proposal-manifest.json
+    raw-model-response.txt
+  reviews/<proposal-id>/
+    review.json
+    review-manifest.json
+  approved/
+    job-resume-draft.json
+    draft-manifest.json
+```
+
+Scaffold, proposal, review, and approved draft artifacts expose explicit missing/current/stale/invalid lifecycle behavior as applicable. Dependency changes never silently regenerate approved prose; stale or invalid deterministic artifacts require explicit rebuild or refresh according to their command boundary.
+
+Slice 2.7F ends at the approved structured Job Resume Draft. It does not render Markdown, HTML, DOCX, or PDF, create cover letters or screening answers, calculate ATS or hiring scores, or recommend whether to apply.
+
 ## Next Slices
 
 Likely next slices:
 
-1. Job-specific Resume Draft Construction using only a current usable Job Resume Content Plan.
-2. Review and approval of constrained Job-specific draft content without mutating reusable Role artifacts.
-3. Shared rendering and export after the Job-specific draft boundary is approved.
+1. Deterministic Job Resume Rendering from a current approved structured Job Resume Draft.
+2. Job Resume export adapters after rendering preserves wording and provenance.
 
 ## Architecture
 
