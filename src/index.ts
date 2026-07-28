@@ -121,6 +121,13 @@ import {
   showJobFitProofAssessment,
 } from "./job-fit-proof-assessment.js";
 import {
+  buildJobResumePlan,
+  formatBuildJobResumePlanResult,
+  formatJobResumePlanStatus,
+  getJobResumePlanStatus,
+  showJobResumePlan,
+} from "./job-resume-planning.js";
+import {
   formatProposalGenerationResult,
   formatProposalList,
   formatProposalStatus,
@@ -764,6 +771,38 @@ jobAssessment
   .action(async (targetId: string) => {
     console.log(formatJobFitProofAssessmentStatus(
       await getJobFitProofAssessmentStatus(getWorkspace(), targetId),
+    ));
+  });
+
+const jobResumePlan = target
+  .command("job-resume-plan")
+  .description("Build and inspect deterministic job-specific resume content plans without writing resume prose.");
+
+jobResumePlan
+  .command("build <target-id>")
+  .option("--rebuild", "explicitly rebuild a stale or invalid plan")
+  .description("Plan one Job-specific resume from current assessment and reviewed mapped evidence.")
+  .action(async (targetId: string, options: { rebuild?: boolean }) => {
+    console.log(formatBuildJobResumePlanResult(
+      await buildJobResumePlan(getWorkspace(), targetId, options),
+    ));
+  });
+
+jobResumePlan
+  .command("show <target-id>")
+  .description("Print the deterministic Job Resume Content Plan as stable JSON.")
+  .action(async (targetId: string) => {
+    process.stdout.write(
+      `${JSON.stringify(await showJobResumePlan(getWorkspace(), targetId), null, 2)}\n`,
+    );
+  });
+
+jobResumePlan
+  .command("status <target-id>")
+  .description("Inspect Job Resume Content Plan integrity, dependencies, and lifecycle.")
+  .action(async (targetId: string) => {
+    console.log(formatJobResumePlanStatus(
+      await getJobResumePlanStatus(getWorkspace(), targetId),
     ));
   });
 

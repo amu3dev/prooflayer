@@ -394,10 +394,11 @@ The implemented Job workflow currently includes:
 - deterministic structural analysis;
 - deterministic requirement modeling with optional proposal, review, and approval escalation;
 - deterministic mapping from usable requirements to eligible reviewed evidence;
-- deterministic per-requirement coverage analysis from the current evidence map.
-- deterministic qualitative fit and proof assessment from current coverage and stored provenance.
+- deterministic per-requirement coverage analysis from the current evidence map;
+- deterministic qualitative fit and proof assessment from current coverage and stored provenance;
+- deterministic job-specific resume content planning from the current assessment and reviewed mapped evidence.
 
-Job-specific Planning, Draft Construction, Rendering, and Export are planned. Existing Role artifacts must not be silently reused as job-specific outputs, and Job Description language must not alter reusable Role artifacts.
+Job-specific Draft Construction, Rendering, and Export are planned. Existing Role artifacts must not be silently reused as job-specific outputs, and Job Description language must not alter reusable Role artifacts.
 
 ## 6. Shared Components
 
@@ -492,7 +493,7 @@ Each extension must define its target, assessment, planning, drafting, review, r
 
 ## 10. Status
 
-Status through Slice 2.7D:
+Status through Slice 2.7E:
 
 | Capability | Role Pipeline | Job Pipeline |
 | --- | --- | --- |
@@ -501,9 +502,9 @@ Status through Slice 2.7D:
 | Evidence Mapping | Completed | Completed through Slice 2.7B |
 | Coverage Analysis | Completed within reviewed Role matching | Completed through Slice 2.7C |
 | Assessment | Completed through Slice 2.5 | Completed through Slice 2.7D |
-| Planning | Completed through Slice 2.6A | Planned |
+| Planning | Completed through Slice 2.6A | Completed through Slice 2.7E |
 | Draft Construction | Completed through Slice 2.6B | Planned |
 | Rendering | Completed through Slice 2.6C | Planned |
 | Export | Completed through Slice 2.6C | Planned |
 
-The next known Job capability is application-content planning built from the current deterministic Job Fit and Proof Assessment.
+The next known Job capability is Draft Construction from the current deterministic Job Resume Content Plan.

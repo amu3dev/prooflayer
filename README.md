@@ -1454,13 +1454,45 @@ The manifest pins the Job Target, immutable Job Description, selected requiremen
 
 Slice 2.7D creates one primary assessment artifact and its manifest. It introduces no model provider, proposal, review, approval, resume plan, draft, export, screening answer, or application recommendation.
 
+## Slice 2.7E Deterministic Job-Specific Resume Content Planning
+
+Job-specific Resume Content Planning converts one current Job Fit and Proof Assessment into a constrained plan for later Job-specific Draft Construction. It consumes only the current requirement model, evidence map, coverage, assessment, and the approved public-safe resume-ready evidence and claims already referenced by those artifacts. It does not reinterpret the Job Description, search or rematch evidence, recalculate fit, or write resume prose.
+
+Build and inspect the deterministic plan:
+
+```bash
+npm run dev -- target job-resume-plan build job-exampleco-engineering-manager
+npm run dev -- target job-resume-plan show job-exampleco-engineering-manager
+npm run dev -- target job-resume-plan status job-exampleco-engineering-manager
+npm run dev -- target job-resume-plan build job-exampleco-engineering-manager --rebuild
+```
+
+The policy is `job-resume-content-planning-policy` version `1`. The plan records controlled job-specific positioning (`direct`, `adjacent`, `stretch`, `insufficient-proof`, or `indeterminate`), one emphasis decision per requirement, deduplicated evidence allocation, section ordering, enforceable claim boundaries, exact verified-metric permissions, gap handling, exclusions, risks, warnings, ambiguities, completeness, and drafting usability. These are planning controls, not headline, summary, bullet, experience, project, cover-letter, screening-answer, or recruiter-message text.
+
+Mandatory supported requirements are normally primary. Preferred supported requirements are secondary, contextual support remains supporting, partial proof is qualified, unsupported or indeterminate requirements are deferred or excluded, and contradictions are excluded. Evidence is selected only from existing Job Evidence Map links. One evidence item receives one selection record and at most one primary requirement use; reuse is retained only with distinct purposes and a warning. Exact Job Description terminology is permitted only where an existing mapped signal and approved evidence support the same concept.
+
+The Job Target title is positioning metadata only. It cannot become employment history, seniority proof, authority proof, or scope proof. Project evidence remains in project-scoped sections unless reviewed evidence explicitly establishes an employment relationship. Responsibilities cannot become achievements, contributions cannot become ownership, collaboration cannot become management, and adjacent technologies or domains cannot become exact experience.
+
+Quantification is allowed only for an approved public-safe resume-ready claim whose metric status is `verified_metric`; the exact approved wording and scope are pinned. Every other selected claim has an explicit quantification prohibition. Material gaps remain constraints rather than positive positioning or candidate criticism. A mixed or limited assessment may still produce a complete usable plan when selected proof and all critical boundaries are defensible. Insufficient or indeterminate positioning is not usable for drafting.
+
+```text
+workspace/targets/jobs/<target-id>/resume-planning/
+  deterministic/
+    job-resume-content-plan.json
+    job-resume-content-plan-manifest.json
+```
+
+The manifest pins every upstream artifact and manifest, the selected reviewed evidence and claim sets, normalized input, and policy. Status is `missing`, `current`, `stale`, or `invalid`. Unchanged builds return `already-current` without rewriting bytes, hashes, IDs, timestamps, or modification times. Dependency or policy changes make the plan stale; malformed artifacts, hash disagreement, identity mismatch, or deterministic semantic drift make it invalid. Stale or invalid plans require explicit `--rebuild`, and non-current upstream dependencies must be repaired first.
+
+Slice 2.7E creates one primary planning artifact and its manifest. It makes no model call, performs no evidence rematching or assessment recalculation, writes no resume prose, and produces no application recommendation, ATS score, competitiveness score, or hiring prediction.
+
 ## Next Slices
 
 Likely next slices:
 
-1. Application-content planning using only the current Job Fit and Proof Assessment.
-2. Reviewed job-specific drafting without mutating reusable role artifacts.
-3. Shared rendering and export after the job-specific draft boundary is approved.
+1. Job-specific Resume Draft Construction using only a current usable Job Resume Content Plan.
+2. Review and approval of constrained Job-specific draft content without mutating reusable Role artifacts.
+3. Shared rendering and export after the Job-specific draft boundary is approved.
 
 ## Architecture
 
