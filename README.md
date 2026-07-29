@@ -239,6 +239,26 @@ Then inspect:
 - `workspace/outputs/changelogs/latest-refresh.json`
 - `workspace/outputs/changelogs/rebuild-changelog.md`
 
+## Normal Job Workflow
+
+The guided Job workflow runs the completed opportunity pipeline from its current lifecycle state while preserving every trust boundary:
+
+```bash
+npm run dev -- job create --file workspace/jobs/exampleco-engineering-manager.md
+npm run dev -- job run job-exampleco-engineering-manager
+npm run dev -- job status job-exampleco-engineering-manager
+npm run dev -- job continue job-exampleco-engineering-manager
+npm run dev -- job finalize job-exampleco-engineering-manager
+```
+
+`job run` builds missing deterministic stages and stops at the first human, snapshot, provider, stale-artifact, or trust gate. It never chooses or replaces an Evidence Snapshot automatically; use `--snapshot <snapshot-id>` for an unpinned target or `job continue --upgrade-snapshot <snapshot-id>` for an explicit replacement. It may prepare a review batch and human-readable workspace, but it never submits evidence decisions, completes a draft review, or approves model output.
+
+Use `--dry-run` with `job run`, `job continue`, or `job finalize` to inspect intended actions with no writes or model calls. Stale or invalid deterministic artifacts remain blocked unless `--rebuild-stale` is explicit. A draft proposal uses the configured provider only after planning is usable; a configured fake provider additionally requires `--offline`. Finalization requires a current human-reviewed approved draft and exports Markdown, HTML, and DOCX by default; PDF is opt-in.
+
+Common pauses include Evidence Snapshot selection, Evidence Review, an unusable content plan, missing model-provider configuration, incomplete Draft Review, and stale or invalid dependencies. `job status <target-id>` explains the current stage, blocker, human action, and exact next command; add `--verbose` for lifecycle details or `--json` for stable machine output.
+
+The existing granular `target`, `evidence`, proposal, review, approval, rendering, and export commands remain the expert and debugging interface. Guided orchestration calls those same domain services and does not persist a parallel workflow state or change canonical artifact meaning.
+
 ## Privacy Defaults
 
 - Unknown source visibility defaults to `unknown`.

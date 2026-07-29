@@ -408,6 +408,18 @@ import {
   RoleResumePageSizeSchema,
   RoleResumeRenderProfileNameSchema,
 } from "./role-resume-render-schemas.js";
+import {
+  continueJobWorkflow,
+  createGuidedJob,
+  finalizeJobWorkflow,
+  formatFinalizeJobWorkflowResult,
+  formatGuidedJobCreation,
+  formatJobWorkflowJson,
+  formatJobWorkflowRunResult,
+  formatJobWorkflowStatus,
+  inspectJobWorkflow,
+  runJobWorkflow,
+} from "./job-workflow.js";
 
 const program = new Command();
 
@@ -764,6 +776,106 @@ evidence
   });
 
 const target = program.command("target").description("Create and inspect deterministic role and job targets.");
+
+const job = program
+  .command("job")
+  .description("Run the guided Job application workflow while preserving trust boundaries and lifecycle controls.");
+
+job
+  .command("create")
+  .requiredOption("--file <path>", "Markdown job description path")
+  .option("--title <title>", "explicit title; overrides front matter")
+  .option("--company <company>", "explicit company; overrides front matter")
+  .option("--location <location>", "explicit location; overrides front matter")
+  .option("--working-model <model>", "explicit working model; overrides front matter")
+  .option("--replace", "explicitly replace an existing target with the same deterministic ID")
+  .description("Create an exact Job Target without running downstream pipeline stages.")
+  .action(async (options: GuidedJobCreateCliOptions) => {
+    console.log(formatGuidedJobCreation(await createGuidedJob(
+      getWorkspace(),
+      {
+        file: options.file,
+        title: options.title,
+        company: options.company,
+        location: options.location,
+        workingModel: options.workingModel,
+      },
+      { replace: options.replace },
+    )));
+  });
+
+job
+  .command("run <target-id>")
+  .option("--requirements-source <source>", "deterministic or approved", "deterministic")
+  .option("--snapshot <snapshot-id>", "explicit snapshot to pin when the target has no pin")
+  .option("--provider <provider-name>", "configured provider name")
+  .option("--offline", "explicitly permit a configured deterministic fake provider")
+  .option("--rebuild-stale", "explicitly rebuild affected stale or invalid deterministic stages")
+  .option("--dry-run", "inspect actions without writes or model calls")
+  .description("Run safe stages from the current lifecycle state until completion or an explicit gate.")
+  .action(async (targetId: string, options: GuidedJobRunCliOptions) => {
+    console.log(formatJobWorkflowRunResult(await runJobWorkflow(
+      getWorkspace(),
+      targetId,
+      parseGuidedJobRunOptions(options),
+    )));
+  });
+
+job
+  .command("continue <target-id>")
+  .option("--requirements-source <source>", "deterministic or approved", "deterministic")
+  .option("--snapshot <snapshot-id>", "explicit snapshot to pin when the target has no pin")
+  .option("--upgrade-snapshot <snapshot-id>", "explicitly replace the current target snapshot pin")
+  .option("--provider <provider-name>", "configured provider name")
+  .option("--offline", "explicitly permit a configured deterministic fake provider")
+  .option("--rebuild-stale", "explicitly rebuild affected stale or invalid deterministic stages")
+  .option("--dry-run", "inspect actions without writes or model calls")
+  .description("Resume after a known human or dependency gate without bypassing review.")
+  .action(async (targetId: string, options: GuidedJobRunCliOptions) => {
+    console.log(formatJobWorkflowRunResult(await continueJobWorkflow(
+      getWorkspace(),
+      targetId,
+      parseGuidedJobRunOptions(options),
+    )));
+  });
+
+job
+  .command("status <target-id>")
+  .option("--json", "print stable machine-readable status")
+  .option("--verbose", "include stage details and lifecycle reasons")
+  .description("Inspect the guided Job workflow without mutating any artifact.")
+  .action(async (targetId: string, options: { json?: boolean; verbose?: boolean }) => {
+    const status = await inspectJobWorkflow(getWorkspace(), targetId);
+    process.stdout.write(options.json
+      ? formatJobWorkflowJson(status)
+      : `${formatJobWorkflowStatus(status, { verbose: options.verbose })}\n`);
+  });
+
+job
+  .command("finalize <target-id>")
+  .option("--profile <profile>", "ats-standard or compact-professional")
+  .option("--page-size <size>", "A4 or LETTER")
+  .option("--date-format <format>", "MMM-YYYY, YYYY, or exact-source")
+  .option("--formats <formats>", "comma-separated markdown,html,docx,pdf", "markdown,html,docx")
+  .option("--output-dir <path>", "safe relative subdirectory below the Job target export root")
+  .option("--rebuild-stale", "explicitly replace stale or invalid canonical/export artifacts")
+  .option("--dry-run", "inspect finalization without writes")
+  .description("Compose and export a current approved Job Resume Draft without changing wording.")
+  .action(async (targetId: string, options: GuidedJobFinalizeCliOptions) => {
+    console.log(formatFinalizeJobWorkflowResult(await finalizeJobWorkflow(
+      getWorkspace(),
+      targetId,
+      {
+        profile: options.profile ? RoleResumeRenderProfileNameSchema.parse(options.profile) : undefined,
+        pageSize: options.pageSize ? RoleResumePageSizeSchema.parse(options.pageSize) : undefined,
+        dateFormat: options.dateFormat ? RoleResumeDateFormatSchema.parse(options.dateFormat) : undefined,
+        formats: parseGuidedExportFormats(options.formats),
+        outputDir: options.outputDir,
+        rebuildStale: options.rebuildStale,
+        dryRun: options.dryRun,
+      },
+    )));
+  });
 
 target
   .command("create-role")
@@ -2485,6 +2597,55 @@ interface ResumeRenderCliOptions {
 interface ResumeRenderExportCliOptions extends ResumeRenderCliOptions {
   format?: string;
   outputDir?: string;
+}
+
+interface GuidedJobCreateCliOptions {
+  file: string;
+  title?: string;
+  company?: string;
+  location?: string;
+  workingModel?: string;
+  replace?: boolean;
+}
+
+interface GuidedJobRunCliOptions {
+  requirementsSource?: string;
+  snapshot?: string;
+  upgradeSnapshot?: string;
+  provider?: string;
+  offline?: boolean;
+  rebuildStale?: boolean;
+  dryRun?: boolean;
+}
+
+interface GuidedJobFinalizeCliOptions {
+  profile?: string;
+  pageSize?: string;
+  dateFormat?: string;
+  formats: string;
+  outputDir?: string;
+  rebuildStale?: boolean;
+  dryRun?: boolean;
+}
+
+function parseGuidedJobRunOptions(options: GuidedJobRunCliOptions) {
+  return {
+    requirementSource: JobRequirementInputTypeSchema.parse(
+      options.requirementsSource ?? "deterministic",
+    ),
+    snapshotId: options.snapshot,
+    upgradeSnapshotId: options.upgradeSnapshot,
+    providerName: options.provider,
+    offline: options.offline,
+    rebuildStale: options.rebuildStale,
+    dryRun: options.dryRun,
+  };
+}
+
+function parseGuidedExportFormats(value: string) {
+  const formats = value.split(",").map((entry) => entry.trim()).filter(Boolean);
+  if (formats.length === 0) throw new Error("--formats must include at least one format.");
+  return formats.map((format) => RoleResumeExportFormatSchema.parse(format));
 }
 
 function parseResumeRenderOptions(options: ResumeRenderCliOptions) {

@@ -440,6 +440,10 @@ Stable IDs, source references, hashes, manifests, and statement-level lineage co
 
 Persistent artifacts use explicit `missing`, `current`, `stale`, and `invalid` states. Evidence Snapshot compatibility adds `incompatible` for unsupported future schemas or policies. Dependency changes must be visible and stale, invalid, or incompatible artifacts must not be silently replaced.
 
+### Guided Orchestration
+
+The normal Job workflow is a thin, non-persistent orchestration layer over the canonical capability services. It reconstructs the earliest actionable stage from existing lifecycle states, runs only missing deterministic or already-authorized work, and stops at snapshot choices, evidence review, model proposal review, stale or invalid dependencies, and other trust gates. It never stores a second pipeline state, shells out to the CLI, duplicates policy logic, auto-upgrades snapshots, auto-completes reviews, or auto-approves model output. The granular commands remain the expert and debugging interface.
+
 ### Validation
 
 Schema, identity, hash, dependency, privacy, completeness, and semantic-boundary validation are common safeguards.
@@ -450,7 +454,7 @@ Versioned policies define eligibility, deterministic behavior, review boundaries
 
 ### Rendering
 
-Role and future Job pipelines should share rendering capabilities once both consume equivalent approved structured-draft contracts.
+Role and Job pipelines share rendering capabilities where both consume equivalent approved structured-draft contracts, while preserving target-specific policies and provenance.
 
 ### Export
 
@@ -529,7 +533,8 @@ Status through Slice 2.7G:
 | Draft Construction | Completed through Slice 2.6B | Completed through Slice 2.7F |
 | Rendering | Completed through Slice 2.6C | Completed through Slice 2.7G |
 | Export | Completed through Slice 2.6C | Completed through Slice 2.7G |
+| Guided Orchestration | Granular expert workflow remains available | Completed as a derived, trust-preserving normal workflow |
 
-The canonical Job resume pipeline is complete through deterministic rendering and export. A controlled end-to-end pipeline validation is the next milestone before any post-2.7 refactoring or additional application artifact.
+The canonical Job resume pipeline is complete through deterministic rendering and export. Normal Job usage is available through a guided lifecycle-aware orchestrator, while all granular capability commands remain available for expert use.
 
 The Evidence Snapshot Contract v1 is implemented as a shared Evidence Foundation boundary. Job Evidence Mapping consumes the explicit target pin. Role targets can pin and read the same contract, while the existing Role matcher remains on its documented legacy adapter pending a focused migration.

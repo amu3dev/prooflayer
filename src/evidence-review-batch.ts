@@ -80,11 +80,15 @@ export async function buildEvidenceReviewBatch(
   targetId: string,
   options: { rebuild?: boolean; subsetSize?: number; now?: () => Date } = {},
 ): Promise<BuildEvidenceReviewBatchResult> {
-  const subsetSize = options.subsetSize ?? DEFAULT_SUBSET_SIZE;
-  if (!Number.isInteger(subsetSize) || subsetSize < 1 || subsetSize > 50) {
+  const requestedSubsetSize = options.subsetSize ?? DEFAULT_SUBSET_SIZE;
+  if (!Number.isInteger(requestedSubsetSize) || requestedSubsetSize < 1 || requestedSubsetSize > 50) {
     throw new Error("Controlled review subset size must be between 1 and 50.");
   }
   const input = await loadBatchInput(workspace, targetId);
+  if (input.claims.length === 0) {
+    throw new Error("No Evidence Foundation claims are available for controlled review.");
+  }
+  const subsetSize = Math.min(requestedSubsetSize, input.claims.length);
   const ranked = rankClaims(input.claims, input.evidence, input.requirements);
   const selectedIds = selectControlledSubset(ranked, subsetSize);
   const selected = new Set(selectedIds);
