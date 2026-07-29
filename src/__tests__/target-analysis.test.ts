@@ -230,17 +230,17 @@ describe("Slice 2.2 target analysis foundation", () => {
     const fixture = await structuredJobWorkspace();
     await analyzeTarget(fixture.workspace, fixture.targetId, { now: () => new Date(FIRST_TIME) });
     const stale = await getTargetAnalysisStatus(fixture.workspace, fixture.targetId, {
-      analyzerVersion: "2",
+      analyzerVersion: "3",
     });
     expect(stale.status).toBe("stale");
     expect(stale.analyzerVersionMatches).toBe(false);
 
     await analyzeTarget(fixture.workspace, fixture.targetId, {
-      analyzerVersion: "2",
+      analyzerVersion: "3",
       now: () => new Date(SECOND_TIME),
     });
     const rebuilt = await showTargetAnalysis(fixture.workspace, fixture.targetId);
-    expect(rebuilt.analyzer).toEqual({ name: TARGET_ANALYZER_NAME, version: "2", mode: "deterministic" });
+    expect(rebuilt.analyzer).toEqual({ name: TARGET_ANALYZER_NAME, version: "3", mode: "deterministic" });
     expect(rebuilt.createdAt).toBe(FIRST_TIME);
     expect(rebuilt.updatedAt).toBe(SECOND_TIME);
   });

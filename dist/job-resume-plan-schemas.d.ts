@@ -561,10 +561,6 @@ export declare const JobPlanElementProvenanceSchema: z.ZodObject<{
     targetId: string;
     evidenceIds: string[];
     requirementIds: string[];
-    planningPolicy: {
-        name: string;
-        version: string;
-    };
     coverageReferences: {
         coverageEntryId: string;
         coverageEntrySha256: string;
@@ -615,14 +611,14 @@ export declare const JobPlanElementProvenanceSchema: z.ZodObject<{
         linkSha256: string;
     }[];
     claimIds: string[];
+    planningPolicy: {
+        name: string;
+        version: string;
+    };
 }, {
     targetId: string;
     evidenceIds: string[];
     requirementIds: string[];
-    planningPolicy: {
-        name: string;
-        version: string;
-    };
     coverageReferences: {
         coverageEntryId: string;
         coverageEntrySha256: string;
@@ -673,6 +669,10 @@ export declare const JobPlanElementProvenanceSchema: z.ZodObject<{
         linkSha256: string;
     }[];
     claimIds: string[];
+    planningPolicy: {
+        name: string;
+        version: string;
+    };
 }>;
 export declare const JobResumePositioningSchema: z.ZodObject<{
     state: z.ZodEnum<["direct", "adjacent", "stretch", "insufficient-proof", "indeterminate"]>;
@@ -956,10 +956,6 @@ export declare const JobResumePositioningSchema: z.ZodObject<{
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -1010,14 +1006,14 @@ export declare const JobResumePositioningSchema: z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     }, {
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -1068,16 +1064,16 @@ export declare const JobResumePositioningSchema: z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     }>;
 }, "strict", z.ZodTypeAny, {
     provenance: {
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -1128,25 +1124,25 @@ export declare const JobResumePositioningSchema: z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     };
-    prohibitedUses: ("employment-history" | "seniority-proof" | "authority-proof" | "scope-proof")[];
     state: "direct" | "indeterminate" | "adjacent" | "stretch" | "insufficient-proof";
-    sourceOverallAssessment: "strong" | "limited" | "insufficient" | "mixed" | "indeterminate" | "credible";
+    sourceOverallAssessment: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
     targetTitle: string;
     targetTitleUse: "positioning-only";
     primaryRequirementIds: string[];
     supportingRequirementIds: string[];
     cautionRequirementIds: string[];
     rationaleCode: "strong-reviewed-proof" | "credible-reviewed-proof" | "mixed-reviewed-proof" | "limited-reviewed-proof" | "insufficient-reviewed-proof" | "indeterminate-reviewed-proof";
+    prohibitedUses: ("employment-history" | "seniority-proof" | "authority-proof" | "scope-proof")[];
 }, {
     provenance: {
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -1197,16 +1193,20 @@ export declare const JobResumePositioningSchema: z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     };
-    prohibitedUses: ("employment-history" | "seniority-proof" | "authority-proof" | "scope-proof")[];
     state: "direct" | "indeterminate" | "adjacent" | "stretch" | "insufficient-proof";
-    sourceOverallAssessment: "strong" | "limited" | "insufficient" | "mixed" | "indeterminate" | "credible";
+    sourceOverallAssessment: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
     targetTitle: string;
     targetTitleUse: "positioning-only";
     primaryRequirementIds: string[];
     supportingRequirementIds: string[];
     cautionRequirementIds: string[];
     rationaleCode: "strong-reviewed-proof" | "credible-reviewed-proof" | "mixed-reviewed-proof" | "limited-reviewed-proof" | "insufficient-reviewed-proof" | "indeterminate-reviewed-proof";
+    prohibitedUses: ("employment-history" | "seniority-proof" | "authority-proof" | "scope-proof")[];
 }>;
 export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
     id: z.ZodString;
@@ -1497,10 +1497,6 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -1551,14 +1547,14 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     }, {
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -1609,9 +1605,13 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     }>;
 }, "strict", z.ZodTypeAny, {
-    decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+    decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
     id: string;
     necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
     category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
@@ -1619,10 +1619,6 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -1673,10 +1669,13 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     };
-    materiality: "unknown" | "contextual" | "critical" | "secondary" | "material";
+    materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
     requirementId: string;
-    allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
     coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
     assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
     proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
@@ -1685,9 +1684,10 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
     selectedEvidenceIds: string[];
     selectedClaimIds: string[];
     allowedTerminology: string[];
+    allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
     cautionCodes: ("do-not-overstate-partial-proof" | "do-not-present-gap-as-strength" | "do-not-use-adjacent-proof-as-direct" | "do-not-hide-contradiction" | "preserve-ambiguity")[];
 }, {
-    decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+    decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
     id: string;
     necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
     category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
@@ -1695,10 +1695,6 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -1749,10 +1745,13 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     };
-    materiality: "unknown" | "contextual" | "critical" | "secondary" | "material";
+    materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
     requirementId: string;
-    allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
     coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
     assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
     proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
@@ -1761,9 +1760,10 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
     selectedEvidenceIds: string[];
     selectedClaimIds: string[];
     allowedTerminology: string[];
+    allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
     cautionCodes: ("do-not-overstate-partial-proof" | "do-not-present-gap-as-strength" | "do-not-use-adjacent-proof-as-direct" | "do-not-hide-contradiction" | "preserve-ambiguity")[];
 }>, {
-    decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+    decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
     id: string;
     necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
     category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
@@ -1771,10 +1771,6 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -1825,10 +1821,13 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     };
-    materiality: "unknown" | "contextual" | "critical" | "secondary" | "material";
+    materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
     requirementId: string;
-    allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
     coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
     assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
     proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
@@ -1837,9 +1836,10 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
     selectedEvidenceIds: string[];
     selectedClaimIds: string[];
     allowedTerminology: string[];
+    allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
     cautionCodes: ("do-not-overstate-partial-proof" | "do-not-present-gap-as-strength" | "do-not-use-adjacent-proof-as-direct" | "do-not-hide-contradiction" | "preserve-ambiguity")[];
 }, {
-    decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+    decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
     id: string;
     necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
     category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
@@ -1847,10 +1847,6 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -1901,10 +1897,13 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     };
-    materiality: "unknown" | "contextual" | "critical" | "secondary" | "material";
+    materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
     requirementId: string;
-    allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
     coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
     assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
     proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
@@ -1913,6 +1912,7 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
     selectedEvidenceIds: string[];
     selectedClaimIds: string[];
     allowedTerminology: string[];
+    allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
     cautionCodes: ("do-not-overstate-partial-proof" | "do-not-present-gap-as-strength" | "do-not-use-adjacent-proof-as-direct" | "do-not-hide-contradiction" | "preserve-ambiguity")[];
 }>;
 export declare const JobEvidenceRequirementUseSchema: z.ZodObject<{
@@ -1922,13 +1922,13 @@ export declare const JobEvidenceRequirementUseSchema: z.ZodObject<{
     intendedSections: z.ZodArray<z.ZodEnum<["headline", "professional-summary", "core-capabilities", "selected-impact", "professional-experience", "selected-projects", "technical-capabilities", "leadership-capabilities", "education", "certifications", "additional-information"]>, "many">;
     purposeCode: z.ZodEnum<["primary-requirement-proof", "secondary-requirement-proof", "supporting-context", "deferred-proof", "excluded-proof"]>;
 }, "strict", z.ZodTypeAny, {
-    decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+    decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
     requirementId: string;
     linkIds: string[];
     intendedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
     purposeCode: "primary-requirement-proof" | "secondary-requirement-proof" | "supporting-context" | "deferred-proof" | "excluded-proof";
 }, {
-    decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+    decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
     requirementId: string;
     linkIds: string[];
     intendedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
@@ -1947,13 +1947,13 @@ export declare const JobResumeEvidenceSelectionSchema: z.ZodObject<{
         intendedSections: z.ZodArray<z.ZodEnum<["headline", "professional-summary", "core-capabilities", "selected-impact", "professional-experience", "selected-projects", "technical-capabilities", "leadership-capabilities", "education", "certifications", "additional-information"]>, "many">;
         purposeCode: z.ZodEnum<["primary-requirement-proof", "secondary-requirement-proof", "supporting-context", "deferred-proof", "excluded-proof"]>;
     }, "strict", z.ZodTypeAny, {
-        decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+        decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
         requirementId: string;
         linkIds: string[];
         intendedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
         purposeCode: "primary-requirement-proof" | "secondary-requirement-proof" | "supporting-context" | "deferred-proof" | "excluded-proof";
     }, {
-        decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+        decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
         requirementId: string;
         linkIds: string[];
         intendedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
@@ -2236,10 +2236,6 @@ export declare const JobResumeEvidenceSelectionSchema: z.ZodObject<{
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -2290,14 +2286,14 @@ export declare const JobResumeEvidenceSelectionSchema: z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     }, {
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -2348,19 +2344,19 @@ export declare const JobResumeEvidenceSelectionSchema: z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     }>;
 }, "strict", z.ZodTypeAny, {
-    decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+    decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
     id: string;
     evidenceId: string;
     provenance: {
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -2411,12 +2407,16 @@ export declare const JobResumeEvidenceSelectionSchema: z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     };
     relationships: ("partial" | "direct" | "supporting")[];
     claimIds: string[];
     intendedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
     requirementUses: {
-        decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+        decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
         requirementId: string;
         linkIds: string[];
         intendedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
@@ -2427,17 +2427,13 @@ export declare const JobResumeEvidenceSelectionSchema: z.ZodObject<{
     limitationCodes: ("partial-relationship" | "supporting-relationship-only" | "limited-proof" | "project-scoped" | "historical-scope-only" | "no-verified-metric" | "multiple-section-reuse")[];
     primaryRequirementId?: string | undefined;
 }, {
-    decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+    decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
     id: string;
     evidenceId: string;
     provenance: {
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -2488,12 +2484,16 @@ export declare const JobResumeEvidenceSelectionSchema: z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     };
     relationships: ("partial" | "direct" | "supporting")[];
     claimIds: string[];
     intendedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
     requirementUses: {
-        decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+        decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
         requirementId: string;
         linkIds: string[];
         intendedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
@@ -2788,10 +2788,6 @@ export declare const JobResumeClaimBoundarySchema: z.ZodObject<{
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -2842,14 +2838,14 @@ export declare const JobResumeClaimBoundarySchema: z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     }, {
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -2900,18 +2896,18 @@ export declare const JobResumeClaimBoundarySchema: z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     }>;
 }, "strict", z.ZodTypeAny, {
     id: string;
-    kind: "scope" | "target-title" | "requirement-claim" | "project-employment" | "metric";
+    kind: "target-title" | "scope" | "requirement-claim" | "project-employment" | "metric";
     provenance: {
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -2962,27 +2958,27 @@ export declare const JobResumeClaimBoundarySchema: z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     };
     evidenceIds: string[];
-    allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome" | "target-title")[];
-    prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome" | "target-title")[];
-    state: "allowed" | "prohibited" | "allowed-with-qualifier" | "requires-caution";
+    state: "allowed" | "allowed-with-qualifier" | "requires-caution" | "prohibited";
     claimIds: string[];
     rationaleCode: "direct-reviewed-proof" | "qualified-partial-proof" | "deferred-or-ambiguous-proof" | "unsupported-or-conflicting-proof" | "target-title-not-history" | "project-scope-not-employment" | "metric-requires-verification" | "scope-limited-to-reviewed-evidence";
+    allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+    prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
     requiredQualifierCodes: ("evidence-scoped-wording" | "project-scoped-wording" | "adjacent-not-direct" | "partial-support-only" | "exact-reviewed-metric-only" | "target-title-positioning-only")[];
     prohibitedInferenceCodes: ("target-title-as-employment" | "project-as-employment" | "responsibility-as-achievement" | "contribution-as-ownership" | "collaboration-as-management" | "technical-exposure-as-expertise" | "adjacent-technology-as-exact-experience" | "domain-adjacency-as-direct-experience" | "unsupported-seniority" | "unsupported-authority" | "unsupported-team-size" | "unsupported-geography" | "unsupported-scale" | "unsupported-adoption" | "unsupported-dates" | "unsupported-outcomes" | "unverified-metric")[];
     requirementId?: string | undefined;
 }, {
     id: string;
-    kind: "scope" | "target-title" | "requirement-claim" | "project-employment" | "metric";
+    kind: "target-title" | "scope" | "requirement-claim" | "project-employment" | "metric";
     provenance: {
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -3033,13 +3029,17 @@ export declare const JobResumeClaimBoundarySchema: z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     };
     evidenceIds: string[];
-    allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome" | "target-title")[];
-    prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome" | "target-title")[];
-    state: "allowed" | "prohibited" | "allowed-with-qualifier" | "requires-caution";
+    state: "allowed" | "allowed-with-qualifier" | "requires-caution" | "prohibited";
     claimIds: string[];
     rationaleCode: "direct-reviewed-proof" | "qualified-partial-proof" | "deferred-or-ambiguous-proof" | "unsupported-or-conflicting-proof" | "target-title-not-history" | "project-scope-not-employment" | "metric-requires-verification" | "scope-limited-to-reviewed-evidence";
+    allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+    prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
     requiredQualifierCodes: ("evidence-scoped-wording" | "project-scoped-wording" | "adjacent-not-direct" | "partial-support-only" | "exact-reviewed-metric-only" | "target-title-positioning-only")[];
     prohibitedInferenceCodes: ("target-title-as-employment" | "project-as-employment" | "responsibility-as-achievement" | "contribution-as-ownership" | "collaboration-as-management" | "technical-exposure-as-expertise" | "adjacent-technology-as-exact-experience" | "domain-adjacency-as-direct-experience" | "unsupported-seniority" | "unsupported-authority" | "unsupported-team-size" | "unsupported-geography" | "unsupported-scale" | "unsupported-adoption" | "unsupported-dates" | "unsupported-outcomes" | "unverified-metric")[];
     requirementId?: string | undefined;
@@ -3337,10 +3337,6 @@ export declare const JobMetricPermissionSchema: z.ZodEffects<z.ZodObject<{
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -3391,14 +3387,14 @@ export declare const JobMetricPermissionSchema: z.ZodEffects<z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     }, {
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -3449,6 +3445,10 @@ export declare const JobMetricPermissionSchema: z.ZodEffects<z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     }>;
 }, "strict", z.ZodTypeAny, {
     claimId: string;
@@ -3458,10 +3458,6 @@ export declare const JobMetricPermissionSchema: z.ZodEffects<z.ZodObject<{
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -3512,14 +3508,18 @@ export declare const JobMetricPermissionSchema: z.ZodEffects<z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     };
+    state: "allowed" | "prohibited";
     scope: {
         parentRoleId?: string | undefined;
         parentProjectId?: string | undefined;
         sourceSection?: string | undefined;
     };
     allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
-    state: "allowed" | "prohibited";
     qualifierCodes: ("use-exact-approved-text" | "preserve-reviewed-scope" | "do-not-round" | "do-not-combine" | "do-not-infer-scale")[];
     exactApprovedMetricText?: string | undefined;
 }, {
@@ -3530,10 +3530,6 @@ export declare const JobMetricPermissionSchema: z.ZodEffects<z.ZodObject<{
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -3584,14 +3580,18 @@ export declare const JobMetricPermissionSchema: z.ZodEffects<z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     };
+    state: "allowed" | "prohibited";
     scope: {
         parentRoleId?: string | undefined;
         parentProjectId?: string | undefined;
         sourceSection?: string | undefined;
     };
     allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
-    state: "allowed" | "prohibited";
     qualifierCodes: ("use-exact-approved-text" | "preserve-reviewed-scope" | "do-not-round" | "do-not-combine" | "do-not-infer-scale")[];
     exactApprovedMetricText?: string | undefined;
 }>, {
@@ -3602,10 +3602,6 @@ export declare const JobMetricPermissionSchema: z.ZodEffects<z.ZodObject<{
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -3656,14 +3652,18 @@ export declare const JobMetricPermissionSchema: z.ZodEffects<z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     };
+    state: "allowed" | "prohibited";
     scope: {
         parentRoleId?: string | undefined;
         parentProjectId?: string | undefined;
         sourceSection?: string | undefined;
     };
     allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
-    state: "allowed" | "prohibited";
     qualifierCodes: ("use-exact-approved-text" | "preserve-reviewed-scope" | "do-not-round" | "do-not-combine" | "do-not-infer-scale")[];
     exactApprovedMetricText?: string | undefined;
 }, {
@@ -3674,10 +3674,6 @@ export declare const JobMetricPermissionSchema: z.ZodEffects<z.ZodObject<{
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -3728,14 +3724,18 @@ export declare const JobMetricPermissionSchema: z.ZodEffects<z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     };
+    state: "allowed" | "prohibited";
     scope: {
         parentRoleId?: string | undefined;
         parentProjectId?: string | undefined;
         sourceSection?: string | undefined;
     };
     allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
-    state: "allowed" | "prohibited";
     qualifierCodes: ("use-exact-approved-text" | "preserve-reviewed-scope" | "do-not-round" | "do-not-combine" | "do-not-infer-scale")[];
     exactApprovedMetricText?: string | undefined;
 }>;
@@ -4019,10 +4019,6 @@ export declare const JobGapHandlingRuleSchema: z.ZodObject<{
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -4073,14 +4069,14 @@ export declare const JobGapHandlingRuleSchema: z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     }, {
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -4131,6 +4127,10 @@ export declare const JobGapHandlingRuleSchema: z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     }>;
 }, "strict", z.ZodTypeAny, {
     decision: "defer" | "exclude-positive-positioning" | "supported-adjacent-claim" | "drafting-caution";
@@ -4139,10 +4139,6 @@ export declare const JobGapHandlingRuleSchema: z.ZodObject<{
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -4193,6 +4189,10 @@ export declare const JobGapHandlingRuleSchema: z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     };
     requirementId: string;
     assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
@@ -4206,10 +4206,6 @@ export declare const JobGapHandlingRuleSchema: z.ZodObject<{
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -4260,6 +4256,10 @@ export declare const JobGapHandlingRuleSchema: z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     };
     requirementId: string;
     assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
@@ -4554,10 +4554,6 @@ export declare const JobResumeSectionPlanSchema: z.ZodObject<{
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -4608,14 +4604,14 @@ export declare const JobResumeSectionPlanSchema: z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     }, {
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -4666,6 +4662,10 @@ export declare const JobResumeSectionPlanSchema: z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     }>;
 }, "strict", z.ZodTypeAny, {
     type: "education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information";
@@ -4674,10 +4674,6 @@ export declare const JobResumeSectionPlanSchema: z.ZodObject<{
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -4728,16 +4724,20 @@ export declare const JobResumeSectionPlanSchema: z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     };
     evidenceIds: string[];
     requirementIds: string[];
-    order: number;
-    allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome" | "target-title")[];
     claimIds: string[];
     boundaryIds: string[];
     inclusion: "exclude" | "include" | "optional";
+    order: number;
     objectiveCode: "position-target-without-history-claim" | "summarize-selected-proof-themes" | "group-job-relevant-capabilities" | "surface-reviewed-outcomes" | "organize-reviewed-employment-evidence" | "organize-project-scoped-evidence" | "group-reviewed-technical-capabilities" | "group-reviewed-leadership-capabilities" | "retain-relevant-education" | "retain-relevant-certifications" | "retain-approved-additional-information";
     exclusionIds: string[];
+    allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
     riskCodes: string[];
     warningCodes: string[];
     maximumItemCount?: number | undefined;
@@ -4748,10 +4748,6 @@ export declare const JobResumeSectionPlanSchema: z.ZodObject<{
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -4802,16 +4798,20 @@ export declare const JobResumeSectionPlanSchema: z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     };
     evidenceIds: string[];
     requirementIds: string[];
-    order: number;
-    allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome" | "target-title")[];
     claimIds: string[];
     boundaryIds: string[];
     inclusion: "exclude" | "include" | "optional";
+    order: number;
     objectiveCode: "position-target-without-history-claim" | "summarize-selected-proof-themes" | "group-job-relevant-capabilities" | "surface-reviewed-outcomes" | "organize-reviewed-employment-evidence" | "organize-project-scoped-evidence" | "group-reviewed-technical-capabilities" | "group-reviewed-leadership-capabilities" | "retain-relevant-education" | "retain-relevant-certifications" | "retain-approved-additional-information";
     exclusionIds: string[];
+    allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
     riskCodes: string[];
     warningCodes: string[];
     maximumItemCount?: number | undefined;
@@ -5095,10 +5095,6 @@ export declare const JobResumeContentExclusionSchema: z.ZodObject<{
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -5149,14 +5145,14 @@ export declare const JobResumeContentExclusionSchema: z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     }, {
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -5207,6 +5203,10 @@ export declare const JobResumeContentExclusionSchema: z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     }>;
 }, "strict", z.ZodTypeAny, {
     type: "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement" | "project-as-employment" | "unverified-metric" | "target-title-history" | "non-resume-ready-evidence" | "private-evidence" | "unapproved-claim" | "unsupported-terminology" | "unsupported-seniority-or-scope" | "irrelevant-evidence" | "duplicate-evidence-use";
@@ -5216,10 +5216,6 @@ export declare const JobResumeContentExclusionSchema: z.ZodObject<{
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -5270,6 +5266,10 @@ export declare const JobResumeContentExclusionSchema: z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     };
     sourceIds: string[];
     severity: "high" | "medium" | "low" | "blocking";
@@ -5282,10 +5282,6 @@ export declare const JobResumeContentExclusionSchema: z.ZodObject<{
         targetId: string;
         evidenceIds: string[];
         requirementIds: string[];
-        planningPolicy: {
-            name: string;
-            version: string;
-        };
         coverageReferences: {
             coverageEntryId: string;
             coverageEntrySha256: string;
@@ -5336,6 +5332,10 @@ export declare const JobResumeContentExclusionSchema: z.ZodObject<{
             linkSha256: string;
         }[];
         claimIds: string[];
+        planningPolicy: {
+            name: string;
+            version: string;
+        };
     };
     sourceIds: string[];
     severity: "high" | "medium" | "low" | "blocking";
@@ -5427,52 +5427,52 @@ export declare const JobResumePlanCompletenessSchema: z.ZodEffects<z.ZodObject<{
     status: "empty" | "partial" | "complete";
     blockingReasons: string[];
     requirementIds: string[];
-    claimBoundariesComplete: boolean;
-    provenanceComplete: boolean;
     plannedRequirementIds: string[];
     selectedRequirementIds: string[];
     deferredRequirementIds: string[];
     excludedRequirementIds: string[];
     includedSectionTypes: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
+    claimBoundariesComplete: boolean;
+    provenanceComplete: boolean;
     criticalConstraintsRepresented: boolean;
     usableForDrafting: boolean;
 }, {
     status: "empty" | "partial" | "complete";
     blockingReasons: string[];
     requirementIds: string[];
-    claimBoundariesComplete: boolean;
-    provenanceComplete: boolean;
     plannedRequirementIds: string[];
     selectedRequirementIds: string[];
     deferredRequirementIds: string[];
     excludedRequirementIds: string[];
     includedSectionTypes: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
+    claimBoundariesComplete: boolean;
+    provenanceComplete: boolean;
     criticalConstraintsRepresented: boolean;
     usableForDrafting: boolean;
 }>, {
     status: "empty" | "partial" | "complete";
     blockingReasons: string[];
     requirementIds: string[];
-    claimBoundariesComplete: boolean;
-    provenanceComplete: boolean;
     plannedRequirementIds: string[];
     selectedRequirementIds: string[];
     deferredRequirementIds: string[];
     excludedRequirementIds: string[];
     includedSectionTypes: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
+    claimBoundariesComplete: boolean;
+    provenanceComplete: boolean;
     criticalConstraintsRepresented: boolean;
     usableForDrafting: boolean;
 }, {
     status: "empty" | "partial" | "complete";
     blockingReasons: string[];
     requirementIds: string[];
-    claimBoundariesComplete: boolean;
-    provenanceComplete: boolean;
     plannedRequirementIds: string[];
     selectedRequirementIds: string[];
     deferredRequirementIds: string[];
     excludedRequirementIds: string[];
     includedSectionTypes: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
+    claimBoundariesComplete: boolean;
+    provenanceComplete: boolean;
     criticalConstraintsRepresented: boolean;
     usableForDrafting: boolean;
 }>;
@@ -5634,20 +5634,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             path: string;
         };
         normalizedInputSha256: string;
-        evidenceItems: {
-            sha256: string;
-            path: string;
-        };
-        assessment: {
-            sha256: string;
-            path: string;
-            manifestPath: string;
-            manifestSha256: string;
-        };
-        claims: {
-            sha256: string;
-            path: string;
-        };
         requirementModelType: "approved" | "deterministic";
         requirementModel: {
             sha256: string;
@@ -5655,7 +5641,21 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             manifestPath: string;
             manifestSha256: string;
         };
+        evidenceItems: {
+            sha256: string;
+            path: string;
+        };
+        claims: {
+            sha256: string;
+            path: string;
+        };
         evidenceMap: {
+            sha256: string;
+            path: string;
+            manifestPath: string;
+            manifestSha256: string;
+        };
+        assessment: {
             sha256: string;
             path: string;
             manifestPath: string;
@@ -5683,20 +5683,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             path: string;
         };
         normalizedInputSha256: string;
-        evidenceItems: {
-            sha256: string;
-            path: string;
-        };
-        assessment: {
-            sha256: string;
-            path: string;
-            manifestPath: string;
-            manifestSha256: string;
-        };
-        claims: {
-            sha256: string;
-            path: string;
-        };
         requirementModelType: "approved" | "deterministic";
         requirementModel: {
             sha256: string;
@@ -5704,7 +5690,21 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             manifestPath: string;
             manifestSha256: string;
         };
+        evidenceItems: {
+            sha256: string;
+            path: string;
+        };
+        claims: {
+            sha256: string;
+            path: string;
+        };
         evidenceMap: {
+            sha256: string;
+            path: string;
+            manifestPath: string;
+            manifestSha256: string;
+        };
+        assessment: {
             sha256: string;
             path: string;
             manifestPath: string;
@@ -5995,10 +5995,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -6049,14 +6045,14 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         }, {
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -6107,16 +6103,16 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         }>;
     }, "strict", z.ZodTypeAny, {
         provenance: {
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -6167,25 +6163,25 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
-        prohibitedUses: ("employment-history" | "seniority-proof" | "authority-proof" | "scope-proof")[];
         state: "direct" | "indeterminate" | "adjacent" | "stretch" | "insufficient-proof";
-        sourceOverallAssessment: "strong" | "limited" | "insufficient" | "mixed" | "indeterminate" | "credible";
+        sourceOverallAssessment: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
         targetTitle: string;
         targetTitleUse: "positioning-only";
         primaryRequirementIds: string[];
         supportingRequirementIds: string[];
         cautionRequirementIds: string[];
         rationaleCode: "strong-reviewed-proof" | "credible-reviewed-proof" | "mixed-reviewed-proof" | "limited-reviewed-proof" | "insufficient-reviewed-proof" | "indeterminate-reviewed-proof";
+        prohibitedUses: ("employment-history" | "seniority-proof" | "authority-proof" | "scope-proof")[];
     }, {
         provenance: {
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -6236,16 +6232,20 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
-        prohibitedUses: ("employment-history" | "seniority-proof" | "authority-proof" | "scope-proof")[];
         state: "direct" | "indeterminate" | "adjacent" | "stretch" | "insufficient-proof";
-        sourceOverallAssessment: "strong" | "limited" | "insufficient" | "mixed" | "indeterminate" | "credible";
+        sourceOverallAssessment: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
         targetTitle: string;
         targetTitleUse: "positioning-only";
         primaryRequirementIds: string[];
         supportingRequirementIds: string[];
         cautionRequirementIds: string[];
         rationaleCode: "strong-reviewed-proof" | "credible-reviewed-proof" | "mixed-reviewed-proof" | "limited-reviewed-proof" | "insufficient-reviewed-proof" | "indeterminate-reviewed-proof";
+        prohibitedUses: ("employment-history" | "seniority-proof" | "authority-proof" | "scope-proof")[];
     }>;
     requirementEmphasis: z.ZodArray<z.ZodEffects<z.ZodObject<{
         id: z.ZodString;
@@ -6536,10 +6536,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -6590,14 +6586,14 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         }, {
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -6648,9 +6644,13 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         }>;
     }, "strict", z.ZodTypeAny, {
-        decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+        decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
         id: string;
         necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
@@ -6658,10 +6658,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -6712,10 +6708,13 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
-        materiality: "unknown" | "contextual" | "critical" | "secondary" | "material";
+        materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
         requirementId: string;
-        allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
         coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
         assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
         proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
@@ -6724,9 +6723,10 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
         selectedEvidenceIds: string[];
         selectedClaimIds: string[];
         allowedTerminology: string[];
+        allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
         cautionCodes: ("do-not-overstate-partial-proof" | "do-not-present-gap-as-strength" | "do-not-use-adjacent-proof-as-direct" | "do-not-hide-contradiction" | "preserve-ambiguity")[];
     }, {
-        decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+        decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
         id: string;
         necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
@@ -6734,10 +6734,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -6788,10 +6784,13 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
-        materiality: "unknown" | "contextual" | "critical" | "secondary" | "material";
+        materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
         requirementId: string;
-        allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
         coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
         assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
         proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
@@ -6800,9 +6799,10 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
         selectedEvidenceIds: string[];
         selectedClaimIds: string[];
         allowedTerminology: string[];
+        allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
         cautionCodes: ("do-not-overstate-partial-proof" | "do-not-present-gap-as-strength" | "do-not-use-adjacent-proof-as-direct" | "do-not-hide-contradiction" | "preserve-ambiguity")[];
     }>, {
-        decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+        decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
         id: string;
         necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
@@ -6810,10 +6810,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -6864,10 +6860,13 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
-        materiality: "unknown" | "contextual" | "critical" | "secondary" | "material";
+        materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
         requirementId: string;
-        allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
         coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
         assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
         proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
@@ -6876,9 +6875,10 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
         selectedEvidenceIds: string[];
         selectedClaimIds: string[];
         allowedTerminology: string[];
+        allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
         cautionCodes: ("do-not-overstate-partial-proof" | "do-not-present-gap-as-strength" | "do-not-use-adjacent-proof-as-direct" | "do-not-hide-contradiction" | "preserve-ambiguity")[];
     }, {
-        decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+        decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
         id: string;
         necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
@@ -6886,10 +6886,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -6940,10 +6936,13 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
-        materiality: "unknown" | "contextual" | "critical" | "secondary" | "material";
+        materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
         requirementId: string;
-        allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
         coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
         assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
         proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
@@ -6952,6 +6951,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
         selectedEvidenceIds: string[];
         selectedClaimIds: string[];
         allowedTerminology: string[];
+        allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
         cautionCodes: ("do-not-overstate-partial-proof" | "do-not-present-gap-as-strength" | "do-not-use-adjacent-proof-as-direct" | "do-not-hide-contradiction" | "preserve-ambiguity")[];
     }>, "many">;
     evidenceSelections: z.ZodArray<z.ZodObject<{
@@ -6967,13 +6967,13 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             intendedSections: z.ZodArray<z.ZodEnum<["headline", "professional-summary", "core-capabilities", "selected-impact", "professional-experience", "selected-projects", "technical-capabilities", "leadership-capabilities", "education", "certifications", "additional-information"]>, "many">;
             purposeCode: z.ZodEnum<["primary-requirement-proof", "secondary-requirement-proof", "supporting-context", "deferred-proof", "excluded-proof"]>;
         }, "strict", z.ZodTypeAny, {
-            decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+            decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
             requirementId: string;
             linkIds: string[];
             intendedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
             purposeCode: "primary-requirement-proof" | "secondary-requirement-proof" | "supporting-context" | "deferred-proof" | "excluded-proof";
         }, {
-            decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+            decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
             requirementId: string;
             linkIds: string[];
             intendedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
@@ -7256,10 +7256,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -7310,14 +7306,14 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         }, {
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -7368,19 +7364,19 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         }>;
     }, "strict", z.ZodTypeAny, {
-        decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+        decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
         id: string;
         evidenceId: string;
         provenance: {
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -7431,12 +7427,16 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
         relationships: ("partial" | "direct" | "supporting")[];
         claimIds: string[];
         intendedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
         requirementUses: {
-            decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+            decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
             requirementId: string;
             linkIds: string[];
             intendedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
@@ -7447,17 +7447,13 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
         limitationCodes: ("partial-relationship" | "supporting-relationship-only" | "limited-proof" | "project-scoped" | "historical-scope-only" | "no-verified-metric" | "multiple-section-reuse")[];
         primaryRequirementId?: string | undefined;
     }, {
-        decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+        decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
         id: string;
         evidenceId: string;
         provenance: {
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -7508,12 +7504,16 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
         relationships: ("partial" | "direct" | "supporting")[];
         claimIds: string[];
         intendedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
         requirementUses: {
-            decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+            decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
             requirementId: string;
             linkIds: string[];
             intendedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
@@ -7811,10 +7811,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -7865,14 +7861,14 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         }, {
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -7923,6 +7919,10 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         }>;
     }, "strict", z.ZodTypeAny, {
         type: "education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information";
@@ -7931,10 +7931,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -7985,16 +7981,20 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
         evidenceIds: string[];
         requirementIds: string[];
-        order: number;
-        allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome" | "target-title")[];
         claimIds: string[];
         boundaryIds: string[];
         inclusion: "exclude" | "include" | "optional";
+        order: number;
         objectiveCode: "position-target-without-history-claim" | "summarize-selected-proof-themes" | "group-job-relevant-capabilities" | "surface-reviewed-outcomes" | "organize-reviewed-employment-evidence" | "organize-project-scoped-evidence" | "group-reviewed-technical-capabilities" | "group-reviewed-leadership-capabilities" | "retain-relevant-education" | "retain-relevant-certifications" | "retain-approved-additional-information";
         exclusionIds: string[];
+        allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         riskCodes: string[];
         warningCodes: string[];
         maximumItemCount?: number | undefined;
@@ -8005,10 +8005,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -8059,16 +8055,20 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
         evidenceIds: string[];
         requirementIds: string[];
-        order: number;
-        allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome" | "target-title")[];
         claimIds: string[];
         boundaryIds: string[];
         inclusion: "exclude" | "include" | "optional";
+        order: number;
         objectiveCode: "position-target-without-history-claim" | "summarize-selected-proof-themes" | "group-job-relevant-capabilities" | "surface-reviewed-outcomes" | "organize-reviewed-employment-evidence" | "organize-project-scoped-evidence" | "group-reviewed-technical-capabilities" | "group-reviewed-leadership-capabilities" | "retain-relevant-education" | "retain-relevant-certifications" | "retain-approved-additional-information";
         exclusionIds: string[];
+        allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         riskCodes: string[];
         warningCodes: string[];
         maximumItemCount?: number | undefined;
@@ -8357,10 +8357,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -8411,14 +8407,14 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         }, {
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -8469,18 +8465,18 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         }>;
     }, "strict", z.ZodTypeAny, {
         id: string;
-        kind: "scope" | "target-title" | "requirement-claim" | "project-employment" | "metric";
+        kind: "target-title" | "scope" | "requirement-claim" | "project-employment" | "metric";
         provenance: {
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -8531,27 +8527,27 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
         evidenceIds: string[];
-        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome" | "target-title")[];
-        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome" | "target-title")[];
-        state: "allowed" | "prohibited" | "allowed-with-qualifier" | "requires-caution";
+        state: "allowed" | "allowed-with-qualifier" | "requires-caution" | "prohibited";
         claimIds: string[];
         rationaleCode: "direct-reviewed-proof" | "qualified-partial-proof" | "deferred-or-ambiguous-proof" | "unsupported-or-conflicting-proof" | "target-title-not-history" | "project-scope-not-employment" | "metric-requires-verification" | "scope-limited-to-reviewed-evidence";
+        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         requiredQualifierCodes: ("evidence-scoped-wording" | "project-scoped-wording" | "adjacent-not-direct" | "partial-support-only" | "exact-reviewed-metric-only" | "target-title-positioning-only")[];
         prohibitedInferenceCodes: ("target-title-as-employment" | "project-as-employment" | "responsibility-as-achievement" | "contribution-as-ownership" | "collaboration-as-management" | "technical-exposure-as-expertise" | "adjacent-technology-as-exact-experience" | "domain-adjacency-as-direct-experience" | "unsupported-seniority" | "unsupported-authority" | "unsupported-team-size" | "unsupported-geography" | "unsupported-scale" | "unsupported-adoption" | "unsupported-dates" | "unsupported-outcomes" | "unverified-metric")[];
         requirementId?: string | undefined;
     }, {
         id: string;
-        kind: "scope" | "target-title" | "requirement-claim" | "project-employment" | "metric";
+        kind: "target-title" | "scope" | "requirement-claim" | "project-employment" | "metric";
         provenance: {
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -8602,13 +8598,17 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
         evidenceIds: string[];
-        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome" | "target-title")[];
-        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome" | "target-title")[];
-        state: "allowed" | "prohibited" | "allowed-with-qualifier" | "requires-caution";
+        state: "allowed" | "allowed-with-qualifier" | "requires-caution" | "prohibited";
         claimIds: string[];
         rationaleCode: "direct-reviewed-proof" | "qualified-partial-proof" | "deferred-or-ambiguous-proof" | "unsupported-or-conflicting-proof" | "target-title-not-history" | "project-scope-not-employment" | "metric-requires-verification" | "scope-limited-to-reviewed-evidence";
+        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         requiredQualifierCodes: ("evidence-scoped-wording" | "project-scoped-wording" | "adjacent-not-direct" | "partial-support-only" | "exact-reviewed-metric-only" | "target-title-positioning-only")[];
         prohibitedInferenceCodes: ("target-title-as-employment" | "project-as-employment" | "responsibility-as-achievement" | "contribution-as-ownership" | "collaboration-as-management" | "technical-exposure-as-expertise" | "adjacent-technology-as-exact-experience" | "domain-adjacency-as-direct-experience" | "unsupported-seniority" | "unsupported-authority" | "unsupported-team-size" | "unsupported-geography" | "unsupported-scale" | "unsupported-adoption" | "unsupported-dates" | "unsupported-outcomes" | "unverified-metric")[];
         requirementId?: string | undefined;
@@ -8906,10 +8906,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -8960,14 +8956,14 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         }, {
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -9018,6 +9014,10 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         }>;
     }, "strict", z.ZodTypeAny, {
         claimId: string;
@@ -9027,10 +9027,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -9081,14 +9077,18 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
+        state: "allowed" | "prohibited";
         scope: {
             parentRoleId?: string | undefined;
             parentProjectId?: string | undefined;
             sourceSection?: string | undefined;
         };
         allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
-        state: "allowed" | "prohibited";
         qualifierCodes: ("use-exact-approved-text" | "preserve-reviewed-scope" | "do-not-round" | "do-not-combine" | "do-not-infer-scale")[];
         exactApprovedMetricText?: string | undefined;
     }, {
@@ -9099,10 +9099,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -9153,14 +9149,18 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
+        state: "allowed" | "prohibited";
         scope: {
             parentRoleId?: string | undefined;
             parentProjectId?: string | undefined;
             sourceSection?: string | undefined;
         };
         allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
-        state: "allowed" | "prohibited";
         qualifierCodes: ("use-exact-approved-text" | "preserve-reviewed-scope" | "do-not-round" | "do-not-combine" | "do-not-infer-scale")[];
         exactApprovedMetricText?: string | undefined;
     }>, {
@@ -9171,10 +9171,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -9225,14 +9221,18 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
+        state: "allowed" | "prohibited";
         scope: {
             parentRoleId?: string | undefined;
             parentProjectId?: string | undefined;
             sourceSection?: string | undefined;
         };
         allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
-        state: "allowed" | "prohibited";
         qualifierCodes: ("use-exact-approved-text" | "preserve-reviewed-scope" | "do-not-round" | "do-not-combine" | "do-not-infer-scale")[];
         exactApprovedMetricText?: string | undefined;
     }, {
@@ -9243,10 +9243,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -9297,14 +9293,18 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
+        state: "allowed" | "prohibited";
         scope: {
             parentRoleId?: string | undefined;
             parentProjectId?: string | undefined;
             sourceSection?: string | undefined;
         };
         allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
-        state: "allowed" | "prohibited";
         qualifierCodes: ("use-exact-approved-text" | "preserve-reviewed-scope" | "do-not-round" | "do-not-combine" | "do-not-infer-scale")[];
         exactApprovedMetricText?: string | undefined;
     }>, "many">;
@@ -9588,10 +9588,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -9642,14 +9638,14 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         }, {
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -9700,6 +9696,10 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         }>;
     }, "strict", z.ZodTypeAny, {
         decision: "defer" | "exclude-positive-positioning" | "supported-adjacent-claim" | "drafting-caution";
@@ -9708,10 +9708,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -9762,6 +9758,10 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
         requirementId: string;
         assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
@@ -9775,10 +9775,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -9829,6 +9825,10 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
         requirementId: string;
         assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
@@ -10115,10 +10115,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -10169,14 +10165,14 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         }, {
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -10227,6 +10223,10 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         }>;
     }, "strict", z.ZodTypeAny, {
         type: "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement" | "project-as-employment" | "unverified-metric" | "target-title-history" | "non-resume-ready-evidence" | "private-evidence" | "unapproved-claim" | "unsupported-terminology" | "unsupported-seniority-or-scope" | "irrelevant-evidence" | "duplicate-evidence-use";
@@ -10236,10 +10236,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -10290,6 +10286,10 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
         sourceIds: string[];
         severity: "high" | "medium" | "low" | "blocking";
@@ -10302,10 +10302,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -10356,6 +10352,10 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
         sourceIds: string[];
         severity: "high" | "medium" | "low" | "blocking";
@@ -10447,52 +10447,52 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
         status: "empty" | "partial" | "complete";
         blockingReasons: string[];
         requirementIds: string[];
-        claimBoundariesComplete: boolean;
-        provenanceComplete: boolean;
         plannedRequirementIds: string[];
         selectedRequirementIds: string[];
         deferredRequirementIds: string[];
         excludedRequirementIds: string[];
         includedSectionTypes: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
+        claimBoundariesComplete: boolean;
+        provenanceComplete: boolean;
         criticalConstraintsRepresented: boolean;
         usableForDrafting: boolean;
     }, {
         status: "empty" | "partial" | "complete";
         blockingReasons: string[];
         requirementIds: string[];
-        claimBoundariesComplete: boolean;
-        provenanceComplete: boolean;
         plannedRequirementIds: string[];
         selectedRequirementIds: string[];
         deferredRequirementIds: string[];
         excludedRequirementIds: string[];
         includedSectionTypes: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
+        claimBoundariesComplete: boolean;
+        provenanceComplete: boolean;
         criticalConstraintsRepresented: boolean;
         usableForDrafting: boolean;
     }>, {
         status: "empty" | "partial" | "complete";
         blockingReasons: string[];
         requirementIds: string[];
-        claimBoundariesComplete: boolean;
-        provenanceComplete: boolean;
         plannedRequirementIds: string[];
         selectedRequirementIds: string[];
         deferredRequirementIds: string[];
         excludedRequirementIds: string[];
         includedSectionTypes: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
+        claimBoundariesComplete: boolean;
+        provenanceComplete: boolean;
         criticalConstraintsRepresented: boolean;
         usableForDrafting: boolean;
     }, {
         status: "empty" | "partial" | "complete";
         blockingReasons: string[];
         requirementIds: string[];
-        claimBoundariesComplete: boolean;
-        provenanceComplete: boolean;
         plannedRequirementIds: string[];
         selectedRequirementIds: string[];
         deferredRequirementIds: string[];
         excludedRequirementIds: string[];
         includedSectionTypes: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
+        claimBoundariesComplete: boolean;
+        provenanceComplete: boolean;
         criticalConstraintsRepresented: boolean;
         usableForDrafting: boolean;
     }>;
@@ -10524,20 +10524,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             path: string;
         };
         normalizedInputSha256: string;
-        evidenceItems: {
-            sha256: string;
-            path: string;
-        };
-        assessment: {
-            sha256: string;
-            path: string;
-            manifestPath: string;
-            manifestSha256: string;
-        };
-        claims: {
-            sha256: string;
-            path: string;
-        };
         requirementModelType: "approved" | "deterministic";
         requirementModel: {
             sha256: string;
@@ -10545,7 +10531,21 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             manifestPath: string;
             manifestSha256: string;
         };
+        evidenceItems: {
+            sha256: string;
+            path: string;
+        };
+        claims: {
+            sha256: string;
+            path: string;
+        };
         evidenceMap: {
+            sha256: string;
+            path: string;
+            manifestPath: string;
+            manifestSha256: string;
+        };
+        assessment: {
             sha256: string;
             path: string;
             manifestPath: string;
@@ -10561,10 +10561,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -10615,16 +10611,20 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
         evidenceIds: string[];
         requirementIds: string[];
-        order: number;
-        allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome" | "target-title")[];
         claimIds: string[];
         boundaryIds: string[];
         inclusion: "exclude" | "include" | "optional";
+        order: number;
         objectiveCode: "position-target-without-history-claim" | "summarize-selected-proof-themes" | "group-job-relevant-capabilities" | "surface-reviewed-outcomes" | "organize-reviewed-employment-evidence" | "organize-project-scoped-evidence" | "group-reviewed-technical-capabilities" | "group-reviewed-leadership-capabilities" | "retain-relevant-education" | "retain-relevant-certifications" | "retain-approved-additional-information";
         exclusionIds: string[];
+        allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         riskCodes: string[];
         warningCodes: string[];
         maximumItemCount?: number | undefined;
@@ -10651,13 +10651,13 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
         status: "empty" | "partial" | "complete";
         blockingReasons: string[];
         requirementIds: string[];
-        claimBoundariesComplete: boolean;
-        provenanceComplete: boolean;
         plannedRequirementIds: string[];
         selectedRequirementIds: string[];
         deferredRequirementIds: string[];
         excludedRequirementIds: string[];
         includedSectionTypes: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
+        claimBoundariesComplete: boolean;
+        provenanceComplete: boolean;
         criticalConstraintsRepresented: boolean;
         usableForDrafting: boolean;
     };
@@ -10680,10 +10680,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -10734,29 +10730,30 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
-        prohibitedUses: ("employment-history" | "seniority-proof" | "authority-proof" | "scope-proof")[];
         state: "direct" | "indeterminate" | "adjacent" | "stretch" | "insufficient-proof";
-        sourceOverallAssessment: "strong" | "limited" | "insufficient" | "mixed" | "indeterminate" | "credible";
+        sourceOverallAssessment: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
         targetTitle: string;
         targetTitleUse: "positioning-only";
         primaryRequirementIds: string[];
         supportingRequirementIds: string[];
         cautionRequirementIds: string[];
         rationaleCode: "strong-reviewed-proof" | "credible-reviewed-proof" | "mixed-reviewed-proof" | "limited-reviewed-proof" | "insufficient-reviewed-proof" | "indeterminate-reviewed-proof";
+        prohibitedUses: ("employment-history" | "seniority-proof" | "authority-proof" | "scope-proof")[];
     };
-    evidenceSelections: {
-        decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+    requirementEmphasis: {
+        decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
         id: string;
-        evidenceId: string;
+        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         provenance: {
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -10807,12 +10804,92 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
+        };
+        materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
+        requirementId: string;
+        coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
+        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+        proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
+        rationaleCode: "mandatory-strong-support" | "mandatory-defensible-support" | "preferred-defensible-support" | "contextual-defensible-support" | "mandatory-partial-support" | "nonmandatory-partial-support" | "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement";
+        selectedLinkIds: string[];
+        selectedEvidenceIds: string[];
+        selectedClaimIds: string[];
+        allowedTerminology: string[];
+        allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
+        cautionCodes: ("do-not-overstate-partial-proof" | "do-not-present-gap-as-strength" | "do-not-use-adjacent-proof-as-direct" | "do-not-hide-contradiction" | "preserve-ambiguity")[];
+    }[];
+    evidenceSelections: {
+        decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
+        id: string;
+        evidenceId: string;
+        provenance: {
+            targetId: string;
+            evidenceIds: string[];
+            requirementIds: string[];
+            coverageReferences: {
+                coverageEntryId: string;
+                coverageEntrySha256: string;
+            }[];
+            assessmentReferences: {
+                assessmentEntryId: string;
+                assessmentEntrySha256: string;
+            }[];
+            evidenceLinkReferences: {
+                claimId: string;
+                evidenceId: string;
+                evidenceProvenance: {
+                    claimId: string;
+                    evidenceId: string;
+                    sources: {
+                        sha256: string;
+                        path: string;
+                        status: "active";
+                        sourceType: string;
+                        sourceId: string;
+                        visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
+                    }[];
+                    evidenceItemPath: string;
+                    evidenceItemSha256: string;
+                    claimPath: string;
+                    claimSha256: string;
+                };
+                requirementId: string;
+                relationship: "partial" | "direct" | "supporting";
+                requirementProvenance: {
+                    sourceReferences: {
+                        sha256: string;
+                        path: string;
+                        sourceType: "job-description-markdown" | "target-json";
+                        startLine: number;
+                        endLine: number;
+                        excerptSha256: string;
+                        startOffset?: number | undefined;
+                        endOffset?: number | undefined;
+                    }[];
+                    requirementId: string;
+                    requirementModelType: "approved" | "deterministic";
+                    requirementModelPath: string;
+                    requirementModelSha256: string;
+                    sourceTextSha256: string;
+                };
+                linkId: string;
+                linkSha256: string;
+            }[];
+            claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
         relationships: ("partial" | "direct" | "supporting")[];
         claimIds: string[];
         intendedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
         requirementUses: {
-            decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+            decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
             requirementId: string;
             linkIds: string[];
             intendedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
@@ -10825,15 +10902,11 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
     }[];
     claimBoundaries: {
         id: string;
-        kind: "scope" | "target-title" | "requirement-claim" | "project-employment" | "metric";
+        kind: "target-title" | "scope" | "requirement-claim" | "project-employment" | "metric";
         provenance: {
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -10884,160 +10957,20 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
         evidenceIds: string[];
-        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome" | "target-title")[];
-        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome" | "target-title")[];
-        state: "allowed" | "prohibited" | "allowed-with-qualifier" | "requires-caution";
+        state: "allowed" | "allowed-with-qualifier" | "requires-caution" | "prohibited";
         claimIds: string[];
         rationaleCode: "direct-reviewed-proof" | "qualified-partial-proof" | "deferred-or-ambiguous-proof" | "unsupported-or-conflicting-proof" | "target-title-not-history" | "project-scope-not-employment" | "metric-requires-verification" | "scope-limited-to-reviewed-evidence";
+        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         requiredQualifierCodes: ("evidence-scoped-wording" | "project-scoped-wording" | "adjacent-not-direct" | "partial-support-only" | "exact-reviewed-metric-only" | "target-title-positioning-only")[];
         prohibitedInferenceCodes: ("target-title-as-employment" | "project-as-employment" | "responsibility-as-achievement" | "contribution-as-ownership" | "collaboration-as-management" | "technical-exposure-as-expertise" | "adjacent-technology-as-exact-experience" | "domain-adjacency-as-direct-experience" | "unsupported-seniority" | "unsupported-authority" | "unsupported-team-size" | "unsupported-geography" | "unsupported-scale" | "unsupported-adoption" | "unsupported-dates" | "unsupported-outcomes" | "unverified-metric")[];
         requirementId?: string | undefined;
-    }[];
-    exclusions: {
-        type: "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement" | "project-as-employment" | "unverified-metric" | "target-title-history" | "non-resume-ready-evidence" | "private-evidence" | "unapproved-claim" | "unsupported-terminology" | "unsupported-seniority-or-scope" | "irrelevant-evidence" | "duplicate-evidence-use";
-        id: string;
-        sourceType: "claim" | "target" | "evidence" | "policy" | "requirement";
-        provenance: {
-            targetId: string;
-            evidenceIds: string[];
-            requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
-            coverageReferences: {
-                coverageEntryId: string;
-                coverageEntrySha256: string;
-            }[];
-            assessmentReferences: {
-                assessmentEntryId: string;
-                assessmentEntrySha256: string;
-            }[];
-            evidenceLinkReferences: {
-                claimId: string;
-                evidenceId: string;
-                evidenceProvenance: {
-                    claimId: string;
-                    evidenceId: string;
-                    sources: {
-                        sha256: string;
-                        path: string;
-                        status: "active";
-                        sourceType: string;
-                        sourceId: string;
-                        visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
-                    }[];
-                    evidenceItemPath: string;
-                    evidenceItemSha256: string;
-                    claimPath: string;
-                    claimSha256: string;
-                };
-                requirementId: string;
-                relationship: "partial" | "direct" | "supporting";
-                requirementProvenance: {
-                    sourceReferences: {
-                        sha256: string;
-                        path: string;
-                        sourceType: "job-description-markdown" | "target-json";
-                        startLine: number;
-                        endLine: number;
-                        excerptSha256: string;
-                        startOffset?: number | undefined;
-                        endOffset?: number | undefined;
-                    }[];
-                    requirementId: string;
-                    requirementModelType: "approved" | "deterministic";
-                    requirementModelPath: string;
-                    requirementModelSha256: string;
-                    sourceTextSha256: string;
-                };
-                linkId: string;
-                linkSha256: string;
-            }[];
-            claimIds: string[];
-        };
-        sourceIds: string[];
-        severity: "high" | "medium" | "low" | "blocking";
-        reasonCode: "no-reviewed-proof" | "explicit-contradiction" | "unresolved-ambiguity" | "metric-not-verified" | "target-title-is-not-history" | "project-scope-is-not-employment" | "evidence-not-eligible" | "claim-not-eligible" | "terminology-not-supported" | "scope-not-supported" | "not-selected-for-job-plan" | "deduplicated-use";
-    }[];
-    requirementEmphasis: {
-        decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
-        id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
-        category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
-        provenance: {
-            targetId: string;
-            evidenceIds: string[];
-            requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
-            coverageReferences: {
-                coverageEntryId: string;
-                coverageEntrySha256: string;
-            }[];
-            assessmentReferences: {
-                assessmentEntryId: string;
-                assessmentEntrySha256: string;
-            }[];
-            evidenceLinkReferences: {
-                claimId: string;
-                evidenceId: string;
-                evidenceProvenance: {
-                    claimId: string;
-                    evidenceId: string;
-                    sources: {
-                        sha256: string;
-                        path: string;
-                        status: "active";
-                        sourceType: string;
-                        sourceId: string;
-                        visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
-                    }[];
-                    evidenceItemPath: string;
-                    evidenceItemSha256: string;
-                    claimPath: string;
-                    claimSha256: string;
-                };
-                requirementId: string;
-                relationship: "partial" | "direct" | "supporting";
-                requirementProvenance: {
-                    sourceReferences: {
-                        sha256: string;
-                        path: string;
-                        sourceType: "job-description-markdown" | "target-json";
-                        startLine: number;
-                        endLine: number;
-                        excerptSha256: string;
-                        startOffset?: number | undefined;
-                        endOffset?: number | undefined;
-                    }[];
-                    requirementId: string;
-                    requirementModelType: "approved" | "deterministic";
-                    requirementModelPath: string;
-                    requirementModelSha256: string;
-                    sourceTextSha256: string;
-                };
-                linkId: string;
-                linkSha256: string;
-            }[];
-            claimIds: string[];
-        };
-        materiality: "unknown" | "contextual" | "critical" | "secondary" | "material";
-        requirementId: string;
-        allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
-        coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
-        proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
-        rationaleCode: "mandatory-strong-support" | "mandatory-defensible-support" | "preferred-defensible-support" | "contextual-defensible-support" | "mandatory-partial-support" | "nonmandatory-partial-support" | "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement";
-        selectedLinkIds: string[];
-        selectedEvidenceIds: string[];
-        selectedClaimIds: string[];
-        allowedTerminology: string[];
-        cautionCodes: ("do-not-overstate-partial-proof" | "do-not-present-gap-as-strength" | "do-not-use-adjacent-proof-as-direct" | "do-not-hide-contradiction" | "preserve-ambiguity")[];
     }[];
     metricPermissions: {
         claimId: string;
@@ -11047,10 +10980,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -11101,14 +11030,18 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
+        state: "allowed" | "prohibited";
         scope: {
             parentRoleId?: string | undefined;
             parentProjectId?: string | undefined;
             sourceSection?: string | undefined;
         };
         allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
-        state: "allowed" | "prohibited";
         qualifierCodes: ("use-exact-approved-text" | "preserve-reviewed-scope" | "do-not-round" | "do-not-combine" | "do-not-infer-scale")[];
         exactApprovedMetricText?: string | undefined;
     }[];
@@ -11119,10 +11052,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -11173,12 +11102,83 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
         requirementId: string;
         assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
         adjacentEvidenceIds: string[];
         adjacentClaimIds: string[];
         constraintCodes: ("not-positive-positioning" | "not-direct-satisfaction" | "no-compensating-narrative" | "no-gap-closing-advice" | "no-application-advice")[];
+    }[];
+    exclusions: {
+        type: "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement" | "project-as-employment" | "unverified-metric" | "target-title-history" | "non-resume-ready-evidence" | "private-evidence" | "unapproved-claim" | "unsupported-terminology" | "unsupported-seniority-or-scope" | "irrelevant-evidence" | "duplicate-evidence-use";
+        id: string;
+        sourceType: "claim" | "target" | "evidence" | "policy" | "requirement";
+        provenance: {
+            targetId: string;
+            evidenceIds: string[];
+            requirementIds: string[];
+            coverageReferences: {
+                coverageEntryId: string;
+                coverageEntrySha256: string;
+            }[];
+            assessmentReferences: {
+                assessmentEntryId: string;
+                assessmentEntrySha256: string;
+            }[];
+            evidenceLinkReferences: {
+                claimId: string;
+                evidenceId: string;
+                evidenceProvenance: {
+                    claimId: string;
+                    evidenceId: string;
+                    sources: {
+                        sha256: string;
+                        path: string;
+                        status: "active";
+                        sourceType: string;
+                        sourceId: string;
+                        visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
+                    }[];
+                    evidenceItemPath: string;
+                    evidenceItemSha256: string;
+                    claimPath: string;
+                    claimSha256: string;
+                };
+                requirementId: string;
+                relationship: "partial" | "direct" | "supporting";
+                requirementProvenance: {
+                    sourceReferences: {
+                        sha256: string;
+                        path: string;
+                        sourceType: "job-description-markdown" | "target-json";
+                        startLine: number;
+                        endLine: number;
+                        excerptSha256: string;
+                        startOffset?: number | undefined;
+                        endOffset?: number | undefined;
+                    }[];
+                    requirementId: string;
+                    requirementModelType: "approved" | "deterministic";
+                    requirementModelPath: string;
+                    requirementModelSha256: string;
+                    sourceTextSha256: string;
+                };
+                linkId: string;
+                linkSha256: string;
+            }[];
+            claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
+        };
+        sourceIds: string[];
+        severity: "high" | "medium" | "low" | "blocking";
+        reasonCode: "no-reviewed-proof" | "explicit-contradiction" | "unresolved-ambiguity" | "metric-not-verified" | "target-title-is-not-history" | "project-scope-is-not-employment" | "evidence-not-eligible" | "claim-not-eligible" | "terminology-not-supported" | "scope-not-supported" | "not-selected-for-job-plan" | "deduplicated-use";
     }[];
 }, {
     schemaVersion: 1;
@@ -11206,20 +11206,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             path: string;
         };
         normalizedInputSha256: string;
-        evidenceItems: {
-            sha256: string;
-            path: string;
-        };
-        assessment: {
-            sha256: string;
-            path: string;
-            manifestPath: string;
-            manifestSha256: string;
-        };
-        claims: {
-            sha256: string;
-            path: string;
-        };
         requirementModelType: "approved" | "deterministic";
         requirementModel: {
             sha256: string;
@@ -11227,7 +11213,21 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             manifestPath: string;
             manifestSha256: string;
         };
+        evidenceItems: {
+            sha256: string;
+            path: string;
+        };
+        claims: {
+            sha256: string;
+            path: string;
+        };
         evidenceMap: {
+            sha256: string;
+            path: string;
+            manifestPath: string;
+            manifestSha256: string;
+        };
+        assessment: {
             sha256: string;
             path: string;
             manifestPath: string;
@@ -11243,10 +11243,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -11297,16 +11293,20 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
         evidenceIds: string[];
         requirementIds: string[];
-        order: number;
-        allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome" | "target-title")[];
         claimIds: string[];
         boundaryIds: string[];
         inclusion: "exclude" | "include" | "optional";
+        order: number;
         objectiveCode: "position-target-without-history-claim" | "summarize-selected-proof-themes" | "group-job-relevant-capabilities" | "surface-reviewed-outcomes" | "organize-reviewed-employment-evidence" | "organize-project-scoped-evidence" | "group-reviewed-technical-capabilities" | "group-reviewed-leadership-capabilities" | "retain-relevant-education" | "retain-relevant-certifications" | "retain-approved-additional-information";
         exclusionIds: string[];
+        allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         riskCodes: string[];
         warningCodes: string[];
         maximumItemCount?: number | undefined;
@@ -11333,13 +11333,13 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
         status: "empty" | "partial" | "complete";
         blockingReasons: string[];
         requirementIds: string[];
-        claimBoundariesComplete: boolean;
-        provenanceComplete: boolean;
         plannedRequirementIds: string[];
         selectedRequirementIds: string[];
         deferredRequirementIds: string[];
         excludedRequirementIds: string[];
         includedSectionTypes: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
+        claimBoundariesComplete: boolean;
+        provenanceComplete: boolean;
         criticalConstraintsRepresented: boolean;
         usableForDrafting: boolean;
     };
@@ -11362,10 +11362,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -11416,29 +11412,30 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
-        prohibitedUses: ("employment-history" | "seniority-proof" | "authority-proof" | "scope-proof")[];
         state: "direct" | "indeterminate" | "adjacent" | "stretch" | "insufficient-proof";
-        sourceOverallAssessment: "strong" | "limited" | "insufficient" | "mixed" | "indeterminate" | "credible";
+        sourceOverallAssessment: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
         targetTitle: string;
         targetTitleUse: "positioning-only";
         primaryRequirementIds: string[];
         supportingRequirementIds: string[];
         cautionRequirementIds: string[];
         rationaleCode: "strong-reviewed-proof" | "credible-reviewed-proof" | "mixed-reviewed-proof" | "limited-reviewed-proof" | "insufficient-reviewed-proof" | "indeterminate-reviewed-proof";
+        prohibitedUses: ("employment-history" | "seniority-proof" | "authority-proof" | "scope-proof")[];
     };
-    evidenceSelections: {
-        decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+    requirementEmphasis: {
+        decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
         id: string;
-        evidenceId: string;
+        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         provenance: {
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -11489,12 +11486,92 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
+        };
+        materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
+        requirementId: string;
+        coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
+        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+        proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
+        rationaleCode: "mandatory-strong-support" | "mandatory-defensible-support" | "preferred-defensible-support" | "contextual-defensible-support" | "mandatory-partial-support" | "nonmandatory-partial-support" | "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement";
+        selectedLinkIds: string[];
+        selectedEvidenceIds: string[];
+        selectedClaimIds: string[];
+        allowedTerminology: string[];
+        allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
+        cautionCodes: ("do-not-overstate-partial-proof" | "do-not-present-gap-as-strength" | "do-not-use-adjacent-proof-as-direct" | "do-not-hide-contradiction" | "preserve-ambiguity")[];
+    }[];
+    evidenceSelections: {
+        decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
+        id: string;
+        evidenceId: string;
+        provenance: {
+            targetId: string;
+            evidenceIds: string[];
+            requirementIds: string[];
+            coverageReferences: {
+                coverageEntryId: string;
+                coverageEntrySha256: string;
+            }[];
+            assessmentReferences: {
+                assessmentEntryId: string;
+                assessmentEntrySha256: string;
+            }[];
+            evidenceLinkReferences: {
+                claimId: string;
+                evidenceId: string;
+                evidenceProvenance: {
+                    claimId: string;
+                    evidenceId: string;
+                    sources: {
+                        sha256: string;
+                        path: string;
+                        status: "active";
+                        sourceType: string;
+                        sourceId: string;
+                        visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
+                    }[];
+                    evidenceItemPath: string;
+                    evidenceItemSha256: string;
+                    claimPath: string;
+                    claimSha256: string;
+                };
+                requirementId: string;
+                relationship: "partial" | "direct" | "supporting";
+                requirementProvenance: {
+                    sourceReferences: {
+                        sha256: string;
+                        path: string;
+                        sourceType: "job-description-markdown" | "target-json";
+                        startLine: number;
+                        endLine: number;
+                        excerptSha256: string;
+                        startOffset?: number | undefined;
+                        endOffset?: number | undefined;
+                    }[];
+                    requirementId: string;
+                    requirementModelType: "approved" | "deterministic";
+                    requirementModelPath: string;
+                    requirementModelSha256: string;
+                    sourceTextSha256: string;
+                };
+                linkId: string;
+                linkSha256: string;
+            }[];
+            claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
         relationships: ("partial" | "direct" | "supporting")[];
         claimIds: string[];
         intendedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
         requirementUses: {
-            decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+            decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
             requirementId: string;
             linkIds: string[];
             intendedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
@@ -11507,15 +11584,11 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
     }[];
     claimBoundaries: {
         id: string;
-        kind: "scope" | "target-title" | "requirement-claim" | "project-employment" | "metric";
+        kind: "target-title" | "scope" | "requirement-claim" | "project-employment" | "metric";
         provenance: {
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -11566,160 +11639,20 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
         evidenceIds: string[];
-        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome" | "target-title")[];
-        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome" | "target-title")[];
-        state: "allowed" | "prohibited" | "allowed-with-qualifier" | "requires-caution";
+        state: "allowed" | "allowed-with-qualifier" | "requires-caution" | "prohibited";
         claimIds: string[];
         rationaleCode: "direct-reviewed-proof" | "qualified-partial-proof" | "deferred-or-ambiguous-proof" | "unsupported-or-conflicting-proof" | "target-title-not-history" | "project-scope-not-employment" | "metric-requires-verification" | "scope-limited-to-reviewed-evidence";
+        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         requiredQualifierCodes: ("evidence-scoped-wording" | "project-scoped-wording" | "adjacent-not-direct" | "partial-support-only" | "exact-reviewed-metric-only" | "target-title-positioning-only")[];
         prohibitedInferenceCodes: ("target-title-as-employment" | "project-as-employment" | "responsibility-as-achievement" | "contribution-as-ownership" | "collaboration-as-management" | "technical-exposure-as-expertise" | "adjacent-technology-as-exact-experience" | "domain-adjacency-as-direct-experience" | "unsupported-seniority" | "unsupported-authority" | "unsupported-team-size" | "unsupported-geography" | "unsupported-scale" | "unsupported-adoption" | "unsupported-dates" | "unsupported-outcomes" | "unverified-metric")[];
         requirementId?: string | undefined;
-    }[];
-    exclusions: {
-        type: "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement" | "project-as-employment" | "unverified-metric" | "target-title-history" | "non-resume-ready-evidence" | "private-evidence" | "unapproved-claim" | "unsupported-terminology" | "unsupported-seniority-or-scope" | "irrelevant-evidence" | "duplicate-evidence-use";
-        id: string;
-        sourceType: "claim" | "target" | "evidence" | "policy" | "requirement";
-        provenance: {
-            targetId: string;
-            evidenceIds: string[];
-            requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
-            coverageReferences: {
-                coverageEntryId: string;
-                coverageEntrySha256: string;
-            }[];
-            assessmentReferences: {
-                assessmentEntryId: string;
-                assessmentEntrySha256: string;
-            }[];
-            evidenceLinkReferences: {
-                claimId: string;
-                evidenceId: string;
-                evidenceProvenance: {
-                    claimId: string;
-                    evidenceId: string;
-                    sources: {
-                        sha256: string;
-                        path: string;
-                        status: "active";
-                        sourceType: string;
-                        sourceId: string;
-                        visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
-                    }[];
-                    evidenceItemPath: string;
-                    evidenceItemSha256: string;
-                    claimPath: string;
-                    claimSha256: string;
-                };
-                requirementId: string;
-                relationship: "partial" | "direct" | "supporting";
-                requirementProvenance: {
-                    sourceReferences: {
-                        sha256: string;
-                        path: string;
-                        sourceType: "job-description-markdown" | "target-json";
-                        startLine: number;
-                        endLine: number;
-                        excerptSha256: string;
-                        startOffset?: number | undefined;
-                        endOffset?: number | undefined;
-                    }[];
-                    requirementId: string;
-                    requirementModelType: "approved" | "deterministic";
-                    requirementModelPath: string;
-                    requirementModelSha256: string;
-                    sourceTextSha256: string;
-                };
-                linkId: string;
-                linkSha256: string;
-            }[];
-            claimIds: string[];
-        };
-        sourceIds: string[];
-        severity: "high" | "medium" | "low" | "blocking";
-        reasonCode: "no-reviewed-proof" | "explicit-contradiction" | "unresolved-ambiguity" | "metric-not-verified" | "target-title-is-not-history" | "project-scope-is-not-employment" | "evidence-not-eligible" | "claim-not-eligible" | "terminology-not-supported" | "scope-not-supported" | "not-selected-for-job-plan" | "deduplicated-use";
-    }[];
-    requirementEmphasis: {
-        decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
-        id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
-        category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
-        provenance: {
-            targetId: string;
-            evidenceIds: string[];
-            requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
-            coverageReferences: {
-                coverageEntryId: string;
-                coverageEntrySha256: string;
-            }[];
-            assessmentReferences: {
-                assessmentEntryId: string;
-                assessmentEntrySha256: string;
-            }[];
-            evidenceLinkReferences: {
-                claimId: string;
-                evidenceId: string;
-                evidenceProvenance: {
-                    claimId: string;
-                    evidenceId: string;
-                    sources: {
-                        sha256: string;
-                        path: string;
-                        status: "active";
-                        sourceType: string;
-                        sourceId: string;
-                        visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
-                    }[];
-                    evidenceItemPath: string;
-                    evidenceItemSha256: string;
-                    claimPath: string;
-                    claimSha256: string;
-                };
-                requirementId: string;
-                relationship: "partial" | "direct" | "supporting";
-                requirementProvenance: {
-                    sourceReferences: {
-                        sha256: string;
-                        path: string;
-                        sourceType: "job-description-markdown" | "target-json";
-                        startLine: number;
-                        endLine: number;
-                        excerptSha256: string;
-                        startOffset?: number | undefined;
-                        endOffset?: number | undefined;
-                    }[];
-                    requirementId: string;
-                    requirementModelType: "approved" | "deterministic";
-                    requirementModelPath: string;
-                    requirementModelSha256: string;
-                    sourceTextSha256: string;
-                };
-                linkId: string;
-                linkSha256: string;
-            }[];
-            claimIds: string[];
-        };
-        materiality: "unknown" | "contextual" | "critical" | "secondary" | "material";
-        requirementId: string;
-        allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
-        coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
-        proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
-        rationaleCode: "mandatory-strong-support" | "mandatory-defensible-support" | "preferred-defensible-support" | "contextual-defensible-support" | "mandatory-partial-support" | "nonmandatory-partial-support" | "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement";
-        selectedLinkIds: string[];
-        selectedEvidenceIds: string[];
-        selectedClaimIds: string[];
-        allowedTerminology: string[];
-        cautionCodes: ("do-not-overstate-partial-proof" | "do-not-present-gap-as-strength" | "do-not-use-adjacent-proof-as-direct" | "do-not-hide-contradiction" | "preserve-ambiguity")[];
     }[];
     metricPermissions: {
         claimId: string;
@@ -11729,10 +11662,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -11783,14 +11712,18 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
+        state: "allowed" | "prohibited";
         scope: {
             parentRoleId?: string | undefined;
             parentProjectId?: string | undefined;
             sourceSection?: string | undefined;
         };
         allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
-        state: "allowed" | "prohibited";
         qualifierCodes: ("use-exact-approved-text" | "preserve-reviewed-scope" | "do-not-round" | "do-not-combine" | "do-not-infer-scale")[];
         exactApprovedMetricText?: string | undefined;
     }[];
@@ -11801,10 +11734,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -11855,12 +11784,83 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
         requirementId: string;
         assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
         adjacentEvidenceIds: string[];
         adjacentClaimIds: string[];
         constraintCodes: ("not-positive-positioning" | "not-direct-satisfaction" | "no-compensating-narrative" | "no-gap-closing-advice" | "no-application-advice")[];
+    }[];
+    exclusions: {
+        type: "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement" | "project-as-employment" | "unverified-metric" | "target-title-history" | "non-resume-ready-evidence" | "private-evidence" | "unapproved-claim" | "unsupported-terminology" | "unsupported-seniority-or-scope" | "irrelevant-evidence" | "duplicate-evidence-use";
+        id: string;
+        sourceType: "claim" | "target" | "evidence" | "policy" | "requirement";
+        provenance: {
+            targetId: string;
+            evidenceIds: string[];
+            requirementIds: string[];
+            coverageReferences: {
+                coverageEntryId: string;
+                coverageEntrySha256: string;
+            }[];
+            assessmentReferences: {
+                assessmentEntryId: string;
+                assessmentEntrySha256: string;
+            }[];
+            evidenceLinkReferences: {
+                claimId: string;
+                evidenceId: string;
+                evidenceProvenance: {
+                    claimId: string;
+                    evidenceId: string;
+                    sources: {
+                        sha256: string;
+                        path: string;
+                        status: "active";
+                        sourceType: string;
+                        sourceId: string;
+                        visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
+                    }[];
+                    evidenceItemPath: string;
+                    evidenceItemSha256: string;
+                    claimPath: string;
+                    claimSha256: string;
+                };
+                requirementId: string;
+                relationship: "partial" | "direct" | "supporting";
+                requirementProvenance: {
+                    sourceReferences: {
+                        sha256: string;
+                        path: string;
+                        sourceType: "job-description-markdown" | "target-json";
+                        startLine: number;
+                        endLine: number;
+                        excerptSha256: string;
+                        startOffset?: number | undefined;
+                        endOffset?: number | undefined;
+                    }[];
+                    requirementId: string;
+                    requirementModelType: "approved" | "deterministic";
+                    requirementModelPath: string;
+                    requirementModelSha256: string;
+                    sourceTextSha256: string;
+                };
+                linkId: string;
+                linkSha256: string;
+            }[];
+            claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
+        };
+        sourceIds: string[];
+        severity: "high" | "medium" | "low" | "blocking";
+        reasonCode: "no-reviewed-proof" | "explicit-contradiction" | "unresolved-ambiguity" | "metric-not-verified" | "target-title-is-not-history" | "project-scope-is-not-employment" | "evidence-not-eligible" | "claim-not-eligible" | "terminology-not-supported" | "scope-not-supported" | "not-selected-for-job-plan" | "deduplicated-use";
     }[];
 }>, {
     schemaVersion: 1;
@@ -11888,20 +11888,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             path: string;
         };
         normalizedInputSha256: string;
-        evidenceItems: {
-            sha256: string;
-            path: string;
-        };
-        assessment: {
-            sha256: string;
-            path: string;
-            manifestPath: string;
-            manifestSha256: string;
-        };
-        claims: {
-            sha256: string;
-            path: string;
-        };
         requirementModelType: "approved" | "deterministic";
         requirementModel: {
             sha256: string;
@@ -11909,7 +11895,21 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             manifestPath: string;
             manifestSha256: string;
         };
+        evidenceItems: {
+            sha256: string;
+            path: string;
+        };
+        claims: {
+            sha256: string;
+            path: string;
+        };
         evidenceMap: {
+            sha256: string;
+            path: string;
+            manifestPath: string;
+            manifestSha256: string;
+        };
+        assessment: {
             sha256: string;
             path: string;
             manifestPath: string;
@@ -11925,10 +11925,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -11979,16 +11975,20 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
         evidenceIds: string[];
         requirementIds: string[];
-        order: number;
-        allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome" | "target-title")[];
         claimIds: string[];
         boundaryIds: string[];
         inclusion: "exclude" | "include" | "optional";
+        order: number;
         objectiveCode: "position-target-without-history-claim" | "summarize-selected-proof-themes" | "group-job-relevant-capabilities" | "surface-reviewed-outcomes" | "organize-reviewed-employment-evidence" | "organize-project-scoped-evidence" | "group-reviewed-technical-capabilities" | "group-reviewed-leadership-capabilities" | "retain-relevant-education" | "retain-relevant-certifications" | "retain-approved-additional-information";
         exclusionIds: string[];
+        allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         riskCodes: string[];
         warningCodes: string[];
         maximumItemCount?: number | undefined;
@@ -12015,13 +12015,13 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
         status: "empty" | "partial" | "complete";
         blockingReasons: string[];
         requirementIds: string[];
-        claimBoundariesComplete: boolean;
-        provenanceComplete: boolean;
         plannedRequirementIds: string[];
         selectedRequirementIds: string[];
         deferredRequirementIds: string[];
         excludedRequirementIds: string[];
         includedSectionTypes: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
+        claimBoundariesComplete: boolean;
+        provenanceComplete: boolean;
         criticalConstraintsRepresented: boolean;
         usableForDrafting: boolean;
     };
@@ -12044,10 +12044,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -12098,29 +12094,30 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
-        prohibitedUses: ("employment-history" | "seniority-proof" | "authority-proof" | "scope-proof")[];
         state: "direct" | "indeterminate" | "adjacent" | "stretch" | "insufficient-proof";
-        sourceOverallAssessment: "strong" | "limited" | "insufficient" | "mixed" | "indeterminate" | "credible";
+        sourceOverallAssessment: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
         targetTitle: string;
         targetTitleUse: "positioning-only";
         primaryRequirementIds: string[];
         supportingRequirementIds: string[];
         cautionRequirementIds: string[];
         rationaleCode: "strong-reviewed-proof" | "credible-reviewed-proof" | "mixed-reviewed-proof" | "limited-reviewed-proof" | "insufficient-reviewed-proof" | "indeterminate-reviewed-proof";
+        prohibitedUses: ("employment-history" | "seniority-proof" | "authority-proof" | "scope-proof")[];
     };
-    evidenceSelections: {
-        decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+    requirementEmphasis: {
+        decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
         id: string;
-        evidenceId: string;
+        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         provenance: {
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -12171,12 +12168,92 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
+        };
+        materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
+        requirementId: string;
+        coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
+        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+        proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
+        rationaleCode: "mandatory-strong-support" | "mandatory-defensible-support" | "preferred-defensible-support" | "contextual-defensible-support" | "mandatory-partial-support" | "nonmandatory-partial-support" | "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement";
+        selectedLinkIds: string[];
+        selectedEvidenceIds: string[];
+        selectedClaimIds: string[];
+        allowedTerminology: string[];
+        allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
+        cautionCodes: ("do-not-overstate-partial-proof" | "do-not-present-gap-as-strength" | "do-not-use-adjacent-proof-as-direct" | "do-not-hide-contradiction" | "preserve-ambiguity")[];
+    }[];
+    evidenceSelections: {
+        decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
+        id: string;
+        evidenceId: string;
+        provenance: {
+            targetId: string;
+            evidenceIds: string[];
+            requirementIds: string[];
+            coverageReferences: {
+                coverageEntryId: string;
+                coverageEntrySha256: string;
+            }[];
+            assessmentReferences: {
+                assessmentEntryId: string;
+                assessmentEntrySha256: string;
+            }[];
+            evidenceLinkReferences: {
+                claimId: string;
+                evidenceId: string;
+                evidenceProvenance: {
+                    claimId: string;
+                    evidenceId: string;
+                    sources: {
+                        sha256: string;
+                        path: string;
+                        status: "active";
+                        sourceType: string;
+                        sourceId: string;
+                        visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
+                    }[];
+                    evidenceItemPath: string;
+                    evidenceItemSha256: string;
+                    claimPath: string;
+                    claimSha256: string;
+                };
+                requirementId: string;
+                relationship: "partial" | "direct" | "supporting";
+                requirementProvenance: {
+                    sourceReferences: {
+                        sha256: string;
+                        path: string;
+                        sourceType: "job-description-markdown" | "target-json";
+                        startLine: number;
+                        endLine: number;
+                        excerptSha256: string;
+                        startOffset?: number | undefined;
+                        endOffset?: number | undefined;
+                    }[];
+                    requirementId: string;
+                    requirementModelType: "approved" | "deterministic";
+                    requirementModelPath: string;
+                    requirementModelSha256: string;
+                    sourceTextSha256: string;
+                };
+                linkId: string;
+                linkSha256: string;
+            }[];
+            claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
         relationships: ("partial" | "direct" | "supporting")[];
         claimIds: string[];
         intendedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
         requirementUses: {
-            decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+            decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
             requirementId: string;
             linkIds: string[];
             intendedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
@@ -12189,15 +12266,11 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
     }[];
     claimBoundaries: {
         id: string;
-        kind: "scope" | "target-title" | "requirement-claim" | "project-employment" | "metric";
+        kind: "target-title" | "scope" | "requirement-claim" | "project-employment" | "metric";
         provenance: {
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -12248,160 +12321,20 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
         evidenceIds: string[];
-        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome" | "target-title")[];
-        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome" | "target-title")[];
-        state: "allowed" | "prohibited" | "allowed-with-qualifier" | "requires-caution";
+        state: "allowed" | "allowed-with-qualifier" | "requires-caution" | "prohibited";
         claimIds: string[];
         rationaleCode: "direct-reviewed-proof" | "qualified-partial-proof" | "deferred-or-ambiguous-proof" | "unsupported-or-conflicting-proof" | "target-title-not-history" | "project-scope-not-employment" | "metric-requires-verification" | "scope-limited-to-reviewed-evidence";
+        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         requiredQualifierCodes: ("evidence-scoped-wording" | "project-scoped-wording" | "adjacent-not-direct" | "partial-support-only" | "exact-reviewed-metric-only" | "target-title-positioning-only")[];
         prohibitedInferenceCodes: ("target-title-as-employment" | "project-as-employment" | "responsibility-as-achievement" | "contribution-as-ownership" | "collaboration-as-management" | "technical-exposure-as-expertise" | "adjacent-technology-as-exact-experience" | "domain-adjacency-as-direct-experience" | "unsupported-seniority" | "unsupported-authority" | "unsupported-team-size" | "unsupported-geography" | "unsupported-scale" | "unsupported-adoption" | "unsupported-dates" | "unsupported-outcomes" | "unverified-metric")[];
         requirementId?: string | undefined;
-    }[];
-    exclusions: {
-        type: "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement" | "project-as-employment" | "unverified-metric" | "target-title-history" | "non-resume-ready-evidence" | "private-evidence" | "unapproved-claim" | "unsupported-terminology" | "unsupported-seniority-or-scope" | "irrelevant-evidence" | "duplicate-evidence-use";
-        id: string;
-        sourceType: "claim" | "target" | "evidence" | "policy" | "requirement";
-        provenance: {
-            targetId: string;
-            evidenceIds: string[];
-            requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
-            coverageReferences: {
-                coverageEntryId: string;
-                coverageEntrySha256: string;
-            }[];
-            assessmentReferences: {
-                assessmentEntryId: string;
-                assessmentEntrySha256: string;
-            }[];
-            evidenceLinkReferences: {
-                claimId: string;
-                evidenceId: string;
-                evidenceProvenance: {
-                    claimId: string;
-                    evidenceId: string;
-                    sources: {
-                        sha256: string;
-                        path: string;
-                        status: "active";
-                        sourceType: string;
-                        sourceId: string;
-                        visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
-                    }[];
-                    evidenceItemPath: string;
-                    evidenceItemSha256: string;
-                    claimPath: string;
-                    claimSha256: string;
-                };
-                requirementId: string;
-                relationship: "partial" | "direct" | "supporting";
-                requirementProvenance: {
-                    sourceReferences: {
-                        sha256: string;
-                        path: string;
-                        sourceType: "job-description-markdown" | "target-json";
-                        startLine: number;
-                        endLine: number;
-                        excerptSha256: string;
-                        startOffset?: number | undefined;
-                        endOffset?: number | undefined;
-                    }[];
-                    requirementId: string;
-                    requirementModelType: "approved" | "deterministic";
-                    requirementModelPath: string;
-                    requirementModelSha256: string;
-                    sourceTextSha256: string;
-                };
-                linkId: string;
-                linkSha256: string;
-            }[];
-            claimIds: string[];
-        };
-        sourceIds: string[];
-        severity: "high" | "medium" | "low" | "blocking";
-        reasonCode: "no-reviewed-proof" | "explicit-contradiction" | "unresolved-ambiguity" | "metric-not-verified" | "target-title-is-not-history" | "project-scope-is-not-employment" | "evidence-not-eligible" | "claim-not-eligible" | "terminology-not-supported" | "scope-not-supported" | "not-selected-for-job-plan" | "deduplicated-use";
-    }[];
-    requirementEmphasis: {
-        decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
-        id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
-        category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
-        provenance: {
-            targetId: string;
-            evidenceIds: string[];
-            requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
-            coverageReferences: {
-                coverageEntryId: string;
-                coverageEntrySha256: string;
-            }[];
-            assessmentReferences: {
-                assessmentEntryId: string;
-                assessmentEntrySha256: string;
-            }[];
-            evidenceLinkReferences: {
-                claimId: string;
-                evidenceId: string;
-                evidenceProvenance: {
-                    claimId: string;
-                    evidenceId: string;
-                    sources: {
-                        sha256: string;
-                        path: string;
-                        status: "active";
-                        sourceType: string;
-                        sourceId: string;
-                        visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
-                    }[];
-                    evidenceItemPath: string;
-                    evidenceItemSha256: string;
-                    claimPath: string;
-                    claimSha256: string;
-                };
-                requirementId: string;
-                relationship: "partial" | "direct" | "supporting";
-                requirementProvenance: {
-                    sourceReferences: {
-                        sha256: string;
-                        path: string;
-                        sourceType: "job-description-markdown" | "target-json";
-                        startLine: number;
-                        endLine: number;
-                        excerptSha256: string;
-                        startOffset?: number | undefined;
-                        endOffset?: number | undefined;
-                    }[];
-                    requirementId: string;
-                    requirementModelType: "approved" | "deterministic";
-                    requirementModelPath: string;
-                    requirementModelSha256: string;
-                    sourceTextSha256: string;
-                };
-                linkId: string;
-                linkSha256: string;
-            }[];
-            claimIds: string[];
-        };
-        materiality: "unknown" | "contextual" | "critical" | "secondary" | "material";
-        requirementId: string;
-        allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
-        coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
-        proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
-        rationaleCode: "mandatory-strong-support" | "mandatory-defensible-support" | "preferred-defensible-support" | "contextual-defensible-support" | "mandatory-partial-support" | "nonmandatory-partial-support" | "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement";
-        selectedLinkIds: string[];
-        selectedEvidenceIds: string[];
-        selectedClaimIds: string[];
-        allowedTerminology: string[];
-        cautionCodes: ("do-not-overstate-partial-proof" | "do-not-present-gap-as-strength" | "do-not-use-adjacent-proof-as-direct" | "do-not-hide-contradiction" | "preserve-ambiguity")[];
     }[];
     metricPermissions: {
         claimId: string;
@@ -12411,10 +12344,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -12465,14 +12394,18 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
+        state: "allowed" | "prohibited";
         scope: {
             parentRoleId?: string | undefined;
             parentProjectId?: string | undefined;
             sourceSection?: string | undefined;
         };
         allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
-        state: "allowed" | "prohibited";
         qualifierCodes: ("use-exact-approved-text" | "preserve-reviewed-scope" | "do-not-round" | "do-not-combine" | "do-not-infer-scale")[];
         exactApprovedMetricText?: string | undefined;
     }[];
@@ -12483,10 +12416,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -12537,12 +12466,83 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
         requirementId: string;
         assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
         adjacentEvidenceIds: string[];
         adjacentClaimIds: string[];
         constraintCodes: ("not-positive-positioning" | "not-direct-satisfaction" | "no-compensating-narrative" | "no-gap-closing-advice" | "no-application-advice")[];
+    }[];
+    exclusions: {
+        type: "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement" | "project-as-employment" | "unverified-metric" | "target-title-history" | "non-resume-ready-evidence" | "private-evidence" | "unapproved-claim" | "unsupported-terminology" | "unsupported-seniority-or-scope" | "irrelevant-evidence" | "duplicate-evidence-use";
+        id: string;
+        sourceType: "claim" | "target" | "evidence" | "policy" | "requirement";
+        provenance: {
+            targetId: string;
+            evidenceIds: string[];
+            requirementIds: string[];
+            coverageReferences: {
+                coverageEntryId: string;
+                coverageEntrySha256: string;
+            }[];
+            assessmentReferences: {
+                assessmentEntryId: string;
+                assessmentEntrySha256: string;
+            }[];
+            evidenceLinkReferences: {
+                claimId: string;
+                evidenceId: string;
+                evidenceProvenance: {
+                    claimId: string;
+                    evidenceId: string;
+                    sources: {
+                        sha256: string;
+                        path: string;
+                        status: "active";
+                        sourceType: string;
+                        sourceId: string;
+                        visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
+                    }[];
+                    evidenceItemPath: string;
+                    evidenceItemSha256: string;
+                    claimPath: string;
+                    claimSha256: string;
+                };
+                requirementId: string;
+                relationship: "partial" | "direct" | "supporting";
+                requirementProvenance: {
+                    sourceReferences: {
+                        sha256: string;
+                        path: string;
+                        sourceType: "job-description-markdown" | "target-json";
+                        startLine: number;
+                        endLine: number;
+                        excerptSha256: string;
+                        startOffset?: number | undefined;
+                        endOffset?: number | undefined;
+                    }[];
+                    requirementId: string;
+                    requirementModelType: "approved" | "deterministic";
+                    requirementModelPath: string;
+                    requirementModelSha256: string;
+                    sourceTextSha256: string;
+                };
+                linkId: string;
+                linkSha256: string;
+            }[];
+            claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
+        };
+        sourceIds: string[];
+        severity: "high" | "medium" | "low" | "blocking";
+        reasonCode: "no-reviewed-proof" | "explicit-contradiction" | "unresolved-ambiguity" | "metric-not-verified" | "target-title-is-not-history" | "project-scope-is-not-employment" | "evidence-not-eligible" | "claim-not-eligible" | "terminology-not-supported" | "scope-not-supported" | "not-selected-for-job-plan" | "deduplicated-use";
     }[];
 }, {
     schemaVersion: 1;
@@ -12570,20 +12570,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             path: string;
         };
         normalizedInputSha256: string;
-        evidenceItems: {
-            sha256: string;
-            path: string;
-        };
-        assessment: {
-            sha256: string;
-            path: string;
-            manifestPath: string;
-            manifestSha256: string;
-        };
-        claims: {
-            sha256: string;
-            path: string;
-        };
         requirementModelType: "approved" | "deterministic";
         requirementModel: {
             sha256: string;
@@ -12591,7 +12577,21 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             manifestPath: string;
             manifestSha256: string;
         };
+        evidenceItems: {
+            sha256: string;
+            path: string;
+        };
+        claims: {
+            sha256: string;
+            path: string;
+        };
         evidenceMap: {
+            sha256: string;
+            path: string;
+            manifestPath: string;
+            manifestSha256: string;
+        };
+        assessment: {
             sha256: string;
             path: string;
             manifestPath: string;
@@ -12607,10 +12607,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -12661,16 +12657,20 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
         evidenceIds: string[];
         requirementIds: string[];
-        order: number;
-        allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome" | "target-title")[];
         claimIds: string[];
         boundaryIds: string[];
         inclusion: "exclude" | "include" | "optional";
+        order: number;
         objectiveCode: "position-target-without-history-claim" | "summarize-selected-proof-themes" | "group-job-relevant-capabilities" | "surface-reviewed-outcomes" | "organize-reviewed-employment-evidence" | "organize-project-scoped-evidence" | "group-reviewed-technical-capabilities" | "group-reviewed-leadership-capabilities" | "retain-relevant-education" | "retain-relevant-certifications" | "retain-approved-additional-information";
         exclusionIds: string[];
+        allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         riskCodes: string[];
         warningCodes: string[];
         maximumItemCount?: number | undefined;
@@ -12697,13 +12697,13 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
         status: "empty" | "partial" | "complete";
         blockingReasons: string[];
         requirementIds: string[];
-        claimBoundariesComplete: boolean;
-        provenanceComplete: boolean;
         plannedRequirementIds: string[];
         selectedRequirementIds: string[];
         deferredRequirementIds: string[];
         excludedRequirementIds: string[];
         includedSectionTypes: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
+        claimBoundariesComplete: boolean;
+        provenanceComplete: boolean;
         criticalConstraintsRepresented: boolean;
         usableForDrafting: boolean;
     };
@@ -12726,10 +12726,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -12780,29 +12776,30 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
-        prohibitedUses: ("employment-history" | "seniority-proof" | "authority-proof" | "scope-proof")[];
         state: "direct" | "indeterminate" | "adjacent" | "stretch" | "insufficient-proof";
-        sourceOverallAssessment: "strong" | "limited" | "insufficient" | "mixed" | "indeterminate" | "credible";
+        sourceOverallAssessment: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
         targetTitle: string;
         targetTitleUse: "positioning-only";
         primaryRequirementIds: string[];
         supportingRequirementIds: string[];
         cautionRequirementIds: string[];
         rationaleCode: "strong-reviewed-proof" | "credible-reviewed-proof" | "mixed-reviewed-proof" | "limited-reviewed-proof" | "insufficient-reviewed-proof" | "indeterminate-reviewed-proof";
+        prohibitedUses: ("employment-history" | "seniority-proof" | "authority-proof" | "scope-proof")[];
     };
-    evidenceSelections: {
-        decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+    requirementEmphasis: {
+        decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
         id: string;
-        evidenceId: string;
+        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         provenance: {
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -12853,12 +12850,92 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
+        };
+        materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
+        requirementId: string;
+        coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
+        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+        proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
+        rationaleCode: "mandatory-strong-support" | "mandatory-defensible-support" | "preferred-defensible-support" | "contextual-defensible-support" | "mandatory-partial-support" | "nonmandatory-partial-support" | "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement";
+        selectedLinkIds: string[];
+        selectedEvidenceIds: string[];
+        selectedClaimIds: string[];
+        allowedTerminology: string[];
+        allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
+        cautionCodes: ("do-not-overstate-partial-proof" | "do-not-present-gap-as-strength" | "do-not-use-adjacent-proof-as-direct" | "do-not-hide-contradiction" | "preserve-ambiguity")[];
+    }[];
+    evidenceSelections: {
+        decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
+        id: string;
+        evidenceId: string;
+        provenance: {
+            targetId: string;
+            evidenceIds: string[];
+            requirementIds: string[];
+            coverageReferences: {
+                coverageEntryId: string;
+                coverageEntrySha256: string;
+            }[];
+            assessmentReferences: {
+                assessmentEntryId: string;
+                assessmentEntrySha256: string;
+            }[];
+            evidenceLinkReferences: {
+                claimId: string;
+                evidenceId: string;
+                evidenceProvenance: {
+                    claimId: string;
+                    evidenceId: string;
+                    sources: {
+                        sha256: string;
+                        path: string;
+                        status: "active";
+                        sourceType: string;
+                        sourceId: string;
+                        visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
+                    }[];
+                    evidenceItemPath: string;
+                    evidenceItemSha256: string;
+                    claimPath: string;
+                    claimSha256: string;
+                };
+                requirementId: string;
+                relationship: "partial" | "direct" | "supporting";
+                requirementProvenance: {
+                    sourceReferences: {
+                        sha256: string;
+                        path: string;
+                        sourceType: "job-description-markdown" | "target-json";
+                        startLine: number;
+                        endLine: number;
+                        excerptSha256: string;
+                        startOffset?: number | undefined;
+                        endOffset?: number | undefined;
+                    }[];
+                    requirementId: string;
+                    requirementModelType: "approved" | "deterministic";
+                    requirementModelPath: string;
+                    requirementModelSha256: string;
+                    sourceTextSha256: string;
+                };
+                linkId: string;
+                linkSha256: string;
+            }[];
+            claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
         relationships: ("partial" | "direct" | "supporting")[];
         claimIds: string[];
         intendedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
         requirementUses: {
-            decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+            decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
             requirementId: string;
             linkIds: string[];
             intendedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
@@ -12871,15 +12948,11 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
     }[];
     claimBoundaries: {
         id: string;
-        kind: "scope" | "target-title" | "requirement-claim" | "project-employment" | "metric";
+        kind: "target-title" | "scope" | "requirement-claim" | "project-employment" | "metric";
         provenance: {
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -12930,160 +13003,20 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
         evidenceIds: string[];
-        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome" | "target-title")[];
-        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome" | "target-title")[];
-        state: "allowed" | "prohibited" | "allowed-with-qualifier" | "requires-caution";
+        state: "allowed" | "allowed-with-qualifier" | "requires-caution" | "prohibited";
         claimIds: string[];
         rationaleCode: "direct-reviewed-proof" | "qualified-partial-proof" | "deferred-or-ambiguous-proof" | "unsupported-or-conflicting-proof" | "target-title-not-history" | "project-scope-not-employment" | "metric-requires-verification" | "scope-limited-to-reviewed-evidence";
+        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         requiredQualifierCodes: ("evidence-scoped-wording" | "project-scoped-wording" | "adjacent-not-direct" | "partial-support-only" | "exact-reviewed-metric-only" | "target-title-positioning-only")[];
         prohibitedInferenceCodes: ("target-title-as-employment" | "project-as-employment" | "responsibility-as-achievement" | "contribution-as-ownership" | "collaboration-as-management" | "technical-exposure-as-expertise" | "adjacent-technology-as-exact-experience" | "domain-adjacency-as-direct-experience" | "unsupported-seniority" | "unsupported-authority" | "unsupported-team-size" | "unsupported-geography" | "unsupported-scale" | "unsupported-adoption" | "unsupported-dates" | "unsupported-outcomes" | "unverified-metric")[];
         requirementId?: string | undefined;
-    }[];
-    exclusions: {
-        type: "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement" | "project-as-employment" | "unverified-metric" | "target-title-history" | "non-resume-ready-evidence" | "private-evidence" | "unapproved-claim" | "unsupported-terminology" | "unsupported-seniority-or-scope" | "irrelevant-evidence" | "duplicate-evidence-use";
-        id: string;
-        sourceType: "claim" | "target" | "evidence" | "policy" | "requirement";
-        provenance: {
-            targetId: string;
-            evidenceIds: string[];
-            requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
-            coverageReferences: {
-                coverageEntryId: string;
-                coverageEntrySha256: string;
-            }[];
-            assessmentReferences: {
-                assessmentEntryId: string;
-                assessmentEntrySha256: string;
-            }[];
-            evidenceLinkReferences: {
-                claimId: string;
-                evidenceId: string;
-                evidenceProvenance: {
-                    claimId: string;
-                    evidenceId: string;
-                    sources: {
-                        sha256: string;
-                        path: string;
-                        status: "active";
-                        sourceType: string;
-                        sourceId: string;
-                        visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
-                    }[];
-                    evidenceItemPath: string;
-                    evidenceItemSha256: string;
-                    claimPath: string;
-                    claimSha256: string;
-                };
-                requirementId: string;
-                relationship: "partial" | "direct" | "supporting";
-                requirementProvenance: {
-                    sourceReferences: {
-                        sha256: string;
-                        path: string;
-                        sourceType: "job-description-markdown" | "target-json";
-                        startLine: number;
-                        endLine: number;
-                        excerptSha256: string;
-                        startOffset?: number | undefined;
-                        endOffset?: number | undefined;
-                    }[];
-                    requirementId: string;
-                    requirementModelType: "approved" | "deterministic";
-                    requirementModelPath: string;
-                    requirementModelSha256: string;
-                    sourceTextSha256: string;
-                };
-                linkId: string;
-                linkSha256: string;
-            }[];
-            claimIds: string[];
-        };
-        sourceIds: string[];
-        severity: "high" | "medium" | "low" | "blocking";
-        reasonCode: "no-reviewed-proof" | "explicit-contradiction" | "unresolved-ambiguity" | "metric-not-verified" | "target-title-is-not-history" | "project-scope-is-not-employment" | "evidence-not-eligible" | "claim-not-eligible" | "terminology-not-supported" | "scope-not-supported" | "not-selected-for-job-plan" | "deduplicated-use";
-    }[];
-    requirementEmphasis: {
-        decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
-        id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
-        category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
-        provenance: {
-            targetId: string;
-            evidenceIds: string[];
-            requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
-            coverageReferences: {
-                coverageEntryId: string;
-                coverageEntrySha256: string;
-            }[];
-            assessmentReferences: {
-                assessmentEntryId: string;
-                assessmentEntrySha256: string;
-            }[];
-            evidenceLinkReferences: {
-                claimId: string;
-                evidenceId: string;
-                evidenceProvenance: {
-                    claimId: string;
-                    evidenceId: string;
-                    sources: {
-                        sha256: string;
-                        path: string;
-                        status: "active";
-                        sourceType: string;
-                        sourceId: string;
-                        visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
-                    }[];
-                    evidenceItemPath: string;
-                    evidenceItemSha256: string;
-                    claimPath: string;
-                    claimSha256: string;
-                };
-                requirementId: string;
-                relationship: "partial" | "direct" | "supporting";
-                requirementProvenance: {
-                    sourceReferences: {
-                        sha256: string;
-                        path: string;
-                        sourceType: "job-description-markdown" | "target-json";
-                        startLine: number;
-                        endLine: number;
-                        excerptSha256: string;
-                        startOffset?: number | undefined;
-                        endOffset?: number | undefined;
-                    }[];
-                    requirementId: string;
-                    requirementModelType: "approved" | "deterministic";
-                    requirementModelPath: string;
-                    requirementModelSha256: string;
-                    sourceTextSha256: string;
-                };
-                linkId: string;
-                linkSha256: string;
-            }[];
-            claimIds: string[];
-        };
-        materiality: "unknown" | "contextual" | "critical" | "secondary" | "material";
-        requirementId: string;
-        allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
-        coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
-        proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
-        rationaleCode: "mandatory-strong-support" | "mandatory-defensible-support" | "preferred-defensible-support" | "contextual-defensible-support" | "mandatory-partial-support" | "nonmandatory-partial-support" | "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement";
-        selectedLinkIds: string[];
-        selectedEvidenceIds: string[];
-        selectedClaimIds: string[];
-        allowedTerminology: string[];
-        cautionCodes: ("do-not-overstate-partial-proof" | "do-not-present-gap-as-strength" | "do-not-use-adjacent-proof-as-direct" | "do-not-hide-contradiction" | "preserve-ambiguity")[];
     }[];
     metricPermissions: {
         claimId: string;
@@ -13093,10 +13026,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -13147,14 +13076,18 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
+        state: "allowed" | "prohibited";
         scope: {
             parentRoleId?: string | undefined;
             parentProjectId?: string | undefined;
             sourceSection?: string | undefined;
         };
         allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
-        state: "allowed" | "prohibited";
         qualifierCodes: ("use-exact-approved-text" | "preserve-reviewed-scope" | "do-not-round" | "do-not-combine" | "do-not-infer-scale")[];
         exactApprovedMetricText?: string | undefined;
     }[];
@@ -13165,10 +13098,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             targetId: string;
             evidenceIds: string[];
             requirementIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
             coverageReferences: {
                 coverageEntryId: string;
                 coverageEntrySha256: string;
@@ -13219,12 +13148,83 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 linkSha256: string;
             }[];
             claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
         };
         requirementId: string;
         assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
         adjacentEvidenceIds: string[];
         adjacentClaimIds: string[];
         constraintCodes: ("not-positive-positioning" | "not-direct-satisfaction" | "no-compensating-narrative" | "no-gap-closing-advice" | "no-application-advice")[];
+    }[];
+    exclusions: {
+        type: "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement" | "project-as-employment" | "unverified-metric" | "target-title-history" | "non-resume-ready-evidence" | "private-evidence" | "unapproved-claim" | "unsupported-terminology" | "unsupported-seniority-or-scope" | "irrelevant-evidence" | "duplicate-evidence-use";
+        id: string;
+        sourceType: "claim" | "target" | "evidence" | "policy" | "requirement";
+        provenance: {
+            targetId: string;
+            evidenceIds: string[];
+            requirementIds: string[];
+            coverageReferences: {
+                coverageEntryId: string;
+                coverageEntrySha256: string;
+            }[];
+            assessmentReferences: {
+                assessmentEntryId: string;
+                assessmentEntrySha256: string;
+            }[];
+            evidenceLinkReferences: {
+                claimId: string;
+                evidenceId: string;
+                evidenceProvenance: {
+                    claimId: string;
+                    evidenceId: string;
+                    sources: {
+                        sha256: string;
+                        path: string;
+                        status: "active";
+                        sourceType: string;
+                        sourceId: string;
+                        visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
+                    }[];
+                    evidenceItemPath: string;
+                    evidenceItemSha256: string;
+                    claimPath: string;
+                    claimSha256: string;
+                };
+                requirementId: string;
+                relationship: "partial" | "direct" | "supporting";
+                requirementProvenance: {
+                    sourceReferences: {
+                        sha256: string;
+                        path: string;
+                        sourceType: "job-description-markdown" | "target-json";
+                        startLine: number;
+                        endLine: number;
+                        excerptSha256: string;
+                        startOffset?: number | undefined;
+                        endOffset?: number | undefined;
+                    }[];
+                    requirementId: string;
+                    requirementModelType: "approved" | "deterministic";
+                    requirementModelPath: string;
+                    requirementModelSha256: string;
+                    sourceTextSha256: string;
+                };
+                linkId: string;
+                linkSha256: string;
+            }[];
+            claimIds: string[];
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
+        };
+        sourceIds: string[];
+        severity: "high" | "medium" | "low" | "blocking";
+        reasonCode: "no-reviewed-proof" | "explicit-contradiction" | "unresolved-ambiguity" | "metric-not-verified" | "target-title-is-not-history" | "project-scope-is-not-employment" | "evidence-not-eligible" | "claim-not-eligible" | "terminology-not-supported" | "scope-not-supported" | "not-selected-for-job-plan" | "deduplicated-use";
     }[];
 }>;
 export declare const JobResumeContentPlanManifestSchema: z.ZodObject<{
@@ -13273,9 +13273,6 @@ export declare const JobResumeContentPlanManifestSchema: z.ZodObject<{
     assessmentSha256: string;
     policyName: string;
     normalizedInputSha256: string;
-    planId: string;
-    planPath: string;
-    planSha256: string;
     requirementModelType: "approved" | "deterministic";
     requirementModelSha256: string;
     requirementManifestSha256: string;
@@ -13286,6 +13283,9 @@ export declare const JobResumeContentPlanManifestSchema: z.ZodObject<{
     selectedEvidenceSetSha256: string;
     selectedClaimSetSha256: string;
     manifestId: string;
+    planId: string;
+    planPath: string;
+    planSha256: string;
     assessmentManifestSha256: string;
 }, {
     schemaVersion: 1;
@@ -13303,9 +13303,6 @@ export declare const JobResumeContentPlanManifestSchema: z.ZodObject<{
     assessmentSha256: string;
     policyName: string;
     normalizedInputSha256: string;
-    planId: string;
-    planPath: string;
-    planSha256: string;
     requirementModelType: "approved" | "deterministic";
     requirementModelSha256: string;
     requirementManifestSha256: string;
@@ -13316,6 +13313,9 @@ export declare const JobResumeContentPlanManifestSchema: z.ZodObject<{
     selectedEvidenceSetSha256: string;
     selectedClaimSetSha256: string;
     manifestId: string;
+    planId: string;
+    planPath: string;
+    planSha256: string;
     assessmentManifestSha256: string;
 }>;
 export type JobResumePositioningState = z.infer<typeof JobResumePositioningStateSchema>;

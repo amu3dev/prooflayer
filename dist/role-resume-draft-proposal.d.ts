@@ -399,12 +399,12 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -421,11 +421,11 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
             };
             evidenceIds: string[];
             approvedMatchIds: string[];
+            order: number;
+            allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             sourceAssessmentIds: string[];
             objective: string;
-            order: number;
-            allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-            prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             emphasisNotes: string[];
             cautionNotes: string[];
             maximumItemCount?: number | undefined;
@@ -451,14 +451,14 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
         completeness: {
             status: "empty" | "partial" | "complete";
             blockingReasons: string[];
+            claimBoundariesComplete: boolean;
+            provenanceComplete: boolean;
             eligibleExpectationCount: number;
             selectedExpectationCount: number;
             excludedExpectationCount: number;
             deferredExpectationCount: number;
             plannedSectionCount: number;
             primaryThemeCount: number;
-            claimBoundariesComplete: boolean;
-            provenanceComplete: boolean;
             usableForResumeDrafting: boolean;
         };
         provenance: {
@@ -500,13 +500,6 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
             name: string;
             version: string;
         };
-        roleTitle: string;
-        approvedAssessment: {
-            sha256: string;
-            path: string;
-            manifestPath: string;
-            manifestSha256: string;
-        };
         positioning: {
             trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
             provenance: {
@@ -534,12 +527,12 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -586,12 +579,12 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -610,7 +603,7 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
                 approvedMatchIds: string[];
                 label: string;
                 sourceAssessmentIds: string[];
-                emphasis: "supporting" | "primary" | "secondary";
+                emphasis: "supporting" | "secondary" | "primary";
             }[];
             secondaryThemes: {
                 id: string;
@@ -642,12 +635,12 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -666,7 +659,7 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
                 approvedMatchIds: string[];
                 label: string;
                 sourceAssessmentIds: string[];
-                emphasis: "supporting" | "primary" | "secondary";
+                emphasis: "supporting" | "secondary" | "primary";
             }[];
             differentiationThemes: {
                 id: string;
@@ -698,12 +691,12 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -722,7 +715,7 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
                 approvedMatchIds: string[];
                 label: string;
                 sourceAssessmentIds: string[];
-                emphasis: "supporting" | "primary" | "secondary";
+                emphasis: "supporting" | "secondary" | "primary";
             }[];
             cautionThemes: {
                 id: string;
@@ -734,69 +727,9 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
             narrativeOrder: string[];
             audience: {
                 notes: string[];
-                primary: "recruiter" | "hiring-manager" | "executive" | "mixed";
+                primary: "mixed" | "recruiter" | "hiring-manager" | "executive";
             };
         };
-        expectationSelections: {
-            decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
-            id: string;
-            rationale: string;
-            trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
-            expectationId: string;
-            provenance: {
-                sourceReferences: ({
-                    sha256: string;
-                    path: string;
-                    sourceType: "job-description-markdown" | "target-json";
-                    startLine: number;
-                    endLine: number;
-                    excerptSha256: string;
-                    startOffset?: number | undefined;
-                    endOffset?: number | undefined;
-                } | {
-                    sha256: string;
-                    path: string;
-                    sourceType: "role-profile-json";
-                    excerptSha256: string;
-                    jsonPointer: string;
-                })[];
-                targetId: string;
-                expectationIds: string[];
-                approvedInterpretationSha256: string;
-                evidenceIds: string[];
-                approvedMatchIds: string[];
-                approvedMatchingSha256: string;
-                evidenceSnapshotSha256: string;
-                deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
-                planningPolicy: {
-                    name: string;
-                    version: string;
-                };
-                reviewDecision?: {
-                    decision: "accept" | "edit";
-                    reviewer: {
-                        type: "human";
-                        name?: string | undefined;
-                    };
-                } | undefined;
-                modelProposal?: {
-                    provider: string;
-                    model: string;
-                    proposalId: string;
-                    promptTemplateVersion: string;
-                } | undefined;
-            };
-            evidenceIds: string[];
-            approvedMatchIds: string[];
-            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
-            defensibility: "high" | "medium" | "low" | "none" | "uncertain";
-            materiality: "unknown" | "high" | "medium" | "low" | "critical";
-            assessmentId: string;
-            allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
-            restrictions: string[];
-        }[];
         evidenceSelections: {
             decision: "exclude" | "preferred" | "allowed" | "limited-use";
             id: string;
@@ -829,12 +762,12 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -853,8 +786,8 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
             approvedMatchIds: string[];
             proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
             freshnessRisk: "unknown" | "high" | "medium" | "low" | "none";
-            permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-            prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         }[];
         claimBoundaries: {
             id: string;
@@ -885,12 +818,12 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -906,9 +839,9 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
                 } | undefined;
             };
             evidenceIds: string[];
-            boundaryType: "allowed" | "allowed-with-caution" | "prohibited" | "requires-review";
-            allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-            prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            boundaryType: "allowed" | "prohibited" | "requires-review" | "allowed-with-caution";
             prohibitedInferences: string[];
             requiredQualifiers: string[];
             expectationId?: string | undefined;
@@ -951,12 +884,12 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -974,6 +907,73 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
             evidenceIds: string[];
             severity: "high" | "medium" | "low" | "blocking";
         }[];
+        roleTitle: string;
+        approvedAssessment: {
+            sha256: string;
+            path: string;
+            manifestPath: string;
+            manifestSha256: string;
+        };
+        expectationSelections: {
+            decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
+            id: string;
+            rationale: string;
+            trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
+            expectationId: string;
+            provenance: {
+                sourceReferences: ({
+                    sha256: string;
+                    path: string;
+                    sourceType: "job-description-markdown" | "target-json";
+                    startLine: number;
+                    endLine: number;
+                    excerptSha256: string;
+                    startOffset?: number | undefined;
+                    endOffset?: number | undefined;
+                } | {
+                    sha256: string;
+                    path: string;
+                    sourceType: "role-profile-json";
+                    excerptSha256: string;
+                    jsonPointer: string;
+                })[];
+                targetId: string;
+                expectationIds: string[];
+                approvedInterpretationSha256: string;
+                evidenceIds: string[];
+                approvedMatchIds: string[];
+                approvedMatchingSha256: string;
+                evidenceSnapshotSha256: string;
+                deterministicInputs: Record<string, string | number | boolean | string[]>;
+                planningPolicy: {
+                    name: string;
+                    version: string;
+                };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
+                reviewDecision?: {
+                    decision: "accept" | "edit";
+                    reviewer: {
+                        type: "human";
+                        name?: string | undefined;
+                    };
+                } | undefined;
+                modelProposal?: {
+                    provider: string;
+                    model: string;
+                    proposalId: string;
+                    promptTemplateVersion: string;
+                } | undefined;
+            };
+            evidenceIds: string[];
+            approvedMatchIds: string[];
+            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+            defensibility: "high" | "medium" | "low" | "none" | "uncertain";
+            materiality: "unknown" | "high" | "medium" | "low" | "critical";
+            assessmentId: string;
+            allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
+            restrictions: string[];
+        }[];
     };
     draftScaffold: {
         schemaVersion: 1;
@@ -984,24 +984,24 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
         sections: {
             status: "exclude" | "include" | "optional";
             id: string;
-            objective: string;
+            allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             order: number;
-            cautionNotes: string[];
             maximumItemCount: number;
-            allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-            prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-            prohibitedInferences: string[];
-            requiredQualifiers: string[];
             planSectionId: string;
             sectionType: "education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information";
-            allowedExpectationIds: string[];
             allowedAssessmentIds: string[];
-            allowedMatchIds: string[];
             allowedEvidenceIds: string[];
             allowedClaimBoundaryIds: string[];
+            placeholderIds: string[];
+            objective: string;
+            cautionNotes: string[];
+            prohibitedInferences: string[];
+            requiredQualifiers: string[];
+            allowedExpectationIds: string[];
+            allowedMatchIds: string[];
             metricPermission: "prohibited" | "reviewed-only";
             scopePermissions: string[];
-            placeholderIds: string[];
             maximumSentenceCount?: number | undefined;
         }[];
         targetType: "role";
@@ -1034,22 +1034,9 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
             manifestPath: string;
             manifestSha256: string;
         };
-        roleTitle: string;
-        approvedAssessment: {
-            sha256: string;
-            path: string;
-            manifestPath: string;
-            manifestSha256: string;
-        };
         draftingPolicy: {
             name: string;
             version: string;
-        };
-        approvedPlan: {
-            sha256: string;
-            path: string;
-            manifestPath: string;
-            manifestSha256: string;
         };
         draftingConstraints: {
             code: string;
@@ -1058,6 +1045,19 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
             sectionIds: string[];
             description: string;
         }[];
+        roleTitle: string;
+        approvedAssessment: {
+            sha256: string;
+            path: string;
+            manifestPath: string;
+            manifestSha256: string;
+        };
+        approvedPlan: {
+            sha256: string;
+            path: string;
+            manifestPath: string;
+            manifestSha256: string;
+        };
     };
     selectedApprovedEvidence: {
         id: string;
@@ -1099,8 +1099,8 @@ export declare function validateRoleResumeDraftPayload(payload: ModelRoleResumeD
                     severity: "high" | "medium" | "low" | "critical";
                     sectionIds: string[];
                     draftItemIds: string[];
-                    matchIds: string[];
                     claimBoundaryIds: string[];
+                    matchIds: string[];
                 }[];
                 status: "valid" | "invalid" | "requires-review";
             };
@@ -1110,7 +1110,6 @@ export declare function validateRoleResumeDraftPayload(payload: ModelRoleResumeD
             trustState: "deterministic-approved" | "human-approved" | "human-edited" | "model-proposed" | "deterministic-proposed";
             provenance: {
                 targetId: string;
-                approvedPlanId: string;
                 planSectionId: string;
                 draftingPolicy: {
                     name: string;
@@ -1119,10 +1118,11 @@ export declare function validateRoleResumeDraftPayload(payload: ModelRoleResumeD
                 artifactHashes: {
                     approvedInterpretationSha256: string;
                     approvedMatchingSha256: string;
+                    scaffoldSha256: string;
                     approvedAssessmentSha256: string;
                     approvedPlanSha256: string;
-                    scaffoldSha256: string;
                 };
+                approvedPlanId: string;
                 model?: {
                     provider: string;
                     model: string;
@@ -1141,10 +1141,9 @@ export declare function validateRoleResumeDraftPayload(payload: ModelRoleResumeD
             evidenceIds: string[];
             approvedMatchIds: string[];
             text: string;
-            sourceAssessmentIds: string[];
-            itemType: "capability" | "project" | "certification" | "education" | "summary" | "headline" | "additional-information" | "technology" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
             claimBoundaryIds: string[];
-            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
+            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             metricReferences: {
                 evidenceId: string;
                 originalValue: string;
@@ -1157,25 +1156,26 @@ export declare function validateRoleResumeDraftPayload(payload: ModelRoleResumeD
             }[];
             scopeReferences: {
                 value: string;
-                type: "role" | "project" | "team" | "product" | "technical" | "temporal";
+                type: "role" | "project" | "technical" | "temporal" | "team" | "product";
                 status: "approved" | "qualified";
                 evidenceIds: string[];
             }[];
             qualifiers: string[];
+            sourceAssessmentIds: string[];
         }[];
         provenance: {
             targetId: string;
-            approvedPlanId: string;
             planSectionId: string;
             draftingPolicy: {
                 name: string;
                 version: string;
             };
+            approvedPlanId: string;
             approvedPlanSha256: string;
         };
-        objective: string;
         order: number;
         planSectionId: string;
+        objective: string;
     }[];
     claimLedger: {
         id: string;
@@ -1188,28 +1188,28 @@ export declare function validateRoleResumeDraftPayload(payload: ModelRoleResumeD
             severity: "high" | "medium" | "low" | "critical";
             sectionIds: string[];
             draftItemIds: string[];
-            matchIds: string[];
             claimBoundaryIds: string[];
+            matchIds: string[];
         }[];
         evidenceIds: string[];
         approvedMatchIds: string[];
-        metricStatus: "not-applicable" | "reviewed-metric-used" | "metric-prohibited";
+        metricStatus: "metric-prohibited" | "not-applicable" | "reviewed-metric-used";
         assessmentIds: string[];
         claimBoundaryIds: string[];
-        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         draftItemId: string;
-        statementTextSha256: string;
-        supportLevel: "contextual" | "direct" | "qualified" | "corroborated";
         scopeStatus: "requires-review" | "within-approved-scope" | "qualified-scope";
         validationStatus: "valid" | "invalid" | "requires-review";
+        statementTextSha256: string;
+        supportLevel: "contextual" | "direct" | "qualified" | "corroborated";
     }[];
     evidenceUsage: {
         notes: string[];
-        status: "within-policy" | "overused" | "unused-selected-evidence" | "prohibited-use";
+        status: "overused" | "unused-selected-evidence" | "within-policy" | "prohibited-use";
         evidenceId: string;
         sectionIds: string[];
         draftItemIds: string[];
-        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         usageCount: number;
     }[];
     warnings: {
@@ -1220,8 +1220,8 @@ export declare function validateRoleResumeDraftPayload(payload: ModelRoleResumeD
         evidenceIds: string[];
         sectionIds: string[];
         draftItemIds: string[];
-        matchIds: string[];
         claimBoundaryIds: string[];
+        matchIds: string[];
     }[];
     ambiguities: {
         code: string;
@@ -1231,9 +1231,9 @@ export declare function validateRoleResumeDraftPayload(payload: ModelRoleResumeD
         evidenceIds: string[];
         sectionIds: string[];
         draftItemIds: string[];
-        matchIds: string[];
         claimBoundaryIds: string[];
         resolved: boolean;
+        matchIds: string[];
         resolutionRationale?: string | undefined;
     }[];
     validationIssues: {
@@ -1244,8 +1244,8 @@ export declare function validateRoleResumeDraftPayload(payload: ModelRoleResumeD
         severity: "high" | "medium" | "low" | "critical";
         sectionIds: string[];
         draftItemIds: string[];
-        matchIds: string[];
         claimBoundaryIds: string[];
+        matchIds: string[];
     }[];
 };
 export declare function buildClaimLedger(sections: RoleResumeDraftSection[], context: Awaited<ReturnType<typeof loadRoleResumeDraftingContext>>): ResumeDraftClaimLedgerEntry[];

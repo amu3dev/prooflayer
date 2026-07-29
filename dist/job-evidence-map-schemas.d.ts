@@ -163,10 +163,10 @@ export declare const JobEvidenceMatchedSignalSchema: z.ZodObject<{
     value: z.ZodString;
 }, "strict", z.ZodTypeAny, {
     value: string;
-    type: "domain" | "technology" | "exact-phrase" | "keyword";
+    type: "domain" | "exact-phrase" | "technology" | "keyword";
 }, {
     value: string;
-    type: "domain" | "technology" | "exact-phrase" | "keyword";
+    type: "domain" | "exact-phrase" | "technology" | "keyword";
 }>;
 export declare const JobEvidenceLinkSchema: z.ZodObject<{
     id: z.ZodString;
@@ -181,10 +181,10 @@ export declare const JobEvidenceLinkSchema: z.ZodObject<{
         value: z.ZodString;
     }, "strict", z.ZodTypeAny, {
         value: string;
-        type: "domain" | "technology" | "exact-phrase" | "keyword";
+        type: "domain" | "exact-phrase" | "technology" | "keyword";
     }, {
         value: string;
-        type: "domain" | "technology" | "exact-phrase" | "keyword";
+        type: "domain" | "exact-phrase" | "technology" | "keyword";
     }>, "many">;
     requirementProvenance: z.ZodObject<{
         requirementModelType: z.ZodEnum<["deterministic", "approved"]>;
@@ -357,7 +357,7 @@ export declare const JobEvidenceLinkSchema: z.ZodObject<{
     linkConfidence: "high" | "medium" | "low";
     matchedSignals: {
         value: string;
-        type: "domain" | "technology" | "exact-phrase" | "keyword";
+        type: "domain" | "exact-phrase" | "technology" | "keyword";
     }[];
     requirementProvenance: {
         sourceReferences: {
@@ -402,7 +402,7 @@ export declare const JobEvidenceLinkSchema: z.ZodObject<{
     linkConfidence: "high" | "medium" | "low";
     matchedSignals: {
         value: string;
-        type: "domain" | "technology" | "exact-phrase" | "keyword";
+        type: "domain" | "exact-phrase" | "technology" | "keyword";
     }[];
     requirementProvenance: {
         sourceReferences: {
@@ -770,20 +770,20 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
             path: string;
         };
         normalizedInputSha256: string;
-        evidenceItems: {
-            sha256: string;
-            path: string;
-        };
-        claims: {
-            sha256: string;
-            path: string;
-        };
         requirementModelType: "approved" | "deterministic";
         requirementModel: {
             sha256: string;
             path: string;
         };
         requirementManifest: {
+            sha256: string;
+            path: string;
+        };
+        evidenceItems: {
+            sha256: string;
+            path: string;
+        };
+        claims: {
             sha256: string;
             path: string;
         };
@@ -802,20 +802,20 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
             path: string;
         };
         normalizedInputSha256: string;
-        evidenceItems: {
-            sha256: string;
-            path: string;
-        };
-        claims: {
-            sha256: string;
-            path: string;
-        };
         requirementModelType: "approved" | "deterministic";
         requirementModel: {
             sha256: string;
             path: string;
         };
         requirementManifest: {
+            sha256: string;
+            path: string;
+        };
+        evidenceItems: {
+            sha256: string;
+            path: string;
+        };
+        claims: {
             sha256: string;
             path: string;
         };
@@ -833,10 +833,10 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
             value: z.ZodString;
         }, "strict", z.ZodTypeAny, {
             value: string;
-            type: "domain" | "technology" | "exact-phrase" | "keyword";
+            type: "domain" | "exact-phrase" | "technology" | "keyword";
         }, {
             value: string;
-            type: "domain" | "technology" | "exact-phrase" | "keyword";
+            type: "domain" | "exact-phrase" | "technology" | "keyword";
         }>, "many">;
         requirementProvenance: z.ZodObject<{
             requirementModelType: z.ZodEnum<["deterministic", "approved"]>;
@@ -1009,7 +1009,7 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
         linkConfidence: "high" | "medium" | "low";
         matchedSignals: {
             value: string;
-            type: "domain" | "technology" | "exact-phrase" | "keyword";
+            type: "domain" | "exact-phrase" | "technology" | "keyword";
         }[];
         requirementProvenance: {
             sourceReferences: {
@@ -1054,7 +1054,7 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
         linkConfidence: "high" | "medium" | "low";
         matchedSignals: {
             value: string;
-            type: "domain" | "technology" | "exact-phrase" | "keyword";
+            type: "domain" | "exact-phrase" | "technology" | "keyword";
         }[];
         requirementProvenance: {
             sourceReferences: {
@@ -1337,20 +1337,20 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
             path: string;
         };
         normalizedInputSha256: string;
-        evidenceItems: {
-            sha256: string;
-            path: string;
-        };
-        claims: {
-            sha256: string;
-            path: string;
-        };
         requirementModelType: "approved" | "deterministic";
         requirementModel: {
             sha256: string;
             path: string;
         };
         requirementManifest: {
+            sha256: string;
+            path: string;
+        };
+        evidenceItems: {
+            sha256: string;
+            path: string;
+        };
+        claims: {
             sha256: string;
             path: string;
         };
@@ -1404,7 +1404,7 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
         linkConfidence: "high" | "medium" | "low";
         matchedSignals: {
             value: string;
-            type: "domain" | "technology" | "exact-phrase" | "keyword";
+            type: "domain" | "exact-phrase" | "technology" | "keyword";
         }[];
         requirementProvenance: {
             sourceReferences: {
@@ -1467,20 +1467,20 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
             path: string;
         };
         normalizedInputSha256: string;
-        evidenceItems: {
-            sha256: string;
-            path: string;
-        };
-        claims: {
-            sha256: string;
-            path: string;
-        };
         requirementModelType: "approved" | "deterministic";
         requirementModel: {
             sha256: string;
             path: string;
         };
         requirementManifest: {
+            sha256: string;
+            path: string;
+        };
+        evidenceItems: {
+            sha256: string;
+            path: string;
+        };
+        claims: {
             sha256: string;
             path: string;
         };
@@ -1534,7 +1534,7 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
         linkConfidence: "high" | "medium" | "low";
         matchedSignals: {
             value: string;
-            type: "domain" | "technology" | "exact-phrase" | "keyword";
+            type: "domain" | "exact-phrase" | "technology" | "keyword";
         }[];
         requirementProvenance: {
             sourceReferences: {

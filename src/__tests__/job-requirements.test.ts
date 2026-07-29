@@ -563,7 +563,7 @@ describe("Slice 2.7A deterministic Job Requirement Modeling", () => {
     const stale = await getApprovedJobRequirementsStatus(
       fixture.workspace,
       fixture.targetId,
-      { policyVersion: "2" },
+      { policyVersion: "3" },
     );
     expect(stale.status).toBe("stale");
     expect(stale.policyMatches).toBe(false);

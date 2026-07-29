@@ -364,6 +364,7 @@ export declare const TargetAnalysisSourceReferenceSchema: z.ZodEffects<z.ZodObje
 }>;
 export declare const TargetAnalysisSectionSchema: z.ZodEffects<z.ZodObject<{
     id: z.ZodString;
+    parentSectionId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     heading: z.ZodNullable<z.ZodString>;
     headingLevel: z.ZodNullable<z.ZodNumber>;
     normalizedHeading: z.ZodNullable<z.ZodString>;
@@ -436,6 +437,7 @@ export declare const TargetAnalysisSectionSchema: z.ZodEffects<z.ZodObject<{
     };
     classification: "unknown" | "company" | "responsibilities" | "required" | "preferred" | "qualifications" | "about-role" | "benefits" | "other";
     classificationBasis: "explicit-heading" | "none";
+    parentSectionId?: string | null | undefined;
 }, {
     id: string;
     startLine: number;
@@ -455,6 +457,7 @@ export declare const TargetAnalysisSectionSchema: z.ZodEffects<z.ZodObject<{
     };
     classification: "unknown" | "company" | "responsibilities" | "required" | "preferred" | "qualifications" | "about-role" | "benefits" | "other";
     classificationBasis: "explicit-heading" | "none";
+    parentSectionId?: string | null | undefined;
 }>, {
     id: string;
     startLine: number;
@@ -474,6 +477,7 @@ export declare const TargetAnalysisSectionSchema: z.ZodEffects<z.ZodObject<{
     };
     classification: "unknown" | "company" | "responsibilities" | "required" | "preferred" | "qualifications" | "about-role" | "benefits" | "other";
     classificationBasis: "explicit-heading" | "none";
+    parentSectionId?: string | null | undefined;
 }, {
     id: string;
     startLine: number;
@@ -493,6 +497,7 @@ export declare const TargetAnalysisSectionSchema: z.ZodEffects<z.ZodObject<{
     };
     classification: "unknown" | "company" | "responsibilities" | "required" | "preferred" | "qualifications" | "about-role" | "benefits" | "other";
     classificationBasis: "explicit-heading" | "none";
+    parentSectionId?: string | null | undefined;
 }>;
 export declare const TargetAnalysisItemSchema: z.ZodObject<{
     id: z.ZodString;
@@ -611,6 +616,7 @@ export declare const RoleTargetAnalysisSchema: z.ZodObject<{
     }>;
     sections: z.ZodArray<z.ZodEffects<z.ZodObject<{
         id: z.ZodString;
+        parentSectionId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         heading: z.ZodNullable<z.ZodString>;
         headingLevel: z.ZodNullable<z.ZodNumber>;
         normalizedHeading: z.ZodNullable<z.ZodString>;
@@ -683,6 +689,7 @@ export declare const RoleTargetAnalysisSchema: z.ZodObject<{
         };
         classification: "unknown" | "company" | "responsibilities" | "required" | "preferred" | "qualifications" | "about-role" | "benefits" | "other";
         classificationBasis: "explicit-heading" | "none";
+        parentSectionId?: string | null | undefined;
     }, {
         id: string;
         startLine: number;
@@ -702,6 +709,7 @@ export declare const RoleTargetAnalysisSchema: z.ZodObject<{
         };
         classification: "unknown" | "company" | "responsibilities" | "required" | "preferred" | "qualifications" | "about-role" | "benefits" | "other";
         classificationBasis: "explicit-heading" | "none";
+        parentSectionId?: string | null | undefined;
     }>, {
         id: string;
         startLine: number;
@@ -721,6 +729,7 @@ export declare const RoleTargetAnalysisSchema: z.ZodObject<{
         };
         classification: "unknown" | "company" | "responsibilities" | "required" | "preferred" | "qualifications" | "about-role" | "benefits" | "other";
         classificationBasis: "explicit-heading" | "none";
+        parentSectionId?: string | null | undefined;
     }, {
         id: string;
         startLine: number;
@@ -740,6 +749,7 @@ export declare const RoleTargetAnalysisSchema: z.ZodObject<{
         };
         classification: "unknown" | "company" | "responsibilities" | "required" | "preferred" | "qualifications" | "about-role" | "benefits" | "other";
         classificationBasis: "explicit-heading" | "none";
+        parentSectionId?: string | null | undefined;
     }>, "many">;
     items: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
@@ -890,6 +900,7 @@ export declare const RoleTargetAnalysisSchema: z.ZodObject<{
         };
         classification: "unknown" | "company" | "responsibilities" | "required" | "preferred" | "qualifications" | "about-role" | "benefits" | "other";
         classificationBasis: "explicit-heading" | "none";
+        parentSectionId?: string | null | undefined;
     }[];
     items: {
         id: string;
@@ -949,6 +960,7 @@ export declare const RoleTargetAnalysisSchema: z.ZodObject<{
         };
         classification: "unknown" | "company" | "responsibilities" | "required" | "preferred" | "qualifications" | "about-role" | "benefits" | "other";
         classificationBasis: "explicit-heading" | "none";
+        parentSectionId?: string | null | undefined;
     }[];
     items: {
         id: string;
@@ -1017,6 +1029,7 @@ export declare const JobTargetAnalysisSchema: z.ZodObject<{
     }>;
     sections: z.ZodArray<z.ZodEffects<z.ZodObject<{
         id: z.ZodString;
+        parentSectionId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         heading: z.ZodNullable<z.ZodString>;
         headingLevel: z.ZodNullable<z.ZodNumber>;
         normalizedHeading: z.ZodNullable<z.ZodString>;
@@ -1089,6 +1102,7 @@ export declare const JobTargetAnalysisSchema: z.ZodObject<{
         };
         classification: "unknown" | "company" | "responsibilities" | "required" | "preferred" | "qualifications" | "about-role" | "benefits" | "other";
         classificationBasis: "explicit-heading" | "none";
+        parentSectionId?: string | null | undefined;
     }, {
         id: string;
         startLine: number;
@@ -1108,6 +1122,7 @@ export declare const JobTargetAnalysisSchema: z.ZodObject<{
         };
         classification: "unknown" | "company" | "responsibilities" | "required" | "preferred" | "qualifications" | "about-role" | "benefits" | "other";
         classificationBasis: "explicit-heading" | "none";
+        parentSectionId?: string | null | undefined;
     }>, {
         id: string;
         startLine: number;
@@ -1127,6 +1142,7 @@ export declare const JobTargetAnalysisSchema: z.ZodObject<{
         };
         classification: "unknown" | "company" | "responsibilities" | "required" | "preferred" | "qualifications" | "about-role" | "benefits" | "other";
         classificationBasis: "explicit-heading" | "none";
+        parentSectionId?: string | null | undefined;
     }, {
         id: string;
         startLine: number;
@@ -1146,6 +1162,7 @@ export declare const JobTargetAnalysisSchema: z.ZodObject<{
         };
         classification: "unknown" | "company" | "responsibilities" | "required" | "preferred" | "qualifications" | "about-role" | "benefits" | "other";
         classificationBasis: "explicit-heading" | "none";
+        parentSectionId?: string | null | undefined;
     }>, "many">;
     items: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
@@ -1282,6 +1299,7 @@ export declare const JobTargetAnalysisSchema: z.ZodObject<{
         };
         classification: "unknown" | "company" | "responsibilities" | "required" | "preferred" | "qualifications" | "about-role" | "benefits" | "other";
         classificationBasis: "explicit-heading" | "none";
+        parentSectionId?: string | null | undefined;
     }[];
     items: {
         id: string;
@@ -1343,6 +1361,7 @@ export declare const JobTargetAnalysisSchema: z.ZodObject<{
         };
         classification: "unknown" | "company" | "responsibilities" | "required" | "preferred" | "qualifications" | "about-role" | "benefits" | "other";
         classificationBasis: "explicit-heading" | "none";
+        parentSectionId?: string | null | undefined;
     }[];
     items: {
         id: string;
@@ -1389,6 +1408,7 @@ export declare const TargetAnalysisSchema: z.ZodDiscriminatedUnion<"targetType",
     }>;
     sections: z.ZodArray<z.ZodEffects<z.ZodObject<{
         id: z.ZodString;
+        parentSectionId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         heading: z.ZodNullable<z.ZodString>;
         headingLevel: z.ZodNullable<z.ZodNumber>;
         normalizedHeading: z.ZodNullable<z.ZodString>;
@@ -1461,6 +1481,7 @@ export declare const TargetAnalysisSchema: z.ZodDiscriminatedUnion<"targetType",
         };
         classification: "unknown" | "company" | "responsibilities" | "required" | "preferred" | "qualifications" | "about-role" | "benefits" | "other";
         classificationBasis: "explicit-heading" | "none";
+        parentSectionId?: string | null | undefined;
     }, {
         id: string;
         startLine: number;
@@ -1480,6 +1501,7 @@ export declare const TargetAnalysisSchema: z.ZodDiscriminatedUnion<"targetType",
         };
         classification: "unknown" | "company" | "responsibilities" | "required" | "preferred" | "qualifications" | "about-role" | "benefits" | "other";
         classificationBasis: "explicit-heading" | "none";
+        parentSectionId?: string | null | undefined;
     }>, {
         id: string;
         startLine: number;
@@ -1499,6 +1521,7 @@ export declare const TargetAnalysisSchema: z.ZodDiscriminatedUnion<"targetType",
         };
         classification: "unknown" | "company" | "responsibilities" | "required" | "preferred" | "qualifications" | "about-role" | "benefits" | "other";
         classificationBasis: "explicit-heading" | "none";
+        parentSectionId?: string | null | undefined;
     }, {
         id: string;
         startLine: number;
@@ -1518,6 +1541,7 @@ export declare const TargetAnalysisSchema: z.ZodDiscriminatedUnion<"targetType",
         };
         classification: "unknown" | "company" | "responsibilities" | "required" | "preferred" | "qualifications" | "about-role" | "benefits" | "other";
         classificationBasis: "explicit-heading" | "none";
+        parentSectionId?: string | null | undefined;
     }>, "many">;
     items: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
@@ -1668,6 +1692,7 @@ export declare const TargetAnalysisSchema: z.ZodDiscriminatedUnion<"targetType",
         };
         classification: "unknown" | "company" | "responsibilities" | "required" | "preferred" | "qualifications" | "about-role" | "benefits" | "other";
         classificationBasis: "explicit-heading" | "none";
+        parentSectionId?: string | null | undefined;
     }[];
     items: {
         id: string;
@@ -1727,6 +1752,7 @@ export declare const TargetAnalysisSchema: z.ZodDiscriminatedUnion<"targetType",
         };
         classification: "unknown" | "company" | "responsibilities" | "required" | "preferred" | "qualifications" | "about-role" | "benefits" | "other";
         classificationBasis: "explicit-heading" | "none";
+        parentSectionId?: string | null | undefined;
     }[];
     items: {
         id: string;
@@ -1794,6 +1820,7 @@ export declare const TargetAnalysisSchema: z.ZodDiscriminatedUnion<"targetType",
     }>;
     sections: z.ZodArray<z.ZodEffects<z.ZodObject<{
         id: z.ZodString;
+        parentSectionId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         heading: z.ZodNullable<z.ZodString>;
         headingLevel: z.ZodNullable<z.ZodNumber>;
         normalizedHeading: z.ZodNullable<z.ZodString>;
@@ -1866,6 +1893,7 @@ export declare const TargetAnalysisSchema: z.ZodDiscriminatedUnion<"targetType",
         };
         classification: "unknown" | "company" | "responsibilities" | "required" | "preferred" | "qualifications" | "about-role" | "benefits" | "other";
         classificationBasis: "explicit-heading" | "none";
+        parentSectionId?: string | null | undefined;
     }, {
         id: string;
         startLine: number;
@@ -1885,6 +1913,7 @@ export declare const TargetAnalysisSchema: z.ZodDiscriminatedUnion<"targetType",
         };
         classification: "unknown" | "company" | "responsibilities" | "required" | "preferred" | "qualifications" | "about-role" | "benefits" | "other";
         classificationBasis: "explicit-heading" | "none";
+        parentSectionId?: string | null | undefined;
     }>, {
         id: string;
         startLine: number;
@@ -1904,6 +1933,7 @@ export declare const TargetAnalysisSchema: z.ZodDiscriminatedUnion<"targetType",
         };
         classification: "unknown" | "company" | "responsibilities" | "required" | "preferred" | "qualifications" | "about-role" | "benefits" | "other";
         classificationBasis: "explicit-heading" | "none";
+        parentSectionId?: string | null | undefined;
     }, {
         id: string;
         startLine: number;
@@ -1923,6 +1953,7 @@ export declare const TargetAnalysisSchema: z.ZodDiscriminatedUnion<"targetType",
         };
         classification: "unknown" | "company" | "responsibilities" | "required" | "preferred" | "qualifications" | "about-role" | "benefits" | "other";
         classificationBasis: "explicit-heading" | "none";
+        parentSectionId?: string | null | undefined;
     }>, "many">;
     items: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
@@ -2059,6 +2090,7 @@ export declare const TargetAnalysisSchema: z.ZodDiscriminatedUnion<"targetType",
         };
         classification: "unknown" | "company" | "responsibilities" | "required" | "preferred" | "qualifications" | "about-role" | "benefits" | "other";
         classificationBasis: "explicit-heading" | "none";
+        parentSectionId?: string | null | undefined;
     }[];
     items: {
         id: string;
@@ -2120,6 +2152,7 @@ export declare const TargetAnalysisSchema: z.ZodDiscriminatedUnion<"targetType",
         };
         classification: "unknown" | "company" | "responsibilities" | "required" | "preferred" | "qualifications" | "about-role" | "benefits" | "other";
         classificationBasis: "explicit-heading" | "none";
+        parentSectionId?: string | null | undefined;
     }[];
     items: {
         id: string;

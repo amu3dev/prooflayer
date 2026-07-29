@@ -5,7 +5,7 @@ import { JobRequirementModelManifestSchema, JobRequirementModelSchema, } from ".
 import { getTargetAnalysisStatus, showTargetAnalysis, } from "./target-analysis.js";
 import { showTarget } from "./targets.js";
 export const JOB_REQUIREMENT_POLICY_NAME = "job-requirement-modeling-policy";
-export const JOB_REQUIREMENT_POLICY_VERSION = "1";
+export const JOB_REQUIREMENT_POLICY_VERSION = "2";
 const MODEL_FILE = "job-requirement-model.json";
 const MANIFEST_FILE = "job-requirement-model-manifest.json";
 const TECHNOLOGIES = [
@@ -32,6 +32,7 @@ const TECHNOLOGIES = [
     "React Native",
     "REST",
     "Ruby",
+    "Salesforce",
     "SQL",
     "Supabase",
     "TensorFlow.js",
@@ -54,6 +55,8 @@ const DOMAIN_PATTERNS = [
     /\be-?commerce\b/i,
     /\benterprise software\b/i,
     /\bmarket(?:ing)? technology\b/i,
+    /\bcontact cent(?:er|re)s?\b/i,
+    /\bcustomer experience\b/i,
 ];
 const KEYWORD_PATTERNS = new Map([
     ["product strategy", /\bproduct strategy\b/i],
@@ -67,6 +70,12 @@ const KEYWORD_PATTERNS = new Map([
     ["machine learning", /\bmachine learning\b/i],
     ["data", /\bdata(?:-informed|-driven)?\b/i],
     ["delivery", /\bdelivery\b/i],
+    ["CRM", /\bCRM\b/i],
+    ["conversational AI", /\bconversational-?AI\b/i],
+    ["LLM", /\bLLM(?:-based|s)?\b/i],
+    ["agents", /\bagents?\b/i],
+    ["user experience", /\b(?:UX|user experience|usability)\b/i],
+    ["extensibility", /\bextensib(?:ility|le)\b/i],
     ["architecture", /\barchitecture\b/i],
     ["security", /\bsecurity\b/i],
     ["analytics", /\banalytics?\b/i],
@@ -361,15 +370,8 @@ async function loadCurrentInput(workspace, targetId, policyName, policyVersion) 
 }
 function modelRequirements(analysis, targetId) {
     const sectionById = new Map(analysis.sections.map((section) => [section.id, section]));
-    const eligibleItems = analysis.items.filter((item) => {
-        if (item.kind === "front-matter-field")
-            return false;
-        const classification = item.sectionId
-            ? sectionById.get(item.sectionId)?.classification
-            : undefined;
-        return classification !== "benefits" && classification !== "company";
-    });
-    const requirements = eligibleItems.map((item) => requirementFromItem(targetId, item, sectionById.get(item.sectionId ?? "")));
+    const eligibleItems = analysis.items.filter((item) => isRequirementSourceItem(item, sectionById.get(item.sectionId ?? "")));
+    const requirements = eligibleItems.flatMap((item) => requirementsFromItem(targetId, item, sectionById.get(item.sectionId ?? "")));
     const ambiguities = requirements.flatMap((requirement) => {
         const codes = [];
         if (requirement.necessity === "ambiguous")
@@ -479,10 +481,30 @@ function modelRequirements(analysis, targetId) {
         },
     };
 }
-function requirementFromItem(targetId, item, section) {
+function requirementsFromItem(targetId, item, section) {
     const statement = normalizeStatement(item.statement);
-    const necessity = classifyNecessity(statement, item, section?.classification);
-    const category = classifyCategory(statement, item, necessity);
+    const preferenceModifier = splitPreferenceModifier(statement);
+    if (preferenceModifier && (section?.classification === "required" ||
+        item.necessity === "required")) {
+        const base = requirementFromStatement(targetId, item, section, preferenceModifier.base, "mandatory");
+        const preferred = requirementFromStatement(targetId, item, section, preferenceModifier.preference, "preferred");
+        return [
+            {
+                ...base,
+                relationships: [{ type: "related-to", requirementId: preferred.id }],
+            },
+            {
+                ...preferred,
+                relationships: [{ type: "related-to", requirementId: base.id }],
+            },
+        ];
+    }
+    return [requirementFromStatement(targetId, item, section, statement)];
+}
+function requirementFromStatement(targetId, item, section, statement, necessityOverride) {
+    const necessity = necessityOverride ??
+        classifyNecessity(statement, item, section);
+    const category = classifyCategory(statement, item, necessity, section);
     const namedTechnologies = [...TECHNOLOGY_PATTERNS.entries()]
         .filter(([name, pattern]) => pattern.test(statement) &&
         !(name === "React" && /\bReact Native\b/i.test(statement)))
@@ -534,7 +556,7 @@ function requirementFromItem(targetId, item, section) {
         trustState: "deterministic-unreviewed",
     };
 }
-function classifyNecessity(statement, item, sectionClassification) {
+function classifyNecessity(statement, item, section) {
     const mandatoryCue = /\b(?:must have|required(?: to| experience| qualification| skill)?|minimum of|at least)\b/i.test(statement);
     const preferredCue = /\b(?:preferred|nice to have|bonus)\b/i.test(statement);
     if (mandatoryCue && preferredCue)
@@ -543,18 +565,22 @@ function classifyNecessity(statement, item, sectionClassification) {
         return "mandatory";
     if (preferredCue)
         return "preferred";
-    if (sectionClassification === "required" || item.necessity === "required")
+    if (section?.classification === "required" || item.necessity === "required")
         return "mandatory";
-    if (sectionClassification === "preferred" || item.necessity === "preferred")
+    if (section?.classification === "preferred" || item.necessity === "preferred")
         return "preferred";
-    if (sectionClassification === "responsibilities" ||
-        sectionClassification === "about-role" ||
+    if (section?.classification === "responsibilities" ||
+        section?.classification === "about-role" ||
+        section?.normalizedHeading === "how we work" ||
         item.necessity === "contextual") {
         return "contextual";
     }
     return "ambiguous";
 }
-function classifyCategory(statement, item, necessity) {
+function classifyCategory(statement, item, necessity, section) {
+    if (section?.normalizedHeading === "how we work") {
+        return "operating-context";
+    }
     if (/\b\d+\s*\+?\s*(?:years?|yrs?)\b|\byears? of experience\b|\bsenior(?:ity)?\b/i.test(statement)) {
         return "experience-seniority";
     }
@@ -564,7 +590,7 @@ function classifyCategory(statement, item, necessity) {
     if (/\b(?:degree|bachelor'?s?|master'?s?|phd|doctorate|certification|certified|diploma)\b/i.test(statement)) {
         return "education-certification";
     }
-    if (/\b(?:location|located|based in|remote|hybrid|on-?site|onsite|travel|visa|relocat|work permit|Riyadh|Berlin|Cairo|Dubai)\b/i.test(statement)) {
+    if (/\b(?:location|located|based in|remote|hybrid|on-?site|onsite|in-person|meet-?ups?|travel|visa|relocat|work permit|Riyadh|Berlin|Cairo|Dubai|London|UK|United Kingdom)\b/i.test(statement)) {
         return "location-travel-visa-work-mode";
     }
     if (/\b(?:background check|security clearance|screening|assessment test|drug test)\b/i.test(statement)) {
@@ -573,13 +599,21 @@ function classifyCategory(statement, item, necessity) {
     if (/\b(?:multi-site|distributed team|global team|cross-functional|matrixed|multi-country|multi-region)\b/i.test(statement)) {
         return "operating-context";
     }
-    if (/\b(?:lead|leadership|manage|mentor|coach|people management|stakeholder|executive|team leadership)\b/i.test(statement)) {
+    if (item.category === "responsibility" &&
+        section?.normalizedHeading === "what youll own") {
+        return "responsibility";
+    }
+    if (section?.classification === "about-role" &&
+        /\bthis role (?:owns|leads|is responsible for)\b/i.test(statement)) {
+        return "responsibility";
+    }
+    if (/\b(?:hands-on work|owning a track|lead|leadership|manage|mentor|coach|people management|stakeholder|executive|team leadership)\b/i.test(statement)) {
         return "leadership-expectation";
     }
     if (DOMAIN_PATTERNS.some((pattern) => pattern.test(statement)))
         return "domain-expectation";
     if ([...TECHNOLOGY_PATTERNS.values()].some((pattern) => pattern.test(statement)) ||
-        /\b(?:software|engineering|architecture|cloud|database|backend|frontend|mobile|security|technical)\b/i.test(statement)) {
+        /\b(?:software|engineering|architecture|cloud|database|backend|frontend|mobile|security|technical|conversational-?AI|LLM(?:-based|s)?|agent products?|CRM|Salesforce|platform|extensib(?:ility|le))\b/i.test(statement)) {
         return "technical-expectation";
     }
     if (/\b(?:users?|customers?|transactions?|requests?|revenue|budget|million|billion|percentage|%)\b/i.test(statement)) {
@@ -594,6 +628,38 @@ function classifyCategory(statement, item, necessity) {
     if (item.category === "qualification")
         return "required-capability";
     return "unknown";
+}
+function isRequirementSourceItem(item, section) {
+    if (item.kind === "front-matter-field")
+        return false;
+    if (!section)
+        return false;
+    if (section.classification === "company")
+        return false;
+    if (section.classification === "benefits") {
+        return isWorkConstraint(item.statement);
+    }
+    if (section.heading === null)
+        return false;
+    if (section.classification === "about-role") {
+        return /\b(?:this role|you(?: will|'ll)|your responsibilities?|the successful candidate)\b/i.test(item.statement);
+    }
+    if (section.normalizedHeading === "how we work") {
+        return /\b(?:you|your|team|engineering|product judgement|product judgment)\b/i.test(item.statement);
+    }
+    return true;
+}
+function isWorkConstraint(statement) {
+    return /\b(?:based in|remote|hybrid|on-?site|onsite|in-person|meet-?ups?|travel|visa|relocat|work permit|London|UK|United Kingdom)\b/i.test(statement);
+}
+function splitPreferenceModifier(statement) {
+    const match = statement.match(/^(.+?\.)\s+([^.!?]+\bis strongly preferred\.)$/i);
+    if (!match?.[1] || !match[2])
+        return null;
+    return {
+        base: match[1].trim(),
+        preference: match[2].trim(),
+    };
 }
 function detectContradictions(requirements) {
     const byLabel = new Map();

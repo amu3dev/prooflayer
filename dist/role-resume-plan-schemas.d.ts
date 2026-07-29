@@ -170,12 +170,12 @@ export declare const PlanElementProvenanceSchema: z.ZodObject<{
     approvedMatchingSha256: string;
     evidenceSnapshotSha256: string;
     deterministicInputs: Record<string, string | number | boolean | string[]>;
-    approvedAssessmentSha256: string;
-    assessmentIds: string[];
     planningPolicy: {
         name: string;
         version: string;
     };
+    assessmentIds: string[];
+    approvedAssessmentSha256: string;
     reviewDecision?: {
         decision: "accept" | "edit";
         reviewer: {
@@ -214,12 +214,12 @@ export declare const PlanElementProvenanceSchema: z.ZodObject<{
     approvedMatchingSha256: string;
     evidenceSnapshotSha256: string;
     deterministicInputs: Record<string, string | number | boolean | string[]>;
-    approvedAssessmentSha256: string;
-    assessmentIds: string[];
     planningPolicy: {
         name: string;
         version: string;
     };
+    assessmentIds: string[];
+    approvedAssessmentSha256: string;
     reviewDecision?: {
         decision: "accept" | "edit";
         reviewer: {
@@ -394,12 +394,12 @@ export declare const PositioningThemeSchema: z.ZodObject<{
         approvedMatchingSha256: string;
         evidenceSnapshotSha256: string;
         deterministicInputs: Record<string, string | number | boolean | string[]>;
-        approvedAssessmentSha256: string;
-        assessmentIds: string[];
         planningPolicy: {
             name: string;
             version: string;
         };
+        assessmentIds: string[];
+        approvedAssessmentSha256: string;
         reviewDecision?: {
             decision: "accept" | "edit";
             reviewer: {
@@ -438,12 +438,12 @@ export declare const PositioningThemeSchema: z.ZodObject<{
         approvedMatchingSha256: string;
         evidenceSnapshotSha256: string;
         deterministicInputs: Record<string, string | number | boolean | string[]>;
-        approvedAssessmentSha256: string;
-        assessmentIds: string[];
         planningPolicy: {
             name: string;
             version: string;
         };
+        assessmentIds: string[];
+        approvedAssessmentSha256: string;
         reviewDecision?: {
             decision: "accept" | "edit";
             reviewer: {
@@ -489,12 +489,12 @@ export declare const PositioningThemeSchema: z.ZodObject<{
         approvedMatchingSha256: string;
         evidenceSnapshotSha256: string;
         deterministicInputs: Record<string, string | number | boolean | string[]>;
-        approvedAssessmentSha256: string;
-        assessmentIds: string[];
         planningPolicy: {
             name: string;
             version: string;
         };
+        assessmentIds: string[];
+        approvedAssessmentSha256: string;
         reviewDecision?: {
             decision: "accept" | "edit";
             reviewer: {
@@ -513,7 +513,7 @@ export declare const PositioningThemeSchema: z.ZodObject<{
     approvedMatchIds: string[];
     label: string;
     sourceAssessmentIds: string[];
-    emphasis: "supporting" | "primary" | "secondary";
+    emphasis: "supporting" | "secondary" | "primary";
 }, {
     id: string;
     sourceExpectationIds: string[];
@@ -544,12 +544,12 @@ export declare const PositioningThemeSchema: z.ZodObject<{
         approvedMatchingSha256: string;
         evidenceSnapshotSha256: string;
         deterministicInputs: Record<string, string | number | boolean | string[]>;
-        approvedAssessmentSha256: string;
-        assessmentIds: string[];
         planningPolicy: {
             name: string;
             version: string;
         };
+        assessmentIds: string[];
+        approvedAssessmentSha256: string;
         reviewDecision?: {
             decision: "accept" | "edit";
             reviewer: {
@@ -568,7 +568,7 @@ export declare const PositioningThemeSchema: z.ZodObject<{
     approvedMatchIds: string[];
     label: string;
     sourceAssessmentIds: string[];
-    emphasis: "supporting" | "primary" | "secondary";
+    emphasis: "supporting" | "secondary" | "primary";
 }>;
 export declare const PositioningCautionSchema: z.ZodObject<{
     id: z.ZodString;
@@ -752,12 +752,12 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -796,12 +796,12 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -847,12 +847,12 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -871,7 +871,7 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
         approvedMatchIds: string[];
         label: string;
         sourceAssessmentIds: string[];
-        emphasis: "supporting" | "primary" | "secondary";
+        emphasis: "supporting" | "secondary" | "primary";
     }, {
         id: string;
         sourceExpectationIds: string[];
@@ -902,12 +902,12 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -926,7 +926,7 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
         approvedMatchIds: string[];
         label: string;
         sourceAssessmentIds: string[];
-        emphasis: "supporting" | "primary" | "secondary";
+        emphasis: "supporting" | "secondary" | "primary";
     }>, "many">;
     secondaryThemes: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
@@ -1088,12 +1088,12 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -1132,12 +1132,12 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -1183,12 +1183,12 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -1207,7 +1207,7 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
         approvedMatchIds: string[];
         label: string;
         sourceAssessmentIds: string[];
-        emphasis: "supporting" | "primary" | "secondary";
+        emphasis: "supporting" | "secondary" | "primary";
     }, {
         id: string;
         sourceExpectationIds: string[];
@@ -1238,12 +1238,12 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -1262,7 +1262,7 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
         approvedMatchIds: string[];
         label: string;
         sourceAssessmentIds: string[];
-        emphasis: "supporting" | "primary" | "secondary";
+        emphasis: "supporting" | "secondary" | "primary";
     }>, "many">;
     differentiationThemes: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
@@ -1424,12 +1424,12 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -1468,12 +1468,12 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -1519,12 +1519,12 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -1543,7 +1543,7 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
         approvedMatchIds: string[];
         label: string;
         sourceAssessmentIds: string[];
-        emphasis: "supporting" | "primary" | "secondary";
+        emphasis: "supporting" | "secondary" | "primary";
     }, {
         id: string;
         sourceExpectationIds: string[];
@@ -1574,12 +1574,12 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -1598,7 +1598,7 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
         approvedMatchIds: string[];
         label: string;
         sourceAssessmentIds: string[];
-        emphasis: "supporting" | "primary" | "secondary";
+        emphasis: "supporting" | "secondary" | "primary";
     }>, "many">;
     cautionThemes: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
@@ -1625,10 +1625,10 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
         notes: z.ZodArray<z.ZodString, "many">;
     }, "strict", z.ZodTypeAny, {
         notes: string[];
-        primary: "recruiter" | "hiring-manager" | "executive" | "mixed";
+        primary: "mixed" | "recruiter" | "hiring-manager" | "executive";
     }, {
         notes: string[];
-        primary: "recruiter" | "hiring-manager" | "executive" | "mixed";
+        primary: "mixed" | "recruiter" | "hiring-manager" | "executive";
     }>;
     provenance: z.ZodObject<{
         targetId: z.ZodString;
@@ -1781,12 +1781,12 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
         approvedMatchingSha256: string;
         evidenceSnapshotSha256: string;
         deterministicInputs: Record<string, string | number | boolean | string[]>;
-        approvedAssessmentSha256: string;
-        assessmentIds: string[];
         planningPolicy: {
             name: string;
             version: string;
         };
+        assessmentIds: string[];
+        approvedAssessmentSha256: string;
         reviewDecision?: {
             decision: "accept" | "edit";
             reviewer: {
@@ -1825,12 +1825,12 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
         approvedMatchingSha256: string;
         evidenceSnapshotSha256: string;
         deterministicInputs: Record<string, string | number | boolean | string[]>;
-        approvedAssessmentSha256: string;
-        assessmentIds: string[];
         planningPolicy: {
             name: string;
             version: string;
         };
+        assessmentIds: string[];
+        approvedAssessmentSha256: string;
         reviewDecision?: {
             decision: "accept" | "edit";
             reviewer: {
@@ -1873,12 +1873,12 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
         approvedMatchingSha256: string;
         evidenceSnapshotSha256: string;
         deterministicInputs: Record<string, string | number | boolean | string[]>;
-        approvedAssessmentSha256: string;
-        assessmentIds: string[];
         planningPolicy: {
             name: string;
             version: string;
         };
+        assessmentIds: string[];
+        approvedAssessmentSha256: string;
         reviewDecision?: {
             decision: "accept" | "edit";
             reviewer: {
@@ -1925,12 +1925,12 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -1949,7 +1949,7 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
         approvedMatchIds: string[];
         label: string;
         sourceAssessmentIds: string[];
-        emphasis: "supporting" | "primary" | "secondary";
+        emphasis: "supporting" | "secondary" | "primary";
     }[];
     secondaryThemes: {
         id: string;
@@ -1981,12 +1981,12 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -2005,7 +2005,7 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
         approvedMatchIds: string[];
         label: string;
         sourceAssessmentIds: string[];
-        emphasis: "supporting" | "primary" | "secondary";
+        emphasis: "supporting" | "secondary" | "primary";
     }[];
     differentiationThemes: {
         id: string;
@@ -2037,12 +2037,12 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -2061,7 +2061,7 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
         approvedMatchIds: string[];
         label: string;
         sourceAssessmentIds: string[];
-        emphasis: "supporting" | "primary" | "secondary";
+        emphasis: "supporting" | "secondary" | "primary";
     }[];
     cautionThemes: {
         id: string;
@@ -2073,7 +2073,7 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
     narrativeOrder: string[];
     audience: {
         notes: string[];
-        primary: "recruiter" | "hiring-manager" | "executive" | "mixed";
+        primary: "mixed" | "recruiter" | "hiring-manager" | "executive";
     };
 }, {
     trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
@@ -2102,12 +2102,12 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
         approvedMatchingSha256: string;
         evidenceSnapshotSha256: string;
         deterministicInputs: Record<string, string | number | boolean | string[]>;
-        approvedAssessmentSha256: string;
-        assessmentIds: string[];
         planningPolicy: {
             name: string;
             version: string;
         };
+        assessmentIds: string[];
+        approvedAssessmentSha256: string;
         reviewDecision?: {
             decision: "accept" | "edit";
             reviewer: {
@@ -2154,12 +2154,12 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -2178,7 +2178,7 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
         approvedMatchIds: string[];
         label: string;
         sourceAssessmentIds: string[];
-        emphasis: "supporting" | "primary" | "secondary";
+        emphasis: "supporting" | "secondary" | "primary";
     }[];
     secondaryThemes: {
         id: string;
@@ -2210,12 +2210,12 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -2234,7 +2234,7 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
         approvedMatchIds: string[];
         label: string;
         sourceAssessmentIds: string[];
-        emphasis: "supporting" | "primary" | "secondary";
+        emphasis: "supporting" | "secondary" | "primary";
     }[];
     differentiationThemes: {
         id: string;
@@ -2266,12 +2266,12 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -2290,7 +2290,7 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
         approvedMatchIds: string[];
         label: string;
         sourceAssessmentIds: string[];
-        emphasis: "supporting" | "primary" | "secondary";
+        emphasis: "supporting" | "secondary" | "primary";
     }[];
     cautionThemes: {
         id: string;
@@ -2302,7 +2302,7 @@ export declare const RolePositioningPlanSchema: z.ZodObject<{
     narrativeOrder: string[];
     audience: {
         notes: string[];
-        primary: "recruiter" | "hiring-manager" | "executive" | "mixed";
+        primary: "mixed" | "recruiter" | "hiring-manager" | "executive";
     };
 }>;
 export declare const RoleResumeSectionPlanSchema: z.ZodObject<{
@@ -2471,12 +2471,12 @@ export declare const RoleResumeSectionPlanSchema: z.ZodObject<{
         approvedMatchingSha256: string;
         evidenceSnapshotSha256: string;
         deterministicInputs: Record<string, string | number | boolean | string[]>;
-        approvedAssessmentSha256: string;
-        assessmentIds: string[];
         planningPolicy: {
             name: string;
             version: string;
         };
+        assessmentIds: string[];
+        approvedAssessmentSha256: string;
         reviewDecision?: {
             decision: "accept" | "edit";
             reviewer: {
@@ -2515,12 +2515,12 @@ export declare const RoleResumeSectionPlanSchema: z.ZodObject<{
         approvedMatchingSha256: string;
         evidenceSnapshotSha256: string;
         deterministicInputs: Record<string, string | number | boolean | string[]>;
-        approvedAssessmentSha256: string;
-        assessmentIds: string[];
         planningPolicy: {
             name: string;
             version: string;
         };
+        assessmentIds: string[];
+        approvedAssessmentSha256: string;
         reviewDecision?: {
             decision: "accept" | "edit";
             reviewer: {
@@ -2567,12 +2567,12 @@ export declare const RoleResumeSectionPlanSchema: z.ZodObject<{
         approvedMatchingSha256: string;
         evidenceSnapshotSha256: string;
         deterministicInputs: Record<string, string | number | boolean | string[]>;
-        approvedAssessmentSha256: string;
-        assessmentIds: string[];
         planningPolicy: {
             name: string;
             version: string;
         };
+        assessmentIds: string[];
+        approvedAssessmentSha256: string;
         reviewDecision?: {
             decision: "accept" | "edit";
             reviewer: {
@@ -2589,11 +2589,11 @@ export declare const RoleResumeSectionPlanSchema: z.ZodObject<{
     };
     evidenceIds: string[];
     approvedMatchIds: string[];
+    order: number;
+    allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
     sourceAssessmentIds: string[];
     objective: string;
-    order: number;
-    allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-    prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+    prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
     emphasisNotes: string[];
     cautionNotes: string[];
     maximumItemCount?: number | undefined;
@@ -2628,12 +2628,12 @@ export declare const RoleResumeSectionPlanSchema: z.ZodObject<{
         approvedMatchingSha256: string;
         evidenceSnapshotSha256: string;
         deterministicInputs: Record<string, string | number | boolean | string[]>;
-        approvedAssessmentSha256: string;
-        assessmentIds: string[];
         planningPolicy: {
             name: string;
             version: string;
         };
+        assessmentIds: string[];
+        approvedAssessmentSha256: string;
         reviewDecision?: {
             decision: "accept" | "edit";
             reviewer: {
@@ -2650,11 +2650,11 @@ export declare const RoleResumeSectionPlanSchema: z.ZodObject<{
     };
     evidenceIds: string[];
     approvedMatchIds: string[];
+    order: number;
+    allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
     sourceAssessmentIds: string[];
     objective: string;
-    order: number;
-    allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-    prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+    prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
     emphasisNotes: string[];
     cautionNotes: string[];
     maximumItemCount?: number | undefined;
@@ -2823,12 +2823,12 @@ export declare const ResumeExpectationSelectionSchema: z.ZodObject<{
         approvedMatchingSha256: string;
         evidenceSnapshotSha256: string;
         deterministicInputs: Record<string, string | number | boolean | string[]>;
-        approvedAssessmentSha256: string;
-        assessmentIds: string[];
         planningPolicy: {
             name: string;
             version: string;
         };
+        assessmentIds: string[];
+        approvedAssessmentSha256: string;
         reviewDecision?: {
             decision: "accept" | "edit";
             reviewer: {
@@ -2867,12 +2867,12 @@ export declare const ResumeExpectationSelectionSchema: z.ZodObject<{
         approvedMatchingSha256: string;
         evidenceSnapshotSha256: string;
         deterministicInputs: Record<string, string | number | boolean | string[]>;
-        approvedAssessmentSha256: string;
-        assessmentIds: string[];
         planningPolicy: {
             name: string;
             version: string;
         };
+        assessmentIds: string[];
+        approvedAssessmentSha256: string;
         reviewDecision?: {
             decision: "accept" | "edit";
             reviewer: {
@@ -2889,7 +2889,7 @@ export declare const ResumeExpectationSelectionSchema: z.ZodObject<{
     }>;
     trustState: z.ZodEnum<["deterministic-approved", "human-approved", "human-edited", "proposed"]>;
 }, "strict", z.ZodTypeAny, {
-    decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+    decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
     id: string;
     rationale: string;
     trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
@@ -2919,12 +2919,12 @@ export declare const ResumeExpectationSelectionSchema: z.ZodObject<{
         approvedMatchingSha256: string;
         evidenceSnapshotSha256: string;
         deterministicInputs: Record<string, string | number | boolean | string[]>;
-        approvedAssessmentSha256: string;
-        assessmentIds: string[];
         planningPolicy: {
             name: string;
             version: string;
         };
+        assessmentIds: string[];
+        approvedAssessmentSha256: string;
         reviewDecision?: {
             decision: "accept" | "edit";
             reviewer: {
@@ -2948,7 +2948,7 @@ export declare const ResumeExpectationSelectionSchema: z.ZodObject<{
     allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
     restrictions: string[];
 }, {
-    decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+    decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
     id: string;
     rationale: string;
     trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
@@ -2978,12 +2978,12 @@ export declare const ResumeExpectationSelectionSchema: z.ZodObject<{
         approvedMatchingSha256: string;
         evidenceSnapshotSha256: string;
         deterministicInputs: Record<string, string | number | boolean | string[]>;
-        approvedAssessmentSha256: string;
-        assessmentIds: string[];
         planningPolicy: {
             name: string;
             version: string;
         };
+        assessmentIds: string[];
+        approvedAssessmentSha256: string;
         reviewDecision?: {
             decision: "accept" | "edit";
             reviewer: {
@@ -3170,12 +3170,12 @@ export declare const ResumeEvidenceSelectionSchema: z.ZodObject<{
         approvedMatchingSha256: string;
         evidenceSnapshotSha256: string;
         deterministicInputs: Record<string, string | number | boolean | string[]>;
-        approvedAssessmentSha256: string;
-        assessmentIds: string[];
         planningPolicy: {
             name: string;
             version: string;
         };
+        assessmentIds: string[];
+        approvedAssessmentSha256: string;
         reviewDecision?: {
             decision: "accept" | "edit";
             reviewer: {
@@ -3214,12 +3214,12 @@ export declare const ResumeEvidenceSelectionSchema: z.ZodObject<{
         approvedMatchingSha256: string;
         evidenceSnapshotSha256: string;
         deterministicInputs: Record<string, string | number | boolean | string[]>;
-        approvedAssessmentSha256: string;
-        assessmentIds: string[];
         planningPolicy: {
             name: string;
             version: string;
         };
+        assessmentIds: string[];
+        approvedAssessmentSha256: string;
         reviewDecision?: {
             decision: "accept" | "edit";
             reviewer: {
@@ -3267,12 +3267,12 @@ export declare const ResumeEvidenceSelectionSchema: z.ZodObject<{
         approvedMatchingSha256: string;
         evidenceSnapshotSha256: string;
         deterministicInputs: Record<string, string | number | boolean | string[]>;
-        approvedAssessmentSha256: string;
-        assessmentIds: string[];
         planningPolicy: {
             name: string;
             version: string;
         };
+        assessmentIds: string[];
+        approvedAssessmentSha256: string;
         reviewDecision?: {
             decision: "accept" | "edit";
             reviewer: {
@@ -3291,8 +3291,8 @@ export declare const ResumeEvidenceSelectionSchema: z.ZodObject<{
     approvedMatchIds: string[];
     proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
     freshnessRisk: "unknown" | "high" | "medium" | "low" | "none";
-    permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-    prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+    prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+    permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
 }, {
     decision: "exclude" | "preferred" | "allowed" | "limited-use";
     id: string;
@@ -3325,12 +3325,12 @@ export declare const ResumeEvidenceSelectionSchema: z.ZodObject<{
         approvedMatchingSha256: string;
         evidenceSnapshotSha256: string;
         deterministicInputs: Record<string, string | number | boolean | string[]>;
-        approvedAssessmentSha256: string;
-        assessmentIds: string[];
         planningPolicy: {
             name: string;
             version: string;
         };
+        assessmentIds: string[];
+        approvedAssessmentSha256: string;
         reviewDecision?: {
             decision: "accept" | "edit";
             reviewer: {
@@ -3349,8 +3349,8 @@ export declare const ResumeEvidenceSelectionSchema: z.ZodObject<{
     approvedMatchIds: string[];
     proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
     freshnessRisk: "unknown" | "high" | "medium" | "low" | "none";
-    permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-    prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+    prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+    permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
 }>;
 export declare const ResumeClaimBoundarySchema: z.ZodObject<{
     id: z.ZodString;
@@ -3532,12 +3532,12 @@ export declare const ResumeClaimBoundarySchema: z.ZodObject<{
         approvedMatchingSha256: string;
         evidenceSnapshotSha256: string;
         deterministicInputs: Record<string, string | number | boolean | string[]>;
-        approvedAssessmentSha256: string;
-        assessmentIds: string[];
         planningPolicy: {
             name: string;
             version: string;
         };
+        assessmentIds: string[];
+        approvedAssessmentSha256: string;
         reviewDecision?: {
             decision: "accept" | "edit";
             reviewer: {
@@ -3576,12 +3576,12 @@ export declare const ResumeClaimBoundarySchema: z.ZodObject<{
         approvedMatchingSha256: string;
         evidenceSnapshotSha256: string;
         deterministicInputs: Record<string, string | number | boolean | string[]>;
-        approvedAssessmentSha256: string;
-        assessmentIds: string[];
         planningPolicy: {
             name: string;
             version: string;
         };
+        assessmentIds: string[];
+        approvedAssessmentSha256: string;
         reviewDecision?: {
             decision: "accept" | "edit";
             reviewer: {
@@ -3626,12 +3626,12 @@ export declare const ResumeClaimBoundarySchema: z.ZodObject<{
         approvedMatchingSha256: string;
         evidenceSnapshotSha256: string;
         deterministicInputs: Record<string, string | number | boolean | string[]>;
-        approvedAssessmentSha256: string;
-        assessmentIds: string[];
         planningPolicy: {
             name: string;
             version: string;
         };
+        assessmentIds: string[];
+        approvedAssessmentSha256: string;
         reviewDecision?: {
             decision: "accept" | "edit";
             reviewer: {
@@ -3647,9 +3647,9 @@ export declare const ResumeClaimBoundarySchema: z.ZodObject<{
         } | undefined;
     };
     evidenceIds: string[];
-    boundaryType: "allowed" | "allowed-with-caution" | "prohibited" | "requires-review";
-    allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-    prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+    allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+    prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+    boundaryType: "allowed" | "prohibited" | "requires-review" | "allowed-with-caution";
     prohibitedInferences: string[];
     requiredQualifiers: string[];
     expectationId?: string | undefined;
@@ -3689,12 +3689,12 @@ export declare const ResumeClaimBoundarySchema: z.ZodObject<{
         approvedMatchingSha256: string;
         evidenceSnapshotSha256: string;
         deterministicInputs: Record<string, string | number | boolean | string[]>;
-        approvedAssessmentSha256: string;
-        assessmentIds: string[];
         planningPolicy: {
             name: string;
             version: string;
         };
+        assessmentIds: string[];
+        approvedAssessmentSha256: string;
         reviewDecision?: {
             decision: "accept" | "edit";
             reviewer: {
@@ -3710,9 +3710,9 @@ export declare const ResumeClaimBoundarySchema: z.ZodObject<{
         } | undefined;
     };
     evidenceIds: string[];
-    boundaryType: "allowed" | "allowed-with-caution" | "prohibited" | "requires-review";
-    allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-    prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+    allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+    prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+    boundaryType: "allowed" | "prohibited" | "requires-review" | "allowed-with-caution";
     prohibitedInferences: string[];
     requiredQualifiers: string[];
     expectationId?: string | undefined;
@@ -3882,12 +3882,12 @@ export declare const ResumeContentExclusionSchema: z.ZodObject<{
         approvedMatchingSha256: string;
         evidenceSnapshotSha256: string;
         deterministicInputs: Record<string, string | number | boolean | string[]>;
-        approvedAssessmentSha256: string;
-        assessmentIds: string[];
         planningPolicy: {
             name: string;
             version: string;
         };
+        assessmentIds: string[];
+        approvedAssessmentSha256: string;
         reviewDecision?: {
             decision: "accept" | "edit";
             reviewer: {
@@ -3926,12 +3926,12 @@ export declare const ResumeContentExclusionSchema: z.ZodObject<{
         approvedMatchingSha256: string;
         evidenceSnapshotSha256: string;
         deterministicInputs: Record<string, string | number | boolean | string[]>;
-        approvedAssessmentSha256: string;
-        assessmentIds: string[];
         planningPolicy: {
             name: string;
             version: string;
         };
+        assessmentIds: string[];
+        approvedAssessmentSha256: string;
         reviewDecision?: {
             decision: "accept" | "edit";
             reviewer: {
@@ -3978,12 +3978,12 @@ export declare const ResumeContentExclusionSchema: z.ZodObject<{
         approvedMatchingSha256: string;
         evidenceSnapshotSha256: string;
         deterministicInputs: Record<string, string | number | boolean | string[]>;
-        approvedAssessmentSha256: string;
-        assessmentIds: string[];
         planningPolicy: {
             name: string;
             version: string;
         };
+        assessmentIds: string[];
+        approvedAssessmentSha256: string;
         reviewDecision?: {
             decision: "accept" | "edit";
             reviewer: {
@@ -4031,12 +4031,12 @@ export declare const ResumeContentExclusionSchema: z.ZodObject<{
         approvedMatchingSha256: string;
         evidenceSnapshotSha256: string;
         deterministicInputs: Record<string, string | number | boolean | string[]>;
-        approvedAssessmentSha256: string;
-        assessmentIds: string[];
         planningPolicy: {
             name: string;
             version: string;
         };
+        assessmentIds: string[];
+        approvedAssessmentSha256: string;
         reviewDecision?: {
             decision: "accept" | "edit";
             reviewer: {
@@ -4138,26 +4138,26 @@ export declare const RoleResumePlanCompletenessSchema: z.ZodObject<{
 }, "strict", z.ZodTypeAny, {
     status: "empty" | "partial" | "complete";
     blockingReasons: string[];
+    claimBoundariesComplete: boolean;
+    provenanceComplete: boolean;
     eligibleExpectationCount: number;
     selectedExpectationCount: number;
     excludedExpectationCount: number;
     deferredExpectationCount: number;
     plannedSectionCount: number;
     primaryThemeCount: number;
-    claimBoundariesComplete: boolean;
-    provenanceComplete: boolean;
     usableForResumeDrafting: boolean;
 }, {
     status: "empty" | "partial" | "complete";
     blockingReasons: string[];
+    claimBoundariesComplete: boolean;
+    provenanceComplete: boolean;
     eligibleExpectationCount: number;
     selectedExpectationCount: number;
     excludedExpectationCount: number;
     deferredExpectationCount: number;
     plannedSectionCount: number;
     primaryThemeCount: number;
-    claimBoundariesComplete: boolean;
-    provenanceComplete: boolean;
     usableForResumeDrafting: boolean;
 }>;
 export declare const RoleResumePlanProvenanceSchema: z.ZodObject<{
@@ -4428,12 +4428,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -4472,12 +4472,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -4523,12 +4523,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -4547,7 +4547,7 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }, {
             id: string;
             sourceExpectationIds: string[];
@@ -4578,12 +4578,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -4602,7 +4602,7 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }>, "many">;
         secondaryThemes: z.ZodArray<z.ZodObject<{
             id: z.ZodString;
@@ -4764,12 +4764,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -4808,12 +4808,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -4859,12 +4859,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -4883,7 +4883,7 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }, {
             id: string;
             sourceExpectationIds: string[];
@@ -4914,12 +4914,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -4938,7 +4938,7 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }>, "many">;
         differentiationThemes: z.ZodArray<z.ZodObject<{
             id: z.ZodString;
@@ -5100,12 +5100,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -5144,12 +5144,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -5195,12 +5195,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -5219,7 +5219,7 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }, {
             id: string;
             sourceExpectationIds: string[];
@@ -5250,12 +5250,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -5274,7 +5274,7 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }>, "many">;
         cautionThemes: z.ZodArray<z.ZodObject<{
             id: z.ZodString;
@@ -5301,10 +5301,10 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             notes: z.ZodArray<z.ZodString, "many">;
         }, "strict", z.ZodTypeAny, {
             notes: string[];
-            primary: "recruiter" | "hiring-manager" | "executive" | "mixed";
+            primary: "mixed" | "recruiter" | "hiring-manager" | "executive";
         }, {
             notes: string[];
-            primary: "recruiter" | "hiring-manager" | "executive" | "mixed";
+            primary: "mixed" | "recruiter" | "hiring-manager" | "executive";
         }>;
         provenance: z.ZodObject<{
             targetId: z.ZodString;
@@ -5457,12 +5457,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -5501,12 +5501,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -5549,12 +5549,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -5601,12 +5601,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -5625,7 +5625,7 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }[];
         secondaryThemes: {
             id: string;
@@ -5657,12 +5657,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -5681,7 +5681,7 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }[];
         differentiationThemes: {
             id: string;
@@ -5713,12 +5713,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -5737,7 +5737,7 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }[];
         cautionThemes: {
             id: string;
@@ -5749,7 +5749,7 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
         narrativeOrder: string[];
         audience: {
             notes: string[];
-            primary: "recruiter" | "hiring-manager" | "executive" | "mixed";
+            primary: "mixed" | "recruiter" | "hiring-manager" | "executive";
         };
     }, {
         trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
@@ -5778,12 +5778,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -5830,12 +5830,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -5854,7 +5854,7 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }[];
         secondaryThemes: {
             id: string;
@@ -5886,12 +5886,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -5910,7 +5910,7 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }[];
         differentiationThemes: {
             id: string;
@@ -5942,12 +5942,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -5966,7 +5966,7 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }[];
         cautionThemes: {
             id: string;
@@ -5978,7 +5978,7 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
         narrativeOrder: string[];
         audience: {
             notes: string[];
-            primary: "recruiter" | "hiring-manager" | "executive" | "mixed";
+            primary: "mixed" | "recruiter" | "hiring-manager" | "executive";
         };
     }>;
     sections: z.ZodArray<z.ZodObject<{
@@ -6147,12 +6147,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -6191,12 +6191,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -6243,12 +6243,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -6265,11 +6265,11 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
         };
         evidenceIds: string[];
         approvedMatchIds: string[];
+        order: number;
+        allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         sourceAssessmentIds: string[];
         objective: string;
-        order: number;
-        allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-        prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         emphasisNotes: string[];
         cautionNotes: string[];
         maximumItemCount?: number | undefined;
@@ -6304,12 +6304,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -6326,11 +6326,11 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
         };
         evidenceIds: string[];
         approvedMatchIds: string[];
+        order: number;
+        allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         sourceAssessmentIds: string[];
         objective: string;
-        order: number;
-        allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-        prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         emphasisNotes: string[];
         cautionNotes: string[];
         maximumItemCount?: number | undefined;
@@ -6499,12 +6499,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -6543,12 +6543,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -6565,7 +6565,7 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
         }>;
         trustState: z.ZodEnum<["deterministic-approved", "human-approved", "human-edited", "proposed"]>;
     }, "strict", z.ZodTypeAny, {
-        decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+        decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
         id: string;
         rationale: string;
         trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
@@ -6595,12 +6595,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -6624,7 +6624,7 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
         allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
         restrictions: string[];
     }, {
-        decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+        decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
         id: string;
         rationale: string;
         trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
@@ -6654,12 +6654,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -6846,12 +6846,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -6890,12 +6890,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -6943,12 +6943,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -6967,8 +6967,8 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
         approvedMatchIds: string[];
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         freshnessRisk: "unknown" | "high" | "medium" | "low" | "none";
-        permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-        prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
     }, {
         decision: "exclude" | "preferred" | "allowed" | "limited-use";
         id: string;
@@ -7001,12 +7001,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -7025,8 +7025,8 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
         approvedMatchIds: string[];
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         freshnessRisk: "unknown" | "high" | "medium" | "low" | "none";
-        permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-        prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
     }>, "many">;
     claimBoundaries: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
@@ -7208,12 +7208,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -7252,12 +7252,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -7302,12 +7302,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -7323,9 +7323,9 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             } | undefined;
         };
         evidenceIds: string[];
-        boundaryType: "allowed" | "allowed-with-caution" | "prohibited" | "requires-review";
-        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        boundaryType: "allowed" | "prohibited" | "requires-review" | "allowed-with-caution";
         prohibitedInferences: string[];
         requiredQualifiers: string[];
         expectationId?: string | undefined;
@@ -7365,12 +7365,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -7386,9 +7386,9 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             } | undefined;
         };
         evidenceIds: string[];
-        boundaryType: "allowed" | "allowed-with-caution" | "prohibited" | "requires-review";
-        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        boundaryType: "allowed" | "prohibited" | "requires-review" | "allowed-with-caution";
         prohibitedInferences: string[];
         requiredQualifiers: string[];
         expectationId?: string | undefined;
@@ -7558,12 +7558,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -7602,12 +7602,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -7654,12 +7654,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -7707,12 +7707,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -7814,26 +7814,26 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
     }, "strict", z.ZodTypeAny, {
         status: "empty" | "partial" | "complete";
         blockingReasons: string[];
+        claimBoundariesComplete: boolean;
+        provenanceComplete: boolean;
         eligibleExpectationCount: number;
         selectedExpectationCount: number;
         excludedExpectationCount: number;
         deferredExpectationCount: number;
         plannedSectionCount: number;
         primaryThemeCount: number;
-        claimBoundariesComplete: boolean;
-        provenanceComplete: boolean;
         usableForResumeDrafting: boolean;
     }, {
         status: "empty" | "partial" | "complete";
         blockingReasons: string[];
+        claimBoundariesComplete: boolean;
+        provenanceComplete: boolean;
         eligibleExpectationCount: number;
         selectedExpectationCount: number;
         excludedExpectationCount: number;
         deferredExpectationCount: number;
         plannedSectionCount: number;
         primaryThemeCount: number;
-        claimBoundariesComplete: boolean;
-        provenanceComplete: boolean;
         usableForResumeDrafting: boolean;
     }>;
     provenance: z.ZodObject<{
@@ -7915,12 +7915,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -7937,11 +7937,11 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
         };
         evidenceIds: string[];
         approvedMatchIds: string[];
+        order: number;
+        allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         sourceAssessmentIds: string[];
         objective: string;
-        order: number;
-        allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-        prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         emphasisNotes: string[];
         cautionNotes: string[];
         maximumItemCount?: number | undefined;
@@ -7967,14 +7967,14 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
     completeness: {
         status: "empty" | "partial" | "complete";
         blockingReasons: string[];
+        claimBoundariesComplete: boolean;
+        provenanceComplete: boolean;
         eligibleExpectationCount: number;
         selectedExpectationCount: number;
         excludedExpectationCount: number;
         deferredExpectationCount: number;
         plannedSectionCount: number;
         primaryThemeCount: number;
-        claimBoundariesComplete: boolean;
-        provenanceComplete: boolean;
         usableForResumeDrafting: boolean;
     };
     provenance: {
@@ -8016,13 +8016,6 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
         name: string;
         version: string;
     };
-    roleTitle: string;
-    approvedAssessment: {
-        sha256: string;
-        path: string;
-        manifestPath: string;
-        manifestSha256: string;
-    };
     positioning: {
         trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
         provenance: {
@@ -8050,12 +8043,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -8102,12 +8095,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -8126,7 +8119,7 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }[];
         secondaryThemes: {
             id: string;
@@ -8158,12 +8151,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -8182,7 +8175,7 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }[];
         differentiationThemes: {
             id: string;
@@ -8214,12 +8207,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -8238,7 +8231,7 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }[];
         cautionThemes: {
             id: string;
@@ -8250,69 +8243,9 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
         narrativeOrder: string[];
         audience: {
             notes: string[];
-            primary: "recruiter" | "hiring-manager" | "executive" | "mixed";
+            primary: "mixed" | "recruiter" | "hiring-manager" | "executive";
         };
     };
-    expectationSelections: {
-        decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
-        id: string;
-        rationale: string;
-        trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
-        expectationId: string;
-        provenance: {
-            sourceReferences: ({
-                sha256: string;
-                path: string;
-                sourceType: "job-description-markdown" | "target-json";
-                startLine: number;
-                endLine: number;
-                excerptSha256: string;
-                startOffset?: number | undefined;
-                endOffset?: number | undefined;
-            } | {
-                sha256: string;
-                path: string;
-                sourceType: "role-profile-json";
-                excerptSha256: string;
-                jsonPointer: string;
-            })[];
-            targetId: string;
-            expectationIds: string[];
-            approvedInterpretationSha256: string;
-            evidenceIds: string[];
-            approvedMatchIds: string[];
-            approvedMatchingSha256: string;
-            evidenceSnapshotSha256: string;
-            deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
-            reviewDecision?: {
-                decision: "accept" | "edit";
-                reviewer: {
-                    type: "human";
-                    name?: string | undefined;
-                };
-            } | undefined;
-            modelProposal?: {
-                provider: string;
-                model: string;
-                proposalId: string;
-                promptTemplateVersion: string;
-            } | undefined;
-        };
-        evidenceIds: string[];
-        approvedMatchIds: string[];
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
-        defensibility: "high" | "medium" | "low" | "none" | "uncertain";
-        materiality: "unknown" | "high" | "medium" | "low" | "critical";
-        assessmentId: string;
-        allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
-        restrictions: string[];
-    }[];
     evidenceSelections: {
         decision: "exclude" | "preferred" | "allowed" | "limited-use";
         id: string;
@@ -8345,12 +8278,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -8369,8 +8302,8 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
         approvedMatchIds: string[];
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         freshnessRisk: "unknown" | "high" | "medium" | "low" | "none";
-        permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-        prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
     }[];
     claimBoundaries: {
         id: string;
@@ -8401,12 +8334,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -8422,9 +8355,9 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             } | undefined;
         };
         evidenceIds: string[];
-        boundaryType: "allowed" | "allowed-with-caution" | "prohibited" | "requires-review";
-        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        boundaryType: "allowed" | "prohibited" | "requires-review" | "allowed-with-caution";
         prohibitedInferences: string[];
         requiredQualifiers: string[];
         expectationId?: string | undefined;
@@ -8467,12 +8400,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -8489,6 +8422,73 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
         };
         evidenceIds: string[];
         severity: "high" | "medium" | "low" | "blocking";
+    }[];
+    roleTitle: string;
+    approvedAssessment: {
+        sha256: string;
+        path: string;
+        manifestPath: string;
+        manifestSha256: string;
+    };
+    expectationSelections: {
+        decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
+        id: string;
+        rationale: string;
+        trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
+        expectationId: string;
+        provenance: {
+            sourceReferences: ({
+                sha256: string;
+                path: string;
+                sourceType: "job-description-markdown" | "target-json";
+                startLine: number;
+                endLine: number;
+                excerptSha256: string;
+                startOffset?: number | undefined;
+                endOffset?: number | undefined;
+            } | {
+                sha256: string;
+                path: string;
+                sourceType: "role-profile-json";
+                excerptSha256: string;
+                jsonPointer: string;
+            })[];
+            targetId: string;
+            expectationIds: string[];
+            approvedInterpretationSha256: string;
+            evidenceIds: string[];
+            approvedMatchIds: string[];
+            approvedMatchingSha256: string;
+            evidenceSnapshotSha256: string;
+            deterministicInputs: Record<string, string | number | boolean | string[]>;
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
+            reviewDecision?: {
+                decision: "accept" | "edit";
+                reviewer: {
+                    type: "human";
+                    name?: string | undefined;
+                };
+            } | undefined;
+            modelProposal?: {
+                provider: string;
+                model: string;
+                proposalId: string;
+                promptTemplateVersion: string;
+            } | undefined;
+        };
+        evidenceIds: string[];
+        approvedMatchIds: string[];
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        defensibility: "high" | "medium" | "low" | "none" | "uncertain";
+        materiality: "unknown" | "high" | "medium" | "low" | "critical";
+        assessmentId: string;
+        allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
+        restrictions: string[];
     }[];
 }, {
     schemaVersion: 1;
@@ -8527,12 +8527,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -8549,11 +8549,11 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
         };
         evidenceIds: string[];
         approvedMatchIds: string[];
+        order: number;
+        allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         sourceAssessmentIds: string[];
         objective: string;
-        order: number;
-        allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-        prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         emphasisNotes: string[];
         cautionNotes: string[];
         maximumItemCount?: number | undefined;
@@ -8579,14 +8579,14 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
     completeness: {
         status: "empty" | "partial" | "complete";
         blockingReasons: string[];
+        claimBoundariesComplete: boolean;
+        provenanceComplete: boolean;
         eligibleExpectationCount: number;
         selectedExpectationCount: number;
         excludedExpectationCount: number;
         deferredExpectationCount: number;
         plannedSectionCount: number;
         primaryThemeCount: number;
-        claimBoundariesComplete: boolean;
-        provenanceComplete: boolean;
         usableForResumeDrafting: boolean;
     };
     provenance: {
@@ -8628,13 +8628,6 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
         name: string;
         version: string;
     };
-    roleTitle: string;
-    approvedAssessment: {
-        sha256: string;
-        path: string;
-        manifestPath: string;
-        manifestSha256: string;
-    };
     positioning: {
         trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
         provenance: {
@@ -8662,12 +8655,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -8714,12 +8707,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -8738,7 +8731,7 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }[];
         secondaryThemes: {
             id: string;
@@ -8770,12 +8763,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -8794,7 +8787,7 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }[];
         differentiationThemes: {
             id: string;
@@ -8826,12 +8819,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -8850,7 +8843,7 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }[];
         cautionThemes: {
             id: string;
@@ -8862,69 +8855,9 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
         narrativeOrder: string[];
         audience: {
             notes: string[];
-            primary: "recruiter" | "hiring-manager" | "executive" | "mixed";
+            primary: "mixed" | "recruiter" | "hiring-manager" | "executive";
         };
     };
-    expectationSelections: {
-        decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
-        id: string;
-        rationale: string;
-        trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
-        expectationId: string;
-        provenance: {
-            sourceReferences: ({
-                sha256: string;
-                path: string;
-                sourceType: "job-description-markdown" | "target-json";
-                startLine: number;
-                endLine: number;
-                excerptSha256: string;
-                startOffset?: number | undefined;
-                endOffset?: number | undefined;
-            } | {
-                sha256: string;
-                path: string;
-                sourceType: "role-profile-json";
-                excerptSha256: string;
-                jsonPointer: string;
-            })[];
-            targetId: string;
-            expectationIds: string[];
-            approvedInterpretationSha256: string;
-            evidenceIds: string[];
-            approvedMatchIds: string[];
-            approvedMatchingSha256: string;
-            evidenceSnapshotSha256: string;
-            deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
-            reviewDecision?: {
-                decision: "accept" | "edit";
-                reviewer: {
-                    type: "human";
-                    name?: string | undefined;
-                };
-            } | undefined;
-            modelProposal?: {
-                provider: string;
-                model: string;
-                proposalId: string;
-                promptTemplateVersion: string;
-            } | undefined;
-        };
-        evidenceIds: string[];
-        approvedMatchIds: string[];
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
-        defensibility: "high" | "medium" | "low" | "none" | "uncertain";
-        materiality: "unknown" | "high" | "medium" | "low" | "critical";
-        assessmentId: string;
-        allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
-        restrictions: string[];
-    }[];
     evidenceSelections: {
         decision: "exclude" | "preferred" | "allowed" | "limited-use";
         id: string;
@@ -8957,12 +8890,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -8981,8 +8914,8 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
         approvedMatchIds: string[];
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         freshnessRisk: "unknown" | "high" | "medium" | "low" | "none";
-        permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-        prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
     }[];
     claimBoundaries: {
         id: string;
@@ -9013,12 +8946,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -9034,9 +8967,9 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             } | undefined;
         };
         evidenceIds: string[];
-        boundaryType: "allowed" | "allowed-with-caution" | "prohibited" | "requires-review";
-        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        boundaryType: "allowed" | "prohibited" | "requires-review" | "allowed-with-caution";
         prohibitedInferences: string[];
         requiredQualifiers: string[];
         expectationId?: string | undefined;
@@ -9079,12 +9012,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -9101,6 +9034,73 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
         };
         evidenceIds: string[];
         severity: "high" | "medium" | "low" | "blocking";
+    }[];
+    roleTitle: string;
+    approvedAssessment: {
+        sha256: string;
+        path: string;
+        manifestPath: string;
+        manifestSha256: string;
+    };
+    expectationSelections: {
+        decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
+        id: string;
+        rationale: string;
+        trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
+        expectationId: string;
+        provenance: {
+            sourceReferences: ({
+                sha256: string;
+                path: string;
+                sourceType: "job-description-markdown" | "target-json";
+                startLine: number;
+                endLine: number;
+                excerptSha256: string;
+                startOffset?: number | undefined;
+                endOffset?: number | undefined;
+            } | {
+                sha256: string;
+                path: string;
+                sourceType: "role-profile-json";
+                excerptSha256: string;
+                jsonPointer: string;
+            })[];
+            targetId: string;
+            expectationIds: string[];
+            approvedInterpretationSha256: string;
+            evidenceIds: string[];
+            approvedMatchIds: string[];
+            approvedMatchingSha256: string;
+            evidenceSnapshotSha256: string;
+            deterministicInputs: Record<string, string | number | boolean | string[]>;
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
+            reviewDecision?: {
+                decision: "accept" | "edit";
+                reviewer: {
+                    type: "human";
+                    name?: string | undefined;
+                };
+            } | undefined;
+            modelProposal?: {
+                provider: string;
+                model: string;
+                proposalId: string;
+                promptTemplateVersion: string;
+            } | undefined;
+        };
+        evidenceIds: string[];
+        approvedMatchIds: string[];
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        defensibility: "high" | "medium" | "low" | "none" | "uncertain";
+        materiality: "unknown" | "high" | "medium" | "low" | "critical";
+        assessmentId: string;
+        allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
+        restrictions: string[];
     }[];
 }>;
 export declare const RoleResumePlanManifestSchema: z.ZodObject<{
@@ -9147,13 +9147,13 @@ export declare const RoleResumePlanManifestSchema: z.ZodObject<{
     policyName: string;
     expectationSetSha256: string;
     approvedMatchSetSha256: string;
+    planId: string;
+    planPath: string;
+    planSha256: string;
     approvedAssessmentSha256: string;
     approvedAssessmentManifestSha256: string;
     assessmentSetSha256: string;
     evidenceSetSha256: string;
-    planId: string;
-    planPath: string;
-    planSha256: string;
     proposalId?: string | undefined;
     proposalSha256?: string | undefined;
     reviewSha256?: string | undefined;
@@ -9174,13 +9174,13 @@ export declare const RoleResumePlanManifestSchema: z.ZodObject<{
     policyName: string;
     expectationSetSha256: string;
     approvedMatchSetSha256: string;
+    planId: string;
+    planPath: string;
+    planSha256: string;
     approvedAssessmentSha256: string;
     approvedAssessmentManifestSha256: string;
     assessmentSetSha256: string;
     evidenceSetSha256: string;
-    planId: string;
-    planPath: string;
-    planSha256: string;
     proposalId?: string | undefined;
     proposalSha256?: string | undefined;
     reviewSha256?: string | undefined;
@@ -9349,12 +9349,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -9393,12 +9393,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -9444,12 +9444,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -9468,7 +9468,7 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }, {
             id: string;
             sourceExpectationIds: string[];
@@ -9499,12 +9499,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -9523,7 +9523,7 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }>, "many">;
         secondaryThemes: z.ZodArray<z.ZodObject<{
             id: z.ZodString;
@@ -9685,12 +9685,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -9729,12 +9729,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -9780,12 +9780,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -9804,7 +9804,7 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }, {
             id: string;
             sourceExpectationIds: string[];
@@ -9835,12 +9835,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -9859,7 +9859,7 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }>, "many">;
         differentiationThemes: z.ZodArray<z.ZodObject<{
             id: z.ZodString;
@@ -10021,12 +10021,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -10065,12 +10065,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -10116,12 +10116,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -10140,7 +10140,7 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }, {
             id: string;
             sourceExpectationIds: string[];
@@ -10171,12 +10171,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -10195,7 +10195,7 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }>, "many">;
         cautionThemes: z.ZodArray<z.ZodObject<{
             id: z.ZodString;
@@ -10222,10 +10222,10 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             notes: z.ZodArray<z.ZodString, "many">;
         }, "strict", z.ZodTypeAny, {
             notes: string[];
-            primary: "recruiter" | "hiring-manager" | "executive" | "mixed";
+            primary: "mixed" | "recruiter" | "hiring-manager" | "executive";
         }, {
             notes: string[];
-            primary: "recruiter" | "hiring-manager" | "executive" | "mixed";
+            primary: "mixed" | "recruiter" | "hiring-manager" | "executive";
         }>;
         provenance: z.ZodObject<{
             targetId: z.ZodString;
@@ -10378,12 +10378,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -10422,12 +10422,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -10470,12 +10470,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -10522,12 +10522,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -10546,7 +10546,7 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }[];
         secondaryThemes: {
             id: string;
@@ -10578,12 +10578,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -10602,7 +10602,7 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }[];
         differentiationThemes: {
             id: string;
@@ -10634,12 +10634,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -10658,7 +10658,7 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }[];
         cautionThemes: {
             id: string;
@@ -10670,7 +10670,7 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
         narrativeOrder: string[];
         audience: {
             notes: string[];
-            primary: "recruiter" | "hiring-manager" | "executive" | "mixed";
+            primary: "mixed" | "recruiter" | "hiring-manager" | "executive";
         };
     }, {
         trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
@@ -10699,12 +10699,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -10751,12 +10751,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -10775,7 +10775,7 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }[];
         secondaryThemes: {
             id: string;
@@ -10807,12 +10807,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -10831,7 +10831,7 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }[];
         differentiationThemes: {
             id: string;
@@ -10863,12 +10863,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -10887,7 +10887,7 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }[];
         cautionThemes: {
             id: string;
@@ -10899,7 +10899,7 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
         narrativeOrder: string[];
         audience: {
             notes: string[];
-            primary: "recruiter" | "hiring-manager" | "executive" | "mixed";
+            primary: "mixed" | "recruiter" | "hiring-manager" | "executive";
         };
     }>;
     sections: z.ZodArray<z.ZodObject<{
@@ -11068,12 +11068,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -11112,12 +11112,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -11164,12 +11164,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -11186,11 +11186,11 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
         };
         evidenceIds: string[];
         approvedMatchIds: string[];
+        order: number;
+        allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         sourceAssessmentIds: string[];
         objective: string;
-        order: number;
-        allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-        prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         emphasisNotes: string[];
         cautionNotes: string[];
         maximumItemCount?: number | undefined;
@@ -11225,12 +11225,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -11247,11 +11247,11 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
         };
         evidenceIds: string[];
         approvedMatchIds: string[];
+        order: number;
+        allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         sourceAssessmentIds: string[];
         objective: string;
-        order: number;
-        allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-        prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         emphasisNotes: string[];
         cautionNotes: string[];
         maximumItemCount?: number | undefined;
@@ -11420,12 +11420,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -11464,12 +11464,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -11486,7 +11486,7 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
         }>;
         trustState: z.ZodEnum<["deterministic-approved", "human-approved", "human-edited", "proposed"]>;
     }, "strict", z.ZodTypeAny, {
-        decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+        decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
         id: string;
         rationale: string;
         trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
@@ -11516,12 +11516,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -11545,7 +11545,7 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
         allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
         restrictions: string[];
     }, {
-        decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+        decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
         id: string;
         rationale: string;
         trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
@@ -11575,12 +11575,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -11767,12 +11767,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -11811,12 +11811,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -11864,12 +11864,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -11888,8 +11888,8 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
         approvedMatchIds: string[];
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         freshnessRisk: "unknown" | "high" | "medium" | "low" | "none";
-        permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-        prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
     }, {
         decision: "exclude" | "preferred" | "allowed" | "limited-use";
         id: string;
@@ -11922,12 +11922,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -11946,8 +11946,8 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
         approvedMatchIds: string[];
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         freshnessRisk: "unknown" | "high" | "medium" | "low" | "none";
-        permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-        prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
     }>, "many">;
     claimBoundaries: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
@@ -12129,12 +12129,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -12173,12 +12173,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -12223,12 +12223,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -12244,9 +12244,9 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             } | undefined;
         };
         evidenceIds: string[];
-        boundaryType: "allowed" | "allowed-with-caution" | "prohibited" | "requires-review";
-        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        boundaryType: "allowed" | "prohibited" | "requires-review" | "allowed-with-caution";
         prohibitedInferences: string[];
         requiredQualifiers: string[];
         expectationId?: string | undefined;
@@ -12286,12 +12286,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -12307,9 +12307,9 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             } | undefined;
         };
         evidenceIds: string[];
-        boundaryType: "allowed" | "allowed-with-caution" | "prohibited" | "requires-review";
-        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        boundaryType: "allowed" | "prohibited" | "requires-review" | "allowed-with-caution";
         prohibitedInferences: string[];
         requiredQualifiers: string[];
         expectationId?: string | undefined;
@@ -12479,12 +12479,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -12523,12 +12523,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -12575,12 +12575,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -12628,12 +12628,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -12727,12 +12727,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -12749,11 +12749,11 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
         };
         evidenceIds: string[];
         approvedMatchIds: string[];
+        order: number;
+        allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         sourceAssessmentIds: string[];
         objective: string;
-        order: number;
-        allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-        prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         emphasisNotes: string[];
         cautionNotes: string[];
         maximumItemCount?: number | undefined;
@@ -12801,12 +12801,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -12853,12 +12853,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -12877,7 +12877,7 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }[];
         secondaryThemes: {
             id: string;
@@ -12909,12 +12909,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -12933,7 +12933,7 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }[];
         differentiationThemes: {
             id: string;
@@ -12965,12 +12965,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -12989,7 +12989,7 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }[];
         cautionThemes: {
             id: string;
@@ -13001,69 +13001,9 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
         narrativeOrder: string[];
         audience: {
             notes: string[];
-            primary: "recruiter" | "hiring-manager" | "executive" | "mixed";
+            primary: "mixed" | "recruiter" | "hiring-manager" | "executive";
         };
     };
-    expectationSelections: {
-        decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
-        id: string;
-        rationale: string;
-        trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
-        expectationId: string;
-        provenance: {
-            sourceReferences: ({
-                sha256: string;
-                path: string;
-                sourceType: "job-description-markdown" | "target-json";
-                startLine: number;
-                endLine: number;
-                excerptSha256: string;
-                startOffset?: number | undefined;
-                endOffset?: number | undefined;
-            } | {
-                sha256: string;
-                path: string;
-                sourceType: "role-profile-json";
-                excerptSha256: string;
-                jsonPointer: string;
-            })[];
-            targetId: string;
-            expectationIds: string[];
-            approvedInterpretationSha256: string;
-            evidenceIds: string[];
-            approvedMatchIds: string[];
-            approvedMatchingSha256: string;
-            evidenceSnapshotSha256: string;
-            deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
-            reviewDecision?: {
-                decision: "accept" | "edit";
-                reviewer: {
-                    type: "human";
-                    name?: string | undefined;
-                };
-            } | undefined;
-            modelProposal?: {
-                provider: string;
-                model: string;
-                proposalId: string;
-                promptTemplateVersion: string;
-            } | undefined;
-        };
-        evidenceIds: string[];
-        approvedMatchIds: string[];
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
-        defensibility: "high" | "medium" | "low" | "none" | "uncertain";
-        materiality: "unknown" | "high" | "medium" | "low" | "critical";
-        assessmentId: string;
-        allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
-        restrictions: string[];
-    }[];
     evidenceSelections: {
         decision: "exclude" | "preferred" | "allowed" | "limited-use";
         id: string;
@@ -13096,12 +13036,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -13120,8 +13060,8 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
         approvedMatchIds: string[];
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         freshnessRisk: "unknown" | "high" | "medium" | "low" | "none";
-        permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-        prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
     }[];
     claimBoundaries: {
         id: string;
@@ -13152,12 +13092,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -13173,9 +13113,9 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             } | undefined;
         };
         evidenceIds: string[];
-        boundaryType: "allowed" | "allowed-with-caution" | "prohibited" | "requires-review";
-        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        boundaryType: "allowed" | "prohibited" | "requires-review" | "allowed-with-caution";
         prohibitedInferences: string[];
         requiredQualifiers: string[];
         expectationId?: string | undefined;
@@ -13218,12 +13158,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -13240,6 +13180,66 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
         };
         evidenceIds: string[];
         severity: "high" | "medium" | "low" | "blocking";
+    }[];
+    expectationSelections: {
+        decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
+        id: string;
+        rationale: string;
+        trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
+        expectationId: string;
+        provenance: {
+            sourceReferences: ({
+                sha256: string;
+                path: string;
+                sourceType: "job-description-markdown" | "target-json";
+                startLine: number;
+                endLine: number;
+                excerptSha256: string;
+                startOffset?: number | undefined;
+                endOffset?: number | undefined;
+            } | {
+                sha256: string;
+                path: string;
+                sourceType: "role-profile-json";
+                excerptSha256: string;
+                jsonPointer: string;
+            })[];
+            targetId: string;
+            expectationIds: string[];
+            approvedInterpretationSha256: string;
+            evidenceIds: string[];
+            approvedMatchIds: string[];
+            approvedMatchingSha256: string;
+            evidenceSnapshotSha256: string;
+            deterministicInputs: Record<string, string | number | boolean | string[]>;
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
+            reviewDecision?: {
+                decision: "accept" | "edit";
+                reviewer: {
+                    type: "human";
+                    name?: string | undefined;
+                };
+            } | undefined;
+            modelProposal?: {
+                provider: string;
+                model: string;
+                proposalId: string;
+                promptTemplateVersion: string;
+            } | undefined;
+        };
+        evidenceIds: string[];
+        approvedMatchIds: string[];
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        defensibility: "high" | "medium" | "low" | "none" | "uncertain";
+        materiality: "unknown" | "high" | "medium" | "low" | "critical";
+        assessmentId: string;
+        allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
+        restrictions: string[];
     }[];
 }, {
     sections: {
@@ -13273,12 +13273,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -13295,11 +13295,11 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
         };
         evidenceIds: string[];
         approvedMatchIds: string[];
+        order: number;
+        allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         sourceAssessmentIds: string[];
         objective: string;
-        order: number;
-        allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-        prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         emphasisNotes: string[];
         cautionNotes: string[];
         maximumItemCount?: number | undefined;
@@ -13347,12 +13347,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -13399,12 +13399,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -13423,7 +13423,7 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }[];
         secondaryThemes: {
             id: string;
@@ -13455,12 +13455,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -13479,7 +13479,7 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }[];
         differentiationThemes: {
             id: string;
@@ -13511,12 +13511,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -13535,7 +13535,7 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchIds: string[];
             label: string;
             sourceAssessmentIds: string[];
-            emphasis: "supporting" | "primary" | "secondary";
+            emphasis: "supporting" | "secondary" | "primary";
         }[];
         cautionThemes: {
             id: string;
@@ -13547,69 +13547,9 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
         narrativeOrder: string[];
         audience: {
             notes: string[];
-            primary: "recruiter" | "hiring-manager" | "executive" | "mixed";
+            primary: "mixed" | "recruiter" | "hiring-manager" | "executive";
         };
     };
-    expectationSelections: {
-        decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
-        id: string;
-        rationale: string;
-        trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
-        expectationId: string;
-        provenance: {
-            sourceReferences: ({
-                sha256: string;
-                path: string;
-                sourceType: "job-description-markdown" | "target-json";
-                startLine: number;
-                endLine: number;
-                excerptSha256: string;
-                startOffset?: number | undefined;
-                endOffset?: number | undefined;
-            } | {
-                sha256: string;
-                path: string;
-                sourceType: "role-profile-json";
-                excerptSha256: string;
-                jsonPointer: string;
-            })[];
-            targetId: string;
-            expectationIds: string[];
-            approvedInterpretationSha256: string;
-            evidenceIds: string[];
-            approvedMatchIds: string[];
-            approvedMatchingSha256: string;
-            evidenceSnapshotSha256: string;
-            deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
-            planningPolicy: {
-                name: string;
-                version: string;
-            };
-            reviewDecision?: {
-                decision: "accept" | "edit";
-                reviewer: {
-                    type: "human";
-                    name?: string | undefined;
-                };
-            } | undefined;
-            modelProposal?: {
-                provider: string;
-                model: string;
-                proposalId: string;
-                promptTemplateVersion: string;
-            } | undefined;
-        };
-        evidenceIds: string[];
-        approvedMatchIds: string[];
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
-        defensibility: "high" | "medium" | "low" | "none" | "uncertain";
-        materiality: "unknown" | "high" | "medium" | "low" | "critical";
-        assessmentId: string;
-        allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
-        restrictions: string[];
-    }[];
     evidenceSelections: {
         decision: "exclude" | "preferred" | "allowed" | "limited-use";
         id: string;
@@ -13642,12 +13582,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -13666,8 +13606,8 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
         approvedMatchIds: string[];
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         freshnessRisk: "unknown" | "high" | "medium" | "low" | "none";
-        permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-        prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
     }[];
     claimBoundaries: {
         id: string;
@@ -13698,12 +13638,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -13719,9 +13659,9 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             } | undefined;
         };
         evidenceIds: string[];
-        boundaryType: "allowed" | "allowed-with-caution" | "prohibited" | "requires-review";
-        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        boundaryType: "allowed" | "prohibited" | "requires-review" | "allowed-with-caution";
         prohibitedInferences: string[];
         requiredQualifiers: string[];
         expectationId?: string | undefined;
@@ -13764,12 +13704,12 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
             approvedMatchingSha256: string;
             evidenceSnapshotSha256: string;
             deterministicInputs: Record<string, string | number | boolean | string[]>;
-            approvedAssessmentSha256: string;
-            assessmentIds: string[];
             planningPolicy: {
                 name: string;
                 version: string;
             };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
             reviewDecision?: {
                 decision: "accept" | "edit";
                 reviewer: {
@@ -13786,6 +13726,66 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
         };
         evidenceIds: string[];
         severity: "high" | "medium" | "low" | "blocking";
+    }[];
+    expectationSelections: {
+        decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
+        id: string;
+        rationale: string;
+        trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
+        expectationId: string;
+        provenance: {
+            sourceReferences: ({
+                sha256: string;
+                path: string;
+                sourceType: "job-description-markdown" | "target-json";
+                startLine: number;
+                endLine: number;
+                excerptSha256: string;
+                startOffset?: number | undefined;
+                endOffset?: number | undefined;
+            } | {
+                sha256: string;
+                path: string;
+                sourceType: "role-profile-json";
+                excerptSha256: string;
+                jsonPointer: string;
+            })[];
+            targetId: string;
+            expectationIds: string[];
+            approvedInterpretationSha256: string;
+            evidenceIds: string[];
+            approvedMatchIds: string[];
+            approvedMatchingSha256: string;
+            evidenceSnapshotSha256: string;
+            deterministicInputs: Record<string, string | number | boolean | string[]>;
+            planningPolicy: {
+                name: string;
+                version: string;
+            };
+            assessmentIds: string[];
+            approvedAssessmentSha256: string;
+            reviewDecision?: {
+                decision: "accept" | "edit";
+                reviewer: {
+                    type: "human";
+                    name?: string | undefined;
+                };
+            } | undefined;
+            modelProposal?: {
+                provider: string;
+                model: string;
+                proposalId: string;
+                promptTemplateVersion: string;
+            } | undefined;
+        };
+        evidenceIds: string[];
+        approvedMatchIds: string[];
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        defensibility: "high" | "medium" | "low" | "none" | "uncertain";
+        materiality: "unknown" | "high" | "medium" | "low" | "critical";
+        assessmentId: string;
+        allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
+        restrictions: string[];
     }[];
 }>;
 export declare const ResumePlanValidationIssueSchema: z.ZodObject<{
@@ -14067,12 +14067,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -14111,12 +14111,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -14162,12 +14162,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -14186,7 +14186,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchIds: string[];
                 label: string;
                 sourceAssessmentIds: string[];
-                emphasis: "supporting" | "primary" | "secondary";
+                emphasis: "supporting" | "secondary" | "primary";
             }, {
                 id: string;
                 sourceExpectationIds: string[];
@@ -14217,12 +14217,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -14241,7 +14241,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchIds: string[];
                 label: string;
                 sourceAssessmentIds: string[];
-                emphasis: "supporting" | "primary" | "secondary";
+                emphasis: "supporting" | "secondary" | "primary";
             }>, "many">;
             secondaryThemes: z.ZodArray<z.ZodObject<{
                 id: z.ZodString;
@@ -14403,12 +14403,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -14447,12 +14447,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -14498,12 +14498,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -14522,7 +14522,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchIds: string[];
                 label: string;
                 sourceAssessmentIds: string[];
-                emphasis: "supporting" | "primary" | "secondary";
+                emphasis: "supporting" | "secondary" | "primary";
             }, {
                 id: string;
                 sourceExpectationIds: string[];
@@ -14553,12 +14553,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -14577,7 +14577,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchIds: string[];
                 label: string;
                 sourceAssessmentIds: string[];
-                emphasis: "supporting" | "primary" | "secondary";
+                emphasis: "supporting" | "secondary" | "primary";
             }>, "many">;
             differentiationThemes: z.ZodArray<z.ZodObject<{
                 id: z.ZodString;
@@ -14739,12 +14739,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -14783,12 +14783,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -14834,12 +14834,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -14858,7 +14858,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchIds: string[];
                 label: string;
                 sourceAssessmentIds: string[];
-                emphasis: "supporting" | "primary" | "secondary";
+                emphasis: "supporting" | "secondary" | "primary";
             }, {
                 id: string;
                 sourceExpectationIds: string[];
@@ -14889,12 +14889,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -14913,7 +14913,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchIds: string[];
                 label: string;
                 sourceAssessmentIds: string[];
-                emphasis: "supporting" | "primary" | "secondary";
+                emphasis: "supporting" | "secondary" | "primary";
             }>, "many">;
             cautionThemes: z.ZodArray<z.ZodObject<{
                 id: z.ZodString;
@@ -14940,10 +14940,10 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 notes: z.ZodArray<z.ZodString, "many">;
             }, "strict", z.ZodTypeAny, {
                 notes: string[];
-                primary: "recruiter" | "hiring-manager" | "executive" | "mixed";
+                primary: "mixed" | "recruiter" | "hiring-manager" | "executive";
             }, {
                 notes: string[];
-                primary: "recruiter" | "hiring-manager" | "executive" | "mixed";
+                primary: "mixed" | "recruiter" | "hiring-manager" | "executive";
             }>;
             provenance: z.ZodObject<{
                 targetId: z.ZodString;
@@ -15096,12 +15096,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -15140,12 +15140,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -15188,12 +15188,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -15240,12 +15240,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -15264,7 +15264,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchIds: string[];
                 label: string;
                 sourceAssessmentIds: string[];
-                emphasis: "supporting" | "primary" | "secondary";
+                emphasis: "supporting" | "secondary" | "primary";
             }[];
             secondaryThemes: {
                 id: string;
@@ -15296,12 +15296,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -15320,7 +15320,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchIds: string[];
                 label: string;
                 sourceAssessmentIds: string[];
-                emphasis: "supporting" | "primary" | "secondary";
+                emphasis: "supporting" | "secondary" | "primary";
             }[];
             differentiationThemes: {
                 id: string;
@@ -15352,12 +15352,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -15376,7 +15376,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchIds: string[];
                 label: string;
                 sourceAssessmentIds: string[];
-                emphasis: "supporting" | "primary" | "secondary";
+                emphasis: "supporting" | "secondary" | "primary";
             }[];
             cautionThemes: {
                 id: string;
@@ -15388,7 +15388,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             narrativeOrder: string[];
             audience: {
                 notes: string[];
-                primary: "recruiter" | "hiring-manager" | "executive" | "mixed";
+                primary: "mixed" | "recruiter" | "hiring-manager" | "executive";
             };
         }, {
             trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
@@ -15417,12 +15417,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -15469,12 +15469,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -15493,7 +15493,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchIds: string[];
                 label: string;
                 sourceAssessmentIds: string[];
-                emphasis: "supporting" | "primary" | "secondary";
+                emphasis: "supporting" | "secondary" | "primary";
             }[];
             secondaryThemes: {
                 id: string;
@@ -15525,12 +15525,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -15549,7 +15549,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchIds: string[];
                 label: string;
                 sourceAssessmentIds: string[];
-                emphasis: "supporting" | "primary" | "secondary";
+                emphasis: "supporting" | "secondary" | "primary";
             }[];
             differentiationThemes: {
                 id: string;
@@ -15581,12 +15581,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -15605,7 +15605,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchIds: string[];
                 label: string;
                 sourceAssessmentIds: string[];
-                emphasis: "supporting" | "primary" | "secondary";
+                emphasis: "supporting" | "secondary" | "primary";
             }[];
             cautionThemes: {
                 id: string;
@@ -15617,7 +15617,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             narrativeOrder: string[];
             audience: {
                 notes: string[];
-                primary: "recruiter" | "hiring-manager" | "executive" | "mixed";
+                primary: "mixed" | "recruiter" | "hiring-manager" | "executive";
             };
         }>;
         sections: z.ZodArray<z.ZodObject<{
@@ -15786,12 +15786,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -15830,12 +15830,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -15882,12 +15882,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -15904,11 +15904,11 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             approvedMatchIds: string[];
+            order: number;
+            allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             sourceAssessmentIds: string[];
             objective: string;
-            order: number;
-            allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-            prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             emphasisNotes: string[];
             cautionNotes: string[];
             maximumItemCount?: number | undefined;
@@ -15943,12 +15943,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -15965,11 +15965,11 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             approvedMatchIds: string[];
+            order: number;
+            allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             sourceAssessmentIds: string[];
             objective: string;
-            order: number;
-            allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-            prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             emphasisNotes: string[];
             cautionNotes: string[];
             maximumItemCount?: number | undefined;
@@ -16138,12 +16138,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -16182,12 +16182,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -16204,7 +16204,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             }>;
             trustState: z.ZodEnum<["deterministic-approved", "human-approved", "human-edited", "proposed"]>;
         }, "strict", z.ZodTypeAny, {
-            decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+            decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
             id: string;
             rationale: string;
             trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
@@ -16234,12 +16234,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -16263,7 +16263,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
             restrictions: string[];
         }, {
-            decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
+            decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
             id: string;
             rationale: string;
             trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
@@ -16293,12 +16293,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -16485,12 +16485,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -16529,12 +16529,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -16582,12 +16582,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -16606,8 +16606,8 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             approvedMatchIds: string[];
             proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
             freshnessRisk: "unknown" | "high" | "medium" | "low" | "none";
-            permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-            prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         }, {
             decision: "exclude" | "preferred" | "allowed" | "limited-use";
             id: string;
@@ -16640,12 +16640,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -16664,8 +16664,8 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             approvedMatchIds: string[];
             proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
             freshnessRisk: "unknown" | "high" | "medium" | "low" | "none";
-            permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-            prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         }>, "many">;
         claimBoundaries: z.ZodArray<z.ZodObject<{
             id: z.ZodString;
@@ -16847,12 +16847,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -16891,12 +16891,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -16941,12 +16941,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -16962,9 +16962,9 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 } | undefined;
             };
             evidenceIds: string[];
-            boundaryType: "allowed" | "allowed-with-caution" | "prohibited" | "requires-review";
-            allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-            prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            boundaryType: "allowed" | "prohibited" | "requires-review" | "allowed-with-caution";
             prohibitedInferences: string[];
             requiredQualifiers: string[];
             expectationId?: string | undefined;
@@ -17004,12 +17004,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -17025,9 +17025,9 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 } | undefined;
             };
             evidenceIds: string[];
-            boundaryType: "allowed" | "allowed-with-caution" | "prohibited" | "requires-review";
-            allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-            prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            boundaryType: "allowed" | "prohibited" | "requires-review" | "allowed-with-caution";
             prohibitedInferences: string[];
             requiredQualifiers: string[];
             expectationId?: string | undefined;
@@ -17197,12 +17197,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -17241,12 +17241,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -17293,12 +17293,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -17346,12 +17346,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -17445,12 +17445,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -17467,11 +17467,11 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             approvedMatchIds: string[];
+            order: number;
+            allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             sourceAssessmentIds: string[];
             objective: string;
-            order: number;
-            allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-            prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             emphasisNotes: string[];
             cautionNotes: string[];
             maximumItemCount?: number | undefined;
@@ -17519,12 +17519,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -17571,12 +17571,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -17595,7 +17595,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchIds: string[];
                 label: string;
                 sourceAssessmentIds: string[];
-                emphasis: "supporting" | "primary" | "secondary";
+                emphasis: "supporting" | "secondary" | "primary";
             }[];
             secondaryThemes: {
                 id: string;
@@ -17627,12 +17627,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -17651,7 +17651,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchIds: string[];
                 label: string;
                 sourceAssessmentIds: string[];
-                emphasis: "supporting" | "primary" | "secondary";
+                emphasis: "supporting" | "secondary" | "primary";
             }[];
             differentiationThemes: {
                 id: string;
@@ -17683,12 +17683,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -17707,7 +17707,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchIds: string[];
                 label: string;
                 sourceAssessmentIds: string[];
-                emphasis: "supporting" | "primary" | "secondary";
+                emphasis: "supporting" | "secondary" | "primary";
             }[];
             cautionThemes: {
                 id: string;
@@ -17719,69 +17719,9 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             narrativeOrder: string[];
             audience: {
                 notes: string[];
-                primary: "recruiter" | "hiring-manager" | "executive" | "mixed";
+                primary: "mixed" | "recruiter" | "hiring-manager" | "executive";
             };
         };
-        expectationSelections: {
-            decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
-            id: string;
-            rationale: string;
-            trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
-            expectationId: string;
-            provenance: {
-                sourceReferences: ({
-                    sha256: string;
-                    path: string;
-                    sourceType: "job-description-markdown" | "target-json";
-                    startLine: number;
-                    endLine: number;
-                    excerptSha256: string;
-                    startOffset?: number | undefined;
-                    endOffset?: number | undefined;
-                } | {
-                    sha256: string;
-                    path: string;
-                    sourceType: "role-profile-json";
-                    excerptSha256: string;
-                    jsonPointer: string;
-                })[];
-                targetId: string;
-                expectationIds: string[];
-                approvedInterpretationSha256: string;
-                evidenceIds: string[];
-                approvedMatchIds: string[];
-                approvedMatchingSha256: string;
-                evidenceSnapshotSha256: string;
-                deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
-                planningPolicy: {
-                    name: string;
-                    version: string;
-                };
-                reviewDecision?: {
-                    decision: "accept" | "edit";
-                    reviewer: {
-                        type: "human";
-                        name?: string | undefined;
-                    };
-                } | undefined;
-                modelProposal?: {
-                    provider: string;
-                    model: string;
-                    proposalId: string;
-                    promptTemplateVersion: string;
-                } | undefined;
-            };
-            evidenceIds: string[];
-            approvedMatchIds: string[];
-            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
-            defensibility: "high" | "medium" | "low" | "none" | "uncertain";
-            materiality: "unknown" | "high" | "medium" | "low" | "critical";
-            assessmentId: string;
-            allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
-            restrictions: string[];
-        }[];
         evidenceSelections: {
             decision: "exclude" | "preferred" | "allowed" | "limited-use";
             id: string;
@@ -17814,12 +17754,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -17838,8 +17778,8 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             approvedMatchIds: string[];
             proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
             freshnessRisk: "unknown" | "high" | "medium" | "low" | "none";
-            permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-            prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         }[];
         claimBoundaries: {
             id: string;
@@ -17870,12 +17810,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -17891,9 +17831,9 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 } | undefined;
             };
             evidenceIds: string[];
-            boundaryType: "allowed" | "allowed-with-caution" | "prohibited" | "requires-review";
-            allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-            prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            boundaryType: "allowed" | "prohibited" | "requires-review" | "allowed-with-caution";
             prohibitedInferences: string[];
             requiredQualifiers: string[];
             expectationId?: string | undefined;
@@ -17936,12 +17876,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -17958,6 +17898,66 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             severity: "high" | "medium" | "low" | "blocking";
+        }[];
+        expectationSelections: {
+            decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
+            id: string;
+            rationale: string;
+            trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
+            expectationId: string;
+            provenance: {
+                sourceReferences: ({
+                    sha256: string;
+                    path: string;
+                    sourceType: "job-description-markdown" | "target-json";
+                    startLine: number;
+                    endLine: number;
+                    excerptSha256: string;
+                    startOffset?: number | undefined;
+                    endOffset?: number | undefined;
+                } | {
+                    sha256: string;
+                    path: string;
+                    sourceType: "role-profile-json";
+                    excerptSha256: string;
+                    jsonPointer: string;
+                })[];
+                targetId: string;
+                expectationIds: string[];
+                approvedInterpretationSha256: string;
+                evidenceIds: string[];
+                approvedMatchIds: string[];
+                approvedMatchingSha256: string;
+                evidenceSnapshotSha256: string;
+                deterministicInputs: Record<string, string | number | boolean | string[]>;
+                planningPolicy: {
+                    name: string;
+                    version: string;
+                };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
+                reviewDecision?: {
+                    decision: "accept" | "edit";
+                    reviewer: {
+                        type: "human";
+                        name?: string | undefined;
+                    };
+                } | undefined;
+                modelProposal?: {
+                    provider: string;
+                    model: string;
+                    proposalId: string;
+                    promptTemplateVersion: string;
+                } | undefined;
+            };
+            evidenceIds: string[];
+            approvedMatchIds: string[];
+            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+            defensibility: "high" | "medium" | "low" | "none" | "uncertain";
+            materiality: "unknown" | "high" | "medium" | "low" | "critical";
+            assessmentId: string;
+            allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
+            restrictions: string[];
         }[];
     }, {
         sections: {
@@ -17991,12 +17991,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -18013,11 +18013,11 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             approvedMatchIds: string[];
+            order: number;
+            allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             sourceAssessmentIds: string[];
             objective: string;
-            order: number;
-            allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-            prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             emphasisNotes: string[];
             cautionNotes: string[];
             maximumItemCount?: number | undefined;
@@ -18065,12 +18065,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -18117,12 +18117,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -18141,7 +18141,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchIds: string[];
                 label: string;
                 sourceAssessmentIds: string[];
-                emphasis: "supporting" | "primary" | "secondary";
+                emphasis: "supporting" | "secondary" | "primary";
             }[];
             secondaryThemes: {
                 id: string;
@@ -18173,12 +18173,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -18197,7 +18197,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchIds: string[];
                 label: string;
                 sourceAssessmentIds: string[];
-                emphasis: "supporting" | "primary" | "secondary";
+                emphasis: "supporting" | "secondary" | "primary";
             }[];
             differentiationThemes: {
                 id: string;
@@ -18229,12 +18229,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -18253,7 +18253,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchIds: string[];
                 label: string;
                 sourceAssessmentIds: string[];
-                emphasis: "supporting" | "primary" | "secondary";
+                emphasis: "supporting" | "secondary" | "primary";
             }[];
             cautionThemes: {
                 id: string;
@@ -18265,69 +18265,9 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             narrativeOrder: string[];
             audience: {
                 notes: string[];
-                primary: "recruiter" | "hiring-manager" | "executive" | "mixed";
+                primary: "mixed" | "recruiter" | "hiring-manager" | "executive";
             };
         };
-        expectationSelections: {
-            decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
-            id: string;
-            rationale: string;
-            trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
-            expectationId: string;
-            provenance: {
-                sourceReferences: ({
-                    sha256: string;
-                    path: string;
-                    sourceType: "job-description-markdown" | "target-json";
-                    startLine: number;
-                    endLine: number;
-                    excerptSha256: string;
-                    startOffset?: number | undefined;
-                    endOffset?: number | undefined;
-                } | {
-                    sha256: string;
-                    path: string;
-                    sourceType: "role-profile-json";
-                    excerptSha256: string;
-                    jsonPointer: string;
-                })[];
-                targetId: string;
-                expectationIds: string[];
-                approvedInterpretationSha256: string;
-                evidenceIds: string[];
-                approvedMatchIds: string[];
-                approvedMatchingSha256: string;
-                evidenceSnapshotSha256: string;
-                deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
-                planningPolicy: {
-                    name: string;
-                    version: string;
-                };
-                reviewDecision?: {
-                    decision: "accept" | "edit";
-                    reviewer: {
-                        type: "human";
-                        name?: string | undefined;
-                    };
-                } | undefined;
-                modelProposal?: {
-                    provider: string;
-                    model: string;
-                    proposalId: string;
-                    promptTemplateVersion: string;
-                } | undefined;
-            };
-            evidenceIds: string[];
-            approvedMatchIds: string[];
-            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
-            defensibility: "high" | "medium" | "low" | "none" | "uncertain";
-            materiality: "unknown" | "high" | "medium" | "low" | "critical";
-            assessmentId: string;
-            allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
-            restrictions: string[];
-        }[];
         evidenceSelections: {
             decision: "exclude" | "preferred" | "allowed" | "limited-use";
             id: string;
@@ -18360,12 +18300,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -18384,8 +18324,8 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             approvedMatchIds: string[];
             proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
             freshnessRisk: "unknown" | "high" | "medium" | "low" | "none";
-            permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-            prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         }[];
         claimBoundaries: {
             id: string;
@@ -18416,12 +18356,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -18437,9 +18377,9 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 } | undefined;
             };
             evidenceIds: string[];
-            boundaryType: "allowed" | "allowed-with-caution" | "prohibited" | "requires-review";
-            allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-            prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            boundaryType: "allowed" | "prohibited" | "requires-review" | "allowed-with-caution";
             prohibitedInferences: string[];
             requiredQualifiers: string[];
             expectationId?: string | undefined;
@@ -18482,12 +18422,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -18504,6 +18444,66 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             severity: "high" | "medium" | "low" | "blocking";
+        }[];
+        expectationSelections: {
+            decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
+            id: string;
+            rationale: string;
+            trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
+            expectationId: string;
+            provenance: {
+                sourceReferences: ({
+                    sha256: string;
+                    path: string;
+                    sourceType: "job-description-markdown" | "target-json";
+                    startLine: number;
+                    endLine: number;
+                    excerptSha256: string;
+                    startOffset?: number | undefined;
+                    endOffset?: number | undefined;
+                } | {
+                    sha256: string;
+                    path: string;
+                    sourceType: "role-profile-json";
+                    excerptSha256: string;
+                    jsonPointer: string;
+                })[];
+                targetId: string;
+                expectationIds: string[];
+                approvedInterpretationSha256: string;
+                evidenceIds: string[];
+                approvedMatchIds: string[];
+                approvedMatchingSha256: string;
+                evidenceSnapshotSha256: string;
+                deterministicInputs: Record<string, string | number | boolean | string[]>;
+                planningPolicy: {
+                    name: string;
+                    version: string;
+                };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
+                reviewDecision?: {
+                    decision: "accept" | "edit";
+                    reviewer: {
+                        type: "human";
+                        name?: string | undefined;
+                    };
+                } | undefined;
+                modelProposal?: {
+                    provider: string;
+                    model: string;
+                    proposalId: string;
+                    promptTemplateVersion: string;
+                } | undefined;
+            };
+            evidenceIds: string[];
+            approvedMatchIds: string[];
+            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+            defensibility: "high" | "medium" | "low" | "none" | "uncertain";
+            materiality: "unknown" | "high" | "medium" | "low" | "critical";
+            assessmentId: string;
+            allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
+            restrictions: string[];
         }[];
     }>>;
     validationIssues: z.ZodArray<z.ZodObject<{
@@ -18602,12 +18602,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -18624,11 +18624,11 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             approvedMatchIds: string[];
+            order: number;
+            allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             sourceAssessmentIds: string[];
             objective: string;
-            order: number;
-            allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-            prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             emphasisNotes: string[];
             cautionNotes: string[];
             maximumItemCount?: number | undefined;
@@ -18676,12 +18676,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -18728,12 +18728,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -18752,7 +18752,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchIds: string[];
                 label: string;
                 sourceAssessmentIds: string[];
-                emphasis: "supporting" | "primary" | "secondary";
+                emphasis: "supporting" | "secondary" | "primary";
             }[];
             secondaryThemes: {
                 id: string;
@@ -18784,12 +18784,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -18808,7 +18808,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchIds: string[];
                 label: string;
                 sourceAssessmentIds: string[];
-                emphasis: "supporting" | "primary" | "secondary";
+                emphasis: "supporting" | "secondary" | "primary";
             }[];
             differentiationThemes: {
                 id: string;
@@ -18840,12 +18840,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -18864,7 +18864,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchIds: string[];
                 label: string;
                 sourceAssessmentIds: string[];
-                emphasis: "supporting" | "primary" | "secondary";
+                emphasis: "supporting" | "secondary" | "primary";
             }[];
             cautionThemes: {
                 id: string;
@@ -18876,69 +18876,9 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             narrativeOrder: string[];
             audience: {
                 notes: string[];
-                primary: "recruiter" | "hiring-manager" | "executive" | "mixed";
+                primary: "mixed" | "recruiter" | "hiring-manager" | "executive";
             };
         };
-        expectationSelections: {
-            decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
-            id: string;
-            rationale: string;
-            trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
-            expectationId: string;
-            provenance: {
-                sourceReferences: ({
-                    sha256: string;
-                    path: string;
-                    sourceType: "job-description-markdown" | "target-json";
-                    startLine: number;
-                    endLine: number;
-                    excerptSha256: string;
-                    startOffset?: number | undefined;
-                    endOffset?: number | undefined;
-                } | {
-                    sha256: string;
-                    path: string;
-                    sourceType: "role-profile-json";
-                    excerptSha256: string;
-                    jsonPointer: string;
-                })[];
-                targetId: string;
-                expectationIds: string[];
-                approvedInterpretationSha256: string;
-                evidenceIds: string[];
-                approvedMatchIds: string[];
-                approvedMatchingSha256: string;
-                evidenceSnapshotSha256: string;
-                deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
-                planningPolicy: {
-                    name: string;
-                    version: string;
-                };
-                reviewDecision?: {
-                    decision: "accept" | "edit";
-                    reviewer: {
-                        type: "human";
-                        name?: string | undefined;
-                    };
-                } | undefined;
-                modelProposal?: {
-                    provider: string;
-                    model: string;
-                    proposalId: string;
-                    promptTemplateVersion: string;
-                } | undefined;
-            };
-            evidenceIds: string[];
-            approvedMatchIds: string[];
-            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
-            defensibility: "high" | "medium" | "low" | "none" | "uncertain";
-            materiality: "unknown" | "high" | "medium" | "low" | "critical";
-            assessmentId: string;
-            allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
-            restrictions: string[];
-        }[];
         evidenceSelections: {
             decision: "exclude" | "preferred" | "allowed" | "limited-use";
             id: string;
@@ -18971,12 +18911,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -18995,8 +18935,8 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             approvedMatchIds: string[];
             proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
             freshnessRisk: "unknown" | "high" | "medium" | "low" | "none";
-            permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-            prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         }[];
         claimBoundaries: {
             id: string;
@@ -19027,12 +18967,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -19048,9 +18988,9 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 } | undefined;
             };
             evidenceIds: string[];
-            boundaryType: "allowed" | "allowed-with-caution" | "prohibited" | "requires-review";
-            allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-            prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            boundaryType: "allowed" | "prohibited" | "requires-review" | "allowed-with-caution";
             prohibitedInferences: string[];
             requiredQualifiers: string[];
             expectationId?: string | undefined;
@@ -19093,12 +19033,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -19115,6 +19055,66 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             severity: "high" | "medium" | "low" | "blocking";
+        }[];
+        expectationSelections: {
+            decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
+            id: string;
+            rationale: string;
+            trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
+            expectationId: string;
+            provenance: {
+                sourceReferences: ({
+                    sha256: string;
+                    path: string;
+                    sourceType: "job-description-markdown" | "target-json";
+                    startLine: number;
+                    endLine: number;
+                    excerptSha256: string;
+                    startOffset?: number | undefined;
+                    endOffset?: number | undefined;
+                } | {
+                    sha256: string;
+                    path: string;
+                    sourceType: "role-profile-json";
+                    excerptSha256: string;
+                    jsonPointer: string;
+                })[];
+                targetId: string;
+                expectationIds: string[];
+                approvedInterpretationSha256: string;
+                evidenceIds: string[];
+                approvedMatchIds: string[];
+                approvedMatchingSha256: string;
+                evidenceSnapshotSha256: string;
+                deterministicInputs: Record<string, string | number | boolean | string[]>;
+                planningPolicy: {
+                    name: string;
+                    version: string;
+                };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
+                reviewDecision?: {
+                    decision: "accept" | "edit";
+                    reviewer: {
+                        type: "human";
+                        name?: string | undefined;
+                    };
+                } | undefined;
+                modelProposal?: {
+                    provider: string;
+                    model: string;
+                    proposalId: string;
+                    promptTemplateVersion: string;
+                } | undefined;
+            };
+            evidenceIds: string[];
+            approvedMatchIds: string[];
+            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+            defensibility: "high" | "medium" | "low" | "none" | "uncertain";
+            materiality: "unknown" | "high" | "medium" | "low" | "critical";
+            assessmentId: string;
+            allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
+            restrictions: string[];
         }[];
     } | undefined;
 }, {
@@ -19196,12 +19196,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -19218,11 +19218,11 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             approvedMatchIds: string[];
+            order: number;
+            allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             sourceAssessmentIds: string[];
             objective: string;
-            order: number;
-            allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-            prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             emphasisNotes: string[];
             cautionNotes: string[];
             maximumItemCount?: number | undefined;
@@ -19270,12 +19270,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -19322,12 +19322,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -19346,7 +19346,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchIds: string[];
                 label: string;
                 sourceAssessmentIds: string[];
-                emphasis: "supporting" | "primary" | "secondary";
+                emphasis: "supporting" | "secondary" | "primary";
             }[];
             secondaryThemes: {
                 id: string;
@@ -19378,12 +19378,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -19402,7 +19402,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchIds: string[];
                 label: string;
                 sourceAssessmentIds: string[];
-                emphasis: "supporting" | "primary" | "secondary";
+                emphasis: "supporting" | "secondary" | "primary";
             }[];
             differentiationThemes: {
                 id: string;
@@ -19434,12 +19434,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                     approvedMatchingSha256: string;
                     evidenceSnapshotSha256: string;
                     deterministicInputs: Record<string, string | number | boolean | string[]>;
-                    approvedAssessmentSha256: string;
-                    assessmentIds: string[];
                     planningPolicy: {
                         name: string;
                         version: string;
                     };
+                    assessmentIds: string[];
+                    approvedAssessmentSha256: string;
                     reviewDecision?: {
                         decision: "accept" | "edit";
                         reviewer: {
@@ -19458,7 +19458,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchIds: string[];
                 label: string;
                 sourceAssessmentIds: string[];
-                emphasis: "supporting" | "primary" | "secondary";
+                emphasis: "supporting" | "secondary" | "primary";
             }[];
             cautionThemes: {
                 id: string;
@@ -19470,69 +19470,9 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             narrativeOrder: string[];
             audience: {
                 notes: string[];
-                primary: "recruiter" | "hiring-manager" | "executive" | "mixed";
+                primary: "mixed" | "recruiter" | "hiring-manager" | "executive";
             };
         };
-        expectationSelections: {
-            decision: "exclude" | "supporting" | "primary" | "secondary" | "defer";
-            id: string;
-            rationale: string;
-            trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
-            expectationId: string;
-            provenance: {
-                sourceReferences: ({
-                    sha256: string;
-                    path: string;
-                    sourceType: "job-description-markdown" | "target-json";
-                    startLine: number;
-                    endLine: number;
-                    excerptSha256: string;
-                    startOffset?: number | undefined;
-                    endOffset?: number | undefined;
-                } | {
-                    sha256: string;
-                    path: string;
-                    sourceType: "role-profile-json";
-                    excerptSha256: string;
-                    jsonPointer: string;
-                })[];
-                targetId: string;
-                expectationIds: string[];
-                approvedInterpretationSha256: string;
-                evidenceIds: string[];
-                approvedMatchIds: string[];
-                approvedMatchingSha256: string;
-                evidenceSnapshotSha256: string;
-                deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
-                planningPolicy: {
-                    name: string;
-                    version: string;
-                };
-                reviewDecision?: {
-                    decision: "accept" | "edit";
-                    reviewer: {
-                        type: "human";
-                        name?: string | undefined;
-                    };
-                } | undefined;
-                modelProposal?: {
-                    provider: string;
-                    model: string;
-                    proposalId: string;
-                    promptTemplateVersion: string;
-                } | undefined;
-            };
-            evidenceIds: string[];
-            approvedMatchIds: string[];
-            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
-            defensibility: "high" | "medium" | "low" | "none" | "uncertain";
-            materiality: "unknown" | "high" | "medium" | "low" | "critical";
-            assessmentId: string;
-            allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
-            restrictions: string[];
-        }[];
         evidenceSelections: {
             decision: "exclude" | "preferred" | "allowed" | "limited-use";
             id: string;
@@ -19565,12 +19505,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -19589,8 +19529,8 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             approvedMatchIds: string[];
             proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
             freshnessRisk: "unknown" | "high" | "medium" | "low" | "none";
-            permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-            prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         }[];
         claimBoundaries: {
             id: string;
@@ -19621,12 +19561,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -19642,9 +19582,9 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 } | undefined;
             };
             evidenceIds: string[];
-            boundaryType: "allowed" | "allowed-with-caution" | "prohibited" | "requires-review";
-            allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-            prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "technology" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            boundaryType: "allowed" | "prohibited" | "requires-review" | "allowed-with-caution";
             prohibitedInferences: string[];
             requiredQualifiers: string[];
             expectationId?: string | undefined;
@@ -19687,12 +19627,12 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
                 approvedMatchingSha256: string;
                 evidenceSnapshotSha256: string;
                 deterministicInputs: Record<string, string | number | boolean | string[]>;
-                approvedAssessmentSha256: string;
-                assessmentIds: string[];
                 planningPolicy: {
                     name: string;
                     version: string;
                 };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
                 reviewDecision?: {
                     decision: "accept" | "edit";
                     reviewer: {
@@ -19709,6 +19649,66 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             severity: "high" | "medium" | "low" | "blocking";
+        }[];
+        expectationSelections: {
+            decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
+            id: string;
+            rationale: string;
+            trustState: "deterministic-approved" | "proposed" | "human-approved" | "human-edited";
+            expectationId: string;
+            provenance: {
+                sourceReferences: ({
+                    sha256: string;
+                    path: string;
+                    sourceType: "job-description-markdown" | "target-json";
+                    startLine: number;
+                    endLine: number;
+                    excerptSha256: string;
+                    startOffset?: number | undefined;
+                    endOffset?: number | undefined;
+                } | {
+                    sha256: string;
+                    path: string;
+                    sourceType: "role-profile-json";
+                    excerptSha256: string;
+                    jsonPointer: string;
+                })[];
+                targetId: string;
+                expectationIds: string[];
+                approvedInterpretationSha256: string;
+                evidenceIds: string[];
+                approvedMatchIds: string[];
+                approvedMatchingSha256: string;
+                evidenceSnapshotSha256: string;
+                deterministicInputs: Record<string, string | number | boolean | string[]>;
+                planningPolicy: {
+                    name: string;
+                    version: string;
+                };
+                assessmentIds: string[];
+                approvedAssessmentSha256: string;
+                reviewDecision?: {
+                    decision: "accept" | "edit";
+                    reviewer: {
+                        type: "human";
+                        name?: string | undefined;
+                    };
+                } | undefined;
+                modelProposal?: {
+                    provider: string;
+                    model: string;
+                    proposalId: string;
+                    promptTemplateVersion: string;
+                } | undefined;
+            };
+            evidenceIds: string[];
+            approvedMatchIds: string[];
+            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+            defensibility: "high" | "medium" | "low" | "none" | "uncertain";
+            materiality: "unknown" | "high" | "medium" | "low" | "critical";
+            assessmentId: string;
+            allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
+            restrictions: string[];
         }[];
     } | undefined;
 }>;

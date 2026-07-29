@@ -391,7 +391,7 @@ Job Target + Job Description
 The implemented Job workflow includes:
 
 - deterministic Job Target intake and exact Job Description preservation;
-- deterministic structural analysis;
+- deterministic structural analysis that preserves exact source provenance while normalizing explicit plain-text section scope and wrapped source blocks;
 - deterministic requirement modeling with optional proposal, review, and approval escalation;
 - deterministic mapping from usable requirements to eligible reviewed evidence;
 - deterministic per-requirement coverage analysis from the current evidence map;

@@ -1,6 +1,6 @@
 import { type TargetAnalysis } from "./schemas.js";
 export declare const TARGET_ANALYZER_NAME = "target-structure";
-export declare const TARGET_ANALYZER_VERSION = "1";
+export declare const TARGET_ANALYZER_VERSION = "2";
 interface AnalyzeOptions {
     rebuild?: boolean;
     now?: () => Date;

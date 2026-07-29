@@ -306,17 +306,18 @@ npm run dev -- target analysis-status job-exampleco-engineering-manager
 
 Role targets remain valid first-class targets, but a title alone is not treated as a deterministic requirement source. Their Slice 2.2 analysis therefore contains no sections or items and records `ROLE_SEMANTIC_INTERPRETATION_NOT_AVAILABLE`; semantic role expectations belong to a later slice.
 
-For job targets, the `target-structure` analyzer version `1` recognizes only:
+For job targets, the `target-structure` analyzer version `2` recognizes:
 
 - Optional scalar front matter fields already supported by target intake
 - ATX headings at levels 1-3
-- Unordered list items beginning with `-`, `*`, or `+`
-- Ordered list items such as `1.` and `2.`
-- Contiguous plain-text paragraphs
+- A small explicit set of unmarked plain-text section labels, including `About the job`, `What You'll Own`, `How We Work`, `Requirements`, `What you must have`, `Nice to have`, and `Benefits`
+- Unordered list items beginning with `-`, `*`, or `+`, including wrapped continuation lines
+- Ordered list items such as `1.` and `2.`, including wrapped continuation lines
+- Contiguous wrapped plain-text paragraphs
 
-The analyzer uses a small case-insensitive heading map. Responsibilities, Key Responsibilities, Role Responsibilities, and What You Will Do map to `responsibilities`. Requirements, Required Qualifications, Minimum Qualifications, and Must Have map to `required`. Preferred Qualifications, Nice to Have, Bonus, and Preferred map to `preferred`. A small set of explicit headings also maps to qualifications, role context, company context, benefits, or other. Unmapped headings remain `unknown`; prose keywords never change classification or necessity.
+The analyzer uses a small case-insensitive heading map. Responsibilities, Key Responsibilities, Role Responsibilities, What You Will Do, and What You'll Own map to `responsibilities`. Requirements, Required Qualifications, Minimum Qualifications, Must Have, and What You Must Have map to `required`. Preferred Qualifications, Nice to Have, Bonus, and Preferred map to `preferred`. A small set of explicit headings also maps to qualifications, role context, company context, benefits, or other. Subsections retain their parent-section identity so explicit mandatory and preferred scope can propagate without prose inference. Unmapped headings remain `unknown`; prose keywords never change classification or necessity.
 
-Every extracted section and item points to the immutable persisted `job-description.md`. Line numbers are **1-based and inclusive**. Byte offsets use a half-open range, `[startOffset, endOffset)`, and include the source line ending when present. `excerptSha256` hashes those exact referenced bytes; the full source SHA-256 is also retained. Front matter fields are metadata items with unknown necessity, never job requirements.
+Every extracted section and semantic item points to the immutable persisted `job-description.md`. Wrapped bullets and paragraphs remain one normalized item while retaining the exact multiline source text and range. Line numbers are **1-based and inclusive**. Byte offsets use a half-open range, `[startOffset, endOffset)`, and include the source line ending when present. `excerptSha256` hashes those exact referenced bytes; the full source SHA-256 is also retained. Front matter fields are metadata items with unknown necessity, never job requirements.
 
 Analysis status is one of:
 
@@ -327,7 +328,7 @@ Analysis status is one of:
 
 An unchanged analysis is not rewritten and keeps both timestamps. A valid stale analysis is rebuilt on `target analyze`, preserving its original `createdAt` while updating `updatedAt`. Corrupt or mismatched stored analysis is never overwritten silently; inspect it and use `--rebuild` explicitly when replacement is intended. `target analysis-status` is read-only and never regenerates artifacts.
 
-This minimal parser does not implement full CommonMark. Multiline list continuations, Setext headings, nested-list semantics, tables, fenced-code semantics, and inline requirement interpretation are not modeled in Slice 2.2. Job descriptions remain external opportunity inputs, not trusted candidate evidence.
+This minimal parser does not implement full CommonMark. Setext headings, arbitrary unmarked headings, nested-list semantics, tables, fenced-code semantics, and broad inline requirement interpretation are not modeled. Job descriptions remain external opportunity inputs, not trusted candidate evidence.
 
 Target analysis in Slice 2.2 does not yet perform semantic requirement interpretation, evidence matching, fit scoring, confidence scoring, or resume generation.
 
@@ -1262,16 +1263,18 @@ npm run dev -- target job-requirements status job-exampleco-engineering-manager
 npm run dev -- target job-requirements build job-exampleco-engineering-manager --rebuild
 ```
 
-The deterministic policy is `job-requirement-modeling-policy` version `1`. It preserves each structural item as one unsplit requirement and applies only explicit, documented cues:
+The deterministic policy is `job-requirement-modeling-policy` version `2`. It consumes section-aware semantic items and applies only explicit, documented cues:
 
 - Required sections and phrases such as `must have`, `required`, `minimum of`, and `at least` produce `mandatory`.
 - Preferred sections and phrases such as `preferred`, `nice to have`, and `bonus` produce `preferred`.
 - Responsibilities and explicit role-context sections produce `contextual`.
+- A preference modifier explicitly attached to a required statement remains related to that statement but is modeled as preferred. For example, a mandatory CRM requirement may retain an attached `Salesforce is strongly preferred` technology preference.
+- Benefits do not become candidate capability requirements. Explicit work-mode, location, travel, or attendance constraints within a Benefits section may remain contextual constraints.
 - Statements without a reliable cue remain `ambiguous`; vague wording is never silently hardened.
 - Explicit patterns identify experience/seniority, languages, location/travel/visa/work mode, screening, technical expectations, named technologies, domains, leadership, operating context, and stated metrics or scale.
 - Unknown statements remain `unknown` and receive auditable ambiguities, risks, and warnings.
 
-Every requirement has a stable content-derived ID, category, normalized label, exact source text, necessity, confidence, explicitness, relationships, named technologies, keywords, and source provenance. Provenance retains the structural analysis item and section IDs plus exact 1-based inclusive line ranges, source byte offsets, full-source SHA-256, and excerpt SHA-256 from the immutable persisted Job Description.
+Every requirement has a stable content-derived ID, category, normalized label, exact semantic-block source text, necessity, confidence, explicitness, relationships, named technologies, keywords, and source provenance. Identity binds normalized meaning to its semantic source block and target rather than treating each physical line as a requirement. Provenance retains the structural analysis item, parent-scoped section, exact 1-based inclusive line range, byte offsets, full-source SHA-256, and excerpt SHA-256 from the immutable persisted Job Description.
 
 Artifacts are separate from the Job Target and Job Description:
 

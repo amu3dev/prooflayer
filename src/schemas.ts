@@ -146,6 +146,7 @@ export const TargetAnalysisSourceReferenceSchema = z
 export const TargetAnalysisSectionSchema = z
   .object({
     id: z.string().min(1),
+    parentSectionId: z.string().min(1).nullable().optional(),
     heading: z.string().nullable(),
     headingLevel: z.number().int().min(1).max(3).nullable(),
     normalizedHeading: z.string().nullable(),

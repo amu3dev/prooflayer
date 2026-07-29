@@ -22,7 +22,7 @@ import {
 import { showTarget } from "./targets.js";
 
 export const TARGET_ANALYZER_NAME = "target-structure";
-export const TARGET_ANALYZER_VERSION = "1";
+export const TARGET_ANALYZER_VERSION = "2";
 
 const ANALYSIS_FILE = "target-analysis.json";
 const MANIFEST_FILE = "analysis-manifest.json";
@@ -33,11 +33,13 @@ const HEADING_CLASSIFICATIONS = new Map<string, TargetAnalysisSection["classific
   ["role responsibilities", "responsibilities"],
   ["what you will do", "responsibilities"],
   ["what youll do", "responsibilities"],
+  ["what youll own", "responsibilities"],
   ["requirements", "required"],
   ["required qualifications", "required"],
   ["minimum qualifications", "required"],
   ["must have", "required"],
   ["must haves", "required"],
+  ["what you must have", "required"],
   ["preferred", "preferred"],
   ["preferred qualifications", "preferred"],
   ["nice to have", "preferred"],
@@ -45,6 +47,7 @@ const HEADING_CLASSIFICATIONS = new Map<string, TargetAnalysisSection["classific
   ["qualifications", "qualifications"],
   ["experience and qualifications", "qualifications"],
   ["about the role", "about-role"],
+  ["about the job", "about-role"],
   ["the role", "about-role"],
   ["role overview", "about-role"],
   ["position overview", "about-role"],
@@ -56,6 +59,19 @@ const HEADING_CLASSIFICATIONS = new Map<string, TargetAnalysisSection["classific
   ["perks and benefits", "benefits"],
   ["application process", "other"],
   ["how to apply", "other"],
+  ["how we work", "other"],
+]);
+
+const PLAIN_SUBHEADINGS = new Set([
+  "must have",
+  "must haves",
+  "what you must have",
+  "required qualifications",
+  "minimum qualifications",
+  "preferred",
+  "preferred qualifications",
+  "nice to have",
+  "bonus",
 ]);
 
 const FRONT_MATTER_FIELDS = new Set(["title", "company", "location", "workingmodel"]);
@@ -282,6 +298,20 @@ function parseHeading(content: string): { heading: string; level: number } | nul
   return heading ? { heading, level: match[1].length } : null;
 }
 
+function parseSectionHeading(content: string): { heading: string; level: number } | null {
+  const markdownHeading = parseHeading(content);
+  if (markdownHeading) return markdownHeading;
+
+  const heading = content.trim();
+  if (!heading || content !== heading) return null;
+  const normalized = normalizeHeading(heading);
+  if (!HEADING_CLASSIFICATIONS.has(normalized)) return null;
+  return {
+    heading,
+    level: PLAIN_SUBHEADINGS.has(normalized) ? 2 : 1,
+  };
+}
+
 function listStatement(content: string): string | null {
   const unordered = content.match(/^\s*[-*+]\s+(.+)$/);
   if (unordered?.[1]) return unordered[1].trim();
@@ -310,6 +340,7 @@ function makeSection(
       lines[startIndex]?.number ?? 0,
       lines[endIndex]?.number ?? 0,
     ]),
+    parentSectionId: null,
     heading: heading?.heading ?? null,
     headingLevel: heading?.level ?? null,
     normalizedHeading,
@@ -364,7 +395,7 @@ function parseJobMarkdown(
 
   const headingIndexes: number[] = [];
   for (let index = bodyStart; index < lines.length; index += 1) {
-    if (parseHeading(lines[index]?.content ?? "")) headingIndexes.push(index);
+    if (parseSectionHeading(lines[index]?.content ?? "")) headingIndexes.push(index);
   }
 
   const firstContent = lines.findIndex(
@@ -401,9 +432,22 @@ function parseJobMarkdown(
         sourceSha256,
         startIndex,
         endIndex,
-        parseHeading(lines[startIndex]?.content ?? ""),
+        parseSectionHeading(lines[startIndex]?.content ?? ""),
       ),
     );
+  }
+
+  const sectionStack: TargetAnalysisSection[] = [];
+  for (const section of sections) {
+    if (section.headingLevel === null) continue;
+    while (
+      sectionStack.length > 0 &&
+      (sectionStack.at(-1)?.headingLevel ?? 0) >= section.headingLevel
+    ) {
+      sectionStack.pop();
+    }
+    section.parentSectionId = sectionStack.at(-1)?.id ?? null;
+    sectionStack.push(section);
   }
 
   for (const section of sections) {
@@ -419,13 +463,38 @@ function parseJobMarkdown(
       }
       const listItem = listStatement(line.content);
       if (listItem) {
-        const reference = sourceReference(buffer, lines, sourcePath, sourceSha256, index, index);
+        let listEnd = index;
+        while (listEnd + 1 <= endIndex) {
+          const next = lines[listEnd + 1];
+          if (
+            !next ||
+            !next.content.trim() ||
+            parseSectionHeading(next.content) ||
+            listStatement(next.content) ||
+            !/^\s+\S/.test(next.content)
+          ) {
+            break;
+          }
+          listEnd += 1;
+        }
+        const reference = sourceReference(
+          buffer,
+          lines,
+          sourcePath,
+          sourceSha256,
+          index,
+          listEnd,
+        );
+        const listLines = lines.slice(index, listEnd + 1);
         items.push({
           id: stableId("item", [targetId, section.id, "list-item", line.number, reference.excerptSha256]),
           sectionId: section.id,
           kind: "list-item",
-          statement: listItem,
-          rawText: line.content,
+          statement: [
+            listItem,
+            ...listLines.slice(1).map((entry) => entry.content.trim()),
+          ].join(" "),
+          rawText: listLines.map((entry) => entry.content).join("\n"),
           necessity: semantics.necessity,
           category: semantics.category,
           extractionMethod:
@@ -434,10 +503,10 @@ function parseJobMarkdown(
               : "markdown-structure",
           sourceReferences: [reference],
         });
-        index += 1;
+        index = listEnd + 1;
         continue;
       }
-      if (parseHeading(line.content)) {
+      if (parseSectionHeading(line.content)) {
         index += 1;
         continue;
       }
@@ -446,7 +515,14 @@ function parseJobMarkdown(
       let paragraphEnd = index;
       while (paragraphEnd + 1 <= endIndex) {
         const next = lines[paragraphEnd + 1];
-        if (!next || !next.content.trim() || parseHeading(next.content) || listStatement(next.content)) break;
+        if (
+          !next ||
+          !next.content.trim() ||
+          parseSectionHeading(next.content) ||
+          listStatement(next.content)
+        ) {
+          break;
+        }
         paragraphEnd += 1;
       }
       const reference = sourceReference(

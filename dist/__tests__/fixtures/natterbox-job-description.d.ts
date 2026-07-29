@@ -1,0 +1,2 @@
+export declare const NATTERBOX_JOB_DESCRIPTION_SHA256 = "03f21228719208eb149dfb63c0193abecb76a3f6b050e20b12e7f3daf7b90caa";
+export declare const NATTERBOX_JOB_DESCRIPTION: string;

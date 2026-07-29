@@ -407,7 +407,7 @@ describe("Slice 2.7A deterministic Job Requirement Modeling", () => {
     });
     it("marks policy changes stale and never silently replaces approved artifacts", async () => {
         const fixture = await approvedWorkspace();
-        const stale = await getApprovedJobRequirementsStatus(fixture.workspace, fixture.targetId, { policyVersion: "2" });
+        const stale = await getApprovedJobRequirementsStatus(fixture.workspace, fixture.targetId, { policyVersion: "3" });
         expect(stale.status).toBe("stale");
         expect(stale.policyMatches).toBe(false);
         const deterministicPath = deterministicArtifact(fixture.workspace, fixture.targetId, "job-requirement-model.json");

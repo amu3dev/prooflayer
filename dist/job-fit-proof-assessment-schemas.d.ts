@@ -690,7 +690,7 @@ export declare const JobRequirementFitProofAssessmentSchema: z.ZodEffects<z.ZodO
             sourceTextSha256: string;
         };
     };
-    materiality: "unknown" | "contextual" | "critical" | "secondary" | "material";
+    materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
     requirementId: string;
     evidenceQuality: "strong" | "adequate" | "limited" | "mixed" | "unavailable";
     coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
@@ -747,7 +747,7 @@ export declare const JobRequirementFitProofAssessmentSchema: z.ZodEffects<z.ZodO
             sourceTextSha256: string;
         };
     };
-    materiality: "unknown" | "contextual" | "critical" | "secondary" | "material";
+    materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
     requirementId: string;
     evidenceQuality: "strong" | "adequate" | "limited" | "mixed" | "unavailable";
     coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
@@ -804,7 +804,7 @@ export declare const JobRequirementFitProofAssessmentSchema: z.ZodEffects<z.ZodO
             sourceTextSha256: string;
         };
     };
-    materiality: "unknown" | "contextual" | "critical" | "secondary" | "material";
+    materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
     requirementId: string;
     evidenceQuality: "strong" | "adequate" | "limited" | "mixed" | "unavailable";
     coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
@@ -861,7 +861,7 @@ export declare const JobRequirementFitProofAssessmentSchema: z.ZodEffects<z.ZodO
             sourceTextSha256: string;
         };
     };
-    materiality: "unknown" | "contextual" | "critical" | "secondary" | "material";
+    materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
     requirementId: string;
     evidenceQuality: "strong" | "adequate" | "limited" | "mixed" | "unavailable";
     coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
@@ -885,7 +885,7 @@ export declare const JobOverallFitProofAssessmentSchema: z.ZodObject<{
     statement: z.ZodString;
 }, "strict", z.ZodTypeAny, {
     statement: string;
-    state: "strong" | "limited" | "insufficient" | "mixed" | "indeterminate" | "credible";
+    state: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
     strengthRequirementIds: string[];
     supportedRequirementIds: string[];
     partialRequirementIds: string[];
@@ -894,7 +894,7 @@ export declare const JobOverallFitProofAssessmentSchema: z.ZodObject<{
     indeterminateRequirementIds: string[];
 }, {
     statement: string;
-    state: "strong" | "limited" | "insufficient" | "mixed" | "indeterminate" | "credible";
+    state: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
     strengthRequirementIds: string[];
     supportedRequirementIds: string[];
     partialRequirementIds: string[];
@@ -1441,7 +1441,7 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
                 sourceTextSha256: string;
             };
         };
-        materiality: "unknown" | "contextual" | "critical" | "secondary" | "material";
+        materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
         requirementId: string;
         evidenceQuality: "strong" | "adequate" | "limited" | "mixed" | "unavailable";
         coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
@@ -1498,7 +1498,7 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
                 sourceTextSha256: string;
             };
         };
-        materiality: "unknown" | "contextual" | "critical" | "secondary" | "material";
+        materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
         requirementId: string;
         evidenceQuality: "strong" | "adequate" | "limited" | "mixed" | "unavailable";
         coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
@@ -1555,7 +1555,7 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
                 sourceTextSha256: string;
             };
         };
-        materiality: "unknown" | "contextual" | "critical" | "secondary" | "material";
+        materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
         requirementId: string;
         evidenceQuality: "strong" | "adequate" | "limited" | "mixed" | "unavailable";
         coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
@@ -1612,7 +1612,7 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
                 sourceTextSha256: string;
             };
         };
-        materiality: "unknown" | "contextual" | "critical" | "secondary" | "material";
+        materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
         requirementId: string;
         evidenceQuality: "strong" | "adequate" | "limited" | "mixed" | "unavailable";
         coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
@@ -1636,7 +1636,7 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
         statement: z.ZodString;
     }, "strict", z.ZodTypeAny, {
         statement: string;
-        state: "strong" | "limited" | "insufficient" | "mixed" | "indeterminate" | "credible";
+        state: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
         strengthRequirementIds: string[];
         supportedRequirementIds: string[];
         partialRequirementIds: string[];
@@ -1645,7 +1645,7 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
         indeterminateRequirementIds: string[];
     }, {
         statement: string;
-        state: "strong" | "limited" | "insufficient" | "mixed" | "indeterminate" | "credible";
+        state: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
         strengthRequirementIds: string[];
         supportedRequirementIds: string[];
         partialRequirementIds: string[];
@@ -1884,7 +1884,7 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
                 sourceTextSha256: string;
             };
         };
-        materiality: "unknown" | "contextual" | "critical" | "secondary" | "material";
+        materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
         requirementId: string;
         evidenceQuality: "strong" | "adequate" | "limited" | "mixed" | "unavailable";
         coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
@@ -1899,7 +1899,7 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
     }[];
     overall: {
         statement: string;
-        state: "strong" | "limited" | "insufficient" | "mixed" | "indeterminate" | "credible";
+        state: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
         strengthRequirementIds: string[];
         supportedRequirementIds: string[];
         partialRequirementIds: string[];
@@ -2036,7 +2036,7 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
                 sourceTextSha256: string;
             };
         };
-        materiality: "unknown" | "contextual" | "critical" | "secondary" | "material";
+        materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
         requirementId: string;
         evidenceQuality: "strong" | "adequate" | "limited" | "mixed" | "unavailable";
         coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
@@ -2051,7 +2051,7 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
     }[];
     overall: {
         statement: string;
-        state: "strong" | "limited" | "insufficient" | "mixed" | "indeterminate" | "credible";
+        state: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
         strengthRequirementIds: string[];
         supportedRequirementIds: string[];
         partialRequirementIds: string[];
@@ -2188,7 +2188,7 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
                 sourceTextSha256: string;
             };
         };
-        materiality: "unknown" | "contextual" | "critical" | "secondary" | "material";
+        materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
         requirementId: string;
         evidenceQuality: "strong" | "adequate" | "limited" | "mixed" | "unavailable";
         coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
@@ -2203,7 +2203,7 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
     }[];
     overall: {
         statement: string;
-        state: "strong" | "limited" | "insufficient" | "mixed" | "indeterminate" | "credible";
+        state: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
         strengthRequirementIds: string[];
         supportedRequirementIds: string[];
         partialRequirementIds: string[];
@@ -2340,7 +2340,7 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
                 sourceTextSha256: string;
             };
         };
-        materiality: "unknown" | "contextual" | "critical" | "secondary" | "material";
+        materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
         requirementId: string;
         evidenceQuality: "strong" | "adequate" | "limited" | "mixed" | "unavailable";
         coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
@@ -2355,7 +2355,7 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
     }[];
     overall: {
         statement: string;
-        state: "strong" | "limited" | "insufficient" | "mixed" | "indeterminate" | "credible";
+        state: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
         strengthRequirementIds: string[];
         supportedRequirementIds: string[];
         partialRequirementIds: string[];

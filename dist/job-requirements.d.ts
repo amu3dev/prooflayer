@@ -1,6 +1,6 @@
 import { type JobRequirementModel } from "./job-requirement-schemas.js";
 export declare const JOB_REQUIREMENT_POLICY_NAME = "job-requirement-modeling-policy";
-export declare const JOB_REQUIREMENT_POLICY_VERSION = "1";
+export declare const JOB_REQUIREMENT_POLICY_VERSION = "2";
 interface RequirementPaths {
     rootRelativePath: string;
     rootPath: string;
