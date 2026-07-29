@@ -428,6 +428,8 @@ Snapshots are currently produced from the in-repository Evidence Foundation. Thi
 
 Approval, qualifiers, public safety, output readiness, Role/Job eligibility, metric status, wording permissions, and project/employment and responsibility/achievement boundaries are shared eligibility controls. Review batches are human-work organizers only and never become approval authority.
 
+Evidence Review Workspace Rendering provides deterministic, human-readable Markdown for a batch's immutable JSON templates. Each claim workspace is self-contained and an index preserves stable batch ordering. The Markdown and its manifests are derived presentation artifacts: they are never parsed, never become review input, and never change source evidence, review decisions, snapshots, or eligibility. Editing rendered Markdown only invalidates that rendering.
+
 ### Provenance
 
 Stable IDs, source references, hashes, manifests, and statement-level lineage connect every downstream result to reviewed upstream facts.
@@ -515,7 +517,7 @@ Status through Slice 2.7G:
 
 | Capability | Role Pipeline | Job Pipeline |
 | --- | --- | --- |
-| Evidence Review and Eligibility | Completed through human-controlled claim review and Snapshot policy v2 | Completed through human-controlled claim review and Snapshot policy v2 |
+| Evidence Review and Eligibility | Completed through human-controlled claim review, read-only workspace rendering, and Snapshot policy v2 | Completed through human-controlled claim review, read-only workspace rendering, and Snapshot policy v2 |
 | Target Modeling | Completed | Completed |
 | Expectation Modeling | Completed | Completed as Job Requirement Modeling |
 | Evidence Mapping | Completed | Completed through Slice 2.7B |

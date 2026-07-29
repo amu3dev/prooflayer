@@ -79,6 +79,13 @@ import {
   showEvidenceReviewBatch,
 } from "./evidence-review-batch.js";
 import {
+  formatEvidenceReviewWorkspaceResult,
+  formatEvidenceReviewWorkspaceStatus,
+  getEvidenceReviewWorkspaceStatus,
+  renderEvidenceReviewWorkspace,
+  showEvidenceReviewWorkspace,
+} from "./evidence-review-workspace.js";
+import {
   formatTargetEvidencePinResult,
   formatTargetEvidencePinStatus,
   getTargetEvidencePinStatus,
@@ -672,6 +679,38 @@ reviewBatch
   .action(async (batchId: string) => {
     console.log(formatEvidenceReviewBatchStatus(
       await getEvidenceReviewBatchStatus(getWorkspace(), batchId),
+    ));
+  });
+
+const reviewWorkspace = evidence
+  .command("review-workspace")
+  .description("Render immutable review templates as read-only human workspace Markdown.");
+
+reviewWorkspace
+  .command("render <batch-id>")
+  .option("--rebuild", "explicitly replace stale or invalid derived Markdown")
+  .description("Render one deterministic Markdown workspace per selected review template.")
+  .action(async (batchId: string, options: { rebuild?: boolean }) => {
+    console.log(formatEvidenceReviewWorkspaceResult(
+      await renderEvidenceReviewWorkspace(getWorkspace(), batchId, {
+        rebuild: options.rebuild,
+      }),
+    ));
+  });
+
+reviewWorkspace
+  .command("show <batch-id>")
+  .description("Print the current read-only review workspace index Markdown.")
+  .action(async (batchId: string) => {
+    process.stdout.write(await showEvidenceReviewWorkspace(getWorkspace(), batchId));
+  });
+
+reviewWorkspace
+  .command("status <batch-id>")
+  .description("Inspect review workspace Markdown, manifest, input, and renderer lifecycle.")
+  .action(async (batchId: string) => {
+    console.log(formatEvidenceReviewWorkspaceStatus(
+      await getEvidenceReviewWorkspaceStatus(getWorkspace(), batchId),
     ));
   });
 

@@ -563,6 +563,20 @@ npm run dev -- evidence review-batch status <batch-id>
 
 `evidence-review-batch-policy` version `1` uses only exact requirement terminology, named technology/domain metadata, requirement necessity, evidence categories, and potential-metric markers to assign `high`, `medium`, or `low` workflow priority. It does not establish support, approval, eligibility, fit, or target-specific truth. The controlled subset files are deliberately blank templates, not review decisions. Batches become stale when the requirement model, policy, claims, or evidence changes.
 
+### Evidence Review Workspace Rendering
+
+ProofLayer can render each immutable review-input template as a self-contained, read-only Markdown workspace and create a batch index:
+
+```bash
+npm run dev -- evidence review-workspace render <batch-id>
+npm run dev -- evidence review-workspace show <batch-id>
+npm run dev -- evidence review-workspace status <batch-id>
+```
+
+Derived files are stored under `workspace/evidence-reviews/batches/<batch-id>/review-workspace/`. The directory contains `index.review.md`, one `<claim-id>.review.md` file per controlled template, and deterministic manifests for the index and claim files.
+
+The JSON batch and review-input templates remain canonical. Markdown is presentation-only: ProofLayer never parses or consumes it, and editing it has no effect on review decisions, snapshots, eligibility, or source evidence. Changed canonical inputs make the workspace stale; missing, modified, or inconsistent rendered files make it invalid. An unchanged render returns `already-current` without rewriting bytes, hashes, timestamps, or modification times. Use `--rebuild` only to replace stale or invalid derived rendering files.
+
 ## Evidence Snapshot Contract v1
 
 ProofLayer exposes the current reviewed Evidence Foundation through an immutable, content-addressed `evidence-snapshot` schema version `1`. New exports use `evidence-snapshot-exporter` version `2` under `evidence-snapshot-policy` version `2`; the reader remains compatible with immutable policy-version-1 snapshots and existing pins.

@@ -12,6 +12,7 @@ import { createJobTarget, createRoleTarget, formatTargetCreation, formatTargetJs
 import { buildEvidenceSnapshot, formatEvidenceSnapshotBuild, formatEvidenceSnapshotList, formatEvidenceSnapshotStatus, getEvidenceSnapshotStatus, listEvidenceSnapshots, loadEvidenceSnapshot, validateEvidenceSnapshot, } from "./evidence-snapshots.js";
 import { createEvidenceClaimReview, formatEvidenceClaimReviewList, formatEvidenceClaimReviewResult, formatEvidenceClaimReviewStatus, getEvidenceClaimReviewStatus, listEvidenceClaimReviews, readEvidenceClaimReviewInputFile, showEvidenceClaimReview, } from "./evidence-claim-review.js";
 import { buildEvidenceReviewBatch, formatEvidenceReviewBatchList, formatEvidenceReviewBatchResult, formatEvidenceReviewBatchStatus, getEvidenceReviewBatchStatus, listEvidenceReviewBatches, showEvidenceReviewBatch, } from "./evidence-review-batch.js";
+import { formatEvidenceReviewWorkspaceResult, formatEvidenceReviewWorkspaceStatus, getEvidenceReviewWorkspaceStatus, renderEvidenceReviewWorkspace, showEvidenceReviewWorkspace, } from "./evidence-review-workspace.js";
 import { formatTargetEvidencePinResult, formatTargetEvidencePinStatus, getTargetEvidencePinStatus, loadTargetEvidencePin, pinTargetEvidenceSnapshot, upgradeTargetEvidenceSnapshot, } from "./target-evidence-pin.js";
 import { analyzeTarget, formatAnalyzeTargetResult, formatTargetAnalysisStatus, getTargetAnalysisStatus, showTargetAnalysis } from "./target-analysis.js";
 import { formatInterpretTargetResult, formatTargetInterpretationStatus, getTargetInterpretationStatus, interpretTarget, showTargetInterpretation } from "./target-interpretation.js";
@@ -269,6 +270,30 @@ reviewBatch
     .description("Inspect review-batch lifecycle and dependency state.")
     .action(async (batchId) => {
     console.log(formatEvidenceReviewBatchStatus(await getEvidenceReviewBatchStatus(getWorkspace(), batchId)));
+});
+const reviewWorkspace = evidence
+    .command("review-workspace")
+    .description("Render immutable review templates as read-only human workspace Markdown.");
+reviewWorkspace
+    .command("render <batch-id>")
+    .option("--rebuild", "explicitly replace stale or invalid derived Markdown")
+    .description("Render one deterministic Markdown workspace per selected review template.")
+    .action(async (batchId, options) => {
+    console.log(formatEvidenceReviewWorkspaceResult(await renderEvidenceReviewWorkspace(getWorkspace(), batchId, {
+        rebuild: options.rebuild,
+    })));
+});
+reviewWorkspace
+    .command("show <batch-id>")
+    .description("Print the current read-only review workspace index Markdown.")
+    .action(async (batchId) => {
+    process.stdout.write(await showEvidenceReviewWorkspace(getWorkspace(), batchId));
+});
+reviewWorkspace
+    .command("status <batch-id>")
+    .description("Inspect review workspace Markdown, manifest, input, and renderer lifecycle.")
+    .action(async (batchId) => {
+    console.log(formatEvidenceReviewWorkspaceStatus(await getEvidenceReviewWorkspaceStatus(getWorkspace(), batchId)));
 });
 evidence
     .command("snapshot-build")
