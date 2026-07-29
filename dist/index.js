@@ -9,6 +9,8 @@ import { finalizeVariant, formatVariantReviewStatus, getVariantReviewStatus, ini
 import { formatPublicProfileSummary, initializePublicProfile, loadPublicProfile } from "./public-profile.js";
 import { exportFinalResume, formatResumeExportStatus, getResumeExportStatus } from "./resume-export.js";
 import { createJobTarget, createRoleTarget, formatTargetCreation, formatTargetJson, formatTargetList, listTargets, showTarget } from "./targets.js";
+import { buildEvidenceSnapshot, formatEvidenceSnapshotBuild, formatEvidenceSnapshotList, formatEvidenceSnapshotStatus, getEvidenceSnapshotStatus, listEvidenceSnapshots, loadEvidenceSnapshot, validateEvidenceSnapshot, } from "./evidence-snapshots.js";
+import { formatTargetEvidencePinResult, formatTargetEvidencePinStatus, getTargetEvidencePinStatus, loadTargetEvidencePin, pinTargetEvidenceSnapshot, upgradeTargetEvidenceSnapshot, } from "./target-evidence-pin.js";
 import { analyzeTarget, formatAnalyzeTargetResult, formatTargetAnalysisStatus, getTargetAnalysisStatus, showTargetAnalysis } from "./target-analysis.js";
 import { formatInterpretTargetResult, formatTargetInterpretationStatus, getTargetInterpretationStatus, interpretTarget, showTargetInterpretation } from "./target-interpretation.js";
 import { buildJobRequirements, formatBuildJobRequirementsResult, formatJobRequirementModelStatus, getJobRequirementModelStatus, showJobRequirementModel, } from "./job-requirements.js";
@@ -196,6 +198,39 @@ exportCommand
     const workspace = getWorkspace();
     console.log(formatResumeExportStatus(await getResumeExportStatus(workspace, options.role)));
 });
+const evidence = program
+    .command("evidence")
+    .description("Export and inspect immutable reviewed Evidence Foundation snapshots.");
+evidence
+    .command("snapshot-build")
+    .description("Export the current reviewed Evidence Foundation as an immutable content-addressed snapshot.")
+    .action(async () => {
+    console.log(formatEvidenceSnapshotBuild(await buildEvidenceSnapshot(getWorkspace())));
+});
+evidence
+    .command("snapshot-list")
+    .description("List immutable Evidence Foundation snapshots.")
+    .action(async () => {
+    console.log(formatEvidenceSnapshotList(await listEvidenceSnapshots(getWorkspace())));
+});
+evidence
+    .command("snapshot-show <snapshot-id>")
+    .description("Print one normalized Evidence Snapshot as stable JSON.")
+    .action(async (snapshotId) => {
+    process.stdout.write(`${JSON.stringify((await loadEvidenceSnapshot(getWorkspace(), snapshotId)).snapshot, null, 2)}\n`);
+});
+evidence
+    .command("snapshot-status <snapshot-id>")
+    .description("Inspect Evidence Snapshot integrity and compatibility.")
+    .action(async (snapshotId) => {
+    console.log(formatEvidenceSnapshotStatus(await getEvidenceSnapshotStatus(getWorkspace(), snapshotId)));
+});
+evidence
+    .command("snapshot-validate <snapshot-id>")
+    .description("Fail unless an Evidence Snapshot is current and valid.")
+    .action(async (snapshotId) => {
+    console.log(formatEvidenceSnapshotStatus(await validateEvidenceSnapshot(getWorkspace(), snapshotId)));
+});
 const target = program.command("target").description("Create and inspect deterministic role and job targets.");
 target
     .command("create-role")
@@ -236,6 +271,32 @@ target
     .action(async (targetId) => {
     const workspace = getWorkspace();
     process.stdout.write(formatTargetJson(await showTarget(workspace, targetId)));
+});
+target
+    .command("evidence-pin <target-id>")
+    .requiredOption("--snapshot <snapshot-id>", "immutable Evidence Snapshot ID")
+    .description("Explicitly pin a Role or Job Target to one Evidence Snapshot.")
+    .action(async (targetId, options) => {
+    console.log(formatTargetEvidencePinResult(await pinTargetEvidenceSnapshot(getWorkspace(), targetId, options.snapshot)));
+});
+target
+    .command("evidence-show <target-id>")
+    .description("Print a target's explicit Evidence Snapshot pin as stable JSON.")
+    .action(async (targetId) => {
+    process.stdout.write(`${JSON.stringify((await loadTargetEvidencePin(getWorkspace(), targetId)).pin, null, 2)}\n`);
+});
+target
+    .command("evidence-status <target-id>")
+    .description("Inspect a target's Evidence Snapshot pin and compatibility.")
+    .action(async (targetId) => {
+    console.log(formatTargetEvidencePinStatus(await getTargetEvidencePinStatus(getWorkspace(), targetId)));
+});
+target
+    .command("evidence-upgrade <target-id>")
+    .requiredOption("--snapshot <snapshot-id>", "replacement Evidence Snapshot ID")
+    .description("Explicitly replace a target's pin without rebuilding downstream artifacts.")
+    .action(async (targetId, options) => {
+    console.log(formatTargetEvidencePinResult(await upgradeTargetEvidenceSnapshot(getWorkspace(), targetId, options.snapshot)));
 });
 target
     .command("analyze <target-id>")

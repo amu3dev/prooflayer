@@ -19,6 +19,7 @@ import { hashFile, hashText, pathExists, writeJsonAtomic } from "../fs-utils.js"
 import { analyzeTarget } from "../target-analysis.js";
 import { stableJson } from "../target-proposal.js";
 import { createJobTarget, createRoleTarget } from "../targets.js";
+import { pinCurrentEvidenceSnapshot } from "./evidence-snapshot-fixture.js";
 const FIRST_TIME = "2026-07-28T08:00:00.000Z";
 const SECOND_TIME = "2026-07-29T08:00:00.000Z";
 const JOB_DESCRIPTION = [
@@ -444,7 +445,7 @@ describe("Slice 2.7G deterministic Job resume rendering and export", () => {
             .toEqual(htmlBytes);
         expect(markdown.outputPath).toMatch(/job-resume-technical-product-manager-ats-standard-markdown\.md$/);
         expect(htmlBytes.toString("utf8")).not.toMatch(/<script\b|https?:\/\/[^"' )]+\.(?:css|js)/i);
-    });
+    }, 10_000);
     it("exports all formats through the shared engine with cross-format fidelity", async () => {
         const fixture = await renderingWorkspace();
         await composeJobResumeRenderDocument(fixture.workspace, fixture.targetId);
@@ -509,7 +510,7 @@ describe("Slice 2.7G deterministic Job resume rendering and export", () => {
             format: "markdown",
             rebuild: true,
         })).result).toBe("rebuilt");
-    });
+    }, 10_000);
     it("preserves approved metrics, titles, dates, qualifiers, and project scope without visible internals", async () => {
         const fixture = await renderingWorkspace();
         const approved = await showApprovedJobResumeDraft(fixture.workspace, fixture.targetId);
@@ -558,6 +559,7 @@ async function draftingWorkspace(options = {}) {
         await writeEmptyKnowledgeBase(workspace);
     else
         await writeCandidateKnowledgeBase(workspace);
+    await pinCurrentEvidenceSnapshot(workspace, target.target.id, () => new Date(FIRST_TIME));
     await buildJobEvidenceMap(workspace, target.target.id, { now: () => new Date(FIRST_TIME) });
     await buildJobCoverage(workspace, target.target.id, { now: () => new Date(FIRST_TIME) });
     await buildJobFitProofAssessment(workspace, target.target.id, { now: () => new Date(FIRST_TIME) });

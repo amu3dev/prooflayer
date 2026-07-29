@@ -27,6 +27,7 @@ import type { Claim, EvidenceItem, Source } from "../schemas.js";
 import { analyzeTarget } from "../target-analysis.js";
 import { stableJson } from "../target-proposal.js";
 import { createJobTarget, createRoleTarget } from "../targets.js";
+import { pinCurrentEvidenceSnapshot } from "./evidence-snapshot-fixture.js";
 
 const FIRST_TIME = "2026-07-28T08:00:00.000Z";
 const SECOND_TIME = "2026-07-29T08:00:00.000Z";
@@ -514,6 +515,11 @@ async function planningWorkspace(
   } else {
     await writeCandidateKnowledgeBase(workspace, options.verifiedMetric ?? true);
   }
+  await pinCurrentEvidenceSnapshot(
+    workspace,
+    targetId,
+    () => new Date(FIRST_TIME),
+  );
   await buildJobEvidenceMap(workspace, targetId, {
     now: () => new Date(FIRST_TIME),
   });

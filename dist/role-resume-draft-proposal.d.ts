@@ -422,10 +422,10 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
             evidenceIds: string[];
             approvedMatchIds: string[];
             order: number;
-            allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             sourceAssessmentIds: string[];
             objective: string;
-            prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            prohibitedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             emphasisNotes: string[];
             cautionNotes: string[];
             maximumItemCount?: number | undefined;
@@ -451,8 +451,8 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
         completeness: {
             status: "empty" | "partial" | "complete";
             blockingReasons: string[];
-            claimBoundariesComplete: boolean;
             provenanceComplete: boolean;
+            claimBoundariesComplete: boolean;
             eligibleExpectationCount: number;
             selectedExpectationCount: number;
             excludedExpectationCount: number;
@@ -786,8 +786,8 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
             approvedMatchIds: string[];
             proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
             freshnessRisk: "unknown" | "high" | "medium" | "low" | "none";
-            prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-            permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            prohibitedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            permittedUses: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         }[];
         claimBoundaries: {
             id: string;
@@ -839,8 +839,8 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
                 } | undefined;
             };
             evidenceIds: string[];
-            allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-            prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             boundaryType: "allowed" | "prohibited" | "requires-review" | "allowed-with-caution";
             prohibitedInferences: string[];
             requiredQualifiers: string[];
@@ -984,8 +984,8 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
         sections: {
             status: "exclude" | "include" | "optional";
             id: string;
-            allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-            prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             order: number;
             maximumItemCount: number;
             planSectionId: string;
@@ -1143,7 +1143,7 @@ export declare function validateRoleResumeDraftPayload(payload: ModelRoleResumeD
             text: string;
             claimBoundaryIds: string[];
             itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
-            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             metricReferences: {
                 evidenceId: string;
                 originalValue: string;
@@ -1196,7 +1196,7 @@ export declare function validateRoleResumeDraftPayload(payload: ModelRoleResumeD
         metricStatus: "metric-prohibited" | "not-applicable" | "reviewed-metric-used";
         assessmentIds: string[];
         claimBoundaryIds: string[];
-        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         draftItemId: string;
         scopeStatus: "requires-review" | "within-approved-scope" | "qualified-scope";
         validationStatus: "valid" | "invalid" | "requires-review";
@@ -1209,7 +1209,7 @@ export declare function validateRoleResumeDraftPayload(payload: ModelRoleResumeD
         evidenceId: string;
         sectionIds: string[];
         draftItemIds: string[];
-        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         usageCount: number;
     }[];
     warnings: {

@@ -6,8 +6,11 @@ import { JOB_COVERAGE_ANALYZER_NAME, JOB_COVERAGE_ANALYZER_VERSION, JOB_COVERAGE
 import { buildJobEvidenceMap, jobEvidenceMapPaths, } from "../job-evidence-mapping.js";
 import { buildJobRequirements, showJobRequirementModel, } from "../job-requirements.js";
 import { hashFile, hashText, writeJsonAtomic, } from "../fs-utils.js";
+import { buildEvidenceSnapshot } from "../evidence-snapshots.js";
 import { analyzeTarget } from "../target-analysis.js";
 import { createJobTarget, createRoleTarget } from "../targets.js";
+import { pinCurrentEvidenceSnapshot } from "./evidence-snapshot-fixture.js";
+import { upgradeTargetEvidenceSnapshot } from "../target-evidence-pin.js";
 const FIRST_TIME = "2026-07-26T12:00:00.000Z";
 const SECOND_TIME = "2026-07-27T12:00:00.000Z";
 const JOB_DESCRIPTION = [
@@ -242,8 +245,7 @@ describe("Slice 2.7C deterministic Job Requirement Coverage", () => {
         };
         await writeJsonAtomic(claimsPath, claims);
         expect((await getJobCoverageStatus(fixture.workspace, fixture.targetId)).status)
-            .toBe("stale");
-        await expect(buildJobCoverage(fixture.workspace, fixture.targetId)).rejects.toThrow("requires a current Job Evidence Map");
+            .toBe("current");
         const fresh = await coverageWorkspace();
         await buildJobCoverage(fresh.workspace, fresh.targetId);
         const paths = jobCoveragePaths(fresh.workspace, fresh.targetId);
@@ -285,7 +287,9 @@ describe("Slice 2.7C deterministic Job Requirement Coverage", () => {
             approvedWording: `${claims[0].approvedWording} Changed.`,
         };
         await writeJsonAtomic(claimsPath, claims);
-        await expect(buildJobCoverage(staleMap.workspace, staleMap.targetId)).rejects.toThrow(/Reviewed claims changed or are missing/);
+        const nextSnapshot = await buildEvidenceSnapshot(staleMap.workspace);
+        await upgradeTargetEvidenceSnapshot(staleMap.workspace, staleMap.targetId, nextSnapshot.snapshotId);
+        await expect(buildJobCoverage(staleMap.workspace, staleMap.targetId)).rejects.toThrow(/Pinned Evidence Snapshot|current Job Evidence Map/);
     });
 });
 function link(relationship, evidenceStrength, linkConfidence) {
@@ -312,6 +316,7 @@ async function coverageWorkspace() {
         now: () => new Date(FIRST_TIME),
     });
     await writeCandidateKnowledgeBase(workspace);
+    await pinCurrentEvidenceSnapshot(workspace, created.target.id, () => new Date(FIRST_TIME));
     await buildJobEvidenceMap(workspace, created.target.id, {
         now: () => new Date(FIRST_TIME),
     });

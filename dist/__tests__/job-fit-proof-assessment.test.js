@@ -9,6 +9,7 @@ import { buildJobRequirements } from "../job-requirements.js";
 import { hashFile, hashText, writeJsonAtomic, } from "../fs-utils.js";
 import { analyzeTarget } from "../target-analysis.js";
 import { createJobTarget, createRoleTarget } from "../targets.js";
+import { pinCurrentEvidenceSnapshot } from "./evidence-snapshot-fixture.js";
 const FIRST_TIME = "2026-07-27T12:00:00.000Z";
 const JOB_DESCRIPTION = [
     "---",
@@ -249,6 +250,7 @@ async function assessmentWorkspace() {
         now: () => new Date(FIRST_TIME),
     });
     await writeCandidateKnowledgeBase(workspace);
+    await pinCurrentEvidenceSnapshot(workspace, created.target.id, () => new Date(FIRST_TIME));
     await buildJobEvidenceMap(workspace, created.target.id, {
         now: () => new Date(FIRST_TIME),
     });

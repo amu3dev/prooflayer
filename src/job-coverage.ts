@@ -60,6 +60,7 @@ import {
 } from "./schemas.js";
 import { showTarget } from "./targets.js";
 import { stableJson } from "./target-proposal.js";
+import { loadTargetEvidencePin } from "./target-evidence-pin.js";
 
 export const JOB_COVERAGE_ANALYZER_NAME = "job-requirement-coverage";
 export const JOB_COVERAGE_ANALYZER_VERSION = "1";
@@ -964,6 +965,24 @@ function validateMapIdentity(
   if (actualMapSha256 !== manifest.mapSha256) {
     reasons.push("Job Evidence Map SHA-256 does not match its manifest.");
   }
+  const snapshotDependenciesMatch = map.input.evidenceSnapshotId === undefined
+    ? true
+    : map.input.evidencePin?.sha256 === manifest.evidencePinSha256 &&
+      map.input.evidencePinManifest?.sha256 ===
+        manifest.evidencePinManifestSha256 &&
+      map.input.evidenceSnapshotId === manifest.evidenceSnapshotId &&
+      map.input.evidenceSnapshot?.sha256 ===
+        manifest.evidenceSnapshotSha256 &&
+      map.input.evidenceSnapshotManifest?.sha256 ===
+        manifest.evidenceSnapshotManifestSha256 &&
+      map.input.evidenceSnapshotSchemaVersion ===
+        manifest.evidenceSnapshotSchemaVersion &&
+      map.input.evidenceSnapshotContractName ===
+        manifest.evidenceSnapshotContractName &&
+      map.input.evidenceSnapshotPolicyName ===
+        manifest.evidenceSnapshotPolicyName &&
+      map.input.evidenceSnapshotPolicyVersion ===
+        manifest.evidenceSnapshotPolicyVersion;
   if (
     map.input.target.sha256 !== manifest.targetSha256 ||
     map.input.jobDescription.sha256 !== manifest.sourceSha256 ||
@@ -976,7 +995,8 @@ function validateMapIdentity(
     map.input.claims.sha256 !== manifest.claimsSha256 ||
     map.input.eligibleEvidenceSetSha256 !==
       manifest.eligibleEvidenceSetSha256 ||
-    map.input.normalizedInputSha256 !== manifest.normalizedInputSha256
+    map.input.normalizedInputSha256 !== manifest.normalizedInputSha256 ||
+    !snapshotDependenciesMatch
   ) {
     reasons.push("Job Evidence Map and manifest disagree on dependency hashes.");
   }
@@ -991,11 +1011,40 @@ async function mapDependencyChecks(
   targetSha256: string,
   sourceSha256: string,
 ): Promise<{ reasons: string[] }> {
-  const hashes = await Promise.all([
-    safeHash(resolveWithin(workspace, "kb/sources.json")),
-    safeHash(resolveWithin(workspace, "kb/evidence-items.json")),
-    safeHash(resolveWithin(workspace, "kb/claims.json")),
-  ]);
+  const isSnapshotBacked = map.input.evidenceSnapshotId !== undefined;
+  const hashes = isSnapshotBacked
+    ? [manifest.sourcesSha256, manifest.evidenceItemsSha256, manifest.claimsSha256]
+    : await Promise.all([
+        safeHash(resolveWithin(workspace, "kb/sources.json")),
+        safeHash(resolveWithin(workspace, "kb/evidence-items.json")),
+        safeHash(resolveWithin(workspace, "kb/claims.json")),
+      ]);
+  const snapshotReasons: string[] = [];
+  if (isSnapshotBacked) {
+    try {
+      const pinned = await loadTargetEvidencePin(workspace, map.targetId);
+      const pinManifestSha256 = await hashFile(pinned.paths.manifestPath);
+      if (
+        pinned.manifest.pinSha256 !== manifest.evidencePinSha256 ||
+        pinManifestSha256 !== manifest.evidencePinManifestSha256 ||
+        pinned.snapshot.snapshot.id !== manifest.evidenceSnapshotId ||
+        pinned.snapshot.manifest.contentSha256 !==
+          manifest.evidenceSnapshotSha256 ||
+        pinned.snapshot.manifestSha256 !==
+          manifest.evidenceSnapshotManifestSha256 ||
+        pinned.snapshot.snapshot.eligibleJobEvidenceSetSha256 !==
+          manifest.eligibleEvidenceSetSha256
+      ) {
+        snapshotReasons.push(
+          "Pinned Evidence Snapshot dependencies changed.",
+        );
+      }
+    } catch (error) {
+      snapshotReasons.push(
+        `Pinned Evidence Snapshot is unavailable: ${errorMessage(error)}`,
+      );
+    }
+  }
   const policyMatches =
     map.policy.name === JOB_EVIDENCE_MAPPING_POLICY_NAME &&
     map.policy.version === JOB_EVIDENCE_MAPPING_POLICY_VERSION &&
@@ -1028,6 +1077,7 @@ async function mapDependencyChecks(
       ...(hashes[2] !== manifest.claimsSha256
         ? ["Reviewed claims changed or are missing."]
         : []),
+      ...snapshotReasons,
       ...(!policyMatches
         ? ["Job Evidence Mapping policy or mapper changed."]
         : []),
@@ -1110,6 +1160,9 @@ async function validateReferencedEvidenceProvenance(
   workspace: string,
   map: JobEvidenceMap,
 ): Promise<string[]> {
+  if (map.input.evidenceSnapshotId !== undefined) {
+    return validatePinnedEvidenceProvenance(workspace, map);
+  }
   let sources: Source[];
   let evidenceItems: EvidenceItem[];
   let claims: Claim[];
@@ -1186,6 +1239,83 @@ async function validateReferencedEvidenceProvenance(
       claim.needsConfirmation
     ) {
       reasons.push(`Evidence link no longer references eligible reviewed evidence: ${link.id}`);
+    }
+  }
+  return uniqueSorted(reasons);
+}
+
+async function validatePinnedEvidenceProvenance(
+  workspace: string,
+  map: JobEvidenceMap,
+): Promise<string[]> {
+  let pinned;
+  try {
+    pinned = await loadTargetEvidencePin(workspace, map.targetId);
+  } catch (error) {
+    return [
+      `Pinned evidence provenance cannot be validated: ${errorMessage(error)}`,
+    ];
+  }
+  if (pinned.snapshot.snapshot.id !== map.input.evidenceSnapshotId) {
+    return ["Job Evidence Map references a different pinned Evidence Snapshot."];
+  }
+  const snapshot = pinned.snapshot.snapshot;
+  const evidenceById = new Map(
+    snapshot.evidenceItems.map((entry) => [entry.id, entry]),
+  );
+  const claimById = new Map(
+    snapshot.claims.map((entry) => [entry.id, entry]),
+  );
+  const reasons: string[] = [];
+  for (const link of map.links) {
+    const evidenceRecord = evidenceById.get(link.evidenceId);
+    const claimRecord = claimById.get(link.claimId);
+    const evidence = evidenceRecord?.content;
+    const claim = claimRecord?.content;
+    if (!evidenceRecord || !evidence) {
+      reasons.push(`Evidence link references missing snapshot evidence: ${link.id}`);
+      continue;
+    }
+    if (!claimRecord || !claim) {
+      reasons.push(`Evidence link references missing snapshot claim: ${link.id}`);
+      continue;
+    }
+    if (
+      evidenceRecord.contentSha256 !==
+        link.evidenceProvenance.evidenceItemSha256 ||
+      claimRecord.contentSha256 !== link.evidenceProvenance.claimSha256 ||
+      !claim.supportingEvidenceIds.includes(evidence.id)
+    ) {
+      reasons.push(`Evidence link snapshot provenance is invalid: ${link.id}`);
+    }
+    const expectedSources = evidenceRecord.sources.map((source) => ({
+      sourceId: source.sourceId,
+      sourceType: source.sourceType,
+      path: source.logicalPath,
+      sha256: source.sha256,
+      status: "active" as const,
+      visibility: source.visibility,
+    })).sort((left, right) => left.sourceId.localeCompare(right.sourceId));
+    if (
+      expectedSources.length !== evidence.sourceIds.length ||
+      stableJson(expectedSources) !==
+        stableJson(link.evidenceProvenance.sources)
+    ) {
+      reasons.push(`Evidence link source provenance is invalid: ${link.id}`);
+    }
+    if (
+      !evidenceRecord.eligibility.jobMapping ||
+      !claimRecord.eligibility.jobMapping ||
+      evidence.visibility !== "public" ||
+      evidence.sensitivityFlags.length > 0 ||
+      claim.approvalStatus !== "approved" ||
+      claim.outputReadiness !== "resume_ready" ||
+      !claim.publicSafe ||
+      claim.needsConfirmation
+    ) {
+      reasons.push(
+        `Evidence link does not reference eligible pinned evidence: ${link.id}`,
+      );
     }
   }
   return uniqueSorted(reasons);

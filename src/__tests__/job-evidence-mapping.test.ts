@@ -42,6 +42,7 @@ import {
   hashText,
   writeJsonAtomic,
 } from "../fs-utils.js";
+import { buildEvidenceSnapshot } from "../evidence-snapshots.js";
 import { FakeInterpretationModelProvider } from "../model-provider.js";
 import type {
   Claim,
@@ -50,6 +51,10 @@ import type {
 } from "../schemas.js";
 import { analyzeTarget } from "../target-analysis.js";
 import { createJobTarget, createRoleTarget } from "../targets.js";
+import { pinCurrentEvidenceSnapshot } from "./evidence-snapshot-fixture.js";
+import {
+  upgradeTargetEvidenceSnapshot,
+} from "../target-evidence-pin.js";
 
 const FIRST_TIME = "2026-07-26T12:00:00.000Z";
 const SECOND_TIME = "2026-07-27T12:00:00.000Z";
@@ -232,11 +237,13 @@ describe("Slice 2.7B deterministic Job Evidence Mapping", () => {
     expect(link.evidenceProvenance).toMatchObject({
       evidenceId: "evi_platform_delivery",
       claimId: "claim_platform_delivery",
-      evidenceItemPath: "kb/evidence-items.json",
-      claimPath: "kb/claims.json",
+      evidenceItemPath:
+        "evidence-foundation/evidence-items/evi_platform_delivery",
+      claimPath:
+        "evidence-foundation/claims/claim_platform_delivery",
       sources: [expect.objectContaining({
         sourceId: "src_public",
-        path: "sources/markdown/platform-evidence.md",
+        path: "evidence-foundation/sources/src_public",
         status: "active",
         visibility: "public",
       })],
@@ -252,6 +259,8 @@ describe("Slice 2.7B deterministic Job Evidence Mapping", () => {
       status: "current",
       mapHashMatches: true,
       requirementModelStatus: "current",
+      evidencePinStatus: "current",
+      evidenceSnapshotHashMatches: true,
       eligibleEvidenceSetHashMatches: true,
       normalizedInputHashMatches: true,
     });
@@ -260,6 +269,17 @@ describe("Slice 2.7B deterministic Job Evidence Mapping", () => {
     const claims = JSON.parse(await readFile(claimsPath, "utf8")) as Claim[];
     claims[0] = { ...claims[0], approvedWording: `${claims[0].approvedWording} Updated.` };
     await writeJsonAtomic(claimsPath, claims);
+    const nextSnapshot = await buildEvidenceSnapshot(fixture.workspace, {
+      now: () => new Date(SECOND_TIME),
+    });
+    expect((await getJobEvidenceMapStatus(fixture.workspace, fixture.targetId)).status)
+      .toBe("current");
+    await upgradeTargetEvidenceSnapshot(
+      fixture.workspace,
+      fixture.targetId,
+      nextSnapshot.snapshotId,
+      { now: () => new Date(SECOND_TIME) },
+    );
     expect((await getJobEvidenceMapStatus(fixture.workspace, fixture.targetId)).status)
       .toBe("stale");
     await expect(buildJobEvidenceMap(fixture.workspace, fixture.targetId)).rejects.toThrow(
@@ -279,6 +299,10 @@ describe("Slice 2.7B deterministic Job Evidence Mapping", () => {
     await expect(buildJobEvidenceMap(workspace, role.target.id)).rejects.toThrow(
       "rejects Role Target",
     );
+    const unpinned = await unpinnedMatchingWorkspace();
+    await expect(
+      buildJobEvidenceMap(unpinned.workspace, unpinned.targetId),
+    ).rejects.toThrow("Evidence Snapshot pin");
 
     const fixture = await matchingWorkspace();
     await buildJobEvidenceMap(fixture.workspace, fixture.targetId);
@@ -381,6 +405,7 @@ describe("Slice 2.7B deterministic Job Evidence Mapping", () => {
       mapperVersion: JOB_EVIDENCE_MAPPER_VERSION,
       policyName: JOB_EVIDENCE_MAPPING_POLICY_NAME,
       policyVersion: JOB_EVIDENCE_MAPPING_POLICY_VERSION,
+      evidenceSnapshotId: fixture.snapshotId,
       mapSha256: await hashFile(paths.mapPath),
     });
   });
@@ -403,6 +428,24 @@ async function matchingWorkspace() {
     now: () => new Date(FIRST_TIME),
   });
   await writeCandidateKnowledgeBase(workspace);
+  const snapshotId = await pinCurrentEvidenceSnapshot(
+    workspace,
+    created.target.id,
+    () => new Date(FIRST_TIME),
+  );
+  return { workspace, targetId: created.target.id, snapshotId };
+}
+
+async function unpinnedMatchingWorkspace() {
+  const workspace = await temporaryWorkspace();
+  const sourcePath = path.join(workspace, "imports", "job.md");
+  await mkdir(path.dirname(sourcePath), { recursive: true });
+  await writeFile(sourcePath, JOB_DESCRIPTION, "utf8");
+  const created = await createJobTarget(workspace, { file: sourcePath });
+  await analyzeTarget(workspace, created.target.id);
+  await buildJobRequirements(workspace, created.target.id);
+  await writeCandidateKnowledgeBase(workspace);
+  await buildEvidenceSnapshot(workspace);
   return { workspace, targetId: created.target.id };
 }
 
@@ -427,6 +470,7 @@ async function criticalAmbiguityWorkspace() {
   await analyzeTarget(workspace, created.target.id);
   await buildJobRequirements(workspace, created.target.id);
   await writeCandidateKnowledgeBase(workspace);
+  await pinCurrentEvidenceSnapshot(workspace, created.target.id);
   return { workspace, targetId: created.target.id };
 }
 

@@ -22,6 +22,10 @@ Core workflows operate on local files and remain usable offline. Private career 
 
 Reviewed evidence and approved claims are the factual foundation. Targets describe desired positioning or external opportunities; they are not candidate evidence.
 
+### Immutable Evidence Consumption
+
+The reviewed Evidence Foundation remains the source of truth, but target pipelines consume it through immutable, content-addressed snapshots. Each Role or Job target selects one snapshot explicitly. Creating a newer snapshot never upgrades a target or changes an existing consumer.
+
 ### Provenance Everywhere
 
 Every meaningful derived statement or relationship must retain enough lineage to identify its source evidence, upstream artifact, policy, and lifecycle state.
@@ -145,8 +149,8 @@ Export
 **Inputs:**
 
 - a usable expectation or requirement model;
-- approved reviewed evidence;
-- approved public-safe and resume-ready claims;
+- one explicitly pinned immutable Evidence Snapshot;
+- snapshot evidence already eligible under approved review, public-safety, and resume-readiness rules;
 - reviewed evidence-quality metadata.
 
 **Outputs:**
@@ -322,6 +326,9 @@ Role Target
 Role Expectations
     |
     v
+Pinned Evidence Snapshot
+    |
+    v
 Reviewed Evidence Mapping
     |
     v
@@ -354,6 +361,8 @@ The implemented Role workflow covers the canonical pipeline through export:
 - deterministic rendering;
 - Markdown, HTML, DOCX, and adapter-based PDF export.
 
+The shared Evidence Snapshot reader and target pin contract accept Role targets. The existing Role Evidence Matching implementation still uses its legacy target-local evidence snapshot adapter; full migration to the global pinned snapshot remains a bounded compatibility follow-up rather than a broad Role refactor.
+
 Some current capabilities combine adjacent canonical concerns in one implementation boundary. For example, expectation coverage may be emitted with evidence matching. The canonical stages remain distinct responsibilities even when a current implementation stores them together.
 
 ## 5. Job Pipeline
@@ -365,6 +374,9 @@ Job Target + Job Description
             |
             v
     Requirement Model
+            |
+            v
+ Pinned Evidence Snapshot
             |
             v
        Evidence Map
@@ -393,7 +405,7 @@ The implemented Job workflow includes:
 - deterministic Job Target intake and exact Job Description preservation;
 - deterministic structural analysis that preserves exact source provenance while normalizing explicit plain-text section scope and wrapped source blocks;
 - deterministic requirement modeling with optional proposal, review, and approval escalation;
-- deterministic mapping from usable requirements to eligible reviewed evidence;
+- deterministic mapping from usable requirements to eligible reviewed evidence in the target's explicit immutable snapshot pin;
 - deterministic per-requirement coverage analysis from the current evidence map;
 - deterministic qualitative fit and proof assessment from current coverage and stored provenance;
 - deterministic job-specific resume content planning from the current assessment and reviewed mapped evidence.
@@ -408,7 +420,9 @@ Role and Job pipelines should share capabilities when their proof contracts are 
 
 ### Evidence Store
 
-The source registry, normalized evidence items, and claims provide the common factual foundation. Target documents are kept outside candidate evidence.
+The source registry, normalized evidence items, and claims provide the common factual foundation. The `evidence-snapshot` schema version `1` is the read-only consumption boundary: it preserves stable IDs, content and inventory hashes, exact trust and eligibility state, safe provenance, verified metrics, completeness, and warnings without exporting unnecessary private source content. Target documents are kept outside candidate evidence.
+
+Snapshots are currently produced from the in-repository Evidence Foundation. This contract permits a future repository boundary, but no repository split, remote snapshot service, or network fetching is implemented. Consumers pin snapshots explicitly and never select the newest snapshot automatically.
 
 ### Reviewed Claims
 
@@ -420,7 +434,7 @@ Stable IDs, source references, hashes, manifests, and statement-level lineage co
 
 ### Lifecycle
 
-Persistent artifacts use explicit `missing`, `current`, `stale`, and `invalid` states. Dependency changes must be visible and stale or invalid artifacts must not be silently replaced.
+Persistent artifacts use explicit `missing`, `current`, `stale`, and `invalid` states. Evidence Snapshot compatibility adds `incompatible` for unsupported future schemas or policies. Dependency changes must be visible and stale, invalid, or incompatible artifacts must not be silently replaced.
 
 ### Validation
 
@@ -443,6 +457,8 @@ Format adapters, hash verification, source-map validation, and export lifecycle 
 These boundaries are permanent capability contracts:
 
 - Target Modeling never presents a target as candidate proof.
+- Snapshot export never changes evidence review, approval, eligibility, public safety, resume readiness, or metric verification.
+- Target pinning never auto-selects or auto-upgrades evidence.
 - Requirement Modeling never evaluates candidates.
 - Role Expectation Modeling never invents market expectations from a title alone.
 - Evidence Mapping never calculates fit.
@@ -510,3 +526,5 @@ Status through Slice 2.7G:
 | Export | Completed through Slice 2.6C | Completed through Slice 2.7G |
 
 The canonical Job resume pipeline is complete through deterministic rendering and export. A controlled end-to-end pipeline validation is the next milestone before any post-2.7 refactoring or additional application artifact.
+
+The Evidence Snapshot Contract v1 is implemented as a shared Evidence Foundation boundary. Job Evidence Mapping consumes the explicit target pin. Role targets can pin and read the same contract, while the existing Role matcher remains on its documented legacy adapter pending a focused migration.

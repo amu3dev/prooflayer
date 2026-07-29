@@ -4,7 +4,6 @@ import {
   getApprovedJobRequirementsStatus,
   showApprovedJobRequirements,
 } from "./approved-job-requirements.js";
-import { calculateEvidenceSnapshot } from "./evidence-matching.js";
 import {
   hashFile,
   hashText,
@@ -37,18 +36,24 @@ import {
   showJobRequirementModel,
 } from "./job-requirements.js";
 import {
-  ClaimSchema,
-  EvidenceItemSchema,
   type Claim,
   type EvidenceItem,
-  type EvidenceSnapshotEntry,
   type JobTarget,
 } from "./schemas.js";
+import type {
+  EvidenceSnapshotClaimRecord,
+  EvidenceSnapshotEvidenceRecord,
+} from "./evidence-snapshot-schemas.js";
+import {
+  getTargetEvidencePinStatus,
+  loadTargetEvidencePin,
+  type LoadedTargetEvidencePin,
+} from "./target-evidence-pin.js";
 import { showTarget } from "./targets.js";
 import { stableJson } from "./target-proposal.js";
 
 export const JOB_EVIDENCE_MAPPER_NAME = "job-evidence-mapper";
-export const JOB_EVIDENCE_MAPPER_VERSION = "1";
+export const JOB_EVIDENCE_MAPPER_VERSION = "2";
 export const JOB_EVIDENCE_MAPPING_POLICY_NAME = "job-evidence-mapping-policy";
 export const JOB_EVIDENCE_MAPPING_POLICY_VERSION = "1";
 
@@ -81,7 +86,8 @@ interface RequirementInput {
 interface EligibleCandidate {
   evidence: EvidenceItem;
   claim: Claim;
-  snapshotEntry: EvidenceSnapshotEntry;
+  snapshotEntry: EvidenceSnapshotEvidenceRecord;
+  snapshotClaim: EvidenceSnapshotClaimRecord;
 }
 
 interface BuildOptions {
@@ -112,6 +118,17 @@ export interface JobEvidenceMapStatus {
   requirementModelStatus: "current" | "missing" | "stale" | "invalid" | null;
   requirementModelHashMatches: boolean | null;
   requirementManifestHashMatches: boolean | null;
+  evidencePinStatus:
+    | "missing"
+    | "current"
+    | "stale"
+    | "invalid"
+    | "incompatible"
+    | null;
+  evidencePinHashMatches: boolean | null;
+  evidencePinManifestHashMatches: boolean | null;
+  evidenceSnapshotHashMatches: boolean | null;
+  evidenceSnapshotManifestHashMatches: boolean | null;
   sourcesHashMatches: boolean | null;
   evidenceItemsHashMatches: boolean | null;
   claimsHashMatches: boolean | null;
@@ -153,8 +170,14 @@ export async function buildJobEvidenceMap(
     options.requirementSource ?? "deterministic",
   );
   assertUsableRequirementModel(requirementInput.model);
-  const candidates = await loadEligibleCandidates(workspace);
-  const input = await mappingInput(workspace, target, requirementInput, candidates);
+  const evidenceInput = await loadTargetEvidencePin(workspace, targetId);
+  const candidates = loadEligibleCandidates(evidenceInput);
+  const input = await mappingInput(
+    workspace,
+    target,
+    requirementInput,
+    evidenceInput,
+  );
   const status = await getJobEvidenceMapStatus(workspace, targetId);
   const paths = jobEvidenceMapPaths(workspace, targetId);
 
@@ -234,6 +257,31 @@ export async function buildJobEvidenceMap(
         path: requirementInput.manifestPath,
         sha256: requirementInput.manifestSha256,
       },
+      evidencePin: {
+        path: evidenceInput.paths.pinRelativePath,
+        sha256: input.evidencePinSha256,
+      },
+      evidencePinManifest: {
+        path: evidenceInput.paths.manifestRelativePath,
+        sha256: input.evidencePinManifestSha256,
+      },
+      evidenceSnapshot: {
+        path: evidenceInput.snapshot.paths.snapshotRelativePath,
+        sha256: input.evidenceSnapshotSha256,
+      },
+      evidenceSnapshotManifest: {
+        path: evidenceInput.snapshot.paths.manifestRelativePath,
+        sha256: input.evidenceSnapshotManifestSha256,
+      },
+      evidenceSnapshotId: evidenceInput.snapshot.snapshot.id,
+      evidenceSnapshotSchemaVersion:
+        evidenceInput.snapshot.snapshot.schemaVersion,
+      evidenceSnapshotContractName:
+        evidenceInput.snapshot.snapshot.contract.name,
+      evidenceSnapshotPolicyName:
+        evidenceInput.snapshot.snapshot.policy.name,
+      evidenceSnapshotPolicyVersion:
+        evidenceInput.snapshot.snapshot.policy.version,
       sources: {
         path: "kb/sources.json",
         sha256: input.sourcesSha256,
@@ -270,6 +318,19 @@ export async function buildJobEvidenceMap(
     requirementModelType: requirementInput.type,
     requirementModelSha256: requirementInput.modelSha256,
     requirementManifestSha256: requirementInput.manifestSha256,
+    evidencePinSha256: input.evidencePinSha256,
+    evidencePinManifestSha256: input.evidencePinManifestSha256,
+    evidenceSnapshotId: evidenceInput.snapshot.snapshot.id,
+    evidenceSnapshotSha256: input.evidenceSnapshotSha256,
+    evidenceSnapshotManifestSha256: input.evidenceSnapshotManifestSha256,
+    evidenceSnapshotSchemaVersion:
+      evidenceInput.snapshot.snapshot.schemaVersion,
+    evidenceSnapshotContractName:
+      evidenceInput.snapshot.snapshot.contract.name,
+    evidenceSnapshotPolicyName:
+      evidenceInput.snapshot.snapshot.policy.name,
+    evidenceSnapshotPolicyVersion:
+      evidenceInput.snapshot.snapshot.policy.version,
     sourcesSha256: input.sourcesSha256,
     evidenceItemsSha256: input.evidenceItemsSha256,
     claimsSha256: input.claimsSha256,
@@ -375,18 +436,20 @@ export async function getJobEvidenceMapStatus(
   const requirementManifestHashMatches = requirementInput
     ? requirementInput.manifestSha256 === manifest.requirementManifestSha256
     : false;
-  const sourcesHashMatches = await hashMatches(
-    resolveWithin(workspace, "kb/sources.json"),
-    manifest.sourcesSha256,
-  );
-  const evidenceItemsHashMatches = await hashMatches(
-    resolveWithin(workspace, "kb/evidence-items.json"),
-    manifest.evidenceItemsSha256,
-  );
-  const claimsHashMatches = await hashMatches(
-    resolveWithin(workspace, "kb/claims.json"),
-    manifest.claimsSha256,
-  );
+  const hasPinnedSnapshotDependencies =
+    map.input.evidencePin !== undefined &&
+    map.input.evidencePinManifest !== undefined &&
+    map.input.evidenceSnapshot !== undefined &&
+    map.input.evidenceSnapshotManifest !== undefined &&
+    map.input.evidenceSnapshotId !== undefined &&
+    manifest.evidencePinSha256 !== undefined &&
+    manifest.evidencePinManifestSha256 !== undefined &&
+    manifest.evidenceSnapshotId !== undefined &&
+    manifest.evidenceSnapshotSha256 !== undefined &&
+    manifest.evidenceSnapshotManifestSha256 !== undefined;
+  const sourcesHashMatches = hasPinnedSnapshotDependencies ? null : false;
+  const evidenceItemsHashMatches = hasPinnedSnapshotDependencies ? null : false;
+  const claimsHashMatches = hasPinnedSnapshotDependencies ? null : false;
   const policyMatches =
     manifest.mapperName === JOB_EVIDENCE_MAPPER_NAME &&
     manifest.mapperVersion === JOB_EVIDENCE_MAPPER_VERSION &&
@@ -394,21 +457,46 @@ export async function getJobEvidenceMapStatus(
     manifest.policyVersion === JOB_EVIDENCE_MAPPING_POLICY_VERSION &&
     map.policy.name === manifest.policyName &&
     map.policy.version === manifest.policyVersion;
+  let evidencePinStatus: JobEvidenceMapStatus["evidencePinStatus"] = null;
+  let evidencePinHashMatches = false;
+  let evidencePinManifestHashMatches = false;
+  let evidenceSnapshotHashMatches = false;
+  let evidenceSnapshotManifestHashMatches = false;
   let eligibleEvidenceSetHashMatches = false;
   let normalizedInputHashMatches = false;
-  if (
-    requirementInput &&
-    sourcesHashMatches &&
-    evidenceItemsHashMatches &&
-    claimsHashMatches
-  ) {
+  if (hasPinnedSnapshotDependencies && requirementInput) {
     try {
-      const candidates = await loadEligibleCandidates(workspace);
+      const pinStatus = await getTargetEvidencePinStatus(workspace, targetId);
+      evidencePinStatus = pinStatus.status;
+      const evidenceInput = await loadTargetEvidencePin(workspace, targetId);
+      evidencePinHashMatches =
+        evidenceInput.manifest.pinSha256 === manifest.evidencePinSha256 &&
+        manifest.evidencePinSha256 === map.input.evidencePin?.sha256;
+      evidencePinManifestHashMatches =
+        await hashMatches(
+          evidenceInput.paths.manifestPath,
+          manifest.evidencePinManifestSha256!,
+        ) &&
+        manifest.evidencePinManifestSha256 ===
+          map.input.evidencePinManifest?.sha256;
+      evidenceSnapshotHashMatches =
+        evidenceInput.snapshot.manifest.contentSha256 ===
+          manifest.evidenceSnapshotSha256 &&
+        manifest.evidenceSnapshotSha256 ===
+          map.input.evidenceSnapshot?.sha256 &&
+        manifest.evidenceSnapshotId === evidenceInput.snapshot.snapshot.id &&
+        map.input.evidenceSnapshotId === evidenceInput.snapshot.snapshot.id;
+      evidenceSnapshotManifestHashMatches =
+        evidenceInput.snapshot.manifestSha256 ===
+          manifest.evidenceSnapshotManifestSha256 &&
+        manifest.evidenceSnapshotManifestSha256 ===
+          map.input.evidenceSnapshotManifest?.sha256;
+      const candidates = loadEligibleCandidates(evidenceInput);
       const currentInput = await mappingInput(
         workspace,
         target,
         requirementInput,
-        candidates,
+        evidenceInput,
       );
       eligibleEvidenceSetHashMatches =
         currentInput.eligibleEvidenceSetSha256 === manifest.eligibleEvidenceSetSha256;
@@ -419,6 +507,11 @@ export async function getJobEvidenceMapStatus(
         sourceHashMatches &&
         requirementModelHashMatches &&
         requirementManifestHashMatches &&
+        evidencePinStatus === "current" &&
+        evidencePinHashMatches &&
+        evidencePinManifestHashMatches &&
+        evidenceSnapshotHashMatches &&
+        evidenceSnapshotManifestHashMatches &&
         eligibleEvidenceSetHashMatches &&
         policyMatches &&
         normalizedInputHashMatches
@@ -437,6 +530,11 @@ export async function getJobEvidenceMapStatus(
             requirementModelStatus,
             requirementModelHashMatches,
             requirementManifestHashMatches,
+            evidencePinStatus,
+            evidencePinHashMatches,
+            evidencePinManifestHashMatches,
+            evidenceSnapshotHashMatches,
+            evidenceSnapshotManifestHashMatches,
             sourcesHashMatches,
             evidenceItemsHashMatches,
             claimsHashMatches,
@@ -449,8 +547,22 @@ export async function getJobEvidenceMapStatus(
         }
       }
     } catch (error) {
-      dependencyReasons.push(`Eligible evidence dependencies are unavailable: ${errorMessage(error)}`);
+      if (evidencePinStatus === null) {
+        try {
+          evidencePinStatus =
+            (await getTargetEvidencePinStatus(workspace, targetId)).status;
+        } catch {
+          evidencePinStatus = "invalid";
+        }
+      }
+      dependencyReasons.push(
+        `Pinned Evidence Snapshot dependencies are unavailable: ${errorMessage(error)}`,
+      );
     }
+  } else if (!hasPinnedSnapshotDependencies) {
+    dependencyReasons.push(
+      "Stored map uses legacy live-KB evidence dependencies; rebuild from an explicitly pinned Evidence Snapshot.",
+    );
   }
   const staleReasons = [
     ...dependencyReasons,
@@ -461,9 +573,21 @@ export async function getJobEvidenceMapStatus(
       : []),
     ...(!requirementModelHashMatches ? ["Requirement model changed."] : []),
     ...(!requirementManifestHashMatches ? ["Requirement model manifest changed."] : []),
-    ...(!sourcesHashMatches ? ["Source registry changed."] : []),
-    ...(!evidenceItemsHashMatches ? ["Reviewed evidence items changed."] : []),
-    ...(!claimsHashMatches ? ["Reviewed claims changed."] : []),
+    ...(hasPinnedSnapshotDependencies && evidencePinStatus !== "current"
+      ? [`Target Evidence Snapshot pin is ${evidencePinStatus ?? "unavailable"}.`]
+      : []),
+    ...(hasPinnedSnapshotDependencies && !evidencePinHashMatches
+      ? ["Pinned Evidence Snapshot pointer changed."]
+      : []),
+    ...(hasPinnedSnapshotDependencies && !evidencePinManifestHashMatches
+      ? ["Pinned Evidence Snapshot pointer manifest changed."]
+      : []),
+    ...(hasPinnedSnapshotDependencies && !evidenceSnapshotHashMatches
+      ? ["Pinned Evidence Snapshot content changed."]
+      : []),
+    ...(hasPinnedSnapshotDependencies && !evidenceSnapshotManifestHashMatches
+      ? ["Pinned Evidence Snapshot manifest changed."]
+      : []),
     ...(!eligibleEvidenceSetHashMatches ? ["Eligible evidence set changed."] : []),
     ...(!policyMatches ? ["Job evidence mapping policy or mapper changed."] : []),
     ...(!normalizedInputHashMatches ? ["Normalized job evidence mapping input changed."] : []),
@@ -476,6 +600,11 @@ export async function getJobEvidenceMapStatus(
     requirementModelStatus,
     requirementModelHashMatches,
     requirementManifestHashMatches,
+    evidencePinStatus,
+    evidencePinHashMatches,
+    evidencePinManifestHashMatches,
+    evidenceSnapshotHashMatches,
+    evidenceSnapshotManifestHashMatches,
     sourcesHashMatches,
     evidenceItemsHashMatches,
     claimsHashMatches,
@@ -515,6 +644,11 @@ export function formatJobEvidenceMapStatus(status: JobEvidenceMapStatus): string
     `Job Description hash matches: ${check(status.sourceHashMatches)}`,
     `Requirement model hash matches: ${check(status.requirementModelHashMatches)}`,
     `Requirement manifest hash matches: ${check(status.requirementManifestHashMatches)}`,
+    `Evidence pin status: ${status.evidencePinStatus ?? "not applicable"}`,
+    `Evidence pin hash matches: ${check(status.evidencePinHashMatches)}`,
+    `Evidence pin manifest matches: ${check(status.evidencePinManifestHashMatches)}`,
+    `Evidence Snapshot hash matches: ${check(status.evidenceSnapshotHashMatches)}`,
+    `Evidence Snapshot manifest matches: ${check(status.evidenceSnapshotManifestHashMatches)}`,
     `Sources hash matches: ${check(status.sourcesHashMatches)}`,
     `Evidence items hash matches: ${check(status.evidenceItemsHashMatches)}`,
     `Claims hash matches: ${check(status.claimsHashMatches)}`,
@@ -573,12 +707,20 @@ function mapRequirements(
         requirementProvenance,
         evidenceProvenance: {
           evidenceId: candidate.evidence.id,
-          evidenceItemPath: "kb/evidence-items.json",
-          evidenceItemSha256: hashText(stableJson(candidate.evidence)),
+          evidenceItemPath:
+            `evidence-foundation/evidence-items/${candidate.evidence.id}`,
+          evidenceItemSha256: candidate.snapshotEntry.contentSha256,
           claimId: candidate.claim.id,
-          claimPath: "kb/claims.json",
-          claimSha256: hashText(stableJson(candidate.claim)),
-          sources: candidate.snapshotEntry.provenance.sources,
+          claimPath: `evidence-foundation/claims/${candidate.claim.id}`,
+          claimSha256: candidate.snapshotClaim.contentSha256,
+          sources: candidate.snapshotEntry.sources.map((source) => ({
+            sourceId: source.sourceId,
+            sourceType: source.sourceType,
+            path: source.logicalPath,
+            sha256: source.sha256,
+            status: "active" as const,
+            visibility: source.visibility,
+          })),
         },
       } satisfies JobEvidenceLink];
     }));
@@ -739,31 +881,49 @@ function linkConfidence(
   return value >= 3 ? "high" : value === 2 ? "medium" : "low";
 }
 
-async function loadEligibleCandidates(workspace: string): Promise<EligibleCandidate[]> {
-  const snapshot = await calculateEvidenceSnapshot(workspace);
-  const evidenceItems = (
-    await readJson<unknown[]>(
-      resolveWithin(workspace, "kb/evidence-items.json"),
-      [],
-    )
-  ).map((entry) => EvidenceItemSchema.parse(entry));
-  const claims = (
-    await readJson<unknown[]>(resolveWithin(workspace, "kb/claims.json"), [])
-  ).map((entry) => ClaimSchema.parse(entry));
-  const evidenceById = new Map(evidenceItems.map((entry) => [entry.id, entry]));
-  const claimById = new Map(claims.map((entry) => [entry.id, entry]));
+function loadEligibleCandidates(
+  evidenceInput: LoadedTargetEvidencePin,
+): EligibleCandidate[] {
+  const snapshot = evidenceInput.snapshot.snapshot;
+  if (evidenceInput.pin.targetType !== "job") {
+    throw new Error(
+      `Job evidence mapping requires a Job Target pin, received ${evidenceInput.pin.targetType}.`,
+    );
+  }
+  const eligibleEvidenceIds = new Set(snapshot.eligibleJobEvidenceIds);
+  const eligibleClaimIds = new Set(snapshot.eligibleJobClaimIds);
+  const evidenceById = new Map(
+    snapshot.evidenceItems.map((entry) => [entry.id, entry]),
+  );
+  const claimById = new Map(snapshot.claims.map((entry) => [entry.id, entry]));
   const candidates: EligibleCandidate[] = [];
-  for (const snapshotEntry of snapshot.entries) {
-    const evidence = evidenceById.get(snapshotEntry.evidenceId);
-    if (!evidence) {
-      throw new Error(`Eligible evidence item is missing: ${snapshotEntry.evidenceId}`);
+  for (const evidenceId of [...eligibleEvidenceIds].sort()) {
+    const snapshotEntry = evidenceById.get(evidenceId);
+    const evidence = snapshotEntry?.content;
+    if (
+      !snapshotEntry ||
+      !evidence ||
+      !snapshotEntry.eligibility.jobMapping
+    ) {
+      throw new Error(
+        `Pinned snapshot eligible evidence content is missing or invalid: ${evidenceId}`,
+      );
     }
     for (const claimId of snapshotEntry.supportingClaimIds) {
-      const claim = claimById.get(claimId);
-      if (!claim || !claim.supportingEvidenceIds.includes(evidence.id)) {
-        throw new Error(`Eligible claim provenance is invalid: ${claimId}/${evidence.id}`);
+      if (!eligibleClaimIds.has(claimId)) continue;
+      const snapshotClaim = claimById.get(claimId);
+      const claim = snapshotClaim?.content;
+      if (
+        !snapshotClaim ||
+        !claim ||
+        !snapshotClaim.eligibility.jobMapping ||
+        !claim.supportingEvidenceIds.includes(evidence.id)
+      ) {
+        throw new Error(
+          `Pinned snapshot eligible claim provenance is invalid: ${claimId}/${evidence.id}`,
+        );
       }
-      candidates.push({ evidence, claim, snapshotEntry });
+      candidates.push({ evidence, claim, snapshotEntry, snapshotClaim });
     }
   }
   return candidates.sort((a, b) =>
@@ -775,9 +935,19 @@ async function mappingInput(
   workspace: string,
   target: JobTarget,
   requirementInput: RequirementInput,
-  _candidates: EligibleCandidate[],
+  evidenceInput: LoadedTargetEvidencePin,
 ) {
-  const snapshot = await calculateEvidenceSnapshot(workspace);
+  const sourceArtifacts = new Map(
+    evidenceInput.snapshot.snapshot.sourceFoundation.artifacts.map(
+      (artifact) => [artifact.id, artifact.sha256],
+    ),
+  );
+  const sourcesSha256 = requiredArtifactHash(sourceArtifacts, "sources");
+  const evidenceItemsSha256 = requiredArtifactHash(
+    sourceArtifacts,
+    "evidence-items",
+  );
+  const claimsSha256 = requiredArtifactHash(sourceArtifacts, "claims");
   const targetSha256 = await hashFile(
     resolveWithin(workspace, `targets/jobs/${target.id}/target.json`),
   );
@@ -791,10 +961,27 @@ async function mappingInput(
     requirementModelType: requirementInput.type,
     requirementModelSha256: requirementInput.modelSha256,
     requirementManifestSha256: requirementInput.manifestSha256,
-    sourcesSha256: snapshot.sourcesSha256,
-    evidenceItemsSha256: snapshot.evidenceItemsSha256,
-    claimsSha256: snapshot.claimsSha256,
-    eligibleEvidenceSetSha256: snapshot.eligibleEvidenceSetSha256,
+    evidencePinSha256: evidenceInput.manifest.pinSha256,
+    evidencePinManifestSha256: await hashFile(
+      evidenceInput.paths.manifestPath,
+    ),
+    evidenceSnapshotId: evidenceInput.snapshot.snapshot.id,
+    evidenceSnapshotSha256: evidenceInput.snapshot.manifest.contentSha256,
+    evidenceSnapshotManifestSha256:
+      evidenceInput.snapshot.manifestSha256,
+    evidenceSnapshotSchemaVersion:
+      evidenceInput.snapshot.snapshot.schemaVersion,
+    evidenceSnapshotContractName:
+      evidenceInput.snapshot.snapshot.contract.name,
+    evidenceSnapshotPolicyName:
+      evidenceInput.snapshot.snapshot.policy.name,
+    evidenceSnapshotPolicyVersion:
+      evidenceInput.snapshot.snapshot.policy.version,
+    sourcesSha256,
+    evidenceItemsSha256,
+    claimsSha256,
+    eligibleEvidenceSetSha256:
+      evidenceInput.snapshot.snapshot.eligibleJobEvidenceSetSha256,
     mapperName: JOB_EVIDENCE_MAPPER_NAME,
     mapperVersion: JOB_EVIDENCE_MAPPER_VERSION,
     policyName: JOB_EVIDENCE_MAPPING_POLICY_NAME,
@@ -803,12 +990,33 @@ async function mappingInput(
   return {
     targetSha256,
     sourceSha256,
-    sourcesSha256: snapshot.sourcesSha256,
-    evidenceItemsSha256: snapshot.evidenceItemsSha256,
-    claimsSha256: snapshot.claimsSha256,
-    eligibleEvidenceSetSha256: snapshot.eligibleEvidenceSetSha256,
+    evidencePinSha256: evidenceInput.manifest.pinSha256,
+    evidencePinManifestSha256: await hashFile(
+      evidenceInput.paths.manifestPath,
+    ),
+    evidenceSnapshotSha256: evidenceInput.snapshot.manifest.contentSha256,
+    evidenceSnapshotManifestSha256:
+      evidenceInput.snapshot.manifestSha256,
+    sourcesSha256,
+    evidenceItemsSha256,
+    claimsSha256,
+    eligibleEvidenceSetSha256:
+      evidenceInput.snapshot.snapshot.eligibleJobEvidenceSetSha256,
     normalizedInputSha256,
   };
+}
+
+function requiredArtifactHash(
+  artifacts: Map<string, string>,
+  id: string,
+): string {
+  const value = artifacts.get(id);
+  if (!value) {
+    throw new Error(
+      `Pinned Evidence Snapshot is missing source artifact hash: ${id}`,
+    );
+  }
+  return value;
 }
 
 async function loadRequirementInput(
@@ -904,18 +1112,38 @@ function validateStoredMapIdentity(
   ) {
     reasons.push("Job evidence map identity or persistence path is invalid.");
   }
-  if (
-    map.input.target.sha256 !== manifest.targetSha256 ||
-    map.input.jobDescription.sha256 !== manifest.sourceSha256 ||
-    map.input.requirementModelType !== manifest.requirementModelType ||
-    map.input.requirementModel.sha256 !== manifest.requirementModelSha256 ||
-    map.input.requirementManifest.sha256 !== manifest.requirementManifestSha256 ||
-    map.input.sources.sha256 !== manifest.sourcesSha256 ||
-    map.input.evidenceItems.sha256 !== manifest.evidenceItemsSha256 ||
-    map.input.claims.sha256 !== manifest.claimsSha256 ||
-    map.input.eligibleEvidenceSetSha256 !== manifest.eligibleEvidenceSetSha256 ||
-    map.input.normalizedInputSha256 !== manifest.normalizedInputSha256
-  ) {
+  const commonDependenciesMatch =
+    map.input.target.sha256 === manifest.targetSha256 &&
+    map.input.jobDescription.sha256 === manifest.sourceSha256 &&
+    map.input.requirementModelType === manifest.requirementModelType &&
+    map.input.requirementModel.sha256 === manifest.requirementModelSha256 &&
+    map.input.requirementManifest.sha256 ===
+      manifest.requirementManifestSha256 &&
+    map.input.sources.sha256 === manifest.sourcesSha256 &&
+    map.input.evidenceItems.sha256 === manifest.evidenceItemsSha256 &&
+    map.input.claims.sha256 === manifest.claimsSha256 &&
+    map.input.eligibleEvidenceSetSha256 ===
+      manifest.eligibleEvidenceSetSha256 &&
+    map.input.normalizedInputSha256 === manifest.normalizedInputSha256;
+  const pinnedDependenciesMatch = map.input.evidenceSnapshotId !== undefined
+    ? map.input.evidencePin?.sha256 === manifest.evidencePinSha256 &&
+      map.input.evidencePinManifest?.sha256 ===
+        manifest.evidencePinManifestSha256 &&
+      map.input.evidenceSnapshotId === manifest.evidenceSnapshotId &&
+      map.input.evidenceSnapshot?.sha256 ===
+        manifest.evidenceSnapshotSha256 &&
+      map.input.evidenceSnapshotManifest?.sha256 ===
+        manifest.evidenceSnapshotManifestSha256 &&
+      map.input.evidenceSnapshotSchemaVersion ===
+        manifest.evidenceSnapshotSchemaVersion &&
+      map.input.evidenceSnapshotContractName ===
+        manifest.evidenceSnapshotContractName &&
+      map.input.evidenceSnapshotPolicyName ===
+        manifest.evidenceSnapshotPolicyName &&
+      map.input.evidenceSnapshotPolicyVersion ===
+        manifest.evidenceSnapshotPolicyVersion
+    : true;
+  if (!commonDependenciesMatch || !pinnedDependenciesMatch) {
     reasons.push("Job evidence map and manifest disagree on dependency hashes.");
   }
   if (
@@ -1039,6 +1267,11 @@ function emptyStatus(
     requirementModelStatus: null,
     requirementModelHashMatches: null,
     requirementManifestHashMatches: null,
+    evidencePinStatus: null,
+    evidencePinHashMatches: null,
+    evidencePinManifestHashMatches: null,
+    evidenceSnapshotHashMatches: null,
+    evidenceSnapshotManifestHashMatches: null,
     sourcesHashMatches: null,
     evidenceItemsHashMatches: null,
     claimsHashMatches: null,

@@ -681,7 +681,7 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
         version: string;
         mode: "deterministic";
     }>;
-    input: z.ZodObject<{
+    input: z.ZodEffects<z.ZodObject<{
         target: z.ZodObject<{
             path: z.ZodEffects<z.ZodString, string, string>;
             sha256: z.ZodString;
@@ -723,6 +723,51 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
             sha256: string;
             path: string;
         }>;
+        evidencePin: z.ZodOptional<z.ZodObject<{
+            path: z.ZodEffects<z.ZodString, string, string>;
+            sha256: z.ZodString;
+        }, "strict", z.ZodTypeAny, {
+            sha256: string;
+            path: string;
+        }, {
+            sha256: string;
+            path: string;
+        }>>;
+        evidencePinManifest: z.ZodOptional<z.ZodObject<{
+            path: z.ZodEffects<z.ZodString, string, string>;
+            sha256: z.ZodString;
+        }, "strict", z.ZodTypeAny, {
+            sha256: string;
+            path: string;
+        }, {
+            sha256: string;
+            path: string;
+        }>>;
+        evidenceSnapshot: z.ZodOptional<z.ZodObject<{
+            path: z.ZodEffects<z.ZodString, string, string>;
+            sha256: z.ZodString;
+        }, "strict", z.ZodTypeAny, {
+            sha256: string;
+            path: string;
+        }, {
+            sha256: string;
+            path: string;
+        }>>;
+        evidenceSnapshotManifest: z.ZodOptional<z.ZodObject<{
+            path: z.ZodEffects<z.ZodString, string, string>;
+            sha256: z.ZodString;
+        }, "strict", z.ZodTypeAny, {
+            sha256: string;
+            path: string;
+        }, {
+            sha256: string;
+            path: string;
+        }>>;
+        evidenceSnapshotId: z.ZodOptional<z.ZodString>;
+        evidenceSnapshotSchemaVersion: z.ZodOptional<z.ZodLiteral<1>>;
+        evidenceSnapshotContractName: z.ZodOptional<z.ZodLiteral<"evidence-snapshot">>;
+        evidenceSnapshotPolicyName: z.ZodOptional<z.ZodLiteral<"evidence-snapshot-policy">>;
+        evidenceSnapshotPolicyVersion: z.ZodOptional<z.ZodLiteral<"1">>;
         sources: z.ZodObject<{
             path: z.ZodEffects<z.ZodString, string, string>;
             sha256: z.ZodString;
@@ -770,6 +815,14 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
             path: string;
         };
         normalizedInputSha256: string;
+        claims: {
+            sha256: string;
+            path: string;
+        };
+        evidenceItems: {
+            sha256: string;
+            path: string;
+        };
         requirementModelType: "approved" | "deterministic";
         requirementModel: {
             sha256: string;
@@ -779,14 +832,27 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
             sha256: string;
             path: string;
         };
-        evidenceItems: {
+        evidenceSnapshot?: {
             sha256: string;
             path: string;
-        };
-        claims: {
+        } | undefined;
+        evidencePin?: {
             sha256: string;
             path: string;
-        };
+        } | undefined;
+        evidencePinManifest?: {
+            sha256: string;
+            path: string;
+        } | undefined;
+        evidenceSnapshotManifest?: {
+            sha256: string;
+            path: string;
+        } | undefined;
+        evidenceSnapshotId?: string | undefined;
+        evidenceSnapshotSchemaVersion?: 1 | undefined;
+        evidenceSnapshotContractName?: "evidence-snapshot" | undefined;
+        evidenceSnapshotPolicyName?: "evidence-snapshot-policy" | undefined;
+        evidenceSnapshotPolicyVersion?: "1" | undefined;
     }, {
         sources: {
             sha256: string;
@@ -802,6 +868,14 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
             path: string;
         };
         normalizedInputSha256: string;
+        claims: {
+            sha256: string;
+            path: string;
+        };
+        evidenceItems: {
+            sha256: string;
+            path: string;
+        };
         requirementModelType: "approved" | "deterministic";
         requirementModel: {
             sha256: string;
@@ -811,14 +885,133 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
             sha256: string;
             path: string;
         };
-        evidenceItems: {
+        evidenceSnapshot?: {
+            sha256: string;
+            path: string;
+        } | undefined;
+        evidencePin?: {
+            sha256: string;
+            path: string;
+        } | undefined;
+        evidencePinManifest?: {
+            sha256: string;
+            path: string;
+        } | undefined;
+        evidenceSnapshotManifest?: {
+            sha256: string;
+            path: string;
+        } | undefined;
+        evidenceSnapshotId?: string | undefined;
+        evidenceSnapshotSchemaVersion?: 1 | undefined;
+        evidenceSnapshotContractName?: "evidence-snapshot" | undefined;
+        evidenceSnapshotPolicyName?: "evidence-snapshot-policy" | undefined;
+        evidenceSnapshotPolicyVersion?: "1" | undefined;
+    }>, {
+        sources: {
             sha256: string;
             path: string;
         };
+        eligibleEvidenceSetSha256: string;
+        target: {
+            sha256: string;
+            path: string;
+        };
+        jobDescription: {
+            sha256: string;
+            path: string;
+        };
+        normalizedInputSha256: string;
         claims: {
             sha256: string;
             path: string;
         };
+        evidenceItems: {
+            sha256: string;
+            path: string;
+        };
+        requirementModelType: "approved" | "deterministic";
+        requirementModel: {
+            sha256: string;
+            path: string;
+        };
+        requirementManifest: {
+            sha256: string;
+            path: string;
+        };
+        evidenceSnapshot?: {
+            sha256: string;
+            path: string;
+        } | undefined;
+        evidencePin?: {
+            sha256: string;
+            path: string;
+        } | undefined;
+        evidencePinManifest?: {
+            sha256: string;
+            path: string;
+        } | undefined;
+        evidenceSnapshotManifest?: {
+            sha256: string;
+            path: string;
+        } | undefined;
+        evidenceSnapshotId?: string | undefined;
+        evidenceSnapshotSchemaVersion?: 1 | undefined;
+        evidenceSnapshotContractName?: "evidence-snapshot" | undefined;
+        evidenceSnapshotPolicyName?: "evidence-snapshot-policy" | undefined;
+        evidenceSnapshotPolicyVersion?: "1" | undefined;
+    }, {
+        sources: {
+            sha256: string;
+            path: string;
+        };
+        eligibleEvidenceSetSha256: string;
+        target: {
+            sha256: string;
+            path: string;
+        };
+        jobDescription: {
+            sha256: string;
+            path: string;
+        };
+        normalizedInputSha256: string;
+        claims: {
+            sha256: string;
+            path: string;
+        };
+        evidenceItems: {
+            sha256: string;
+            path: string;
+        };
+        requirementModelType: "approved" | "deterministic";
+        requirementModel: {
+            sha256: string;
+            path: string;
+        };
+        requirementManifest: {
+            sha256: string;
+            path: string;
+        };
+        evidenceSnapshot?: {
+            sha256: string;
+            path: string;
+        } | undefined;
+        evidencePin?: {
+            sha256: string;
+            path: string;
+        } | undefined;
+        evidencePinManifest?: {
+            sha256: string;
+            path: string;
+        } | undefined;
+        evidenceSnapshotManifest?: {
+            sha256: string;
+            path: string;
+        } | undefined;
+        evidenceSnapshotId?: string | undefined;
+        evidenceSnapshotSchemaVersion?: 1 | undefined;
+        evidenceSnapshotContractName?: "evidence-snapshot" | undefined;
+        evidenceSnapshotPolicyName?: "evidence-snapshot-policy" | undefined;
+        evidenceSnapshotPolicyVersion?: "1" | undefined;
     }>;
     links: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
@@ -1337,6 +1530,14 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
             path: string;
         };
         normalizedInputSha256: string;
+        claims: {
+            sha256: string;
+            path: string;
+        };
+        evidenceItems: {
+            sha256: string;
+            path: string;
+        };
         requirementModelType: "approved" | "deterministic";
         requirementModel: {
             sha256: string;
@@ -1346,14 +1547,27 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
             sha256: string;
             path: string;
         };
-        evidenceItems: {
+        evidenceSnapshot?: {
             sha256: string;
             path: string;
-        };
-        claims: {
+        } | undefined;
+        evidencePin?: {
             sha256: string;
             path: string;
-        };
+        } | undefined;
+        evidencePinManifest?: {
+            sha256: string;
+            path: string;
+        } | undefined;
+        evidenceSnapshotManifest?: {
+            sha256: string;
+            path: string;
+        } | undefined;
+        evidenceSnapshotId?: string | undefined;
+        evidenceSnapshotSchemaVersion?: 1 | undefined;
+        evidenceSnapshotContractName?: "evidence-snapshot" | undefined;
+        evidenceSnapshotPolicyName?: "evidence-snapshot-policy" | undefined;
+        evidenceSnapshotPolicyVersion?: "1" | undefined;
     };
     targetType: "job";
     targetId: string;
@@ -1467,6 +1681,14 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
             path: string;
         };
         normalizedInputSha256: string;
+        claims: {
+            sha256: string;
+            path: string;
+        };
+        evidenceItems: {
+            sha256: string;
+            path: string;
+        };
         requirementModelType: "approved" | "deterministic";
         requirementModel: {
             sha256: string;
@@ -1476,14 +1698,27 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
             sha256: string;
             path: string;
         };
-        evidenceItems: {
+        evidenceSnapshot?: {
             sha256: string;
             path: string;
-        };
-        claims: {
+        } | undefined;
+        evidencePin?: {
             sha256: string;
             path: string;
-        };
+        } | undefined;
+        evidencePinManifest?: {
+            sha256: string;
+            path: string;
+        } | undefined;
+        evidenceSnapshotManifest?: {
+            sha256: string;
+            path: string;
+        } | undefined;
+        evidenceSnapshotId?: string | undefined;
+        evidenceSnapshotSchemaVersion?: 1 | undefined;
+        evidenceSnapshotContractName?: "evidence-snapshot" | undefined;
+        evidenceSnapshotPolicyName?: "evidence-snapshot-policy" | undefined;
+        evidenceSnapshotPolicyVersion?: "1" | undefined;
     };
     targetType: "job";
     targetId: string;
@@ -1578,7 +1813,7 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
         linkIds: string[];
     }[];
 }>;
-export declare const JobEvidenceMapManifestSchema: z.ZodObject<{
+export declare const JobEvidenceMapManifestSchema: z.ZodEffects<z.ZodObject<{
     schemaVersion: z.ZodLiteral<1>;
     mapId: z.ZodString;
     targetId: z.ZodString;
@@ -1594,6 +1829,15 @@ export declare const JobEvidenceMapManifestSchema: z.ZodObject<{
     requirementModelType: z.ZodEnum<["deterministic", "approved"]>;
     requirementModelSha256: z.ZodString;
     requirementManifestSha256: z.ZodString;
+    evidencePinSha256: z.ZodOptional<z.ZodString>;
+    evidencePinManifestSha256: z.ZodOptional<z.ZodString>;
+    evidenceSnapshotId: z.ZodOptional<z.ZodString>;
+    evidenceSnapshotSha256: z.ZodOptional<z.ZodString>;
+    evidenceSnapshotManifestSha256: z.ZodOptional<z.ZodString>;
+    evidenceSnapshotSchemaVersion: z.ZodOptional<z.ZodLiteral<1>>;
+    evidenceSnapshotContractName: z.ZodOptional<z.ZodLiteral<"evidence-snapshot">>;
+    evidenceSnapshotPolicyName: z.ZodOptional<z.ZodLiteral<"evidence-snapshot-policy">>;
+    evidenceSnapshotPolicyVersion: z.ZodOptional<z.ZodLiteral<"1">>;
     sourcesSha256: z.ZodString;
     evidenceItemsSha256: z.ZodString;
     claimsSha256: z.ZodString;
@@ -1624,6 +1868,15 @@ export declare const JobEvidenceMapManifestSchema: z.ZodObject<{
     mapperName: string;
     mapperVersion: string;
     requirementManifestSha256: string;
+    evidenceSnapshotManifestSha256?: string | undefined;
+    evidenceSnapshotSha256?: string | undefined;
+    evidenceSnapshotId?: string | undefined;
+    evidenceSnapshotSchemaVersion?: 1 | undefined;
+    evidenceSnapshotContractName?: "evidence-snapshot" | undefined;
+    evidenceSnapshotPolicyName?: "evidence-snapshot-policy" | undefined;
+    evidenceSnapshotPolicyVersion?: "1" | undefined;
+    evidencePinSha256?: string | undefined;
+    evidencePinManifestSha256?: string | undefined;
 }, {
     schemaVersion: 1;
     createdAt: string;
@@ -1647,6 +1900,79 @@ export declare const JobEvidenceMapManifestSchema: z.ZodObject<{
     mapperName: string;
     mapperVersion: string;
     requirementManifestSha256: string;
+    evidenceSnapshotManifestSha256?: string | undefined;
+    evidenceSnapshotSha256?: string | undefined;
+    evidenceSnapshotId?: string | undefined;
+    evidenceSnapshotSchemaVersion?: 1 | undefined;
+    evidenceSnapshotContractName?: "evidence-snapshot" | undefined;
+    evidenceSnapshotPolicyName?: "evidence-snapshot-policy" | undefined;
+    evidenceSnapshotPolicyVersion?: "1" | undefined;
+    evidencePinSha256?: string | undefined;
+    evidencePinManifestSha256?: string | undefined;
+}>, {
+    schemaVersion: 1;
+    createdAt: string;
+    updatedAt: string;
+    targetSha256: string;
+    sourceSha256: string;
+    targetType: "job";
+    targetId: string;
+    policyVersion: string;
+    sourcesSha256: string;
+    evidenceItemsSha256: string;
+    claimsSha256: string;
+    eligibleEvidenceSetSha256: string;
+    policyName: string;
+    normalizedInputSha256: string;
+    requirementModelType: "approved" | "deterministic";
+    requirementModelSha256: string;
+    mapId: string;
+    mapPath: string;
+    mapSha256: string;
+    mapperName: string;
+    mapperVersion: string;
+    requirementManifestSha256: string;
+    evidenceSnapshotManifestSha256?: string | undefined;
+    evidenceSnapshotSha256?: string | undefined;
+    evidenceSnapshotId?: string | undefined;
+    evidenceSnapshotSchemaVersion?: 1 | undefined;
+    evidenceSnapshotContractName?: "evidence-snapshot" | undefined;
+    evidenceSnapshotPolicyName?: "evidence-snapshot-policy" | undefined;
+    evidenceSnapshotPolicyVersion?: "1" | undefined;
+    evidencePinSha256?: string | undefined;
+    evidencePinManifestSha256?: string | undefined;
+}, {
+    schemaVersion: 1;
+    createdAt: string;
+    updatedAt: string;
+    targetSha256: string;
+    sourceSha256: string;
+    targetType: "job";
+    targetId: string;
+    policyVersion: string;
+    sourcesSha256: string;
+    evidenceItemsSha256: string;
+    claimsSha256: string;
+    eligibleEvidenceSetSha256: string;
+    policyName: string;
+    normalizedInputSha256: string;
+    requirementModelType: "approved" | "deterministic";
+    requirementModelSha256: string;
+    mapId: string;
+    mapPath: string;
+    mapSha256: string;
+    mapperName: string;
+    mapperVersion: string;
+    requirementManifestSha256: string;
+    evidenceSnapshotManifestSha256?: string | undefined;
+    evidenceSnapshotSha256?: string | undefined;
+    evidenceSnapshotId?: string | undefined;
+    evidenceSnapshotSchemaVersion?: 1 | undefined;
+    evidenceSnapshotContractName?: "evidence-snapshot" | undefined;
+    evidenceSnapshotPolicyName?: "evidence-snapshot-policy" | undefined;
+    evidenceSnapshotPolicyVersion?: "1" | undefined;
+    evidencePinSha256?: string | undefined;
+    evidencePinManifestSha256?: string | undefined;
 }>;
 export type JobEvidenceRelationship = z.infer<typeof JobEvidenceRelationshipSchema>;
 export type JobEvidenceStrength = z.infer<typeof JobEvidenceStrengthSchema>;

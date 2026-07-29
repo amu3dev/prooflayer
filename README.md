@@ -48,6 +48,8 @@ Phase 2 Slice 2.7F converts a current usable Job Resume Content Plan into a cons
 
 Phase 2 Slice 2.7G renders a current approved Job Resume Draft through one canonical document into faithful Markdown, HTML, DOCX, and adapter-based PDF exports.
 
+The Evidence Snapshot Contract v1 adds an immutable, content-addressed boundary between the reviewed Evidence Foundation and explicitly pinned Role or Job targets.
+
 ## What Slice 1 Does
 
 ProofLayer turns a messy local folder of career files into a structured career knowledge base:
@@ -78,6 +80,8 @@ It creates:
 - `workspace/targets/{roles|jobs}/{target-id}/matching/`
 - `workspace/targets/{roles|jobs}/{target-id}/assessment/`
 - `workspace/targets/jobs/{target-id}/requirements/`
+- `workspace/evidence-snapshots/{snapshot-id}/`
+- `workspace/targets/{roles|jobs}/{target-id}/evidence/`
 
 ## What It Does Not Do Yet
 
@@ -519,6 +523,47 @@ Deterministic and approved interpretations expose `empty`, `partial`, or `comple
 
 Only `deterministic-approved`, `human-approved`, or `human-edited` expectations may become eligible for future evidence matching. Slice 2.3B does not load candidate evidence, perform evidence matching, assess fit, calculate proof readiness, create strengths or weaknesses reports, or generate resumes or application outputs.
 
+## Evidence Snapshot Contract v1
+
+ProofLayer exposes the current reviewed Evidence Foundation through an immutable, content-addressed `evidence-snapshot` schema version `1`, produced by `evidence-snapshot-exporter` version `1` under `evidence-snapshot-policy` version `1`.
+
+Snapshot export preserves existing approval, public-safety, resume-readiness, metric-verification, and matching-eligibility states. It never approves, repairs, promotes, or reinterprets evidence. Eligible reviewed content is included for current consumers. Ineligible records retain stable IDs, content hashes, trust state, eligibility reasons, and safe logical provenance, while private content and local source paths are omitted. Zero eligible evidence is a valid complete snapshot with explicit warnings.
+
+```bash
+npm run dev -- evidence snapshot-build
+npm run dev -- evidence snapshot-list
+npm run dev -- evidence snapshot-show <snapshot-id>
+npm run dev -- evidence snapshot-status <snapshot-id>
+npm run dev -- evidence snapshot-validate <snapshot-id>
+```
+
+Snapshots are stored separately from mutable internal evidence:
+
+```text
+workspace/evidence-snapshots/<snapshot-id>/
+  evidence-snapshot.json
+  evidence-snapshot-manifest.json
+```
+
+Snapshot identity binds schema and policy versions, the source inventory hash, ordered evidence and claim IDs and content hashes, normalized eligibility state, and verified metric IDs and hashes. Timestamps do not affect identity. An unchanged export returns `already-current` without rewriting bytes, timestamps, or modification times. Existing snapshot content is never overwritten; corruption or identity collision must be inspected rather than repaired in place.
+
+Role and Job targets pin one snapshot explicitly:
+
+```bash
+npm run dev -- target evidence-pin <target-id> --snapshot <snapshot-id>
+npm run dev -- target evidence-show <target-id>
+npm run dev -- target evidence-status <target-id>
+npm run dev -- target evidence-upgrade <target-id> --snapshot <snapshot-id>
+```
+
+Pins live under `workspace/targets/<roles|jobs>/<target-id>/evidence/` and bind the target hash, snapshot ID, snapshot content and manifest hashes, schema and policy versions, timestamp, and explicit pin provenance. Creating a newer snapshot never changes a target or stales a consumer pinned to an older valid snapshot. Changing the pin requires `evidence-upgrade`; the operation changes only the dependency pointer and leaves downstream artifacts stale until explicitly rebuilt.
+
+Job Evidence Mapping now requires a current Job pin and consumes eligible evidence and claims only from that read-only snapshot. A valid snapshot with zero eligible Job evidence still produces the existing safe zero-link map and explicit warning. New maps record the pin, snapshot, schema, policy, content, manifest, and eligible-set hashes. Mapping relationship rules remain unchanged and no model or review operation occurs.
+
+The shared reader and target pin contract support Role targets. The existing Role Evidence Matching implementation still uses its legacy target-local snapshot adapter; full Role migration to the global pinned snapshot is intentionally deferred to avoid a broad matching refactor. The Evidence Foundation remains implemented inside this repository in this version. The contract is designed to permit a future repository boundary, but no repository split, remote fetching, or network API is implemented.
+
+Snapshot lifecycle is `missing`, `current`, `invalid`, or `incompatible`. Pin lifecycle additionally supports `stale`. A schema-v1 reader accepts supported v1 snapshots and rejects unknown future major schema versions as incompatible. Eligibility-changing policy revisions require a new explicit policy version and target upgrade.
+
 ## Phase 2 Slice 2.4 Evidence Matching Foundation
 
 Evidence Matching links approved target expectations to reviewed candidate evidence. It does not calculate overall candidate fit.
@@ -542,7 +587,7 @@ Only current approved interpretations with `usableForEvidenceMatching: true` may
 
 Candidate evidence is eligible only when the evidence item is public and sensitivity-free, every referenced source is active and public, no source is a job description, and at least one globally reviewed claim explicitly cites that evidence. The supporting claim must be `approved`, `resume_ready`, public-safe, and not require confirmation. Evidence is never promoted merely because it appears in a draft or output-specific resume review.
 
-Each target stores an evidence snapshot containing only stable evidence IDs, artifact hashes, reviewed-claim hashes, and source provenance. Private raw source text is not copied into matching artifacts. Any approved-interpretation, evidence-content, review-status, active-state, or policy change makes downstream proposals or approved matching stale.
+The legacy Role matching path stores a target-local evidence snapshot containing stable evidence IDs, artifact hashes, reviewed-claim hashes, and source provenance. Private raw source text is not copied into matching artifacts. The global Evidence Snapshot Contract described above is the current boundary for Job Mapping and the compatibility hook for future Role migration.
 
 ### Manual Matching
 

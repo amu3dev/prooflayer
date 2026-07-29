@@ -576,7 +576,7 @@ export declare const RoleResumeDraftItemSchema: z.ZodObject<{
     text: string;
     claimBoundaryIds: string[];
     itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
-    claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+    claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
     metricReferences: {
         evidenceId: string;
         originalValue: string;
@@ -649,7 +649,7 @@ export declare const RoleResumeDraftItemSchema: z.ZodObject<{
     text: string;
     claimBoundaryIds: string[];
     itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
-    claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+    claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
     metricReferences: {
         evidenceId: string;
         originalValue: string;
@@ -1015,7 +1015,7 @@ export declare const RoleResumeDraftSectionSchema: z.ZodObject<{
         text: string;
         claimBoundaryIds: string[];
         itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
-        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         metricReferences: {
             evidenceId: string;
             originalValue: string;
@@ -1088,7 +1088,7 @@ export declare const RoleResumeDraftSectionSchema: z.ZodObject<{
         text: string;
         claimBoundaryIds: string[];
         itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
-        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         metricReferences: {
             evidenceId: string;
             originalValue: string;
@@ -1200,7 +1200,7 @@ export declare const RoleResumeDraftSectionSchema: z.ZodObject<{
         text: string;
         claimBoundaryIds: string[];
         itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
-        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         metricReferences: {
             evidenceId: string;
             originalValue: string;
@@ -1291,7 +1291,7 @@ export declare const RoleResumeDraftSectionSchema: z.ZodObject<{
         text: string;
         claimBoundaryIds: string[];
         itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
-        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         metricReferences: {
             evidenceId: string;
             originalValue: string;
@@ -1350,8 +1350,8 @@ export declare const RoleResumeDraftScaffoldSectionSchema: z.ZodObject<{
 }, "strict", z.ZodTypeAny, {
     status: "exclude" | "include" | "optional";
     id: string;
-    allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-    prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+    allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+    prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
     order: number;
     maximumItemCount: number;
     planSectionId: string;
@@ -1372,8 +1372,8 @@ export declare const RoleResumeDraftScaffoldSectionSchema: z.ZodObject<{
 }, {
     status: "exclude" | "include" | "optional";
     id: string;
-    allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-    prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+    allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+    prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
     order: number;
     maximumItemCount: number;
     planSectionId: string;
@@ -1563,8 +1563,8 @@ export declare const RoleResumeDraftScaffoldSchema: z.ZodObject<{
     }, "strict", z.ZodTypeAny, {
         status: "exclude" | "include" | "optional";
         id: string;
-        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         order: number;
         maximumItemCount: number;
         planSectionId: string;
@@ -1585,8 +1585,8 @@ export declare const RoleResumeDraftScaffoldSchema: z.ZodObject<{
     }, {
         status: "exclude" | "include" | "optional";
         id: string;
-        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         order: number;
         maximumItemCount: number;
         planSectionId: string;
@@ -1681,8 +1681,8 @@ export declare const RoleResumeDraftScaffoldSchema: z.ZodObject<{
     sections: {
         status: "exclude" | "include" | "optional";
         id: string;
-        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         order: number;
         maximumItemCount: number;
         planSectionId: string;
@@ -1764,8 +1764,8 @@ export declare const RoleResumeDraftScaffoldSchema: z.ZodObject<{
     sections: {
         status: "exclude" | "include" | "optional";
         id: string;
-        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         order: number;
         maximumItemCount: number;
         planSectionId: string;
@@ -1964,7 +1964,7 @@ export declare const ResumeDraftClaimLedgerEntrySchema: z.ZodObject<{
     metricStatus: "metric-prohibited" | "not-applicable" | "reviewed-metric-used";
     assessmentIds: string[];
     claimBoundaryIds: string[];
-    claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+    claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
     draftItemId: string;
     scopeStatus: "requires-review" | "within-approved-scope" | "qualified-scope";
     validationStatus: "valid" | "invalid" | "requires-review";
@@ -1989,7 +1989,7 @@ export declare const ResumeDraftClaimLedgerEntrySchema: z.ZodObject<{
     metricStatus: "metric-prohibited" | "not-applicable" | "reviewed-metric-used";
     assessmentIds: string[];
     claimBoundaryIds: string[];
-    claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+    claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
     draftItemId: string;
     scopeStatus: "requires-review" | "within-approved-scope" | "qualified-scope";
     validationStatus: "valid" | "invalid" | "requires-review";
@@ -2010,7 +2010,7 @@ export declare const ResumeDraftEvidenceUsageSchema: z.ZodObject<{
     evidenceId: string;
     sectionIds: string[];
     draftItemIds: string[];
-    claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+    claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
     usageCount: number;
 }, {
     notes: string[];
@@ -2018,7 +2018,7 @@ export declare const ResumeDraftEvidenceUsageSchema: z.ZodObject<{
     evidenceId: string;
     sectionIds: string[];
     draftItemIds: string[];
-    claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+    claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
     usageCount: number;
 }>;
 export declare const ResumeDraftExclusionSchema: z.ZodObject<{
@@ -2541,7 +2541,7 @@ export declare const ModelRoleResumeDraftPayloadSchema: z.ZodObject<{
             text: string;
             claimBoundaryIds: string[];
             itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
-            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             metricReferences: {
                 evidenceId: string;
                 originalValue: string;
@@ -2614,7 +2614,7 @@ export declare const ModelRoleResumeDraftPayloadSchema: z.ZodObject<{
             text: string;
             claimBoundaryIds: string[];
             itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
-            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             metricReferences: {
                 evidenceId: string;
                 originalValue: string;
@@ -2726,7 +2726,7 @@ export declare const ModelRoleResumeDraftPayloadSchema: z.ZodObject<{
             text: string;
             claimBoundaryIds: string[];
             itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
-            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             metricReferences: {
                 evidenceId: string;
                 originalValue: string;
@@ -2817,7 +2817,7 @@ export declare const ModelRoleResumeDraftPayloadSchema: z.ZodObject<{
             text: string;
             claimBoundaryIds: string[];
             itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
-            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             metricReferences: {
                 evidenceId: string;
                 originalValue: string;
@@ -2978,7 +2978,7 @@ export declare const ModelRoleResumeDraftPayloadSchema: z.ZodObject<{
             text: string;
             claimBoundaryIds: string[];
             itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
-            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             metricReferences: {
                 evidenceId: string;
                 originalValue: string;
@@ -3095,7 +3095,7 @@ export declare const ModelRoleResumeDraftPayloadSchema: z.ZodObject<{
             text: string;
             claimBoundaryIds: string[];
             itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
-            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             metricReferences: {
                 evidenceId: string;
                 originalValue: string;
@@ -3571,7 +3571,7 @@ export declare const RoleResumeDraftProposalSchema: z.ZodObject<{
             text: string;
             claimBoundaryIds: string[];
             itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
-            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             metricReferences: {
                 evidenceId: string;
                 originalValue: string;
@@ -3644,7 +3644,7 @@ export declare const RoleResumeDraftProposalSchema: z.ZodObject<{
             text: string;
             claimBoundaryIds: string[];
             itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
-            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             metricReferences: {
                 evidenceId: string;
                 originalValue: string;
@@ -3756,7 +3756,7 @@ export declare const RoleResumeDraftProposalSchema: z.ZodObject<{
             text: string;
             claimBoundaryIds: string[];
             itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
-            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             metricReferences: {
                 evidenceId: string;
                 originalValue: string;
@@ -3847,7 +3847,7 @@ export declare const RoleResumeDraftProposalSchema: z.ZodObject<{
             text: string;
             claimBoundaryIds: string[];
             itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
-            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             metricReferences: {
                 evidenceId: string;
                 originalValue: string;
@@ -3945,7 +3945,7 @@ export declare const RoleResumeDraftProposalSchema: z.ZodObject<{
         metricStatus: "metric-prohibited" | "not-applicable" | "reviewed-metric-used";
         assessmentIds: string[];
         claimBoundaryIds: string[];
-        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         draftItemId: string;
         scopeStatus: "requires-review" | "within-approved-scope" | "qualified-scope";
         validationStatus: "valid" | "invalid" | "requires-review";
@@ -3970,7 +3970,7 @@ export declare const RoleResumeDraftProposalSchema: z.ZodObject<{
         metricStatus: "metric-prohibited" | "not-applicable" | "reviewed-metric-used";
         assessmentIds: string[];
         claimBoundaryIds: string[];
-        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         draftItemId: string;
         scopeStatus: "requires-review" | "within-approved-scope" | "qualified-scope";
         validationStatus: "valid" | "invalid" | "requires-review";
@@ -3991,7 +3991,7 @@ export declare const RoleResumeDraftProposalSchema: z.ZodObject<{
         evidenceId: string;
         sectionIds: string[];
         draftItemIds: string[];
-        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         usageCount: number;
     }, {
         notes: string[];
@@ -3999,7 +3999,7 @@ export declare const RoleResumeDraftProposalSchema: z.ZodObject<{
         evidenceId: string;
         sectionIds: string[];
         draftItemIds: string[];
-        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         usageCount: number;
     }>, "many">;
     warnings: z.ZodArray<z.ZodObject<{
@@ -4180,7 +4180,7 @@ export declare const RoleResumeDraftProposalSchema: z.ZodObject<{
             text: string;
             claimBoundaryIds: string[];
             itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
-            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             metricReferences: {
                 evidenceId: string;
                 originalValue: string;
@@ -4294,7 +4294,7 @@ export declare const RoleResumeDraftProposalSchema: z.ZodObject<{
         metricStatus: "metric-prohibited" | "not-applicable" | "reviewed-metric-used";
         assessmentIds: string[];
         claimBoundaryIds: string[];
-        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         draftItemId: string;
         scopeStatus: "requires-review" | "within-approved-scope" | "qualified-scope";
         validationStatus: "valid" | "invalid" | "requires-review";
@@ -4307,7 +4307,7 @@ export declare const RoleResumeDraftProposalSchema: z.ZodObject<{
         evidenceId: string;
         sectionIds: string[];
         draftItemIds: string[];
-        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         usageCount: number;
     }[];
 }, {
@@ -4385,7 +4385,7 @@ export declare const RoleResumeDraftProposalSchema: z.ZodObject<{
             text: string;
             claimBoundaryIds: string[];
             itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
-            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             metricReferences: {
                 evidenceId: string;
                 originalValue: string;
@@ -4499,7 +4499,7 @@ export declare const RoleResumeDraftProposalSchema: z.ZodObject<{
         metricStatus: "metric-prohibited" | "not-applicable" | "reviewed-metric-used";
         assessmentIds: string[];
         claimBoundaryIds: string[];
-        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         draftItemId: string;
         scopeStatus: "requires-review" | "within-approved-scope" | "qualified-scope";
         validationStatus: "valid" | "invalid" | "requires-review";
@@ -4512,7 +4512,7 @@ export declare const RoleResumeDraftProposalSchema: z.ZodObject<{
         evidenceId: string;
         sectionIds: string[];
         draftItemIds: string[];
-        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         usageCount: number;
     }[];
 }>;
@@ -5113,7 +5113,7 @@ export declare const ApprovedRoleResumeDraftSchema: z.ZodObject<{
             text: string;
             claimBoundaryIds: string[];
             itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
-            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             metricReferences: {
                 evidenceId: string;
                 originalValue: string;
@@ -5186,7 +5186,7 @@ export declare const ApprovedRoleResumeDraftSchema: z.ZodObject<{
             text: string;
             claimBoundaryIds: string[];
             itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
-            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             metricReferences: {
                 evidenceId: string;
                 originalValue: string;
@@ -5298,7 +5298,7 @@ export declare const ApprovedRoleResumeDraftSchema: z.ZodObject<{
             text: string;
             claimBoundaryIds: string[];
             itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
-            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             metricReferences: {
                 evidenceId: string;
                 originalValue: string;
@@ -5389,7 +5389,7 @@ export declare const ApprovedRoleResumeDraftSchema: z.ZodObject<{
             text: string;
             claimBoundaryIds: string[];
             itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
-            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             metricReferences: {
                 evidenceId: string;
                 originalValue: string;
@@ -5487,7 +5487,7 @@ export declare const ApprovedRoleResumeDraftSchema: z.ZodObject<{
         metricStatus: "metric-prohibited" | "not-applicable" | "reviewed-metric-used";
         assessmentIds: string[];
         claimBoundaryIds: string[];
-        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         draftItemId: string;
         scopeStatus: "requires-review" | "within-approved-scope" | "qualified-scope";
         validationStatus: "valid" | "invalid" | "requires-review";
@@ -5512,7 +5512,7 @@ export declare const ApprovedRoleResumeDraftSchema: z.ZodObject<{
         metricStatus: "metric-prohibited" | "not-applicable" | "reviewed-metric-used";
         assessmentIds: string[];
         claimBoundaryIds: string[];
-        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         draftItemId: string;
         scopeStatus: "requires-review" | "within-approved-scope" | "qualified-scope";
         validationStatus: "valid" | "invalid" | "requires-review";
@@ -5533,7 +5533,7 @@ export declare const ApprovedRoleResumeDraftSchema: z.ZodObject<{
         evidenceId: string;
         sectionIds: string[];
         draftItemIds: string[];
-        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         usageCount: number;
     }, {
         notes: string[];
@@ -5541,7 +5541,7 @@ export declare const ApprovedRoleResumeDraftSchema: z.ZodObject<{
         evidenceId: string;
         sectionIds: string[];
         draftItemIds: string[];
-        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         usageCount: number;
     }>, "many">;
     exclusions: z.ZodArray<z.ZodObject<{
@@ -5817,7 +5817,7 @@ export declare const ApprovedRoleResumeDraftSchema: z.ZodObject<{
             text: string;
             claimBoundaryIds: string[];
             itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
-            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             metricReferences: {
                 evidenceId: string;
                 originalValue: string;
@@ -5961,7 +5961,7 @@ export declare const ApprovedRoleResumeDraftSchema: z.ZodObject<{
         metricStatus: "metric-prohibited" | "not-applicable" | "reviewed-metric-used";
         assessmentIds: string[];
         claimBoundaryIds: string[];
-        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         draftItemId: string;
         scopeStatus: "requires-review" | "within-approved-scope" | "qualified-scope";
         validationStatus: "valid" | "invalid" | "requires-review";
@@ -5974,7 +5974,7 @@ export declare const ApprovedRoleResumeDraftSchema: z.ZodObject<{
         evidenceId: string;
         sectionIds: string[];
         draftItemIds: string[];
-        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         usageCount: number;
     }[];
     roleTitle: string;
@@ -6054,7 +6054,7 @@ export declare const ApprovedRoleResumeDraftSchema: z.ZodObject<{
             text: string;
             claimBoundaryIds: string[];
             itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
-            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             metricReferences: {
                 evidenceId: string;
                 originalValue: string;
@@ -6198,7 +6198,7 @@ export declare const ApprovedRoleResumeDraftSchema: z.ZodObject<{
         metricStatus: "metric-prohibited" | "not-applicable" | "reviewed-metric-used";
         assessmentIds: string[];
         claimBoundaryIds: string[];
-        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         draftItemId: string;
         scopeStatus: "requires-review" | "within-approved-scope" | "qualified-scope";
         validationStatus: "valid" | "invalid" | "requires-review";
@@ -6211,7 +6211,7 @@ export declare const ApprovedRoleResumeDraftSchema: z.ZodObject<{
         evidenceId: string;
         sectionIds: string[];
         draftItemIds: string[];
-        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+        claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
         usageCount: number;
     }[];
     roleTitle: string;

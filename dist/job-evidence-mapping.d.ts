@@ -1,6 +1,6 @@
 import { type JobEvidenceMap, type JobRequirementInputType } from "./job-evidence-map-schemas.js";
 export declare const JOB_EVIDENCE_MAPPER_NAME = "job-evidence-mapper";
-export declare const JOB_EVIDENCE_MAPPER_VERSION = "1";
+export declare const JOB_EVIDENCE_MAPPER_VERSION = "2";
 export declare const JOB_EVIDENCE_MAPPING_POLICY_NAME = "job-evidence-mapping-policy";
 export declare const JOB_EVIDENCE_MAPPING_POLICY_VERSION = "1";
 interface JobEvidenceMapPaths {
@@ -37,6 +37,11 @@ export interface JobEvidenceMapStatus {
     requirementModelStatus: "current" | "missing" | "stale" | "invalid" | null;
     requirementModelHashMatches: boolean | null;
     requirementManifestHashMatches: boolean | null;
+    evidencePinStatus: "missing" | "current" | "stale" | "invalid" | "incompatible" | null;
+    evidencePinHashMatches: boolean | null;
+    evidencePinManifestHashMatches: boolean | null;
+    evidenceSnapshotHashMatches: boolean | null;
+    evidenceSnapshotManifestHashMatches: boolean | null;
     sourcesHashMatches: boolean | null;
     evidenceItemsHashMatches: boolean | null;
     claimsHashMatches: boolean | null;

@@ -354,14 +354,14 @@ export declare function createJobResumeDraftModelInput(context: Awaited<ReturnTy
             order: number;
             objectiveCode: "position-target-without-history-claim" | "summarize-selected-proof-themes" | "group-job-relevant-capabilities" | "surface-reviewed-outcomes" | "organize-reviewed-employment-evidence" | "organize-project-scoped-evidence" | "group-reviewed-technical-capabilities" | "group-reviewed-leadership-capabilities" | "retain-relevant-education" | "retain-relevant-certifications" | "retain-approved-additional-information";
             exclusionIds: string[];
-            allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            allowedContentTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "target-title" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             riskCodes: string[];
             warningCodes: string[];
             maximumItemCount?: number | undefined;
         }[];
         claimBoundaries: {
             id: string;
-            kind: "target-title" | "scope" | "requirement-claim" | "project-employment" | "metric";
+            kind: "scope" | "target-title" | "requirement-claim" | "project-employment" | "metric";
             provenance: {
                 targetId: string;
                 evidenceIds: string[];
@@ -425,8 +425,8 @@ export declare function createJobResumeDraftModelInput(context: Awaited<ReturnTy
             state: "allowed" | "allowed-with-qualifier" | "requires-caution" | "prohibited";
             claimIds: string[];
             rationaleCode: "direct-reviewed-proof" | "qualified-partial-proof" | "deferred-or-ambiguous-proof" | "unsupported-or-conflicting-proof" | "target-title-not-history" | "project-scope-not-employment" | "metric-requires-verification" | "scope-limited-to-reviewed-evidence";
-            allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
-            prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "target-title" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "target-title" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             requiredQualifierCodes: ("evidence-scoped-wording" | "project-scoped-wording" | "adjacent-not-direct" | "partial-support-only" | "exact-reviewed-metric-only" | "target-title-positioning-only")[];
             prohibitedInferenceCodes: ("target-title-as-employment" | "project-as-employment" | "responsibility-as-achievement" | "contribution-as-ownership" | "collaboration-as-management" | "technical-exposure-as-expertise" | "adjacent-technology-as-exact-experience" | "domain-adjacency-as-direct-experience" | "unsupported-seniority" | "unsupported-authority" | "unsupported-team-size" | "unsupported-geography" | "unsupported-scale" | "unsupported-adoption" | "unsupported-dates" | "unsupported-outcomes" | "unverified-metric")[];
             requirementId?: string | undefined;
@@ -494,12 +494,12 @@ export declare function createJobResumeDraftModelInput(context: Awaited<ReturnTy
                     version: string;
                 };
             };
-            state: "allowed" | "prohibited";
             scope: {
                 parentRoleId?: string | undefined;
                 parentProjectId?: string | undefined;
                 sourceSection?: string | undefined;
             };
+            state: "allowed" | "prohibited";
             allowedSections: ("education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information")[];
             qualifierCodes: ("use-exact-approved-text" | "preserve-reviewed-scope" | "do-not-round" | "do-not-combine" | "do-not-infer-scale")[];
             exactApprovedMetricText?: string | undefined;
@@ -606,7 +606,7 @@ export declare function createJobResumeDraftModelInput(context: Awaited<ReturnTy
         sections: {
             id: string;
             ambiguityIds: string[];
-            allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "target-title" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             requiredQualifierCodes: string[];
             prohibitedInferenceCodes: string[];
             inclusion: "exclude" | "include" | "optional";
@@ -766,7 +766,7 @@ export declare function validateJobResumeDraftPayload(payload: ModelJobResumeDra
             evidenceMapLinkIds: string[];
             claimBoundaryIds: string[];
             itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
-            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "technology" | "target-title" | "role-title" | "capability-theme" | "scope" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "target-title" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             metricReferences: {
                 claimId: string;
                 evidenceId: string;

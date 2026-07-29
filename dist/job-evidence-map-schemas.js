@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { EvidenceSourceProvenanceSchema, TargetAnalysisSourceReferenceSchema, } from "./schemas.js";
+import { EVIDENCE_SNAPSHOT_CONTRACT_NAME, EVIDENCE_SNAPSHOT_POLICY_NAME, EVIDENCE_SNAPSHOT_POLICY_VERSION, EVIDENCE_SNAPSHOT_SCHEMA_VERSION, EvidenceSnapshotIdSchema, } from "./evidence-snapshot-schemas.js";
 const Sha256Schema = z.string().regex(/^[a-f0-9]{64}$/);
 const TargetIdSchema = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
 const RelativeWorkspacePathSchema = z.string().min(1).refine((value) => !value.startsWith("/") && !/^[A-Za-z]:[\\/]/.test(value), "Path must be relative to the workspace");
@@ -109,6 +110,47 @@ export const JobEvidenceMapCompletenessSchema = z.object({
         });
     }
 });
+const JobEvidenceMapInputSchema = z.object({
+    target: JobEvidenceMapDependencySchema,
+    jobDescription: JobEvidenceMapDependencySchema,
+    requirementModelType: JobRequirementInputTypeSchema,
+    requirementModel: JobEvidenceMapDependencySchema,
+    requirementManifest: JobEvidenceMapDependencySchema,
+    evidencePin: JobEvidenceMapDependencySchema.optional(),
+    evidencePinManifest: JobEvidenceMapDependencySchema.optional(),
+    evidenceSnapshot: JobEvidenceMapDependencySchema.optional(),
+    evidenceSnapshotManifest: JobEvidenceMapDependencySchema.optional(),
+    evidenceSnapshotId: EvidenceSnapshotIdSchema.optional(),
+    evidenceSnapshotSchemaVersion: z.literal(EVIDENCE_SNAPSHOT_SCHEMA_VERSION).optional(),
+    evidenceSnapshotContractName: z.literal(EVIDENCE_SNAPSHOT_CONTRACT_NAME).optional(),
+    evidenceSnapshotPolicyName: z.literal(EVIDENCE_SNAPSHOT_POLICY_NAME).optional(),
+    evidenceSnapshotPolicyVersion: z.literal(EVIDENCE_SNAPSHOT_POLICY_VERSION).optional(),
+    sources: JobEvidenceMapDependencySchema,
+    evidenceItems: JobEvidenceMapDependencySchema,
+    claims: JobEvidenceMapDependencySchema,
+    eligibleEvidenceSetSha256: Sha256Schema,
+    normalizedInputSha256: Sha256Schema,
+}).strict().superRefine((value, context) => {
+    const snapshotFields = [
+        value.evidencePin,
+        value.evidencePinManifest,
+        value.evidenceSnapshot,
+        value.evidenceSnapshotManifest,
+        value.evidenceSnapshotId,
+        value.evidenceSnapshotSchemaVersion,
+        value.evidenceSnapshotContractName,
+        value.evidenceSnapshotPolicyName,
+        value.evidenceSnapshotPolicyVersion,
+    ];
+    const hasSnapshotInput = snapshotFields.every((entry) => entry !== undefined);
+    const hasAnySnapshotInput = snapshotFields.some((entry) => entry !== undefined);
+    if (hasAnySnapshotInput && !hasSnapshotInput) {
+        context.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Pinned Evidence Snapshot dependency fields must be complete when present.",
+        });
+    }
+});
 export const JobEvidenceMapSchema = z.object({
     schemaVersion: z.literal(1),
     id: z.string().min(1),
@@ -119,18 +161,7 @@ export const JobEvidenceMapSchema = z.object({
         version: z.string().min(1),
         mode: z.literal("deterministic"),
     }).strict(),
-    input: z.object({
-        target: JobEvidenceMapDependencySchema,
-        jobDescription: JobEvidenceMapDependencySchema,
-        requirementModelType: JobRequirementInputTypeSchema,
-        requirementModel: JobEvidenceMapDependencySchema,
-        requirementManifest: JobEvidenceMapDependencySchema,
-        sources: JobEvidenceMapDependencySchema,
-        evidenceItems: JobEvidenceMapDependencySchema,
-        claims: JobEvidenceMapDependencySchema,
-        eligibleEvidenceSetSha256: Sha256Schema,
-        normalizedInputSha256: Sha256Schema,
-    }).strict(),
+    input: JobEvidenceMapInputSchema,
     links: z.array(JobEvidenceLinkSchema),
     requirementMappings: z.array(JobRequirementEvidenceMappingSchema),
     warnings: z.array(JobEvidenceMapWarningSchema),
@@ -154,6 +185,15 @@ export const JobEvidenceMapManifestSchema = z.object({
     requirementModelType: JobRequirementInputTypeSchema,
     requirementModelSha256: Sha256Schema,
     requirementManifestSha256: Sha256Schema,
+    evidencePinSha256: Sha256Schema.optional(),
+    evidencePinManifestSha256: Sha256Schema.optional(),
+    evidenceSnapshotId: EvidenceSnapshotIdSchema.optional(),
+    evidenceSnapshotSha256: Sha256Schema.optional(),
+    evidenceSnapshotManifestSha256: Sha256Schema.optional(),
+    evidenceSnapshotSchemaVersion: z.literal(EVIDENCE_SNAPSHOT_SCHEMA_VERSION).optional(),
+    evidenceSnapshotContractName: z.literal(EVIDENCE_SNAPSHOT_CONTRACT_NAME).optional(),
+    evidenceSnapshotPolicyName: z.literal(EVIDENCE_SNAPSHOT_POLICY_NAME).optional(),
+    evidenceSnapshotPolicyVersion: z.literal(EVIDENCE_SNAPSHOT_POLICY_VERSION).optional(),
     sourcesSha256: Sha256Schema,
     evidenceItemsSha256: Sha256Schema,
     claimsSha256: Sha256Schema,
@@ -161,4 +201,24 @@ export const JobEvidenceMapManifestSchema = z.object({
     normalizedInputSha256: Sha256Schema,
     createdAt: z.string().datetime(),
     updatedAt: z.string().datetime(),
-}).strict();
+}).strict().superRefine((value, context) => {
+    const snapshotFields = [
+        value.evidencePinSha256,
+        value.evidencePinManifestSha256,
+        value.evidenceSnapshotId,
+        value.evidenceSnapshotSha256,
+        value.evidenceSnapshotManifestSha256,
+        value.evidenceSnapshotSchemaVersion,
+        value.evidenceSnapshotContractName,
+        value.evidenceSnapshotPolicyName,
+        value.evidenceSnapshotPolicyVersion,
+    ];
+    const hasSnapshotInput = snapshotFields.every((entry) => entry !== undefined);
+    const hasAnySnapshotInput = snapshotFields.some((entry) => entry !== undefined);
+    if (hasAnySnapshotInput && !hasSnapshotInput) {
+        context.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Pinned Evidence Snapshot manifest fields must be complete when present.",
+        });
+    }
+});
