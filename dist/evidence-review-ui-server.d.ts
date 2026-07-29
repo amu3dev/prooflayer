@@ -13,6 +13,7 @@ export interface PreparedEvidenceReviewUiLaunch {
     batch: EvidenceReviewUiBatch;
     host: string;
     port: number;
+    origin: string;
     url: string;
     readOnly: boolean;
     serverEntryPath: string;
@@ -31,5 +32,6 @@ export declare function launchEvidenceReviewUi(options: EvidenceReviewUiLaunchOp
 export declare function formatEvidenceReviewUiLaunch(prepared: PreparedEvidenceReviewUiLaunch): string;
 export declare function waitForEvidenceReviewUiExit(child: ChildProcess): Promise<void>;
 export declare function assertLoopbackHost(host: string): void;
+export declare function buildEvidenceReviewUiOrigin(host: string, port: number): string;
 export declare function findAvailableLoopbackPort(host: string, startPort: number): Promise<number>;
 export {};

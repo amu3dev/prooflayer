@@ -30,11 +30,12 @@ if (Astro.request.method === "POST") {
       headers: { Allow: "GET" },
     });
   }
+  if (!isSameOriginSubmission(Astro.request, config.origin)) {
+    return new Response("The review submission origin is not allowed.", { status: 403 });
+  }
   const formData = await Astro.request.formData();
   values = formRecord(formData);
-  if (!isSameOriginSubmission(Astro.request)) {
-    submissionError = "The review submission origin is not allowed.";
-  } else if (values.csrfToken !== config.csrfToken) {
+  if (values.csrfToken !== config.csrfToken) {
     submissionError = "The review form expired or failed local request verification. Reload and try again.";
   } else {
     try {

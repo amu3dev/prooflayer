@@ -18,14 +18,19 @@ export async function prepareEvidenceReviewUiLaunch(options, dependencies = {}) 
     const port = await (dependencies.findPort ?? findAvailableLoopbackPort)(host, requestedPort);
     const serverEntryPath = reviewerUiServerEntryPath();
     if (!(await pathExists(serverEntryPath))) {
+        throw new Error("Local Evidence Review UI server is not built. Run `npm run build` before starting it.");
+    }
+    if (!(await pathExists(reviewerUiAstroServerEntryPath()))) {
         throw new Error("Local Evidence Review UI is not built. Run `npm run build:ui` before starting it.");
     }
+    const origin = buildEvidenceReviewUiOrigin(host, port);
     return {
         workspace: path.resolve(options.workspace),
         batch,
         host,
         port,
-        url: `http://${urlHost(host)}:${port}/review/${batch.batchId}`,
+        origin,
+        url: `${origin}/review/${batch.batchId}`,
         readOnly: Boolean(options.readOnly),
         serverEntryPath,
     };
@@ -41,6 +46,8 @@ export async function launchEvidenceReviewUi(options, dependencies = {}) {
         PROOFLAYER_UI_BATCH_ID: prepared.batch.batchId,
         PROOFLAYER_UI_READ_ONLY: prepared.readOnly ? "1" : "0",
         PROOFLAYER_UI_CSRF_TOKEN: csrfToken,
+        PROOFLAYER_UI_ORIGIN: prepared.origin,
+        ASTRO_NODE_AUTOSTART: "disabled",
     };
     const child = (dependencies.spawnServer ?? spawnEvidenceReviewUiServer)(prepared.serverEntryPath, environment);
     await (dependencies.waitUntilReady ?? waitUntilEvidenceReviewUiReady)(prepared.url, child);
@@ -100,6 +107,11 @@ export function assertLoopbackHost(host) {
         throw new Error(`Unsafe UI host "${host}". Local Evidence Review UI accepts only 127.0.0.1, localhost, or ::1.`);
     }
 }
+export function buildEvidenceReviewUiOrigin(host, port) {
+    assertLoopbackHost(host);
+    assertPort(port);
+    return new URL(`http://${urlHost(host)}:${port}`).origin;
+}
 export async function findAvailableLoopbackPort(host, startPort) {
     assertLoopbackHost(host);
     assertPort(startPort);
@@ -110,6 +122,10 @@ export async function findAvailableLoopbackPort(host, startPort) {
     throw new Error(`No available loopback port found from ${startPort}.`);
 }
 function reviewerUiServerEntryPath() {
+    const moduleDirectory = path.dirname(fileURLToPath(import.meta.url));
+    return path.resolve(moduleDirectory, "../dist/evidence-review-ui-http-server.js");
+}
+function reviewerUiAstroServerEntryPath() {
     const moduleDirectory = path.dirname(fileURLToPath(import.meta.url));
     return path.resolve(moduleDirectory, "../apps/reviewer-ui/dist/server/entry.mjs");
 }

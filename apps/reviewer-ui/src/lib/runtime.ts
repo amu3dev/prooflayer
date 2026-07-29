@@ -3,13 +3,15 @@ export interface EvidenceReviewUiRuntimeConfig {
   batchId: string;
   readOnly: boolean;
   csrfToken: string;
+  origin: string;
 }
 
 export function evidenceReviewUiRuntimeConfig(): EvidenceReviewUiRuntimeConfig {
   const workspace = process.env.PROOFLAYER_UI_WORKSPACE;
   const batchId = process.env.PROOFLAYER_UI_BATCH_ID;
   const csrfToken = process.env.PROOFLAYER_UI_CSRF_TOKEN;
-  if (!workspace || !batchId || !csrfToken) {
+  const origin = process.env.PROOFLAYER_UI_ORIGIN;
+  if (!workspace || !batchId || !csrfToken || !origin) {
     throw new Error("Local Evidence Review UI runtime is not configured.");
   }
   if (!/^evidence-review-batch_[a-f0-9]{20}$/.test(batchId)) {
@@ -20,17 +22,34 @@ export function evidenceReviewUiRuntimeConfig(): EvidenceReviewUiRuntimeConfig {
     batchId,
     readOnly: process.env.PROOFLAYER_UI_READ_ONLY === "1",
     csrfToken,
+    origin: validateRuntimeOrigin(origin),
   };
 }
 
-export function isSameOriginSubmission(request: Request): boolean {
+export function isSameOriginSubmission(request: Request, expectedOrigin: string): boolean {
   const origin = request.headers.get("origin");
-  if (!origin) return true;
+  const host = request.headers.get("host");
+  if (!origin || !host) return false;
   try {
-    return new URL(origin).origin === new URL(request.url).origin;
+    const expected = new URL(expectedOrigin);
+    return origin === expected.origin
+      && new URL(request.url).origin === expected.origin
+      && new URL(`http://${host}`).host === expected.host;
   } catch {
     return false;
   }
+}
+
+function validateRuntimeOrigin(origin: string): string {
+  const parsed = new URL(origin);
+  if (
+    parsed.protocol !== "http:"
+    || !["127.0.0.1", "localhost", "[::1]"].includes(parsed.hostname)
+    || parsed.origin !== origin
+  ) {
+    throw new Error("Local Evidence Review UI origin is invalid.");
+  }
+  return parsed.origin;
 }
 
 export function formRecord(formData: FormData): Record<string, string | undefined> {

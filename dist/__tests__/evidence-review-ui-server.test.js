@@ -1,17 +1,17 @@
 import { spawn } from "node:child_process";
+import { request as httpRequest } from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
-import { findAvailableLoopbackPort } from "../evidence-review-ui-server.js";
+import { buildEvidenceReviewUiOrigin, findAvailableLoopbackPort, } from "../evidence-review-ui-server.js";
 import { listEvidenceClaimReviews } from "../evidence-claim-review.js";
 import { submitEvidenceReviewUiClaim } from "../evidence-review-ui.js";
 import { createEvidenceReviewUiFixture, validApprovedFields, } from "./evidence-review-ui-fixture.js";
 const children = [];
+let nextIpv4Port = 4700;
+let nextLocalhostPort = 4800;
 afterEach(async () => {
-    for (const child of children.splice(0)) {
-        if (child.exitCode === null)
-            child.kill("SIGTERM");
-    }
+    await Promise.all(children.splice(0).map(stopUiServer));
 });
 describe("Astro Local Evidence Review UI routes", () => {
     it("renders a locked human-first dashboard and self-contained claim pages safely", async () => {
@@ -120,31 +120,78 @@ describe("Astro Local Evidence Review UI routes", () => {
             },
             body,
         });
-        expect([403, 200]).toContain(wrongOrigin.status);
-        if (wrongOrigin.status === 200) {
-            expect(await wrongOrigin.text()).toContain("origin is not allowed");
-        }
+        expect(wrongOrigin.status).toBe(403);
+    }, 20_000);
+    it.each(["127.0.0.1", "localhost"])("accepts a browser-like same-origin POST on %s without mixing loopback authorities", async (host) => {
+        const fixture = await createEvidenceReviewUiFixture();
+        const server = await startUiServer(fixture.workspace, fixture.batchId, false, host);
+        const claimUrl = `${server.origin}/review/${fixture.batchId}/claim/claim_review_ui_3`;
+        const claimResponse = await fetch(claimUrl);
+        const claimHtml = await claimResponse.text();
+        expect(claimResponse.status).toBe(200);
+        expect(claimHtml).toContain('<form class="review-form" method="post" novalidate>');
+        expect(claimHtml).not.toMatch(/<form[^>]+action=/);
+        expect(claimHtml).not.toContain(host === "localhost" ? "127.0.0.1" : "localhost");
+        const body = new URLSearchParams({
+            csrfToken: server.csrfToken,
+            ...stringFields(validApprovedFields()),
+        });
+        const foreignOrigin = await fetch(claimUrl, {
+            method: "POST",
+            redirect: "manual",
+            headers: {
+                origin: "http://malicious.invalid",
+                "content-type": "application/x-www-form-urlencoded",
+            },
+            body,
+        });
+        expect(foreignOrigin.status).toBe(403);
+        const alternateHost = host === "localhost" ? "127.0.0.1" : "localhost";
+        const mismatchedHost = await postWithHost(claimUrl, `${alternateHost}:${new URL(server.origin).port}`, server.origin, body.toString());
+        expect(mismatchedHost).toBe(421);
+        const unsafeHost = await postWithHost(claimUrl, "malicious.invalid", server.origin, body.toString());
+        expect(unsafeHost).toBe(421);
+        const missingHost = await postWithHost(claimUrl, undefined, server.origin, body.toString());
+        expect(missingHost).toBe(400);
+        expect((await listEvidenceClaimReviews(fixture.workspace)).every(({ status }) => status === "missing")).toBe(true);
+        const valid = await fetch(claimUrl, {
+            method: "POST",
+            redirect: "manual",
+            headers: {
+                origin: server.origin,
+                "content-type": "application/x-www-form-urlencoded",
+            },
+            body,
+        });
+        expect(valid.status).toBe(303);
+        const reviews = await listEvidenceClaimReviews(fixture.workspace);
+        expect(reviews.filter(({ status }) => status === "current")).toEqual([
+            expect.objectContaining({ claimId: "claim_review_ui_3", decision: "approved" }),
+        ]);
     }, 20_000);
 });
-async function startUiServer(workspace, batchId, readOnly) {
-    const port = await findAvailableLoopbackPort("127.0.0.1", 4700);
+async function startUiServer(workspace, batchId, readOnly, host = "127.0.0.1") {
+    const requestedPort = host === "localhost" ? nextLocalhostPort++ : nextIpv4Port++;
+    const port = await findAvailableLoopbackPort(host, requestedPort);
     const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
-    const entry = path.join(root, "apps/reviewer-ui/dist/server/entry.mjs");
+    const entry = path.join(root, "dist/evidence-review-ui-http-server.js");
     const csrfToken = "test-csrf-token-local-only";
+    const origin = buildEvidenceReviewUiOrigin(host, port);
     const child = spawn(process.execPath, [entry], {
         env: {
             ...process.env,
-            HOST: "127.0.0.1",
+            HOST: host,
             PORT: String(port),
             PROOFLAYER_UI_WORKSPACE: workspace,
             PROOFLAYER_UI_BATCH_ID: batchId,
             PROOFLAYER_UI_READ_ONLY: readOnly ? "1" : "0",
             PROOFLAYER_UI_CSRF_TOKEN: csrfToken,
+            PROOFLAYER_UI_ORIGIN: origin,
+            ASTRO_NODE_AUTOSTART: "disabled",
         },
         stdio: "ignore",
     });
     children.push(child);
-    const origin = `http://127.0.0.1:${port}`;
     const deadline = Date.now() + 10_000;
     while (Date.now() < deadline) {
         if (child.exitCode !== null)
@@ -161,6 +208,42 @@ async function startUiServer(workspace, batchId, readOnly) {
     }
     child.kill("SIGTERM");
     throw new Error("Astro test server did not become ready.");
+}
+async function stopUiServer(child) {
+    if (child.exitCode !== null)
+        return;
+    await new Promise((resolve) => {
+        const forceStop = setTimeout(() => child.kill("SIGKILL"), 2_000);
+        forceStop.unref();
+        child.once("exit", () => {
+            clearTimeout(forceStop);
+            resolve();
+        });
+        child.kill("SIGTERM");
+    });
+}
+async function postWithHost(destination, hostHeader, origin, body) {
+    const url = new URL(destination);
+    return new Promise((resolve, reject) => {
+        const request = httpRequest({
+            hostname: url.hostname,
+            port: url.port,
+            path: `${url.pathname}${url.search}`,
+            method: "POST",
+            setHost: false,
+            headers: {
+                ...(hostHeader ? { Host: hostHeader } : {}),
+                Origin: origin,
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Content-Length": Buffer.byteLength(body),
+            },
+        }, (response) => {
+            response.resume();
+            response.once("end", () => resolve(response.statusCode ?? 0));
+        });
+        request.once("error", reject);
+        request.end(body);
+    });
 }
 function stringFields(value) {
     return Object.fromEntries(Object.entries(value).filter((entry) => entry[1] !== undefined));

@@ -10,8 +10,10 @@ import {
 } from "../evidence-review-ui.js";
 import { listEvidenceClaimReviews } from "../evidence-claim-review.js";
 import { pathExists, walkFiles } from "../fs-utils.js";
+import { evidenceReviewUiHttpRuntime } from "../evidence-review-ui-http-server.js";
 import {
   assertLoopbackHost,
+  buildEvidenceReviewUiOrigin,
   formatEvidenceReviewUiLaunch,
   prepareEvidenceReviewUiLaunch,
 } from "../evidence-review-ui-server.js";
@@ -261,6 +263,7 @@ describe("Local Evidence Review UI launcher", () => {
     expect(prepared).toMatchObject({
       host: "127.0.0.1",
       port: 4567,
+      origin: "http://127.0.0.1:4567",
       readOnly: true,
     });
     expect(prepared.url).toBe(`http://127.0.0.1:4567/review/${fixture.batchId}`);
@@ -269,6 +272,31 @@ describe("Local Evidence Review UI launcher", () => {
     expect(output).toContain("4 selected");
     expect(output).toContain("The server is local-only.");
     expect(await readFile(path.join(fixture.workspace, "kb/claims.json"))).toEqual(before);
+  });
+
+  it("keeps each explicitly selected loopback host canonical for the full launch", async () => {
+    const fixture = await createEvidenceReviewUiFixture();
+    const prepared = await prepareEvidenceReviewUiLaunch({
+      workspace: fixture.workspace,
+      batchId: fixture.batchId,
+      host: "localhost",
+      port: 4765,
+    }, {
+      findPort: async () => 4765,
+    });
+
+    expect(prepared.origin).toBe("http://localhost:4765");
+    expect(prepared.url).toBe(`http://localhost:4765/review/${fixture.batchId}`);
+    expect(buildEvidenceReviewUiOrigin("127.0.0.1", 4765)).toBe("http://127.0.0.1:4765");
+    expect(buildEvidenceReviewUiOrigin("localhost", 4765)).toBe("http://localhost:4765");
+  });
+
+  it("refuses a runtime origin that differs from the selected loopback authority", () => {
+    expect(() => evidenceReviewUiHttpRuntime({
+      HOST: "127.0.0.1",
+      PORT: "4765",
+      PROOFLAYER_UI_ORIGIN: "http://localhost:4765",
+    })).toThrow(/does not match its selected host and port/);
   });
 
   it("rejects missing batches, unsafe hosts, and invalid ports", async () => {
