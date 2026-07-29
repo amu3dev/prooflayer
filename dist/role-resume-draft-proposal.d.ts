@@ -839,11 +839,11 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
                 } | undefined;
             };
             evidenceIds: string[];
+            requiredQualifiers: string[];
             allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             boundaryType: "allowed" | "prohibited" | "requires-review" | "allowed-with-caution";
             prohibitedInferences: string[];
-            requiredQualifiers: string[];
             expectationId?: string | undefined;
             allowedScope?: {
                 roleScope?: string[] | undefined;
@@ -984,6 +984,7 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
         sections: {
             status: "exclude" | "include" | "optional";
             id: string;
+            requiredQualifiers: string[];
             allowedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             prohibitedClaimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             order: number;
@@ -997,7 +998,6 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
             objective: string;
             cautionNotes: string[];
             prohibitedInferences: string[];
-            requiredQualifiers: string[];
             allowedExpectationIds: string[];
             allowedMatchIds: string[];
             metricPermission: "prohibited" | "reviewed-only";
@@ -1141,6 +1141,7 @@ export declare function validateRoleResumeDraftPayload(payload: ModelRoleResumeD
             evidenceIds: string[];
             approvedMatchIds: string[];
             text: string;
+            qualifiers: string[];
             claimBoundaryIds: string[];
             itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
             claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
@@ -1149,8 +1150,8 @@ export declare function validateRoleResumeDraftPayload(payload: ModelRoleResumeD
                 originalValue: string;
                 reviewStatus: "reviewed";
                 sourcePath?: string | undefined;
-                normalizedValue?: string | undefined;
                 unit?: string | undefined;
+                normalizedValue?: string | undefined;
                 temporalContext?: string | undefined;
                 attributionScope?: string | undefined;
             }[];
@@ -1160,7 +1161,6 @@ export declare function validateRoleResumeDraftPayload(payload: ModelRoleResumeD
                 status: "approved" | "qualified";
                 evidenceIds: string[];
             }[];
-            qualifiers: string[];
             sourceAssessmentIds: string[];
         }[];
         provenance: {

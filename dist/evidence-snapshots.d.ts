@@ -16,6 +16,7 @@ export interface BuildEvidenceSnapshotResult {
     evidenceItemCount: number;
     claimCount: number;
     approvedClaimCount: number;
+    reviewedClaimCount: number;
     eligibleRoleEvidenceCount: number;
     eligibleJobEvidenceCount: number;
     verifiedMetricCount: number;

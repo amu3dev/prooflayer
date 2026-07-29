@@ -2,6 +2,7 @@ import path from "node:path";
 import { hashFile, hashText, pathExists, readJson, walkFiles, writeJsonAtomic, } from "./fs-utils.js";
 import { ClaimSchema, EvidenceItemSchema, SourceSchema, } from "./schemas.js";
 import { stableJson } from "./target-proposal.js";
+import { loadEffectiveEvidenceClaimReviews, } from "./evidence-claim-review.js";
 import { EVIDENCE_SNAPSHOT_CONTRACT_NAME, EVIDENCE_SNAPSHOT_EXPORTER_NAME, EVIDENCE_SNAPSHOT_EXPORTER_VERSION, EVIDENCE_SNAPSHOT_POLICY_NAME, EVIDENCE_SNAPSHOT_POLICY_VERSION, EVIDENCE_SNAPSHOT_SCHEMA_VERSION, EvidenceFoundationSnapshotSchema, EvidenceSnapshotIdSchema, EvidenceSnapshotManifestSchemaV1, } from "./evidence-snapshot-schemas.js";
 const SNAPSHOT_ROOT = "evidence-snapshots";
 const SNAPSHOT_FILE = "evidence-snapshot.json";
@@ -36,10 +37,12 @@ export async function buildEvidenceSnapshot(workspace, options = {}) {
         producerName: EVIDENCE_SNAPSHOT_EXPORTER_NAME,
         producerVersion: EVIDENCE_SNAPSHOT_EXPORTER_VERSION,
         sourceInventorySha256: calculated.sourceFoundation.inventorySha256,
+        reviewInventorySha256: calculated.sourceFoundation.reviewInventorySha256,
         sourceArtifactCount: calculated.completeness.sourceArtifactCount,
         evidenceItemCount: calculated.completeness.evidenceItemCount,
         claimCount: calculated.completeness.claimCount,
         approvedClaimCount: calculated.completeness.approvedClaimCount,
+        reviewedClaimCount: calculated.completeness.reviewedClaimCount,
         eligibleRoleEvidenceCount: calculated.completeness.eligibleRoleEvidenceCount,
         eligibleJobEvidenceCount: calculated.completeness.eligibleJobEvidenceCount,
         verifiedMetricCount: calculated.completeness.verifiedMetricCount,
@@ -81,7 +84,17 @@ export async function calculateEvidenceFoundationSnapshot(workspace) {
     assertUnique(sources.map(({ id }) => id), "source");
     assertUnique(evidenceItems.map(({ id }) => id), "evidence item");
     assertUnique(claims.map(({ id }) => id), "claim");
+    const effectiveReviews = await loadEffectiveEvidenceClaimReviews(workspace);
+    const reviewInventorySha256 = hashText(stableJson([...effectiveReviews.entries()].sort(([left], [right]) => left.localeCompare(right))
+        .map(([claimId, loaded]) => ({
+        claimId,
+        reviewId: loaded.review.id,
+        reviewSha256: loaded.reviewSha256,
+        decision: loaded.review.decision,
+        projectionId: loaded.review.approvedProjection?.id,
+    }))));
     const sourceById = new Map(sources.map((source) => [source.id, source]));
+    const evidenceById = new Map(evidenceItems.map((evidence) => [evidence.id, evidence]));
     const claimByEvidence = new Map();
     for (const claim of claims) {
         for (const evidenceId of claim.supportingEvidenceIds) {
@@ -90,32 +103,36 @@ export async function calculateEvidenceFoundationSnapshot(workspace) {
             claimByEvidence.set(evidenceId, supporting);
         }
     }
-    const claimBaseEligibility = new Map(claims.map((claim) => [
-        claim.id,
-        claimEligibilityReasons(claim),
-    ]));
     const evidenceBase = new Map(evidenceItems.map((evidence) => [
         evidence.id,
-        evidenceEligibility(evidence, evidence.sourceIds.map((sourceId) => sourceById.get(sourceId))),
+        evidenceEligibilityV2(evidence, evidence.sourceIds.map((sourceId) => sourceById.get(sourceId))),
     ]));
-    const eligibleEvidenceIds = new Set(evidenceItems
-        .filter((evidence) => {
-        const base = evidenceBase.get(evidence.id);
-        if (base.reasons.length > 0)
-            return false;
-        return (claimByEvidence.get(evidence.id) ?? []).some((claim) => claimBaseEligibility.get(claim.id).length === 0);
-    })
+    const roleReviewEligible = new Set(claims.filter((claim) => reviewEligibilityReasons(effectiveReviews.get(claim.id), "role").length === 0)
         .map(({ id }) => id));
-    const eligibleClaimIds = new Set(claims
-        .filter((claim) => claimBaseEligibility.get(claim.id).length === 0 &&
-        claim.supportingEvidenceIds.some((id) => eligibleEvidenceIds.has(id)))
+    const jobReviewEligible = new Set(claims.filter((claim) => reviewEligibilityReasons(effectiveReviews.get(claim.id), "job").length === 0)
         .map(({ id }) => id));
+    const eligibleRoleEvidenceIds = evidenceItems.filter((evidence) => evidenceBase.get(evidence.id).reasons.length === 0 &&
+        (claimByEvidence.get(evidence.id) ?? []).some((claim) => roleReviewEligible.has(claim.id)))
+        .map(({ id }) => id).sort();
+    const eligibleJobEvidenceIds = evidenceItems.filter((evidence) => evidenceBase.get(evidence.id).reasons.length === 0 &&
+        (claimByEvidence.get(evidence.id) ?? []).some((claim) => jobReviewEligible.has(claim.id)))
+        .map(({ id }) => id).sort();
+    const roleEvidenceSet = new Set(eligibleRoleEvidenceIds);
+    const jobEvidenceSet = new Set(eligibleJobEvidenceIds);
+    const eligibleRoleClaimIds = claims.filter((claim) => roleReviewEligible.has(claim.id) && claim.supportingEvidenceIds.some((id) => roleEvidenceSet.has(id)))
+        .map(({ id }) => id).sort();
+    const eligibleJobClaimIds = claims.filter((claim) => jobReviewEligible.has(claim.id) && claim.supportingEvidenceIds.some((id) => jobEvidenceSet.has(id)))
+        .map(({ id }) => id).sort();
+    const roleClaimSet = new Set(eligibleRoleClaimIds);
+    const jobClaimSet = new Set(eligibleJobClaimIds);
     const evidenceRecords = evidenceItems.map((evidence) => {
         const base = evidenceBase.get(evidence.id);
-        const eligible = eligibleEvidenceIds.has(evidence.id);
+        const roleEligible = roleEvidenceSet.has(evidence.id);
+        const jobEligible = jobEvidenceSet.has(evidence.id);
+        const contentEligible = roleEligible || jobEligible;
         const reasons = [
             ...base.reasons,
-            ...(!eligible && base.reasons.length === 0
+            ...(!contentEligible && base.reasons.length === 0
                 ? ["no-eligible-claim"]
                 : []),
         ];
@@ -128,110 +145,120 @@ export async function calculateEvidenceFoundationSnapshot(workspace) {
             sensitivityFlags: [...evidence.sensitivityFlags].sort(),
             confidence: evidence.confidence,
             supportingClaimIds: (claimByEvidence.get(evidence.id) ?? [])
-                .map(({ id }) => id)
-                .sort(),
+                .map(({ id }) => id).sort(),
             eligibility: {
-                roleMatching: eligible,
-                jobMapping: eligible,
-                reasons,
+                roleMatching: roleEligible,
+                jobMapping: jobEligible,
+                reasons: [...new Set(reasons)].sort(),
             },
             sources: base.sources,
-            ...(eligible ? { content: evidence } : {}),
+            ...(contentEligible ? { content: evidence } : {}),
         };
     });
     const claimRecords = claims.map((claim) => {
-        const eligible = eligibleClaimIds.has(claim.id);
-        const ownReasons = claimBaseEligibility.get(claim.id);
-        const reasons = [
-            ...ownReasons,
-            ...(!eligible && ownReasons.length === 0
-                ? ["no-eligible-evidence"]
-                : []),
+        const review = effectiveReviews.get(claim.id);
+        const roleEligible = roleClaimSet.has(claim.id);
+        const jobEligible = jobClaimSet.has(claim.id);
+        const contentEligible = roleEligible || jobEligible;
+        const projected = review?.review.approvedProjection
+            ? projectApprovedClaim(claim, review)
+            : undefined;
+        const ownReasons = [
+            ...reviewEligibilityReasons(review, "role"),
+            ...reviewEligibilityReasons(review, "job"),
         ];
+        const reasons = [
+            ...new Set([
+                ...ownReasons,
+                ...(!contentEligible && ownReasons.length === 0
+                    ? ["no-eligible-evidence"]
+                    : []),
+            ]),
+        ].sort();
         return {
             id: claim.id,
-            contentSha256: hashText(stableJson(claim)),
+            contentSha256: hashText(stableJson(projected ?? claim)),
+            sourceContentSha256: hashText(stableJson(claim)),
             supportingEvidenceIds: [...claim.supportingEvidenceIds].sort(),
-            approvalStatus: claim.approvalStatus,
-            outputReadiness: claim.outputReadiness,
-            publicSafe: claim.publicSafe,
-            needsConfirmation: claim.needsConfirmation,
-            metricStatus: claim.metricStatus,
+            approvalStatus: review?.review.approvedProjection ? "approved" : claim.approvalStatus,
+            outputReadiness: review?.review.resumeReadiness === "resume-ready"
+                ? "resume_ready"
+                : claim.outputReadiness,
+            publicSafe: review?.review.publicSafety === "public-safe",
+            needsConfirmation: !review?.review.approvedProjection,
+            metricStatus: review?.review.metricReview.state === "verified"
+                ? "verified_metric"
+                : review?.review.metricReview.state === "not-a-metric"
+                    ? "no_metric"
+                    : claim.metricStatus,
             factualConfidence: claim.factualConfidence,
             eligibility: {
-                roleMatching: eligible,
-                jobMapping: eligible,
+                roleMatching: roleEligible,
+                jobMapping: jobEligible,
                 reasons,
             },
-            ...(eligible ? { content: claim } : {}),
+            sourceState: {
+                approvalStatus: claim.approvalStatus,
+                outputReadiness: claim.outputReadiness,
+                publicSafe: claim.publicSafe,
+                needsConfirmation: claim.needsConfirmation,
+                metricStatus: claim.metricStatus,
+            },
+            ...(review ? { review: review.projection } : {}),
+            ...(contentEligible && projected ? { content: projected } : {}),
         };
     });
-    const verifiedMetrics = claims
-        .filter((claim) => eligibleClaimIds.has(claim.id) &&
-        claim.metricStatus === "verified_metric")
-        .map((claim) => {
-        const exactText = claim.approvedWording ?? claim.claim;
-        return {
-            id: `verified-metric_${hashText(stableJson({
+    const verifiedMetrics = claims.flatMap((claim) => {
+        const review = effectiveReviews.get(claim.id)?.review;
+        if (!review ||
+            review.metricReview.state !== "verified" ||
+            !review.metricReview.exactText ||
+            !(roleClaimSet.has(claim.id) || jobClaimSet.has(claim.id)))
+            return [];
+        const exactText = review.metricReview.exactText;
+        return [{
+                id: `verified-metric_${hashText(stableJson({
+                    reviewId: review.id,
+                    claimId: claim.id,
+                    exactText,
+                    evidenceIds: [...claim.supportingEvidenceIds].sort(),
+                })).slice(0, 16)}`,
                 claimId: claim.id,
-                exactText,
                 evidenceIds: [...claim.supportingEvidenceIds].sort(),
-            })).slice(0, 16)}`,
-            claimId: claim.id,
-            evidenceIds: [...claim.supportingEvidenceIds].sort(),
-            exactText,
-            textSha256: hashText(exactText),
-            scope: {
-                ...(claim.parentRoleId ? { parentRoleId: claim.parentRoleId } : {}),
-                ...(claim.parentProjectId
-                    ? { parentProjectId: claim.parentProjectId }
-                    : {}),
-                ...(claim.dateRange ? { dateRange: claim.dateRange } : {}),
-            },
-        };
-    })
-        .sort(byId);
-    const eligibleRoleEvidenceIds = [...eligibleEvidenceIds].sort();
-    const eligibleJobEvidenceIds = [...eligibleEvidenceIds].sort();
-    const eligibleRoleClaimIds = [...eligibleClaimIds].sort();
-    const eligibleJobClaimIds = [...eligibleClaimIds].sort();
+                exactText,
+                textSha256: hashText(exactText),
+                scope: {
+                    ...(claim.parentRoleId ? { parentRoleId: claim.parentRoleId } : {}),
+                    ...(claim.parentProjectId ? { parentProjectId: claim.parentProjectId } : {}),
+                    ...(claim.dateRange ? { dateRange: claim.dateRange } : {}),
+                },
+            }];
+    }).sort(byId);
     const eligibleRoleEvidenceSetSha256 = eligibilitySetHash(evidenceRecords, claimRecords, eligibleRoleEvidenceIds, eligibleRoleClaimIds);
     const eligibleJobEvidenceSetSha256 = eligibilitySetHash(evidenceRecords, claimRecords, eligibleJobEvidenceIds, eligibleJobClaimIds);
     const warnings = [
         ...(eligibleJobEvidenceIds.length === 0
-            ? [snapshotWarning("ZERO_ELIGIBLE_JOB_EVIDENCE", "The source Evidence Foundation contains no evidence currently eligible for Job Mapping.", [])]
+            ? [snapshotWarning("ZERO_ELIGIBLE_JOB_EVIDENCE", "The Evidence Foundation has no human-reviewed evidence currently eligible for Job Mapping.", [])]
             : []),
         ...(eligibleRoleEvidenceIds.length === 0
-            ? [snapshotWarning("ZERO_ELIGIBLE_ROLE_EVIDENCE", "The source Evidence Foundation contains no evidence currently eligible for Role Matching.", [])]
+            ? [snapshotWarning("ZERO_ELIGIBLE_ROLE_EVIDENCE", "The Evidence Foundation has no human-reviewed evidence currently eligible for Role Matching.", [])]
             : []),
-        ...(evidenceRecords.some((record) => !record.content) ||
-            claimRecords.some((record) => !record.content)
-            ? [snapshotWarning("INELIGIBLE_CONTENT_REDACTED", "Ineligible record content is omitted; identity, trust state, eligibility, and source hashes remain available for audit.", [
+        ...(evidenceRecords.some((record) => !record.content) || claimRecords.some((record) => !record.content)
+            ? [snapshotWarning("INELIGIBLE_CONTENT_REDACTED", "Ineligible content is omitted; immutable source hashes, human-review state, and eligibility remain available for audit.", [
                     ...evidenceRecords.filter((record) => !record.content).map(({ id }) => id),
                     ...claimRecords.filter((record) => !record.content).map(({ id }) => id),
                 ].sort())]
             : []),
-        ...claims.some((claim) => claim.metricStatus === "verified_metric" && !eligibleClaimIds.has(claim.id))
-            ? [snapshotWarning("VERIFIED_METRIC_CONTENT_REDACTED", "A verified metric belongs to an ineligible claim; its state is retained on the claim record but its wording is not exported.", claims
-                    .filter((claim) => claim.metricStatus === "verified_metric" &&
-                    !eligibleClaimIds.has(claim.id))
-                    .map(({ id }) => id)
-                    .sort())]
-            : [],
     ].sort(byId);
-    const identityInput = snapshotIdentityInput(sourceInventorySha256, evidenceRecords, claimRecords, verifiedMetrics);
+    const identityInput = snapshotIdentityInput(sourceInventorySha256, evidenceRecords, claimRecords, verifiedMetrics, EVIDENCE_SNAPSHOT_POLICY_VERSION, reviewInventorySha256);
     const id = snapshotIdFor(identityInput);
+    const reviewedClaimCount = effectiveReviews.size;
+    const approvedClaimCount = [...effectiveReviews.values()].filter(({ review }) => review.decision === "approved" || review.decision === "approved-with-qualifier").length;
     return EvidenceFoundationSnapshotSchema.parse({
         schemaVersion: EVIDENCE_SNAPSHOT_SCHEMA_VERSION,
         id,
-        contract: {
-            name: EVIDENCE_SNAPSHOT_CONTRACT_NAME,
-            version: "1",
-        },
-        policy: {
-            name: EVIDENCE_SNAPSHOT_POLICY_NAME,
-            version: EVIDENCE_SNAPSHOT_POLICY_VERSION,
-        },
+        contract: { name: EVIDENCE_SNAPSHOT_CONTRACT_NAME, version: "1" },
+        policy: { name: EVIDENCE_SNAPSHOT_POLICY_NAME, version: EVIDENCE_SNAPSHOT_POLICY_VERSION },
         producer: {
             name: EVIDENCE_SNAPSHOT_EXPORTER_NAME,
             version: EVIDENCE_SNAPSHOT_EXPORTER_VERSION,
@@ -240,6 +267,7 @@ export async function calculateEvidenceFoundationSnapshot(workspace) {
         sourceFoundation: {
             id: FOUNDATION_ID,
             inventorySha256: sourceInventorySha256,
+            reviewInventorySha256,
             artifacts,
         },
         evidenceItems: evidenceRecords,
@@ -256,7 +284,8 @@ export async function calculateEvidenceFoundationSnapshot(workspace) {
             sourceArtifactCount: artifacts.length,
             evidenceItemCount: evidenceRecords.length,
             claimCount: claimRecords.length,
-            approvedClaimCount: claims.filter(({ approvalStatus }) => approvalStatus === "approved").length,
+            approvedClaimCount,
+            reviewedClaimCount,
             eligibleRoleEvidenceCount: eligibleRoleEvidenceIds.length,
             eligibleJobEvidenceCount: eligibleJobEvidenceIds.length,
             verifiedMetricCount: verifiedMetrics.length,
@@ -317,7 +346,7 @@ export async function getEvidenceSnapshotStatus(workspace, snapshotId) {
     const contentHash = await hashFile(paths.snapshotPath);
     const contentHashMatches = contentHash === manifest.contentSha256;
     const validation = validateSnapshotContents(snapshot);
-    const identityMatches = snapshot.id === snapshotIdFor(snapshotIdentityInput(snapshot.sourceFoundation.inventorySha256, snapshot.evidenceItems, snapshot.claims, snapshot.verifiedMetrics)) && snapshot.id === snapshotId;
+    const identityMatches = snapshot.id === snapshotIdFor(snapshotIdentityInput(snapshot.sourceFoundation.inventorySha256, snapshot.evidenceItems, snapshot.claims, snapshot.verifiedMetrics, snapshot.policy.version, snapshot.sourceFoundation.reviewInventorySha256)) && snapshot.id === snapshotId;
     const sourceInventoryHashMatches = snapshot.sourceFoundation.inventorySha256 === hashText(stableJson(snapshot.sourceFoundation.artifacts.map(({ id, sha256 }) => ({
         id,
         sha256,
@@ -327,11 +356,14 @@ export async function getEvidenceSnapshotStatus(workspace, snapshotId) {
         manifest.contentSha256 === contentHash &&
         manifest.sourceInventorySha256 ===
             snapshot.sourceFoundation.inventorySha256 &&
+        manifest.reviewInventorySha256 ===
+            snapshot.sourceFoundation.reviewInventorySha256 &&
         manifest.sourceArtifactCount ===
             snapshot.completeness.sourceArtifactCount &&
         manifest.evidenceItemCount === snapshot.completeness.evidenceItemCount &&
         manifest.claimCount === snapshot.completeness.claimCount &&
         manifest.approvedClaimCount === snapshot.completeness.approvedClaimCount &&
+        manifest.reviewedClaimCount === snapshot.completeness.reviewedClaimCount &&
         manifest.eligibleRoleEvidenceCount ===
             snapshot.completeness.eligibleRoleEvidenceCount &&
         manifest.eligibleJobEvidenceCount ===
@@ -442,6 +474,7 @@ export function formatEvidenceSnapshotBuild(result) {
         `Evidence items: ${result.evidenceItemCount}`,
         `Claims: ${result.claimCount}`,
         `Approved claims: ${result.approvedClaimCount}`,
+        `Human-reviewed claims: ${result.reviewedClaimCount}`,
         `Eligible Role evidence: ${result.eligibleRoleEvidenceCount}`,
         `Eligible Job evidence: ${result.eligibleJobEvidenceCount}`,
         `Verified metrics: ${result.verifiedMetricCount}`,
@@ -494,6 +527,7 @@ function resultFor(snapshot, manifest, paths, result) {
         evidenceItemCount: snapshot.completeness.evidenceItemCount,
         claimCount: snapshot.completeness.claimCount,
         approvedClaimCount: snapshot.completeness.approvedClaimCount,
+        reviewedClaimCount: snapshot.completeness.reviewedClaimCount ?? 0,
         eligibleRoleEvidenceCount: snapshot.completeness.eligibleRoleEvidenceCount,
         eligibleJobEvidenceCount: snapshot.completeness.eligibleJobEvidenceCount,
         verifiedMetricCount: snapshot.completeness.verifiedMetricCount,
@@ -503,12 +537,12 @@ function resultFor(snapshot, manifest, paths, result) {
 function snapshotIdFor(identityInput) {
     return `evidence-snapshot-${hashText(stableJson(identityInput)).slice(0, 20)}`;
 }
-function snapshotIdentityInput(sourceInventorySha256, evidenceRecords, claimRecords, verifiedMetrics) {
-    return {
+function snapshotIdentityInput(sourceInventorySha256, evidenceRecords, claimRecords, verifiedMetrics, policyVersion = EVIDENCE_SNAPSHOT_POLICY_VERSION, reviewInventorySha256) {
+    const base = {
         schemaVersion: EVIDENCE_SNAPSHOT_SCHEMA_VERSION,
         policy: {
             name: EVIDENCE_SNAPSHOT_POLICY_NAME,
-            version: EVIDENCE_SNAPSHOT_POLICY_VERSION,
+            version: policyVersion,
         },
         sourceInventorySha256,
         evidenceItems: evidenceRecords.map((record) => ({
@@ -534,6 +568,11 @@ function snapshotIdentityInput(sourceInventorySha256, evidenceRecords, claimReco
             metricStatus: record.metricStatus,
             factualConfidence: record.factualConfidence,
             eligibility: record.eligibility,
+            ...(record.sourceContentSha256
+                ? { sourceContentSha256: record.sourceContentSha256 }
+                : {}),
+            ...(record.sourceState ? { sourceState: record.sourceState } : {}),
+            ...(record.review ? { review: record.review } : {}),
         })),
         verifiedMetrics: verifiedMetrics.map((metric) => ({
             id: metric.id,
@@ -543,6 +582,9 @@ function snapshotIdentityInput(sourceInventorySha256, evidenceRecords, claimReco
             scope: metric.scope,
         })),
     };
+    return policyVersion === "1"
+        ? base
+        : { ...base, reviewInventorySha256 };
 }
 function eligibilitySetHash(evidenceRecords, claimRecords, evidenceIds, claimIds) {
     const evidenceById = new Map(evidenceRecords.map((record) => [record.id, record]));
@@ -557,6 +599,93 @@ function eligibilitySetHash(evidenceRecords, claimRecords, evidenceIds, claimIds
             contentSha256: claimById.get(id).contentSha256,
         })),
     }));
+}
+function projectApprovedClaim(source, loaded) {
+    const projection = loaded.review.approvedProjection;
+    if (!projection)
+        throw new Error(`Approved projection is missing for review: ${loaded.review.id}`);
+    return ClaimSchema.parse({
+        ...source,
+        claim: projection.text,
+        approvalStatus: "approved",
+        outputReadiness: "resume_ready",
+        publicSafe: true,
+        needsConfirmation: false,
+        metricStatus: loaded.review.metricReview.state === "verified"
+            ? "verified_metric"
+            : loaded.review.metricReview.state === "not-a-metric"
+                ? "no_metric"
+                : source.metricStatus,
+        approvedWording: projection.text,
+    });
+}
+function reviewEligibilityReasons(loaded, consumer) {
+    if (!loaded)
+        return ["claim-unreviewed"];
+    const review = loaded.review;
+    const approved = review.decision === "approved" ||
+        review.decision === "approved-with-qualifier";
+    const sufficient = review.factualSupport === "supported" ||
+        (review.decision === "approved-with-qualifier" &&
+            review.factualSupport === "partially-supported");
+    const scoped = review.scope === "exact" ||
+        (review.decision === "approved-with-qualifier" && review.scope === "qualified");
+    return [
+        ...(!approved ? ["review-not-approved"] : []),
+        ...(!sufficient ? ["review-insufficient-support"] : []),
+        ...(!scoped ? ["review-scope-not-defensible"] : []),
+        ...(review.publicSafety !== "public-safe"
+            ? ["review-not-public-safe"]
+            : []),
+        ...(review.resumeReadiness !== "resume-ready"
+            ? ["review-not-resume-ready"]
+            : []),
+        ...(consumer === "role" && !review.eligibleForRoleMatching
+            ? ["review-role-ineligible"]
+            : []),
+        ...(consumer === "job" && !review.eligibleForJobMapping
+            ? ["review-job-ineligible"]
+            : []),
+        ...(review.risks.some(({ severity }) => severity === "critical")
+            ? ["review-critical-risk"]
+            : []),
+    ];
+}
+function evidenceEligibilityV2(evidence, sources) {
+    const hardEvidenceVisibility = ["private", "do_not_use", "sensitive"];
+    const hardSourceVisibility = ["private", "do_not_use", "sensitive"];
+    const reasons = [
+        ...(hardEvidenceVisibility.includes(evidence.visibility)
+            ? ["evidence-not-public"]
+            : []),
+        ...(evidence.sensitivityFlags.length > 0
+            ? ["evidence-sensitive"]
+            : []),
+        ...(sources.some((source) => !source) ? ["source-missing"] : []),
+        ...(sources.some((source) => source && source.status !== "active")
+            ? ["source-inactive"]
+            : []),
+        ...(sources.some((source) => source && hardSourceVisibility.includes(source.visibility))
+            ? ["source-not-public"]
+            : []),
+        ...(sources.some((source) => source?.type === "job_description")
+            ? ["job-description-source"]
+            : []),
+    ];
+    return {
+        reasons: [...new Set(reasons)].sort(),
+        sources: sources
+            .filter((source) => Boolean(source))
+            .map((source) => ({
+            sourceId: source.id,
+            sourceType: source.type,
+            logicalPath: `evidence-foundation/sources/${safeSegment(source.id)}`,
+            sha256: source.hash,
+            status: source.status,
+            visibility: source.visibility,
+        }))
+            .sort((left, right) => left.sourceId.localeCompare(right.sourceId)),
+    };
 }
 function evidenceEligibility(evidence, sources) {
     const reasons = [

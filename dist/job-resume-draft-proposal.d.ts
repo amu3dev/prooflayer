@@ -86,8 +86,8 @@ export declare function createJobResumeDraftModelInput(context: Awaited<ReturnTy
                             sourceId: string;
                             visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                         }[];
-                        evidenceItemPath: string;
                         evidenceItemSha256: string;
+                        evidenceItemPath: string;
                         claimPath: string;
                         claimSha256: string;
                     };
@@ -119,7 +119,7 @@ export declare function createJobResumeDraftModelInput(context: Awaited<ReturnTy
                     version: string;
                 };
             };
-            state: "direct" | "indeterminate" | "adjacent" | "stretch" | "insufficient-proof";
+            state: "direct" | "insufficient-proof" | "indeterminate" | "adjacent" | "stretch";
             sourceOverallAssessment: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
             targetTitle: string;
             targetTitleUse: "positioning-only";
@@ -160,8 +160,8 @@ export declare function createJobResumeDraftModelInput(context: Awaited<ReturnTy
                             sourceId: string;
                             visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                         }[];
-                        evidenceItemPath: string;
                         evidenceItemSha256: string;
+                        evidenceItemPath: string;
                         claimPath: string;
                         claimSha256: string;
                     };
@@ -236,8 +236,8 @@ export declare function createJobResumeDraftModelInput(context: Awaited<ReturnTy
                             sourceId: string;
                             visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                         }[];
-                        evidenceItemPath: string;
                         evidenceItemSha256: string;
+                        evidenceItemPath: string;
                         claimPath: string;
                         claimSha256: string;
                     };
@@ -313,8 +313,8 @@ export declare function createJobResumeDraftModelInput(context: Awaited<ReturnTy
                             sourceId: string;
                             visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                         }[];
-                        evidenceItemPath: string;
                         evidenceItemSha256: string;
+                        evidenceItemPath: string;
                         claimPath: string;
                         claimSha256: string;
                     };
@@ -388,8 +388,8 @@ export declare function createJobResumeDraftModelInput(context: Awaited<ReturnTy
                             sourceId: string;
                             visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                         }[];
-                        evidenceItemPath: string;
                         evidenceItemSha256: string;
+                        evidenceItemPath: string;
                         claimPath: string;
                         claimSha256: string;
                     };
@@ -461,8 +461,8 @@ export declare function createJobResumeDraftModelInput(context: Awaited<ReturnTy
                             sourceId: string;
                             visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                         }[];
-                        evidenceItemPath: string;
                         evidenceItemSha256: string;
+                        evidenceItemPath: string;
                         claimPath: string;
                         claimSha256: string;
                     };
@@ -534,8 +534,8 @@ export declare function createJobResumeDraftModelInput(context: Awaited<ReturnTy
                             sourceId: string;
                             visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                         }[];
-                        evidenceItemPath: string;
                         evidenceItemSha256: string;
+                        evidenceItemPath: string;
                         claimPath: string;
                         claimSha256: string;
                     };
@@ -652,7 +652,7 @@ export declare function createJobResumeDraftModelInput(context: Awaited<ReturnTy
             name: string;
             version: string;
         };
-        positioningState: "direct" | "indeterminate" | "adjacent" | "stretch" | "insufficient-proof";
+        positioningState: "direct" | "insufficient-proof" | "indeterminate" | "adjacent" | "stretch";
         contentPlan: {
             sha256: string;
             path: string;
@@ -760,6 +760,7 @@ export declare function validateJobResumeDraftPayload(payload: ModelJobResumeDra
             evidenceIds: string[];
             text: string;
             requirementIds: string[];
+            qualifiers: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -780,7 +781,6 @@ export declare function validateJobResumeDraftPayload(payload: ModelJobResumeDra
                 status: "approved" | "qualified";
                 evidenceIds: string[];
             }[];
-            qualifiers: string[];
             metricPermissionIds: string[];
         }[];
         provenance: {

@@ -2,7 +2,7 @@ import { z } from "zod";
 import {
   EVIDENCE_SNAPSHOT_CONTRACT_NAME,
   EVIDENCE_SNAPSHOT_POLICY_NAME,
-  EVIDENCE_SNAPSHOT_POLICY_VERSION,
+  EVIDENCE_SNAPSHOT_SUPPORTED_POLICY_VERSIONS,
   EVIDENCE_SNAPSHOT_SCHEMA_VERSION,
   EvidenceSnapshotIdSchema,
   EvidenceSnapshotRelativePathSchema,
@@ -29,7 +29,7 @@ export const TargetEvidencePinSchema = z.object({
     schemaVersion: z.literal(EVIDENCE_SNAPSHOT_SCHEMA_VERSION),
     contractName: z.literal(EVIDENCE_SNAPSHOT_CONTRACT_NAME),
     policyName: z.literal(EVIDENCE_SNAPSHOT_POLICY_NAME),
-    policyVersion: z.literal(EVIDENCE_SNAPSHOT_POLICY_VERSION),
+    policyVersion: z.enum(EVIDENCE_SNAPSHOT_SUPPORTED_POLICY_VERSIONS),
   }).strict(),
   pinnedAt: z.string().datetime(),
   provenance: z.object({
@@ -50,7 +50,7 @@ export const TargetEvidencePinManifestSchema = z.object({
   snapshotContentSha256: EvidenceSnapshotSha256Schema,
   snapshotManifestSha256: EvidenceSnapshotSha256Schema,
   snapshotSchemaVersion: z.literal(EVIDENCE_SNAPSHOT_SCHEMA_VERSION),
-  snapshotPolicyVersion: z.literal(EVIDENCE_SNAPSHOT_POLICY_VERSION),
+  snapshotPolicyVersion: z.enum(EVIDENCE_SNAPSHOT_SUPPORTED_POLICY_VERSIONS),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
 }).strict();

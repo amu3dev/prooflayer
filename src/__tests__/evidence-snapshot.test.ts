@@ -41,6 +41,7 @@ import {
   createRoleTarget,
   showTarget,
 } from "../targets.js";
+import { createExplicitFixtureReviews } from "./evidence-snapshot-fixture.js";
 
 const FIRST_TIME = "2026-07-29T08:00:00.000Z";
 const SECOND_TIME = "2026-07-30T08:00:00.000Z";
@@ -81,11 +82,12 @@ describe("Evidence Snapshot Contract v1", () => {
     expect(loaded.snapshot).toMatchObject({
       schemaVersion: 1,
       contract: { name: "evidence-snapshot", version: "1" },
-      policy: { name: "evidence-snapshot-policy", version: "1" },
+      policy: { name: "evidence-snapshot-policy", version: "2" },
       completeness: {
         evidenceItemCount: 3,
         claimCount: 4,
-        approvedClaimCount: 2,
+        approvedClaimCount: 1,
+        reviewedClaimCount: 1,
         eligibleJobEvidenceCount: 1,
         eligibleRoleEvidenceCount: 1,
         verifiedMetricCount: 1,
@@ -238,7 +240,7 @@ describe("Evidence Snapshot Contract v1", () => {
         status: "current",
         contentSha256: result.contentSha256,
         evidenceItemCount: 3,
-        approvedClaimCount: 2,
+        approvedClaimCount: 1,
       }),
     ]);
   });
@@ -529,7 +531,7 @@ describe("Evidence Snapshot Contract v1", () => {
       evidenceSnapshotSchemaVersion: 1,
       evidenceSnapshotContractName: "evidence-snapshot",
       evidenceSnapshotPolicyName: "evidence-snapshot-policy",
-      evidenceSnapshotPolicyVersion: "1",
+      evidenceSnapshotPolicyVersion: "2",
     });
     expect(new Set(map.links.map(({ evidenceId }) => evidenceId))).toEqual(
       new Set(["evi_public"]),
@@ -569,6 +571,7 @@ async function evidenceWorkspace(options: { reverse?: boolean } = {}) {
     evidence: options.reverse ? [...data.evidence].reverse() : data.evidence,
     claims: options.reverse ? [...data.claims].reverse() : data.claims,
   });
+  await createExplicitFixtureReviews(workspace, () => new Date(FIRST_TIME));
   return { workspace };
 }
 
@@ -615,6 +618,7 @@ async function jobMappingWorkspace(options: { empty?: boolean } = {}) {
   } else {
     const data = knowledgeBase();
     await writeKnowledgeBase(workspace, data);
+    await createExplicitFixtureReviews(workspace, () => new Date(FIRST_TIME));
   }
   return { workspace, targetId: target.target.id };
 }

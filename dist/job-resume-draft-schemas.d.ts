@@ -618,6 +618,7 @@ export declare const JobResumeDraftItemSchema: z.ZodObject<{
     evidenceIds: string[];
     text: string;
     requirementIds: string[];
+    qualifiers: string[];
     claimIds: string[];
     coverageIds: string[];
     assessmentIds: string[];
@@ -638,7 +639,6 @@ export declare const JobResumeDraftItemSchema: z.ZodObject<{
         status: "approved" | "qualified";
         evidenceIds: string[];
     }[];
-    qualifiers: string[];
     metricPermissionIds: string[];
 }, {
     validation: {
@@ -696,6 +696,7 @@ export declare const JobResumeDraftItemSchema: z.ZodObject<{
     evidenceIds: string[];
     text: string;
     requirementIds: string[];
+    qualifiers: string[];
     claimIds: string[];
     coverageIds: string[];
     assessmentIds: string[];
@@ -716,7 +717,6 @@ export declare const JobResumeDraftItemSchema: z.ZodObject<{
         status: "approved" | "qualified";
         evidenceIds: string[];
     }[];
-    qualifiers: string[];
     metricPermissionIds: string[];
 }>;
 export declare const JobResumeDraftSectionSchema: z.ZodObject<{
@@ -1050,6 +1050,7 @@ export declare const JobResumeDraftSectionSchema: z.ZodObject<{
         evidenceIds: string[];
         text: string;
         requirementIds: string[];
+        qualifiers: string[];
         claimIds: string[];
         coverageIds: string[];
         assessmentIds: string[];
@@ -1070,7 +1071,6 @@ export declare const JobResumeDraftSectionSchema: z.ZodObject<{
             status: "approved" | "qualified";
             evidenceIds: string[];
         }[];
-        qualifiers: string[];
         metricPermissionIds: string[];
     }, {
         validation: {
@@ -1128,6 +1128,7 @@ export declare const JobResumeDraftSectionSchema: z.ZodObject<{
         evidenceIds: string[];
         text: string;
         requirementIds: string[];
+        qualifiers: string[];
         claimIds: string[];
         coverageIds: string[];
         assessmentIds: string[];
@@ -1148,7 +1149,6 @@ export declare const JobResumeDraftSectionSchema: z.ZodObject<{
             status: "approved" | "qualified";
             evidenceIds: string[];
         }[];
-        qualifiers: string[];
         metricPermissionIds: string[];
     }>, "many">;
     provenance: z.ZodObject<{
@@ -1245,6 +1245,7 @@ export declare const JobResumeDraftSectionSchema: z.ZodObject<{
         evidenceIds: string[];
         text: string;
         requirementIds: string[];
+        qualifiers: string[];
         claimIds: string[];
         coverageIds: string[];
         assessmentIds: string[];
@@ -1265,7 +1266,6 @@ export declare const JobResumeDraftSectionSchema: z.ZodObject<{
             status: "approved" | "qualified";
             evidenceIds: string[];
         }[];
-        qualifiers: string[];
         metricPermissionIds: string[];
     }[];
     provenance: {
@@ -1341,6 +1341,7 @@ export declare const JobResumeDraftSectionSchema: z.ZodObject<{
         evidenceIds: string[];
         text: string;
         requirementIds: string[];
+        qualifiers: string[];
         claimIds: string[];
         coverageIds: string[];
         assessmentIds: string[];
@@ -1361,7 +1362,6 @@ export declare const JobResumeDraftSectionSchema: z.ZodObject<{
             status: "approved" | "qualified";
             evidenceIds: string[];
         }[];
-        qualifiers: string[];
         metricPermissionIds: string[];
     }[];
     provenance: {
@@ -1751,7 +1751,7 @@ export declare const JobResumeDraftScaffoldSchema: z.ZodObject<{
         name: string;
         version: string;
     };
-    positioningState: "direct" | "indeterminate" | "adjacent" | "stretch" | "insufficient-proof";
+    positioningState: "direct" | "insufficient-proof" | "indeterminate" | "adjacent" | "stretch";
     contentPlan: {
         sha256: string;
         path: string;
@@ -1820,7 +1820,7 @@ export declare const JobResumeDraftScaffoldSchema: z.ZodObject<{
         name: string;
         version: string;
     };
-    positioningState: "direct" | "indeterminate" | "adjacent" | "stretch" | "insufficient-proof";
+    positioningState: "direct" | "insufficient-proof" | "indeterminate" | "adjacent" | "stretch";
     contentPlan: {
         sha256: string;
         path: string;
@@ -2781,6 +2781,7 @@ export declare const ModelJobResumeDraftPayloadSchema: z.ZodObject<{
             evidenceIds: string[];
             text: string;
             requirementIds: string[];
+            qualifiers: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -2801,7 +2802,6 @@ export declare const ModelJobResumeDraftPayloadSchema: z.ZodObject<{
                 status: "approved" | "qualified";
                 evidenceIds: string[];
             }[];
-            qualifiers: string[];
             metricPermissionIds: string[];
         }, {
             validation: {
@@ -2859,6 +2859,7 @@ export declare const ModelJobResumeDraftPayloadSchema: z.ZodObject<{
             evidenceIds: string[];
             text: string;
             requirementIds: string[];
+            qualifiers: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -2879,7 +2880,6 @@ export declare const ModelJobResumeDraftPayloadSchema: z.ZodObject<{
                 status: "approved" | "qualified";
                 evidenceIds: string[];
             }[];
-            qualifiers: string[];
             metricPermissionIds: string[];
         }>, "many">;
         provenance: z.ZodObject<{
@@ -2976,6 +2976,7 @@ export declare const ModelJobResumeDraftPayloadSchema: z.ZodObject<{
             evidenceIds: string[];
             text: string;
             requirementIds: string[];
+            qualifiers: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -2996,7 +2997,6 @@ export declare const ModelJobResumeDraftPayloadSchema: z.ZodObject<{
                 status: "approved" | "qualified";
                 evidenceIds: string[];
             }[];
-            qualifiers: string[];
             metricPermissionIds: string[];
         }[];
         provenance: {
@@ -3072,6 +3072,7 @@ export declare const ModelJobResumeDraftPayloadSchema: z.ZodObject<{
             evidenceIds: string[];
             text: string;
             requirementIds: string[];
+            qualifiers: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -3092,7 +3093,6 @@ export declare const ModelJobResumeDraftPayloadSchema: z.ZodObject<{
                 status: "approved" | "qualified";
                 evidenceIds: string[];
             }[];
-            qualifiers: string[];
             metricPermissionIds: string[];
         }[];
         provenance: {
@@ -3238,6 +3238,7 @@ export declare const ModelJobResumeDraftPayloadSchema: z.ZodObject<{
             evidenceIds: string[];
             text: string;
             requirementIds: string[];
+            qualifiers: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -3258,7 +3259,6 @@ export declare const ModelJobResumeDraftPayloadSchema: z.ZodObject<{
                 status: "approved" | "qualified";
                 evidenceIds: string[];
             }[];
-            qualifiers: string[];
             metricPermissionIds: string[];
         }[];
         provenance: {
@@ -3360,6 +3360,7 @@ export declare const ModelJobResumeDraftPayloadSchema: z.ZodObject<{
             evidenceIds: string[];
             text: string;
             requirementIds: string[];
+            qualifiers: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -3380,7 +3381,6 @@ export declare const ModelJobResumeDraftPayloadSchema: z.ZodObject<{
                 status: "approved" | "qualified";
                 evidenceIds: string[];
             }[];
-            qualifiers: string[];
             metricPermissionIds: string[];
         }[];
         provenance: {
@@ -3864,6 +3864,7 @@ export declare const JobResumeDraftProposalSchema: z.ZodObject<{
             evidenceIds: string[];
             text: string;
             requirementIds: string[];
+            qualifiers: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -3884,7 +3885,6 @@ export declare const JobResumeDraftProposalSchema: z.ZodObject<{
                 status: "approved" | "qualified";
                 evidenceIds: string[];
             }[];
-            qualifiers: string[];
             metricPermissionIds: string[];
         }, {
             validation: {
@@ -3942,6 +3942,7 @@ export declare const JobResumeDraftProposalSchema: z.ZodObject<{
             evidenceIds: string[];
             text: string;
             requirementIds: string[];
+            qualifiers: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -3962,7 +3963,6 @@ export declare const JobResumeDraftProposalSchema: z.ZodObject<{
                 status: "approved" | "qualified";
                 evidenceIds: string[];
             }[];
-            qualifiers: string[];
             metricPermissionIds: string[];
         }>, "many">;
         provenance: z.ZodObject<{
@@ -4059,6 +4059,7 @@ export declare const JobResumeDraftProposalSchema: z.ZodObject<{
             evidenceIds: string[];
             text: string;
             requirementIds: string[];
+            qualifiers: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -4079,7 +4080,6 @@ export declare const JobResumeDraftProposalSchema: z.ZodObject<{
                 status: "approved" | "qualified";
                 evidenceIds: string[];
             }[];
-            qualifiers: string[];
             metricPermissionIds: string[];
         }[];
         provenance: {
@@ -4155,6 +4155,7 @@ export declare const JobResumeDraftProposalSchema: z.ZodObject<{
             evidenceIds: string[];
             text: string;
             requirementIds: string[];
+            qualifiers: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -4175,7 +4176,6 @@ export declare const JobResumeDraftProposalSchema: z.ZodObject<{
                 status: "approved" | "qualified";
                 evidenceIds: string[];
             }[];
-            qualifiers: string[];
             metricPermissionIds: string[];
         }[];
         provenance: {
@@ -4743,6 +4743,7 @@ export declare const JobResumeDraftProposalSchema: z.ZodObject<{
             evidenceIds: string[];
             text: string;
             requirementIds: string[];
+            qualifiers: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -4763,7 +4764,6 @@ export declare const JobResumeDraftProposalSchema: z.ZodObject<{
                 status: "approved" | "qualified";
                 evidenceIds: string[];
             }[];
-            qualifiers: string[];
             metricPermissionIds: string[];
         }[];
         provenance: {
@@ -4999,6 +4999,7 @@ export declare const JobResumeDraftProposalSchema: z.ZodObject<{
             evidenceIds: string[];
             text: string;
             requirementIds: string[];
+            qualifiers: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -5019,7 +5020,6 @@ export declare const JobResumeDraftProposalSchema: z.ZodObject<{
                 status: "approved" | "qualified";
                 evidenceIds: string[];
             }[];
-            qualifiers: string[];
             metricPermissionIds: string[];
         }[];
         provenance: {
@@ -5776,6 +5776,7 @@ export declare const ApprovedJobResumeDraftSchema: z.ZodObject<{
             evidenceIds: string[];
             text: string;
             requirementIds: string[];
+            qualifiers: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -5796,7 +5797,6 @@ export declare const ApprovedJobResumeDraftSchema: z.ZodObject<{
                 status: "approved" | "qualified";
                 evidenceIds: string[];
             }[];
-            qualifiers: string[];
             metricPermissionIds: string[];
         }, {
             validation: {
@@ -5854,6 +5854,7 @@ export declare const ApprovedJobResumeDraftSchema: z.ZodObject<{
             evidenceIds: string[];
             text: string;
             requirementIds: string[];
+            qualifiers: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -5874,7 +5875,6 @@ export declare const ApprovedJobResumeDraftSchema: z.ZodObject<{
                 status: "approved" | "qualified";
                 evidenceIds: string[];
             }[];
-            qualifiers: string[];
             metricPermissionIds: string[];
         }>, "many">;
         provenance: z.ZodObject<{
@@ -5971,6 +5971,7 @@ export declare const ApprovedJobResumeDraftSchema: z.ZodObject<{
             evidenceIds: string[];
             text: string;
             requirementIds: string[];
+            qualifiers: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -5991,7 +5992,6 @@ export declare const ApprovedJobResumeDraftSchema: z.ZodObject<{
                 status: "approved" | "qualified";
                 evidenceIds: string[];
             }[];
-            qualifiers: string[];
             metricPermissionIds: string[];
         }[];
         provenance: {
@@ -6067,6 +6067,7 @@ export declare const ApprovedJobResumeDraftSchema: z.ZodObject<{
             evidenceIds: string[];
             text: string;
             requirementIds: string[];
+            qualifiers: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -6087,7 +6088,6 @@ export declare const ApprovedJobResumeDraftSchema: z.ZodObject<{
                 status: "approved" | "qualified";
                 evidenceIds: string[];
             }[];
-            qualifiers: string[];
             metricPermissionIds: string[];
         }[];
         provenance: {
@@ -6711,6 +6711,7 @@ export declare const ApprovedJobResumeDraftSchema: z.ZodObject<{
             evidenceIds: string[];
             text: string;
             requirementIds: string[];
+            qualifiers: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -6731,7 +6732,6 @@ export declare const ApprovedJobResumeDraftSchema: z.ZodObject<{
                 status: "approved" | "qualified";
                 evidenceIds: string[];
             }[];
-            qualifiers: string[];
             metricPermissionIds: string[];
         }[];
         provenance: {
@@ -6822,7 +6822,7 @@ export declare const ApprovedJobResumeDraftSchema: z.ZodObject<{
         name: string;
         version: string;
     };
-    positioningState: "direct" | "indeterminate" | "adjacent" | "stretch" | "insufficient-proof";
+    positioningState: "direct" | "insufficient-proof" | "indeterminate" | "adjacent" | "stretch";
     contentPlan: {
         sha256: string;
         path: string;
@@ -6971,6 +6971,7 @@ export declare const ApprovedJobResumeDraftSchema: z.ZodObject<{
             evidenceIds: string[];
             text: string;
             requirementIds: string[];
+            qualifiers: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -6991,7 +6992,6 @@ export declare const ApprovedJobResumeDraftSchema: z.ZodObject<{
                 status: "approved" | "qualified";
                 evidenceIds: string[];
             }[];
-            qualifiers: string[];
             metricPermissionIds: string[];
         }[];
         provenance: {
@@ -7082,7 +7082,7 @@ export declare const ApprovedJobResumeDraftSchema: z.ZodObject<{
         name: string;
         version: string;
     };
-    positioningState: "direct" | "indeterminate" | "adjacent" | "stretch" | "insufficient-proof";
+    positioningState: "direct" | "insufficient-proof" | "indeterminate" | "adjacent" | "stretch";
     contentPlan: {
         sha256: string;
         path: string;
@@ -7199,12 +7199,12 @@ export declare const ApprovedJobResumeDraftManifestSchema: z.ZodObject<{
     reviewSha256: string;
     assessmentSha256: string;
     policyName: string;
+    reviewId: string;
     requirementModelSha256: string;
     evidenceMapSha256: string;
     coverageSha256: string;
     contentPlanSha256: string;
     scaffoldSha256: string;
-    reviewId: string;
     draftId: string;
     draftPath: string;
     draftSha256: string;
@@ -7220,12 +7220,12 @@ export declare const ApprovedJobResumeDraftManifestSchema: z.ZodObject<{
     reviewSha256: string;
     assessmentSha256: string;
     policyName: string;
+    reviewId: string;
     requirementModelSha256: string;
     evidenceMapSha256: string;
     coverageSha256: string;
     contentPlanSha256: string;
     scaffoldSha256: string;
-    reviewId: string;
     draftId: string;
     draftPath: string;
     draftSha256: string;

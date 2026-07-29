@@ -2,23 +2,25 @@ import { z } from "zod";
 export declare const EVIDENCE_SNAPSHOT_SCHEMA_VERSION: 1;
 export declare const EVIDENCE_SNAPSHOT_CONTRACT_NAME = "evidence-snapshot";
 export declare const EVIDENCE_SNAPSHOT_POLICY_NAME = "evidence-snapshot-policy";
-export declare const EVIDENCE_SNAPSHOT_POLICY_VERSION = "1";
+export declare const EVIDENCE_SNAPSHOT_POLICY_VERSION = "2";
+export declare const EVIDENCE_SNAPSHOT_SUPPORTED_POLICY_VERSIONS: readonly ["1", "2"];
 export declare const EVIDENCE_SNAPSHOT_EXPORTER_NAME = "evidence-snapshot-exporter";
-export declare const EVIDENCE_SNAPSHOT_EXPORTER_VERSION = "1";
+export declare const EVIDENCE_SNAPSHOT_EXPORTER_VERSION = "2";
+export declare const EVIDENCE_SNAPSHOT_SUPPORTED_EXPORTER_VERSIONS: readonly ["1", "2"];
 export declare const EvidenceSnapshotSha256Schema: z.ZodString;
 export declare const EvidenceSnapshotIdSchema: z.ZodString;
 export declare const EvidenceSnapshotRelativePathSchema: z.ZodEffects<z.ZodString, string, string>;
-export declare const EvidenceSnapshotEligibilityReasonSchema: z.ZodEnum<["claim-not-approved", "claim-not-resume-ready", "claim-not-public-safe", "claim-needs-confirmation", "evidence-not-public", "evidence-sensitive", "source-missing", "source-inactive", "source-not-public", "job-description-source", "no-eligible-claim", "no-eligible-evidence"]>;
+export declare const EvidenceSnapshotEligibilityReasonSchema: z.ZodEnum<["claim-unreviewed", "review-not-approved", "review-insufficient-support", "review-scope-not-defensible", "review-not-public-safe", "review-not-resume-ready", "review-role-ineligible", "review-job-ineligible", "review-critical-risk", "claim-not-approved", "claim-not-resume-ready", "claim-not-public-safe", "claim-needs-confirmation", "evidence-not-public", "evidence-sensitive", "source-missing", "source-inactive", "source-not-public", "job-description-source", "no-eligible-claim", "no-eligible-evidence"]>;
 export declare const EvidenceSnapshotEligibilitySchema: z.ZodObject<{
     roleMatching: z.ZodBoolean;
     jobMapping: z.ZodBoolean;
-    reasons: z.ZodArray<z.ZodEnum<["claim-not-approved", "claim-not-resume-ready", "claim-not-public-safe", "claim-needs-confirmation", "evidence-not-public", "evidence-sensitive", "source-missing", "source-inactive", "source-not-public", "job-description-source", "no-eligible-claim", "no-eligible-evidence"]>, "many">;
+    reasons: z.ZodArray<z.ZodEnum<["claim-unreviewed", "review-not-approved", "review-insufficient-support", "review-scope-not-defensible", "review-not-public-safe", "review-not-resume-ready", "review-role-ineligible", "review-job-ineligible", "review-critical-risk", "claim-not-approved", "claim-not-resume-ready", "claim-not-public-safe", "claim-needs-confirmation", "evidence-not-public", "evidence-sensitive", "source-missing", "source-inactive", "source-not-public", "job-description-source", "no-eligible-claim", "no-eligible-evidence"]>, "many">;
 }, "strict", z.ZodTypeAny, {
-    reasons: ("claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
+    reasons: ("claim-unreviewed" | "review-not-approved" | "review-insufficient-support" | "review-scope-not-defensible" | "review-not-public-safe" | "review-not-resume-ready" | "review-role-ineligible" | "review-job-ineligible" | "review-critical-risk" | "claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
     roleMatching: boolean;
     jobMapping: boolean;
 }, {
-    reasons: ("claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
+    reasons: ("claim-unreviewed" | "review-not-approved" | "review-insufficient-support" | "review-scope-not-defensible" | "review-not-public-safe" | "review-not-resume-ready" | "review-role-ineligible" | "review-job-ineligible" | "review-critical-risk" | "claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
     roleMatching: boolean;
     jobMapping: boolean;
 }>;
@@ -56,13 +58,13 @@ export declare const EvidenceSnapshotEvidenceRecordSchema: z.ZodObject<{
     eligibility: z.ZodObject<{
         roleMatching: z.ZodBoolean;
         jobMapping: z.ZodBoolean;
-        reasons: z.ZodArray<z.ZodEnum<["claim-not-approved", "claim-not-resume-ready", "claim-not-public-safe", "claim-needs-confirmation", "evidence-not-public", "evidence-sensitive", "source-missing", "source-inactive", "source-not-public", "job-description-source", "no-eligible-claim", "no-eligible-evidence"]>, "many">;
+        reasons: z.ZodArray<z.ZodEnum<["claim-unreviewed", "review-not-approved", "review-insufficient-support", "review-scope-not-defensible", "review-not-public-safe", "review-not-resume-ready", "review-role-ineligible", "review-job-ineligible", "review-critical-risk", "claim-not-approved", "claim-not-resume-ready", "claim-not-public-safe", "claim-needs-confirmation", "evidence-not-public", "evidence-sensitive", "source-missing", "source-inactive", "source-not-public", "job-description-source", "no-eligible-claim", "no-eligible-evidence"]>, "many">;
     }, "strict", z.ZodTypeAny, {
-        reasons: ("claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
+        reasons: ("claim-unreviewed" | "review-not-approved" | "review-insufficient-support" | "review-scope-not-defensible" | "review-not-public-safe" | "review-not-resume-ready" | "review-role-ineligible" | "review-job-ineligible" | "review-critical-risk" | "claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
         roleMatching: boolean;
         jobMapping: boolean;
     }, {
-        reasons: ("claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
+        reasons: ("claim-unreviewed" | "review-not-approved" | "review-insufficient-support" | "review-scope-not-defensible" | "review-not-public-safe" | "review-not-resume-ready" | "review-role-ineligible" | "review-job-ineligible" | "review-critical-risk" | "claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
         roleMatching: boolean;
         jobMapping: boolean;
     }>;
@@ -158,7 +160,7 @@ export declare const EvidenceSnapshotEvidenceRecordSchema: z.ZodObject<{
     confidence: "high" | "medium" | "low";
     contentSha256: string;
     eligibility: {
-        reasons: ("claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
+        reasons: ("claim-unreviewed" | "review-not-approved" | "review-insufficient-support" | "review-scope-not-defensible" | "review-not-public-safe" | "review-not-resume-ready" | "review-role-ineligible" | "review-job-ineligible" | "review-critical-risk" | "claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
         roleMatching: boolean;
         jobMapping: boolean;
     };
@@ -198,7 +200,7 @@ export declare const EvidenceSnapshotEvidenceRecordSchema: z.ZodObject<{
     confidence: "high" | "medium" | "low";
     contentSha256: string;
     eligibility: {
-        reasons: ("claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
+        reasons: ("claim-unreviewed" | "review-not-approved" | "review-insufficient-support" | "review-scope-not-defensible" | "review-not-public-safe" | "review-not-resume-ready" | "review-role-ineligible" | "review-job-ineligible" | "review-critical-risk" | "claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
         roleMatching: boolean;
         jobMapping: boolean;
     };
@@ -224,6 +226,7 @@ export declare const EvidenceSnapshotEvidenceRecordSchema: z.ZodObject<{
 export declare const EvidenceSnapshotClaimRecordSchema: z.ZodObject<{
     id: z.ZodString;
     contentSha256: z.ZodString;
+    sourceContentSha256: z.ZodOptional<z.ZodString>;
     supportingEvidenceIds: z.ZodArray<z.ZodString, "many">;
     approvalStatus: z.ZodEnum<["approved", "needs_confirmation", "blocked"]>;
     outputReadiness: z.ZodEnum<["resume_ready", "generic_only", "internal_only", "do_not_use"]>;
@@ -234,16 +237,78 @@ export declare const EvidenceSnapshotClaimRecordSchema: z.ZodObject<{
     eligibility: z.ZodObject<{
         roleMatching: z.ZodBoolean;
         jobMapping: z.ZodBoolean;
-        reasons: z.ZodArray<z.ZodEnum<["claim-not-approved", "claim-not-resume-ready", "claim-not-public-safe", "claim-needs-confirmation", "evidence-not-public", "evidence-sensitive", "source-missing", "source-inactive", "source-not-public", "job-description-source", "no-eligible-claim", "no-eligible-evidence"]>, "many">;
+        reasons: z.ZodArray<z.ZodEnum<["claim-unreviewed", "review-not-approved", "review-insufficient-support", "review-scope-not-defensible", "review-not-public-safe", "review-not-resume-ready", "review-role-ineligible", "review-job-ineligible", "review-critical-risk", "claim-not-approved", "claim-not-resume-ready", "claim-not-public-safe", "claim-needs-confirmation", "evidence-not-public", "evidence-sensitive", "source-missing", "source-inactive", "source-not-public", "job-description-source", "no-eligible-claim", "no-eligible-evidence"]>, "many">;
     }, "strict", z.ZodTypeAny, {
-        reasons: ("claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
+        reasons: ("claim-unreviewed" | "review-not-approved" | "review-insufficient-support" | "review-scope-not-defensible" | "review-not-public-safe" | "review-not-resume-ready" | "review-role-ineligible" | "review-job-ineligible" | "review-critical-risk" | "claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
         roleMatching: boolean;
         jobMapping: boolean;
     }, {
-        reasons: ("claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
+        reasons: ("claim-unreviewed" | "review-not-approved" | "review-insufficient-support" | "review-scope-not-defensible" | "review-not-public-safe" | "review-not-resume-ready" | "review-role-ineligible" | "review-job-ineligible" | "review-critical-risk" | "claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
         roleMatching: boolean;
         jobMapping: boolean;
     }>;
+    sourceState: z.ZodOptional<z.ZodObject<{
+        approvalStatus: z.ZodEnum<["approved", "needs_confirmation", "blocked"]>;
+        outputReadiness: z.ZodEnum<["resume_ready", "generic_only", "internal_only", "do_not_use"]>;
+        publicSafe: z.ZodBoolean;
+        needsConfirmation: z.ZodBoolean;
+        metricStatus: z.ZodEnum<["verified_metric", "structural_metric", "no_metric", "needs_metric"]>;
+    }, "strict", z.ZodTypeAny, {
+        approvalStatus: "approved" | "needs_confirmation" | "blocked";
+        outputReadiness: "generic_only" | "do_not_use" | "resume_ready" | "internal_only";
+        publicSafe: boolean;
+        needsConfirmation: boolean;
+        metricStatus: "verified_metric" | "structural_metric" | "no_metric" | "needs_metric";
+    }, {
+        approvalStatus: "approved" | "needs_confirmation" | "blocked";
+        outputReadiness: "generic_only" | "do_not_use" | "resume_ready" | "internal_only";
+        publicSafe: boolean;
+        needsConfirmation: boolean;
+        metricStatus: "verified_metric" | "structural_metric" | "no_metric" | "needs_metric";
+    }>>;
+    review: z.ZodOptional<z.ZodObject<{
+        reviewId: z.ZodString;
+        reviewSha256: z.ZodString;
+        decision: z.ZodEnum<["approved", "approved-with-qualifier", "needs-edit", "rejected", "insufficient-proof", "deferred"]>;
+        approvedProjectionId: z.ZodOptional<z.ZodString>;
+        approvedTextSha256: z.ZodOptional<z.ZodString>;
+        publicSafety: z.ZodEnum<["public-safe", "private", "restricted", "indeterminate"]>;
+        resumeReadiness: z.ZodEnum<["resume-ready", "not-resume-ready", "needs-edit", "indeterminate"]>;
+        eligibleForRoleMatching: z.ZodBoolean;
+        eligibleForJobMapping: z.ZodBoolean;
+        metricState: z.ZodEnum<["verified", "unverified", "contradicted", "not-a-metric", "indeterminate"]>;
+        requiredQualifiers: z.ZodArray<z.ZodString, "many">;
+        workContext: z.ZodEnum<["employment", "project", "education", "certification", "skill", "other", "ambiguous"]>;
+        claimNature: z.ZodEnum<["responsibility", "achievement", "capability", "credential", "other", "ambiguous"]>;
+    }, "strict", z.ZodTypeAny, {
+        decision: "approved" | "rejected" | "approved-with-qualifier" | "needs-edit" | "insufficient-proof" | "deferred";
+        reviewSha256: string;
+        requiredQualifiers: string[];
+        publicSafety: "private" | "indeterminate" | "public-safe" | "restricted";
+        resumeReadiness: "needs-edit" | "indeterminate" | "resume-ready" | "not-resume-ready";
+        eligibleForRoleMatching: boolean;
+        eligibleForJobMapping: boolean;
+        workContext: "other" | "project" | "skill" | "certification" | "education" | "ambiguous" | "employment";
+        claimNature: "other" | "responsibility" | "capability" | "achievement" | "ambiguous" | "credential";
+        reviewId: string;
+        metricState: "contradicted" | "indeterminate" | "verified" | "unverified" | "not-a-metric";
+        approvedProjectionId?: string | undefined;
+        approvedTextSha256?: string | undefined;
+    }, {
+        decision: "approved" | "rejected" | "approved-with-qualifier" | "needs-edit" | "insufficient-proof" | "deferred";
+        reviewSha256: string;
+        requiredQualifiers: string[];
+        publicSafety: "private" | "indeterminate" | "public-safe" | "restricted";
+        resumeReadiness: "needs-edit" | "indeterminate" | "resume-ready" | "not-resume-ready";
+        eligibleForRoleMatching: boolean;
+        eligibleForJobMapping: boolean;
+        workContext: "other" | "project" | "skill" | "certification" | "education" | "ambiguous" | "employment";
+        claimNature: "other" | "responsibility" | "capability" | "achievement" | "ambiguous" | "credential";
+        reviewId: string;
+        metricState: "contradicted" | "indeterminate" | "verified" | "unverified" | "not-a-metric";
+        approvedProjectionId?: string | undefined;
+        approvedTextSha256?: string | undefined;
+    }>>;
     content: z.ZodOptional<z.ZodObject<{
         id: z.ZodString;
         claim: z.ZodString;
@@ -316,7 +381,7 @@ export declare const EvidenceSnapshotClaimRecordSchema: z.ZodObject<{
     metricStatus: "verified_metric" | "structural_metric" | "no_metric" | "needs_metric";
     contentSha256: string;
     eligibility: {
-        reasons: ("claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
+        reasons: ("claim-unreviewed" | "review-not-approved" | "review-insufficient-support" | "review-scope-not-defensible" | "review-not-public-safe" | "review-not-resume-ready" | "review-role-ineligible" | "review-job-ineligible" | "review-critical-risk" | "claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
         roleMatching: boolean;
         jobMapping: boolean;
     };
@@ -341,6 +406,29 @@ export declare const EvidenceSnapshotClaimRecordSchema: z.ZodObject<{
         approvedWording?: string | undefined;
         unsafeWording?: string[] | undefined;
     } | undefined;
+    review?: {
+        decision: "approved" | "rejected" | "approved-with-qualifier" | "needs-edit" | "insufficient-proof" | "deferred";
+        reviewSha256: string;
+        requiredQualifiers: string[];
+        publicSafety: "private" | "indeterminate" | "public-safe" | "restricted";
+        resumeReadiness: "needs-edit" | "indeterminate" | "resume-ready" | "not-resume-ready";
+        eligibleForRoleMatching: boolean;
+        eligibleForJobMapping: boolean;
+        workContext: "other" | "project" | "skill" | "certification" | "education" | "ambiguous" | "employment";
+        claimNature: "other" | "responsibility" | "capability" | "achievement" | "ambiguous" | "credential";
+        reviewId: string;
+        metricState: "contradicted" | "indeterminate" | "verified" | "unverified" | "not-a-metric";
+        approvedProjectionId?: string | undefined;
+        approvedTextSha256?: string | undefined;
+    } | undefined;
+    sourceContentSha256?: string | undefined;
+    sourceState?: {
+        approvalStatus: "approved" | "needs_confirmation" | "blocked";
+        outputReadiness: "generic_only" | "do_not_use" | "resume_ready" | "internal_only";
+        publicSafe: boolean;
+        needsConfirmation: boolean;
+        metricStatus: "verified_metric" | "structural_metric" | "no_metric" | "needs_metric";
+    } | undefined;
 }, {
     id: string;
     supportingEvidenceIds: string[];
@@ -352,7 +440,7 @@ export declare const EvidenceSnapshotClaimRecordSchema: z.ZodObject<{
     metricStatus: "verified_metric" | "structural_metric" | "no_metric" | "needs_metric";
     contentSha256: string;
     eligibility: {
-        reasons: ("claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
+        reasons: ("claim-unreviewed" | "review-not-approved" | "review-insufficient-support" | "review-scope-not-defensible" | "review-not-public-safe" | "review-not-resume-ready" | "review-role-ineligible" | "review-job-ineligible" | "review-critical-risk" | "claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
         roleMatching: boolean;
         jobMapping: boolean;
     };
@@ -376,6 +464,29 @@ export declare const EvidenceSnapshotClaimRecordSchema: z.ZodObject<{
         sourceSection?: string | undefined;
         approvedWording?: string | undefined;
         unsafeWording?: string[] | undefined;
+    } | undefined;
+    review?: {
+        decision: "approved" | "rejected" | "approved-with-qualifier" | "needs-edit" | "insufficient-proof" | "deferred";
+        reviewSha256: string;
+        requiredQualifiers: string[];
+        publicSafety: "private" | "indeterminate" | "public-safe" | "restricted";
+        resumeReadiness: "needs-edit" | "indeterminate" | "resume-ready" | "not-resume-ready";
+        eligibleForRoleMatching: boolean;
+        eligibleForJobMapping: boolean;
+        workContext: "other" | "project" | "skill" | "certification" | "education" | "ambiguous" | "employment";
+        claimNature: "other" | "responsibility" | "capability" | "achievement" | "ambiguous" | "credential";
+        reviewId: string;
+        metricState: "contradicted" | "indeterminate" | "verified" | "unverified" | "not-a-metric";
+        approvedProjectionId?: string | undefined;
+        approvedTextSha256?: string | undefined;
+    } | undefined;
+    sourceContentSha256?: string | undefined;
+    sourceState?: {
+        approvalStatus: "approved" | "needs_confirmation" | "blocked";
+        outputReadiness: "generic_only" | "do_not_use" | "resume_ready" | "internal_only";
+        publicSafe: boolean;
+        needsConfirmation: boolean;
+        metricStatus: "verified_metric" | "structural_metric" | "no_metric" | "needs_metric";
     } | undefined;
 }>;
 export declare const EvidenceSnapshotVerifiedMetricSchema: z.ZodObject<{
@@ -401,24 +512,24 @@ export declare const EvidenceSnapshotVerifiedMetricSchema: z.ZodObject<{
     claimId: string;
     id: string;
     evidenceIds: string[];
-    exactText: string;
-    textSha256: string;
     scope: {
         dateRange?: string | undefined;
         parentRoleId?: string | undefined;
         parentProjectId?: string | undefined;
     };
+    exactText: string;
+    textSha256: string;
 }, {
     claimId: string;
     id: string;
     evidenceIds: string[];
-    exactText: string;
-    textSha256: string;
     scope: {
         dateRange?: string | undefined;
         parentRoleId?: string | undefined;
         parentProjectId?: string | undefined;
     };
+    exactText: string;
+    textSha256: string;
 }>;
 export declare const EvidenceSnapshotWarningSchema: z.ZodObject<{
     id: z.ZodString;
@@ -464,30 +575,31 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
     }>;
     policy: z.ZodObject<{
         name: z.ZodLiteral<"evidence-snapshot-policy">;
-        version: z.ZodLiteral<"1">;
+        version: z.ZodEnum<["1", "2"]>;
     }, "strict", z.ZodTypeAny, {
         name: "evidence-snapshot-policy";
-        version: "1";
+        version: "1" | "2";
     }, {
         name: "evidence-snapshot-policy";
-        version: "1";
+        version: "1" | "2";
     }>;
     producer: z.ZodObject<{
         name: z.ZodLiteral<"evidence-snapshot-exporter">;
-        version: z.ZodLiteral<"1">;
+        version: z.ZodEnum<["1", "2"]>;
         mode: z.ZodLiteral<"deterministic">;
     }, "strict", z.ZodTypeAny, {
         name: "evidence-snapshot-exporter";
-        version: "1";
+        version: "1" | "2";
         mode: "deterministic";
     }, {
         name: "evidence-snapshot-exporter";
-        version: "1";
+        version: "1" | "2";
         mode: "deterministic";
     }>;
     sourceFoundation: z.ZodObject<{
         id: z.ZodLiteral<"prooflayer-reviewed-evidence-foundation">;
         inventorySha256: z.ZodString;
+        reviewInventorySha256: z.ZodOptional<z.ZodString>;
         artifacts: z.ZodArray<z.ZodObject<{
             id: z.ZodEnum<["sources", "evidence-items", "claims"]>;
             path: z.ZodEffects<z.ZodString, string, string>;
@@ -509,6 +621,7 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
             path: string;
             id: "sources" | "evidence-items" | "claims";
         }[];
+        reviewInventorySha256?: string | undefined;
     }, {
         id: "prooflayer-reviewed-evidence-foundation";
         inventorySha256: string;
@@ -517,6 +630,7 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
             path: string;
             id: "sources" | "evidence-items" | "claims";
         }[];
+        reviewInventorySha256?: string | undefined;
     }>;
     evidenceItems: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
@@ -530,13 +644,13 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
         eligibility: z.ZodObject<{
             roleMatching: z.ZodBoolean;
             jobMapping: z.ZodBoolean;
-            reasons: z.ZodArray<z.ZodEnum<["claim-not-approved", "claim-not-resume-ready", "claim-not-public-safe", "claim-needs-confirmation", "evidence-not-public", "evidence-sensitive", "source-missing", "source-inactive", "source-not-public", "job-description-source", "no-eligible-claim", "no-eligible-evidence"]>, "many">;
+            reasons: z.ZodArray<z.ZodEnum<["claim-unreviewed", "review-not-approved", "review-insufficient-support", "review-scope-not-defensible", "review-not-public-safe", "review-not-resume-ready", "review-role-ineligible", "review-job-ineligible", "review-critical-risk", "claim-not-approved", "claim-not-resume-ready", "claim-not-public-safe", "claim-needs-confirmation", "evidence-not-public", "evidence-sensitive", "source-missing", "source-inactive", "source-not-public", "job-description-source", "no-eligible-claim", "no-eligible-evidence"]>, "many">;
         }, "strict", z.ZodTypeAny, {
-            reasons: ("claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
+            reasons: ("claim-unreviewed" | "review-not-approved" | "review-insufficient-support" | "review-scope-not-defensible" | "review-not-public-safe" | "review-not-resume-ready" | "review-role-ineligible" | "review-job-ineligible" | "review-critical-risk" | "claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
             roleMatching: boolean;
             jobMapping: boolean;
         }, {
-            reasons: ("claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
+            reasons: ("claim-unreviewed" | "review-not-approved" | "review-insufficient-support" | "review-scope-not-defensible" | "review-not-public-safe" | "review-not-resume-ready" | "review-role-ineligible" | "review-job-ineligible" | "review-critical-risk" | "claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
             roleMatching: boolean;
             jobMapping: boolean;
         }>;
@@ -632,7 +746,7 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
         confidence: "high" | "medium" | "low";
         contentSha256: string;
         eligibility: {
-            reasons: ("claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
+            reasons: ("claim-unreviewed" | "review-not-approved" | "review-insufficient-support" | "review-scope-not-defensible" | "review-not-public-safe" | "review-not-resume-ready" | "review-role-ineligible" | "review-job-ineligible" | "review-critical-risk" | "claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
             roleMatching: boolean;
             jobMapping: boolean;
         };
@@ -672,7 +786,7 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
         confidence: "high" | "medium" | "low";
         contentSha256: string;
         eligibility: {
-            reasons: ("claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
+            reasons: ("claim-unreviewed" | "review-not-approved" | "review-insufficient-support" | "review-scope-not-defensible" | "review-not-public-safe" | "review-not-resume-ready" | "review-role-ineligible" | "review-job-ineligible" | "review-critical-risk" | "claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
             roleMatching: boolean;
             jobMapping: boolean;
         };
@@ -698,6 +812,7 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
     claims: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
         contentSha256: z.ZodString;
+        sourceContentSha256: z.ZodOptional<z.ZodString>;
         supportingEvidenceIds: z.ZodArray<z.ZodString, "many">;
         approvalStatus: z.ZodEnum<["approved", "needs_confirmation", "blocked"]>;
         outputReadiness: z.ZodEnum<["resume_ready", "generic_only", "internal_only", "do_not_use"]>;
@@ -708,16 +823,78 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
         eligibility: z.ZodObject<{
             roleMatching: z.ZodBoolean;
             jobMapping: z.ZodBoolean;
-            reasons: z.ZodArray<z.ZodEnum<["claim-not-approved", "claim-not-resume-ready", "claim-not-public-safe", "claim-needs-confirmation", "evidence-not-public", "evidence-sensitive", "source-missing", "source-inactive", "source-not-public", "job-description-source", "no-eligible-claim", "no-eligible-evidence"]>, "many">;
+            reasons: z.ZodArray<z.ZodEnum<["claim-unreviewed", "review-not-approved", "review-insufficient-support", "review-scope-not-defensible", "review-not-public-safe", "review-not-resume-ready", "review-role-ineligible", "review-job-ineligible", "review-critical-risk", "claim-not-approved", "claim-not-resume-ready", "claim-not-public-safe", "claim-needs-confirmation", "evidence-not-public", "evidence-sensitive", "source-missing", "source-inactive", "source-not-public", "job-description-source", "no-eligible-claim", "no-eligible-evidence"]>, "many">;
         }, "strict", z.ZodTypeAny, {
-            reasons: ("claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
+            reasons: ("claim-unreviewed" | "review-not-approved" | "review-insufficient-support" | "review-scope-not-defensible" | "review-not-public-safe" | "review-not-resume-ready" | "review-role-ineligible" | "review-job-ineligible" | "review-critical-risk" | "claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
             roleMatching: boolean;
             jobMapping: boolean;
         }, {
-            reasons: ("claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
+            reasons: ("claim-unreviewed" | "review-not-approved" | "review-insufficient-support" | "review-scope-not-defensible" | "review-not-public-safe" | "review-not-resume-ready" | "review-role-ineligible" | "review-job-ineligible" | "review-critical-risk" | "claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
             roleMatching: boolean;
             jobMapping: boolean;
         }>;
+        sourceState: z.ZodOptional<z.ZodObject<{
+            approvalStatus: z.ZodEnum<["approved", "needs_confirmation", "blocked"]>;
+            outputReadiness: z.ZodEnum<["resume_ready", "generic_only", "internal_only", "do_not_use"]>;
+            publicSafe: z.ZodBoolean;
+            needsConfirmation: z.ZodBoolean;
+            metricStatus: z.ZodEnum<["verified_metric", "structural_metric", "no_metric", "needs_metric"]>;
+        }, "strict", z.ZodTypeAny, {
+            approvalStatus: "approved" | "needs_confirmation" | "blocked";
+            outputReadiness: "generic_only" | "do_not_use" | "resume_ready" | "internal_only";
+            publicSafe: boolean;
+            needsConfirmation: boolean;
+            metricStatus: "verified_metric" | "structural_metric" | "no_metric" | "needs_metric";
+        }, {
+            approvalStatus: "approved" | "needs_confirmation" | "blocked";
+            outputReadiness: "generic_only" | "do_not_use" | "resume_ready" | "internal_only";
+            publicSafe: boolean;
+            needsConfirmation: boolean;
+            metricStatus: "verified_metric" | "structural_metric" | "no_metric" | "needs_metric";
+        }>>;
+        review: z.ZodOptional<z.ZodObject<{
+            reviewId: z.ZodString;
+            reviewSha256: z.ZodString;
+            decision: z.ZodEnum<["approved", "approved-with-qualifier", "needs-edit", "rejected", "insufficient-proof", "deferred"]>;
+            approvedProjectionId: z.ZodOptional<z.ZodString>;
+            approvedTextSha256: z.ZodOptional<z.ZodString>;
+            publicSafety: z.ZodEnum<["public-safe", "private", "restricted", "indeterminate"]>;
+            resumeReadiness: z.ZodEnum<["resume-ready", "not-resume-ready", "needs-edit", "indeterminate"]>;
+            eligibleForRoleMatching: z.ZodBoolean;
+            eligibleForJobMapping: z.ZodBoolean;
+            metricState: z.ZodEnum<["verified", "unverified", "contradicted", "not-a-metric", "indeterminate"]>;
+            requiredQualifiers: z.ZodArray<z.ZodString, "many">;
+            workContext: z.ZodEnum<["employment", "project", "education", "certification", "skill", "other", "ambiguous"]>;
+            claimNature: z.ZodEnum<["responsibility", "achievement", "capability", "credential", "other", "ambiguous"]>;
+        }, "strict", z.ZodTypeAny, {
+            decision: "approved" | "rejected" | "approved-with-qualifier" | "needs-edit" | "insufficient-proof" | "deferred";
+            reviewSha256: string;
+            requiredQualifiers: string[];
+            publicSafety: "private" | "indeterminate" | "public-safe" | "restricted";
+            resumeReadiness: "needs-edit" | "indeterminate" | "resume-ready" | "not-resume-ready";
+            eligibleForRoleMatching: boolean;
+            eligibleForJobMapping: boolean;
+            workContext: "other" | "project" | "skill" | "certification" | "education" | "ambiguous" | "employment";
+            claimNature: "other" | "responsibility" | "capability" | "achievement" | "ambiguous" | "credential";
+            reviewId: string;
+            metricState: "contradicted" | "indeterminate" | "verified" | "unverified" | "not-a-metric";
+            approvedProjectionId?: string | undefined;
+            approvedTextSha256?: string | undefined;
+        }, {
+            decision: "approved" | "rejected" | "approved-with-qualifier" | "needs-edit" | "insufficient-proof" | "deferred";
+            reviewSha256: string;
+            requiredQualifiers: string[];
+            publicSafety: "private" | "indeterminate" | "public-safe" | "restricted";
+            resumeReadiness: "needs-edit" | "indeterminate" | "resume-ready" | "not-resume-ready";
+            eligibleForRoleMatching: boolean;
+            eligibleForJobMapping: boolean;
+            workContext: "other" | "project" | "skill" | "certification" | "education" | "ambiguous" | "employment";
+            claimNature: "other" | "responsibility" | "capability" | "achievement" | "ambiguous" | "credential";
+            reviewId: string;
+            metricState: "contradicted" | "indeterminate" | "verified" | "unverified" | "not-a-metric";
+            approvedProjectionId?: string | undefined;
+            approvedTextSha256?: string | undefined;
+        }>>;
         content: z.ZodOptional<z.ZodObject<{
             id: z.ZodString;
             claim: z.ZodString;
@@ -790,7 +967,7 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
         metricStatus: "verified_metric" | "structural_metric" | "no_metric" | "needs_metric";
         contentSha256: string;
         eligibility: {
-            reasons: ("claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
+            reasons: ("claim-unreviewed" | "review-not-approved" | "review-insufficient-support" | "review-scope-not-defensible" | "review-not-public-safe" | "review-not-resume-ready" | "review-role-ineligible" | "review-job-ineligible" | "review-critical-risk" | "claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
             roleMatching: boolean;
             jobMapping: boolean;
         };
@@ -815,6 +992,29 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
             approvedWording?: string | undefined;
             unsafeWording?: string[] | undefined;
         } | undefined;
+        review?: {
+            decision: "approved" | "rejected" | "approved-with-qualifier" | "needs-edit" | "insufficient-proof" | "deferred";
+            reviewSha256: string;
+            requiredQualifiers: string[];
+            publicSafety: "private" | "indeterminate" | "public-safe" | "restricted";
+            resumeReadiness: "needs-edit" | "indeterminate" | "resume-ready" | "not-resume-ready";
+            eligibleForRoleMatching: boolean;
+            eligibleForJobMapping: boolean;
+            workContext: "other" | "project" | "skill" | "certification" | "education" | "ambiguous" | "employment";
+            claimNature: "other" | "responsibility" | "capability" | "achievement" | "ambiguous" | "credential";
+            reviewId: string;
+            metricState: "contradicted" | "indeterminate" | "verified" | "unverified" | "not-a-metric";
+            approvedProjectionId?: string | undefined;
+            approvedTextSha256?: string | undefined;
+        } | undefined;
+        sourceContentSha256?: string | undefined;
+        sourceState?: {
+            approvalStatus: "approved" | "needs_confirmation" | "blocked";
+            outputReadiness: "generic_only" | "do_not_use" | "resume_ready" | "internal_only";
+            publicSafe: boolean;
+            needsConfirmation: boolean;
+            metricStatus: "verified_metric" | "structural_metric" | "no_metric" | "needs_metric";
+        } | undefined;
     }, {
         id: string;
         supportingEvidenceIds: string[];
@@ -826,7 +1026,7 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
         metricStatus: "verified_metric" | "structural_metric" | "no_metric" | "needs_metric";
         contentSha256: string;
         eligibility: {
-            reasons: ("claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
+            reasons: ("claim-unreviewed" | "review-not-approved" | "review-insufficient-support" | "review-scope-not-defensible" | "review-not-public-safe" | "review-not-resume-ready" | "review-role-ineligible" | "review-job-ineligible" | "review-critical-risk" | "claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
             roleMatching: boolean;
             jobMapping: boolean;
         };
@@ -850,6 +1050,29 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
             sourceSection?: string | undefined;
             approvedWording?: string | undefined;
             unsafeWording?: string[] | undefined;
+        } | undefined;
+        review?: {
+            decision: "approved" | "rejected" | "approved-with-qualifier" | "needs-edit" | "insufficient-proof" | "deferred";
+            reviewSha256: string;
+            requiredQualifiers: string[];
+            publicSafety: "private" | "indeterminate" | "public-safe" | "restricted";
+            resumeReadiness: "needs-edit" | "indeterminate" | "resume-ready" | "not-resume-ready";
+            eligibleForRoleMatching: boolean;
+            eligibleForJobMapping: boolean;
+            workContext: "other" | "project" | "skill" | "certification" | "education" | "ambiguous" | "employment";
+            claimNature: "other" | "responsibility" | "capability" | "achievement" | "ambiguous" | "credential";
+            reviewId: string;
+            metricState: "contradicted" | "indeterminate" | "verified" | "unverified" | "not-a-metric";
+            approvedProjectionId?: string | undefined;
+            approvedTextSha256?: string | undefined;
+        } | undefined;
+        sourceContentSha256?: string | undefined;
+        sourceState?: {
+            approvalStatus: "approved" | "needs_confirmation" | "blocked";
+            outputReadiness: "generic_only" | "do_not_use" | "resume_ready" | "internal_only";
+            publicSafe: boolean;
+            needsConfirmation: boolean;
+            metricStatus: "verified_metric" | "structural_metric" | "no_metric" | "needs_metric";
         } | undefined;
     }>, "many">;
     verifiedMetrics: z.ZodArray<z.ZodObject<{
@@ -875,24 +1098,24 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
         claimId: string;
         id: string;
         evidenceIds: string[];
-        exactText: string;
-        textSha256: string;
         scope: {
             dateRange?: string | undefined;
             parentRoleId?: string | undefined;
             parentProjectId?: string | undefined;
         };
+        exactText: string;
+        textSha256: string;
     }, {
         claimId: string;
         id: string;
         evidenceIds: string[];
-        exactText: string;
-        textSha256: string;
         scope: {
             dateRange?: string | undefined;
             parentRoleId?: string | undefined;
             parentProjectId?: string | undefined;
         };
+        exactText: string;
+        textSha256: string;
     }>, "many">;
     eligibleRoleEvidenceIds: z.ZodArray<z.ZodString, "many">;
     eligibleJobEvidenceIds: z.ZodArray<z.ZodString, "many">;
@@ -906,6 +1129,7 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
         evidenceItemCount: z.ZodNumber;
         claimCount: z.ZodNumber;
         approvedClaimCount: z.ZodNumber;
+        reviewedClaimCount: z.ZodOptional<z.ZodNumber>;
         eligibleRoleEvidenceCount: z.ZodNumber;
         eligibleJobEvidenceCount: z.ZodNumber;
         verifiedMetricCount: z.ZodNumber;
@@ -922,6 +1146,7 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
         verifiedMetricCount: number;
         provenanceComplete: boolean;
         eligibilityPreserved: boolean;
+        reviewedClaimCount?: number | undefined;
     }, {
         status: "complete";
         sourceArtifactCount: number;
@@ -933,6 +1158,7 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
         verifiedMetricCount: number;
         provenanceComplete: boolean;
         eligibilityPreserved: boolean;
+        reviewedClaimCount?: number | undefined;
     }>;
     warnings: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
@@ -970,10 +1196,11 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
         verifiedMetricCount: number;
         provenanceComplete: boolean;
         eligibilityPreserved: boolean;
+        reviewedClaimCount?: number | undefined;
     };
     policy: {
         name: "evidence-snapshot-policy";
-        version: "1";
+        version: "1" | "2";
     };
     claims: {
         id: string;
@@ -986,7 +1213,7 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
         metricStatus: "verified_metric" | "structural_metric" | "no_metric" | "needs_metric";
         contentSha256: string;
         eligibility: {
-            reasons: ("claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
+            reasons: ("claim-unreviewed" | "review-not-approved" | "review-insufficient-support" | "review-scope-not-defensible" | "review-not-public-safe" | "review-not-resume-ready" | "review-role-ineligible" | "review-job-ineligible" | "review-critical-risk" | "claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
             roleMatching: boolean;
             jobMapping: boolean;
         };
@@ -1011,6 +1238,29 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
             approvedWording?: string | undefined;
             unsafeWording?: string[] | undefined;
         } | undefined;
+        review?: {
+            decision: "approved" | "rejected" | "approved-with-qualifier" | "needs-edit" | "insufficient-proof" | "deferred";
+            reviewSha256: string;
+            requiredQualifiers: string[];
+            publicSafety: "private" | "indeterminate" | "public-safe" | "restricted";
+            resumeReadiness: "needs-edit" | "indeterminate" | "resume-ready" | "not-resume-ready";
+            eligibleForRoleMatching: boolean;
+            eligibleForJobMapping: boolean;
+            workContext: "other" | "project" | "skill" | "certification" | "education" | "ambiguous" | "employment";
+            claimNature: "other" | "responsibility" | "capability" | "achievement" | "ambiguous" | "credential";
+            reviewId: string;
+            metricState: "contradicted" | "indeterminate" | "verified" | "unverified" | "not-a-metric";
+            approvedProjectionId?: string | undefined;
+            approvedTextSha256?: string | undefined;
+        } | undefined;
+        sourceContentSha256?: string | undefined;
+        sourceState?: {
+            approvalStatus: "approved" | "needs_confirmation" | "blocked";
+            outputReadiness: "generic_only" | "do_not_use" | "resume_ready" | "internal_only";
+            publicSafe: boolean;
+            needsConfirmation: boolean;
+            metricStatus: "verified_metric" | "structural_metric" | "no_metric" | "needs_metric";
+        } | undefined;
     }[];
     contract: {
         name: "evidence-snapshot";
@@ -1018,7 +1268,7 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
     };
     producer: {
         name: "evidence-snapshot-exporter";
-        version: "1";
+        version: "1" | "2";
         mode: "deterministic";
     };
     sourceFoundation: {
@@ -1029,6 +1279,7 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
             path: string;
             id: "sources" | "evidence-items" | "claims";
         }[];
+        reviewInventorySha256?: string | undefined;
     };
     evidenceItems: {
         id: string;
@@ -1048,7 +1299,7 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
         confidence: "high" | "medium" | "low";
         contentSha256: string;
         eligibility: {
-            reasons: ("claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
+            reasons: ("claim-unreviewed" | "review-not-approved" | "review-insufficient-support" | "review-scope-not-defensible" | "review-not-public-safe" | "review-not-resume-ready" | "review-role-ineligible" | "review-job-ineligible" | "review-critical-risk" | "claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
             roleMatching: boolean;
             jobMapping: boolean;
         };
@@ -1075,13 +1326,13 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
         claimId: string;
         id: string;
         evidenceIds: string[];
-        exactText: string;
-        textSha256: string;
         scope: {
             dateRange?: string | undefined;
             parentRoleId?: string | undefined;
             parentProjectId?: string | undefined;
         };
+        exactText: string;
+        textSha256: string;
     }[];
     eligibleRoleEvidenceIds: string[];
     eligibleJobEvidenceIds: string[];
@@ -1109,10 +1360,11 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
         verifiedMetricCount: number;
         provenanceComplete: boolean;
         eligibilityPreserved: boolean;
+        reviewedClaimCount?: number | undefined;
     };
     policy: {
         name: "evidence-snapshot-policy";
-        version: "1";
+        version: "1" | "2";
     };
     claims: {
         id: string;
@@ -1125,7 +1377,7 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
         metricStatus: "verified_metric" | "structural_metric" | "no_metric" | "needs_metric";
         contentSha256: string;
         eligibility: {
-            reasons: ("claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
+            reasons: ("claim-unreviewed" | "review-not-approved" | "review-insufficient-support" | "review-scope-not-defensible" | "review-not-public-safe" | "review-not-resume-ready" | "review-role-ineligible" | "review-job-ineligible" | "review-critical-risk" | "claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
             roleMatching: boolean;
             jobMapping: boolean;
         };
@@ -1150,6 +1402,29 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
             approvedWording?: string | undefined;
             unsafeWording?: string[] | undefined;
         } | undefined;
+        review?: {
+            decision: "approved" | "rejected" | "approved-with-qualifier" | "needs-edit" | "insufficient-proof" | "deferred";
+            reviewSha256: string;
+            requiredQualifiers: string[];
+            publicSafety: "private" | "indeterminate" | "public-safe" | "restricted";
+            resumeReadiness: "needs-edit" | "indeterminate" | "resume-ready" | "not-resume-ready";
+            eligibleForRoleMatching: boolean;
+            eligibleForJobMapping: boolean;
+            workContext: "other" | "project" | "skill" | "certification" | "education" | "ambiguous" | "employment";
+            claimNature: "other" | "responsibility" | "capability" | "achievement" | "ambiguous" | "credential";
+            reviewId: string;
+            metricState: "contradicted" | "indeterminate" | "verified" | "unverified" | "not-a-metric";
+            approvedProjectionId?: string | undefined;
+            approvedTextSha256?: string | undefined;
+        } | undefined;
+        sourceContentSha256?: string | undefined;
+        sourceState?: {
+            approvalStatus: "approved" | "needs_confirmation" | "blocked";
+            outputReadiness: "generic_only" | "do_not_use" | "resume_ready" | "internal_only";
+            publicSafe: boolean;
+            needsConfirmation: boolean;
+            metricStatus: "verified_metric" | "structural_metric" | "no_metric" | "needs_metric";
+        } | undefined;
     }[];
     contract: {
         name: "evidence-snapshot";
@@ -1157,7 +1432,7 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
     };
     producer: {
         name: "evidence-snapshot-exporter";
-        version: "1";
+        version: "1" | "2";
         mode: "deterministic";
     };
     sourceFoundation: {
@@ -1168,6 +1443,7 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
             path: string;
             id: "sources" | "evidence-items" | "claims";
         }[];
+        reviewInventorySha256?: string | undefined;
     };
     evidenceItems: {
         id: string;
@@ -1187,7 +1463,7 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
         confidence: "high" | "medium" | "low";
         contentSha256: string;
         eligibility: {
-            reasons: ("claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
+            reasons: ("claim-unreviewed" | "review-not-approved" | "review-insufficient-support" | "review-scope-not-defensible" | "review-not-public-safe" | "review-not-resume-ready" | "review-role-ineligible" | "review-job-ineligible" | "review-critical-risk" | "claim-not-approved" | "claim-not-resume-ready" | "claim-not-public-safe" | "claim-needs-confirmation" | "evidence-not-public" | "evidence-sensitive" | "source-missing" | "source-inactive" | "source-not-public" | "job-description-source" | "no-eligible-claim" | "no-eligible-evidence")[];
             roleMatching: boolean;
             jobMapping: boolean;
         };
@@ -1214,13 +1490,13 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
         claimId: string;
         id: string;
         evidenceIds: string[];
-        exactText: string;
-        textSha256: string;
         scope: {
             dateRange?: string | undefined;
             parentRoleId?: string | undefined;
             parentProjectId?: string | undefined;
         };
+        exactText: string;
+        textSha256: string;
     }[];
     eligibleRoleEvidenceIds: string[];
     eligibleJobEvidenceIds: string[];
@@ -1237,14 +1513,16 @@ export declare const EvidenceSnapshotManifestSchemaV1: z.ZodObject<{
     contractName: z.ZodLiteral<"evidence-snapshot">;
     contractVersion: z.ZodLiteral<"1">;
     policyName: z.ZodLiteral<"evidence-snapshot-policy">;
-    policyVersion: z.ZodLiteral<"1">;
+    policyVersion: z.ZodEnum<["1", "2"]>;
     producerName: z.ZodLiteral<"evidence-snapshot-exporter">;
-    producerVersion: z.ZodLiteral<"1">;
+    producerVersion: z.ZodEnum<["1", "2"]>;
     sourceInventorySha256: z.ZodString;
+    reviewInventorySha256: z.ZodOptional<z.ZodString>;
     sourceArtifactCount: z.ZodNumber;
     evidenceItemCount: z.ZodNumber;
     claimCount: z.ZodNumber;
     approvedClaimCount: z.ZodNumber;
+    reviewedClaimCount: z.ZodOptional<z.ZodNumber>;
     eligibleRoleEvidenceCount: z.ZodNumber;
     eligibleJobEvidenceCount: z.ZodNumber;
     verifiedMetricCount: z.ZodNumber;
@@ -1266,7 +1544,7 @@ export declare const EvidenceSnapshotManifestSchemaV1: z.ZodObject<{
     schemaVersion: 1;
     createdAt: string;
     updatedAt: string;
-    policyVersion: "1";
+    policyVersion: "1" | "2";
     completeness: "complete";
     snapshotPath: string;
     policyName: "evidence-snapshot-policy";
@@ -1282,18 +1560,20 @@ export declare const EvidenceSnapshotManifestSchemaV1: z.ZodObject<{
     contractName: "evidence-snapshot";
     contractVersion: "1";
     producerName: "evidence-snapshot-exporter";
-    producerVersion: "1";
+    producerVersion: "1" | "2";
     sourceInventorySha256: string;
     files: {
         sha256: string;
         path: string;
     }[];
     validationResult: "valid";
+    reviewInventorySha256?: string | undefined;
+    reviewedClaimCount?: number | undefined;
 }, {
     schemaVersion: 1;
     createdAt: string;
     updatedAt: string;
-    policyVersion: "1";
+    policyVersion: "1" | "2";
     completeness: "complete";
     snapshotPath: string;
     policyName: "evidence-snapshot-policy";
@@ -1309,13 +1589,15 @@ export declare const EvidenceSnapshotManifestSchemaV1: z.ZodObject<{
     contractName: "evidence-snapshot";
     contractVersion: "1";
     producerName: "evidence-snapshot-exporter";
-    producerVersion: "1";
+    producerVersion: "1" | "2";
     sourceInventorySha256: string;
     files: {
         sha256: string;
         path: string;
     }[];
     validationResult: "valid";
+    reviewInventorySha256?: string | undefined;
+    reviewedClaimCount?: number | undefined;
 }>;
 export type EvidenceFoundationSnapshot = z.infer<typeof EvidenceFoundationSnapshotSchema>;
 export type EvidenceSnapshotManifestV1 = z.infer<typeof EvidenceSnapshotManifestSchemaV1>;

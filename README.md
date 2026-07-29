@@ -48,7 +48,7 @@ Phase 2 Slice 2.7F converts a current usable Job Resume Content Plan into a cons
 
 Phase 2 Slice 2.7G renders a current approved Job Resume Draft through one canonical document into faithful Markdown, HTML, DOCX, and adapter-based PDF exports.
 
-The Evidence Snapshot Contract v1 adds an immutable, content-addressed boundary between the reviewed Evidence Foundation and explicitly pinned Role or Job targets.
+Human-controlled Evidence Foundation claim reviews now provide the reusable eligibility boundary projected into immutable Evidence Snapshot Contract v1 exports.
 
 ## What Slice 1 Does
 
@@ -523,11 +523,51 @@ Deterministic and approved interpretations expose `empty`, `partial`, or `comple
 
 Only `deterministic-approved`, `human-approved`, or `human-edited` expectations may become eligible for future evidence matching. Slice 2.3B does not load candidate evidence, perform evidence matching, assess fit, calculate proof readiness, create strengths or weaknesses reports, or generate resumes or application outputs.
 
+## Evidence Foundation Claim Review and Eligibility
+
+ProofLayer keeps immutable source claims separate from reusable human decisions. An `evidence-claim-review` schema-version-1 artifact records factual support, scope, public safety, resume readiness, Role Matching eligibility, Job Mapping eligibility, metric verification, project/employment boundaries, responsibility/achievement boundaries, qualifiers, risks, warnings, ambiguities, and private reviewer rationale under `evidence-claim-review-policy` version `1`.
+
+No claim is approved merely because it exists, appears in a prior resume, or helps a target. An unreviewed claim remains ineligible. `approved` requires supported facts and exact scope. `approved-with-qualifier` requires narrower reviewer-authored wording and explicit qualifiers. A factually approved claim may remain deliberately not resume-ready, and Role Matching versus Job Mapping eligibility is projected separately. Private, restricted, sensitive, unsupported, contradicted, rejected, deferred, needs-edit, and insufficient-proof claims cannot become resume-ready or matching-eligible. Reviewer rationale stays in the review artifact and is never copied into snapshots or visible outputs.
+
+Submit a complete non-interactive JSON decision:
+
+```bash
+npm run dev -- evidence claim-review create <claim-id> \
+  --decision approved-with-qualifier \
+  --input review-input.json
+npm run dev -- evidence claim-review show <claim-id>
+npm run dev -- evidence claim-review status <claim-id>
+npm run dev -- evidence claim-review list
+```
+
+The documented synthetic shape is [`docs/examples/evidence-claim-review-input.example.json`](docs/examples/evidence-claim-review-input.example.json). The submitted `reviewedClaimSha256` must match the exact immutable claim text. A verified metric additionally requires exact approved wording, a numeric value, unit, scope, preserved qualifiers, and direct source-evidence support; ProofLayer never calculates, combines, rounds, or infers metrics.
+
+Reviews are content-addressed versions:
+
+```text
+workspace/evidence-reviews/claims/<claim-id>/reviews/<review-id>/
+  evidence-claim-review.json
+  evidence-claim-review-manifest.json
+```
+
+An unchanged submission returns `already-current` without rewriting artifacts. A changed decision must explicitly name the effective review in `supersedesReviewId`; prior versions remain auditable. Lifecycle is `missing`, `current`, `stale`, `invalid`, or `superseded`. Claim, evidence, provenance, or policy changes make a review stale. Target changes do not, because review truth is reusable across targets.
+
+Review batches organize work only:
+
+```bash
+npm run dev -- evidence review-batch build --target <job-target-id>
+npm run dev -- evidence review-batch list
+npm run dev -- evidence review-batch show <batch-id>
+npm run dev -- evidence review-batch status <batch-id>
+```
+
+`evidence-review-batch-policy` version `1` uses only exact requirement terminology, named technology/domain metadata, requirement necessity, evidence categories, and potential-metric markers to assign `high`, `medium`, or `low` workflow priority. It does not establish support, approval, eligibility, fit, or target-specific truth. The controlled subset files are deliberately blank templates, not review decisions. Batches become stale when the requirement model, policy, claims, or evidence changes.
+
 ## Evidence Snapshot Contract v1
 
-ProofLayer exposes the current reviewed Evidence Foundation through an immutable, content-addressed `evidence-snapshot` schema version `1`, produced by `evidence-snapshot-exporter` version `1` under `evidence-snapshot-policy` version `1`.
+ProofLayer exposes the current reviewed Evidence Foundation through an immutable, content-addressed `evidence-snapshot` schema version `1`. New exports use `evidence-snapshot-exporter` version `2` under `evidence-snapshot-policy` version `2`; the reader remains compatible with immutable policy-version-1 snapshots and existing pins.
 
-Snapshot export preserves existing approval, public-safety, resume-readiness, metric-verification, and matching-eligibility states. It never approves, repairs, promotes, or reinterprets evidence. Eligible reviewed content is included for current consumers. Ineligible records retain stable IDs, content hashes, trust state, eligibility reasons, and safe logical provenance, while private content and local source paths are omitted. Zero eligible evidence is a valid complete snapshot with explicit warnings.
+Snapshot export projects only current effective human reviews. It never approves, repairs, promotes, or reinterprets evidence. Approved corrected wording receives a stable projection ID while the original claim remains immutable and its source state/hash stays auditable. Eligible reviewed content is included for current consumers. Ineligible records retain stable IDs, source content hashes, review decision IDs/hashes, trust state, eligibility reasons, and safe logical provenance, while private content, reviewer rationale, and local source paths are omitted. Zero eligible evidence is a valid complete snapshot with explicit warnings.
 
 ```bash
 npm run dev -- evidence snapshot-build
@@ -545,7 +585,7 @@ workspace/evidence-snapshots/<snapshot-id>/
   evidence-snapshot-manifest.json
 ```
 
-Snapshot identity binds schema and policy versions, the source inventory hash, ordered evidence and claim IDs and content hashes, normalized eligibility state, and verified metric IDs and hashes. Timestamps do not affect identity. An unchanged export returns `already-current` without rewriting bytes, timestamps, or modification times. Existing snapshot content is never overwritten; corruption or identity collision must be inspected rather than repaired in place.
+Snapshot identity binds schema and policy versions, the immutable source inventory hash, effective review inventory hash, ordered evidence and claim IDs and content hashes, normalized eligibility state, review projections, and verified metric IDs and hashes. Snapshot export timestamps do not affect identity. An unchanged export returns `already-current` without rewriting bytes, timestamps, or modification times. Existing snapshot content is never overwritten; corruption or identity collision must be inspected rather than repaired in place.
 
 Role and Job targets pin one snapshot explicitly:
 
@@ -585,7 +625,7 @@ Absence of reviewed evidence means unsupported or not assessed. It does not prov
 
 Only current approved interpretations with `usableForEvidenceMatching: true` may enter matching. Eligible expectation trust states are `deterministic-approved`, `human-approved`, and `human-edited`; proposed and rejected expectations remain excluded.
 
-Candidate evidence is eligible only when the evidence item is public and sensitivity-free, every referenced source is active and public, no source is a job description, and at least one globally reviewed claim explicitly cites that evidence. The supporting claim must be `approved`, `resume_ready`, public-safe, and not require confirmation. Evidence is never promoted merely because it appears in a draft or output-specific resume review.
+Candidate evidence is eligible only when it is sensitivity-free, every referenced source is active and not private/do-not-use/sensitive, no source is a job description, and at least one current effective human claim review explicitly permits the consumer. Generic-only or unknown source state is not treated as public approval by itself; a human must explicitly mark the claim public-safe. The approved projection must be resume-ready and separately eligible for Role Matching or Job Mapping. Evidence is never promoted merely because it appears in a draft, output-specific resume review, or target-guided batch.
 
 The legacy Role matching path stores a target-local evidence snapshot containing stable evidence IDs, artifact hashes, reviewed-claim hashes, and source provenance. Private raw source text is not copied into matching artifacts. The global Evidence Snapshot Contract described above is the current boundary for Job Mapping and the compatibility hook for future Role migration.
 

@@ -420,13 +420,13 @@ Role and Job pipelines should share capabilities when their proof contracts are 
 
 ### Evidence Store
 
-The source registry, normalized evidence items, and claims provide the common factual foundation. The `evidence-snapshot` schema version `1` is the read-only consumption boundary: it preserves stable IDs, content and inventory hashes, exact trust and eligibility state, safe provenance, verified metrics, completeness, and warnings without exporting unnecessary private source content. Target documents are kept outside candidate evidence.
+The source registry, normalized evidence items, and immutable claims provide the common factual foundation. Reusable human decisions are separate `evidence-claim-review` version-1 artifacts under `evidence-claim-review-policy` version `1`; they determine factual support, safe scope, public safety, resume readiness, and Role/Job eligibility without mutating source evidence. The `evidence-snapshot` schema version `1` is the read-only consumption boundary. Current policy/exporter version `2` projects only effective reviews while preserving stable source IDs and hashes, approved projection identities, review hashes, exact eligibility state, safe provenance, verified metrics, completeness, and warnings without exporting private reviewer rationale or unnecessary source content. Target documents are kept outside candidate evidence.
 
 Snapshots are currently produced from the in-repository Evidence Foundation. This contract permits a future repository boundary, but no repository split, remote snapshot service, or network fetching is implemented. Consumers pin snapshots explicitly and never select the newest snapshot automatically.
 
 ### Reviewed Claims
 
-Approval, public safety, output readiness, metric status, and wording permissions are shared eligibility controls.
+Approval, qualifiers, public safety, output readiness, Role/Job eligibility, metric status, wording permissions, and project/employment and responsibility/achievement boundaries are shared eligibility controls. Review batches are human-work organizers only and never become approval authority.
 
 ### Provenance
 
@@ -515,6 +515,7 @@ Status through Slice 2.7G:
 
 | Capability | Role Pipeline | Job Pipeline |
 | --- | --- | --- |
+| Evidence Review and Eligibility | Completed through human-controlled claim review and Snapshot policy v2 | Completed through human-controlled claim review and Snapshot policy v2 |
 | Target Modeling | Completed | Completed |
 | Expectation Modeling | Completed | Completed as Job Requirement Modeling |
 | Evidence Mapping | Completed | Completed through Slice 2.7B |

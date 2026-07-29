@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "claimId": "claim_example_platform_delivery",
+  "reviewedClaimSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "decision": "approved-with-qualifier",
+  "correctedClaim": "Supported platform delivery with engineering.",
+  "requiredQualifiers": [
+    "Supported"
+  ],
+  "factualSupport": "partially-supported",
+  "scope": "qualified",
+  "publicSafety": "public-safe",
+  "resumeReadiness": "resume-ready",
+  "eligibleForRoleMatching": true,
+  "eligibleForJobMapping": true,
+  "metricReview": {
+    "state": "not-a-metric",
+    "qualifiers": []
+  },
+  "classification": {
+    "workContext": "employment",
+    "claimNature": "responsibility"
+  },
+  "risks": [],
+  "warnings": [],
+  "ambiguities": [],
+  "reviewerRationale": "Synthetic example only. Replace the claim ID, exact source claim hash, wording, and decision fields after reviewing the referenced evidence."
+}

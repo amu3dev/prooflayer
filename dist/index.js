@@ -10,6 +10,8 @@ import { formatPublicProfileSummary, initializePublicProfile, loadPublicProfile 
 import { exportFinalResume, formatResumeExportStatus, getResumeExportStatus } from "./resume-export.js";
 import { createJobTarget, createRoleTarget, formatTargetCreation, formatTargetJson, formatTargetList, listTargets, showTarget } from "./targets.js";
 import { buildEvidenceSnapshot, formatEvidenceSnapshotBuild, formatEvidenceSnapshotList, formatEvidenceSnapshotStatus, getEvidenceSnapshotStatus, listEvidenceSnapshots, loadEvidenceSnapshot, validateEvidenceSnapshot, } from "./evidence-snapshots.js";
+import { createEvidenceClaimReview, formatEvidenceClaimReviewList, formatEvidenceClaimReviewResult, formatEvidenceClaimReviewStatus, getEvidenceClaimReviewStatus, listEvidenceClaimReviews, readEvidenceClaimReviewInputFile, showEvidenceClaimReview, } from "./evidence-claim-review.js";
+import { buildEvidenceReviewBatch, formatEvidenceReviewBatchList, formatEvidenceReviewBatchResult, formatEvidenceReviewBatchStatus, getEvidenceReviewBatchStatus, listEvidenceReviewBatches, showEvidenceReviewBatch, } from "./evidence-review-batch.js";
 import { formatTargetEvidencePinResult, formatTargetEvidencePinStatus, getTargetEvidencePinStatus, loadTargetEvidencePin, pinTargetEvidenceSnapshot, upgradeTargetEvidenceSnapshot, } from "./target-evidence-pin.js";
 import { analyzeTarget, formatAnalyzeTargetResult, formatTargetAnalysisStatus, getTargetAnalysisStatus, showTargetAnalysis } from "./target-analysis.js";
 import { formatInterpretTargetResult, formatTargetInterpretationStatus, getTargetInterpretationStatus, interpretTarget, showTargetInterpretation } from "./target-interpretation.js";
@@ -201,6 +203,73 @@ exportCommand
 const evidence = program
     .command("evidence")
     .description("Export and inspect immutable reviewed Evidence Foundation snapshots.");
+const claimReview = evidence
+    .command("claim-review")
+    .description("Create and inspect immutable human claim-review decisions.");
+claimReview
+    .command("create <claim-id>")
+    .requiredOption("--decision <decision>", "controlled review decision")
+    .requiredOption("--input <path>", "complete JSON review input")
+    .description("Create one evidence claim review without mutating the source claim.")
+    .action(async (claimId, options) => {
+    const input = await readEvidenceClaimReviewInputFile(options.input);
+    if (input.decision !== options.decision) {
+        throw new Error(`CLI decision ${options.decision} does not match review input decision ${input.decision}.`);
+    }
+    console.log(formatEvidenceClaimReviewResult(await createEvidenceClaimReview(getWorkspace(), claimId, input)));
+});
+claimReview
+    .command("show <claim-id>")
+    .description("Print the current effective review for one claim as stable JSON.")
+    .action(async (claimId) => {
+    process.stdout.write(`${JSON.stringify(await showEvidenceClaimReview(getWorkspace(), claimId), null, 2)}\n`);
+});
+claimReview
+    .command("status <claim-id>")
+    .option("--review-id <review-id>", "inspect a specific review version")
+    .description("Inspect claim-review lifecycle, dependencies, and supersession.")
+    .action(async (claimId, options) => {
+    console.log(formatEvidenceClaimReviewStatus(await getEvidenceClaimReviewStatus(getWorkspace(), claimId, options.reviewId)));
+});
+claimReview
+    .command("list")
+    .description("List reviewed and unreviewed Evidence Foundation claims.")
+    .action(async () => {
+    console.log(formatEvidenceClaimReviewList(await listEvidenceClaimReviews(getWorkspace())));
+});
+const reviewBatch = evidence
+    .command("review-batch")
+    .description("Organize human evidence review without making approval decisions.");
+reviewBatch
+    .command("build")
+    .requiredOption("--target <target-id>", "current Job Target used only for review priority")
+    .option("--subset-size <count>", "controlled template subset size", "12")
+    .option("--rebuild", "explicitly rebuild an invalid task-owned batch")
+    .description("Build a deterministic target-guided human review batch and blank templates.")
+    .action(async (options) => {
+    console.log(formatEvidenceReviewBatchResult(await buildEvidenceReviewBatch(getWorkspace(), options.target, {
+        subsetSize: Number.parseInt(options.subsetSize, 10),
+        rebuild: options.rebuild,
+    })));
+});
+reviewBatch
+    .command("list")
+    .description("List persisted evidence review batches.")
+    .action(async () => {
+    console.log(formatEvidenceReviewBatchList(await listEvidenceReviewBatches(getWorkspace())));
+});
+reviewBatch
+    .command("show <batch-id>")
+    .description("Print one review batch as stable JSON.")
+    .action(async (batchId) => {
+    process.stdout.write(`${JSON.stringify(await showEvidenceReviewBatch(getWorkspace(), batchId), null, 2)}\n`);
+});
+reviewBatch
+    .command("status <batch-id>")
+    .description("Inspect review-batch lifecycle and dependency state.")
+    .action(async (batchId) => {
+    console.log(formatEvidenceReviewBatchStatus(await getEvidenceReviewBatchStatus(getWorkspace(), batchId)));
+});
 evidence
     .command("snapshot-build")
     .description("Export the current reviewed Evidence Foundation as an immutable content-addressed snapshot.")

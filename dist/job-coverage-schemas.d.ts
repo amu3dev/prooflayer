@@ -396,6 +396,7 @@ export declare const JobRequirementCoverageSchema: z.ZodEffects<z.ZodObject<{
     ambiguities: string[];
     requirementId: string;
     normalizedLabel: string;
+    state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
     requirementProvenance: {
         sourceReferences: {
             sha256: string;
@@ -414,7 +415,6 @@ export declare const JobRequirementCoverageSchema: z.ZodEffects<z.ZodObject<{
         sourceTextSha256: string;
     };
     mappedLinkIds: string[];
-    state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
     linkCounts: {
         partial: number;
         direct: number;
@@ -454,6 +454,7 @@ export declare const JobRequirementCoverageSchema: z.ZodEffects<z.ZodObject<{
     ambiguities: string[];
     requirementId: string;
     normalizedLabel: string;
+    state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
     requirementProvenance: {
         sourceReferences: {
             sha256: string;
@@ -472,7 +473,6 @@ export declare const JobRequirementCoverageSchema: z.ZodEffects<z.ZodObject<{
         sourceTextSha256: string;
     };
     mappedLinkIds: string[];
-    state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
     linkCounts: {
         partial: number;
         direct: number;
@@ -512,6 +512,7 @@ export declare const JobRequirementCoverageSchema: z.ZodEffects<z.ZodObject<{
     ambiguities: string[];
     requirementId: string;
     normalizedLabel: string;
+    state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
     requirementProvenance: {
         sourceReferences: {
             sha256: string;
@@ -530,7 +531,6 @@ export declare const JobRequirementCoverageSchema: z.ZodEffects<z.ZodObject<{
         sourceTextSha256: string;
     };
     mappedLinkIds: string[];
-    state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
     linkCounts: {
         partial: number;
         direct: number;
@@ -570,6 +570,7 @@ export declare const JobRequirementCoverageSchema: z.ZodEffects<z.ZodObject<{
     ambiguities: string[];
     requirementId: string;
     normalizedLabel: string;
+    state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
     requirementProvenance: {
         sourceReferences: {
             sha256: string;
@@ -588,7 +589,6 @@ export declare const JobRequirementCoverageSchema: z.ZodEffects<z.ZodObject<{
         sourceTextSha256: string;
     };
     mappedLinkIds: string[];
-    state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
     linkCounts: {
         partial: number;
         direct: number;
@@ -1020,6 +1020,7 @@ export declare const JobRequirementCoverageModelSchema: z.ZodObject<{
         ambiguities: string[];
         requirementId: string;
         normalizedLabel: string;
+        state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
         requirementProvenance: {
             sourceReferences: {
                 sha256: string;
@@ -1038,7 +1039,6 @@ export declare const JobRequirementCoverageModelSchema: z.ZodObject<{
             sourceTextSha256: string;
         };
         mappedLinkIds: string[];
-        state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
         linkCounts: {
             partial: number;
             direct: number;
@@ -1078,6 +1078,7 @@ export declare const JobRequirementCoverageModelSchema: z.ZodObject<{
         ambiguities: string[];
         requirementId: string;
         normalizedLabel: string;
+        state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
         requirementProvenance: {
             sourceReferences: {
                 sha256: string;
@@ -1096,7 +1097,6 @@ export declare const JobRequirementCoverageModelSchema: z.ZodObject<{
             sourceTextSha256: string;
         };
         mappedLinkIds: string[];
-        state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
         linkCounts: {
             partial: number;
             direct: number;
@@ -1136,6 +1136,7 @@ export declare const JobRequirementCoverageModelSchema: z.ZodObject<{
         ambiguities: string[];
         requirementId: string;
         normalizedLabel: string;
+        state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
         requirementProvenance: {
             sourceReferences: {
                 sha256: string;
@@ -1154,7 +1155,6 @@ export declare const JobRequirementCoverageModelSchema: z.ZodObject<{
             sourceTextSha256: string;
         };
         mappedLinkIds: string[];
-        state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
         linkCounts: {
             partial: number;
             direct: number;
@@ -1194,6 +1194,7 @@ export declare const JobRequirementCoverageModelSchema: z.ZodObject<{
         ambiguities: string[];
         requirementId: string;
         normalizedLabel: string;
+        state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
         requirementProvenance: {
             sourceReferences: {
                 sha256: string;
@@ -1212,7 +1213,6 @@ export declare const JobRequirementCoverageModelSchema: z.ZodObject<{
             sourceTextSha256: string;
         };
         mappedLinkIds: string[];
-        state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
         linkCounts: {
             partial: number;
             direct: number;
@@ -1335,6 +1335,7 @@ export declare const JobRequirementCoverageModelSchema: z.ZodObject<{
         ambiguities: string[];
         requirementId: string;
         normalizedLabel: string;
+        state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
         requirementProvenance: {
             sourceReferences: {
                 sha256: string;
@@ -1353,7 +1354,6 @@ export declare const JobRequirementCoverageModelSchema: z.ZodObject<{
             sourceTextSha256: string;
         };
         mappedLinkIds: string[];
-        state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
         linkCounts: {
             partial: number;
             direct: number;
@@ -1446,6 +1446,7 @@ export declare const JobRequirementCoverageModelSchema: z.ZodObject<{
         ambiguities: string[];
         requirementId: string;
         normalizedLabel: string;
+        state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
         requirementProvenance: {
             sourceReferences: {
                 sha256: string;
@@ -1464,7 +1465,6 @@ export declare const JobRequirementCoverageModelSchema: z.ZodObject<{
             sourceTextSha256: string;
         };
         mappedLinkIds: string[];
-        state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
         linkCounts: {
             partial: number;
             direct: number;

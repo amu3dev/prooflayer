@@ -7,13 +7,16 @@ import {
   OutputReadinessSchema,
   VisibilitySchema,
 } from "./schemas.js";
+import { EvidenceClaimReviewSnapshotProjectionSchema } from "./evidence-claim-review-schemas.js";
 
 export const EVIDENCE_SNAPSHOT_SCHEMA_VERSION = 1 as const;
 export const EVIDENCE_SNAPSHOT_CONTRACT_NAME = "evidence-snapshot";
 export const EVIDENCE_SNAPSHOT_POLICY_NAME = "evidence-snapshot-policy";
-export const EVIDENCE_SNAPSHOT_POLICY_VERSION = "1";
+export const EVIDENCE_SNAPSHOT_POLICY_VERSION = "2";
+export const EVIDENCE_SNAPSHOT_SUPPORTED_POLICY_VERSIONS = ["1", "2"] as const;
 export const EVIDENCE_SNAPSHOT_EXPORTER_NAME = "evidence-snapshot-exporter";
-export const EVIDENCE_SNAPSHOT_EXPORTER_VERSION = "1";
+export const EVIDENCE_SNAPSHOT_EXPORTER_VERSION = "2";
+export const EVIDENCE_SNAPSHOT_SUPPORTED_EXPORTER_VERSIONS = ["1", "2"] as const;
 
 export const EvidenceSnapshotSha256Schema = z.string().regex(/^[a-f0-9]{64}$/);
 export const EvidenceSnapshotIdSchema = z.string().regex(
@@ -28,6 +31,15 @@ export const EvidenceSnapshotRelativePathSchema = z.string().min(1).refine(
 );
 
 export const EvidenceSnapshotEligibilityReasonSchema = z.enum([
+  "claim-unreviewed",
+  "review-not-approved",
+  "review-insufficient-support",
+  "review-scope-not-defensible",
+  "review-not-public-safe",
+  "review-not-resume-ready",
+  "review-role-ineligible",
+  "review-job-ineligible",
+  "review-critical-risk",
   "claim-not-approved",
   "claim-not-resume-ready",
   "claim-not-public-safe",
@@ -74,6 +86,7 @@ export const EvidenceSnapshotEvidenceRecordSchema = z.object({
 export const EvidenceSnapshotClaimRecordSchema = z.object({
   id: z.string().min(1),
   contentSha256: EvidenceSnapshotSha256Schema,
+  sourceContentSha256: EvidenceSnapshotSha256Schema.optional(),
   supportingEvidenceIds: z.array(z.string().min(1)),
   approvalStatus: ApprovalStatusSchema,
   outputReadiness: OutputReadinessSchema,
@@ -82,6 +95,14 @@ export const EvidenceSnapshotClaimRecordSchema = z.object({
   metricStatus: ClaimSchema.shape.metricStatus,
   factualConfidence: ConfidenceSchema,
   eligibility: EvidenceSnapshotEligibilitySchema,
+  sourceState: z.object({
+    approvalStatus: ApprovalStatusSchema,
+    outputReadiness: OutputReadinessSchema,
+    publicSafe: z.boolean(),
+    needsConfirmation: z.boolean(),
+    metricStatus: ClaimSchema.shape.metricStatus,
+  }).strict().optional(),
+  review: EvidenceClaimReviewSnapshotProjectionSchema.optional(),
   content: ClaimSchema.optional(),
 }).strict();
 
@@ -125,16 +146,17 @@ export const EvidenceFoundationSnapshotSchema = z.object({
   }).strict(),
   policy: z.object({
     name: z.literal(EVIDENCE_SNAPSHOT_POLICY_NAME),
-    version: z.literal(EVIDENCE_SNAPSHOT_POLICY_VERSION),
+    version: z.enum(EVIDENCE_SNAPSHOT_SUPPORTED_POLICY_VERSIONS),
   }).strict(),
   producer: z.object({
     name: z.literal(EVIDENCE_SNAPSHOT_EXPORTER_NAME),
-    version: z.literal(EVIDENCE_SNAPSHOT_EXPORTER_VERSION),
+    version: z.enum(EVIDENCE_SNAPSHOT_SUPPORTED_EXPORTER_VERSIONS),
     mode: z.literal("deterministic"),
   }).strict(),
   sourceFoundation: z.object({
     id: z.literal("prooflayer-reviewed-evidence-foundation"),
     inventorySha256: EvidenceSnapshotSha256Schema,
+    reviewInventorySha256: EvidenceSnapshotSha256Schema.optional(),
     artifacts: z.array(EvidenceSnapshotSourceArtifactSchema).length(3),
   }).strict(),
   evidenceItems: z.array(EvidenceSnapshotEvidenceRecordSchema),
@@ -152,6 +174,7 @@ export const EvidenceFoundationSnapshotSchema = z.object({
     evidenceItemCount: z.number().int().nonnegative(),
     claimCount: z.number().int().nonnegative(),
     approvedClaimCount: z.number().int().nonnegative(),
+    reviewedClaimCount: z.number().int().nonnegative().optional(),
     eligibleRoleEvidenceCount: z.number().int().nonnegative(),
     eligibleJobEvidenceCount: z.number().int().nonnegative(),
     verifiedMetricCount: z.number().int().nonnegative(),
@@ -169,14 +192,16 @@ export const EvidenceSnapshotManifestSchemaV1 = z.object({
   contractName: z.literal(EVIDENCE_SNAPSHOT_CONTRACT_NAME),
   contractVersion: z.literal("1"),
   policyName: z.literal(EVIDENCE_SNAPSHOT_POLICY_NAME),
-  policyVersion: z.literal(EVIDENCE_SNAPSHOT_POLICY_VERSION),
+  policyVersion: z.enum(EVIDENCE_SNAPSHOT_SUPPORTED_POLICY_VERSIONS),
   producerName: z.literal(EVIDENCE_SNAPSHOT_EXPORTER_NAME),
-  producerVersion: z.literal(EVIDENCE_SNAPSHOT_EXPORTER_VERSION),
+  producerVersion: z.enum(EVIDENCE_SNAPSHOT_SUPPORTED_EXPORTER_VERSIONS),
   sourceInventorySha256: EvidenceSnapshotSha256Schema,
+  reviewInventorySha256: EvidenceSnapshotSha256Schema.optional(),
   sourceArtifactCount: z.number().int().nonnegative(),
   evidenceItemCount: z.number().int().nonnegative(),
   claimCount: z.number().int().nonnegative(),
   approvedClaimCount: z.number().int().nonnegative(),
+  reviewedClaimCount: z.number().int().nonnegative().optional(),
   eligibleRoleEvidenceCount: z.number().int().nonnegative(),
   eligibleJobEvidenceCount: z.number().int().nonnegative(),
   verifiedMetricCount: z.number().int().nonnegative(),

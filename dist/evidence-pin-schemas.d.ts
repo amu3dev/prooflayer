@@ -23,12 +23,12 @@ export declare const TargetEvidencePinSchema: z.ZodObject<{
         schemaVersion: z.ZodLiteral<1>;
         contractName: z.ZodLiteral<"evidence-snapshot">;
         policyName: z.ZodLiteral<"evidence-snapshot-policy">;
-        policyVersion: z.ZodLiteral<"1">;
+        policyVersion: z.ZodEnum<["1", "2"]>;
     }, "strict", z.ZodTypeAny, {
         path: string;
         schemaVersion: 1;
         id: string;
-        policyVersion: "1";
+        policyVersion: "1" | "2";
         manifestPath: string;
         manifestSha256: string;
         policyName: "evidence-snapshot-policy";
@@ -38,7 +38,7 @@ export declare const TargetEvidencePinSchema: z.ZodObject<{
         path: string;
         schemaVersion: 1;
         id: string;
-        policyVersion: "1";
+        policyVersion: "1" | "2";
         manifestPath: string;
         manifestSha256: string;
         policyName: "evidence-snapshot-policy";
@@ -73,7 +73,7 @@ export declare const TargetEvidencePinSchema: z.ZodObject<{
         path: string;
         schemaVersion: 1;
         id: string;
-        policyVersion: "1";
+        policyVersion: "1" | "2";
         manifestPath: string;
         manifestSha256: string;
         policyName: "evidence-snapshot-policy";
@@ -98,7 +98,7 @@ export declare const TargetEvidencePinSchema: z.ZodObject<{
         path: string;
         schemaVersion: 1;
         id: string;
-        policyVersion: "1";
+        policyVersion: "1" | "2";
         manifestPath: string;
         manifestSha256: string;
         policyName: "evidence-snapshot-policy";
@@ -119,7 +119,7 @@ export declare const TargetEvidencePinManifestSchema: z.ZodObject<{
     snapshotContentSha256: z.ZodString;
     snapshotManifestSha256: z.ZodString;
     snapshotSchemaVersion: z.ZodLiteral<1>;
-    snapshotPolicyVersion: z.ZodLiteral<"1">;
+    snapshotPolicyVersion: z.ZodEnum<["1", "2"]>;
     createdAt: z.ZodString;
     updatedAt: z.ZodString;
 }, "strict", z.ZodTypeAny, {
@@ -136,7 +136,7 @@ export declare const TargetEvidencePinManifestSchema: z.ZodObject<{
     pinSha256: string;
     snapshotContentSha256: string;
     snapshotSchemaVersion: 1;
-    snapshotPolicyVersion: "1";
+    snapshotPolicyVersion: "1" | "2";
 }, {
     schemaVersion: 1;
     createdAt: string;
@@ -151,7 +151,7 @@ export declare const TargetEvidencePinManifestSchema: z.ZodObject<{
     pinSha256: string;
     snapshotContentSha256: string;
     snapshotSchemaVersion: 1;
-    snapshotPolicyVersion: "1";
+    snapshotPolicyVersion: "1" | "2";
 }>;
 export type TargetEvidencePin = z.infer<typeof TargetEvidencePinSchema>;
 export type TargetEvidencePinManifest = z.infer<typeof TargetEvidencePinManifestSchema>;

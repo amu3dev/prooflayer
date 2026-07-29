@@ -138,8 +138,8 @@ export declare const JobCandidateEvidenceProvenanceSchema: z.ZodObject<{
         sourceId: string;
         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
     }[];
-    evidenceItemPath: string;
     evidenceItemSha256: string;
+    evidenceItemPath: string;
     claimPath: string;
     claimSha256: string;
 }, {
@@ -153,8 +153,8 @@ export declare const JobCandidateEvidenceProvenanceSchema: z.ZodObject<{
         sourceId: string;
         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
     }[];
-    evidenceItemPath: string;
     evidenceItemSha256: string;
+    evidenceItemPath: string;
     claimPath: string;
     claimSha256: string;
 }>;
@@ -311,8 +311,8 @@ export declare const JobEvidenceLinkSchema: z.ZodObject<{
             sourceId: string;
             visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
         }[];
-        evidenceItemPath: string;
         evidenceItemSha256: string;
+        evidenceItemPath: string;
         claimPath: string;
         claimSha256: string;
     }, {
@@ -326,8 +326,8 @@ export declare const JobEvidenceLinkSchema: z.ZodObject<{
             sourceId: string;
             visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
         }[];
-        evidenceItemPath: string;
         evidenceItemSha256: string;
+        evidenceItemPath: string;
         claimPath: string;
         claimSha256: string;
     }>;
@@ -347,8 +347,8 @@ export declare const JobEvidenceLinkSchema: z.ZodObject<{
             sourceId: string;
             visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
         }[];
-        evidenceItemPath: string;
         evidenceItemSha256: string;
+        evidenceItemPath: string;
         claimPath: string;
         claimSha256: string;
     };
@@ -392,8 +392,8 @@ export declare const JobEvidenceLinkSchema: z.ZodObject<{
             sourceId: string;
             visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
         }[];
-        evidenceItemPath: string;
         evidenceItemSha256: string;
+        evidenceItemPath: string;
         claimPath: string;
         claimSha256: string;
     };
@@ -767,7 +767,7 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
         evidenceSnapshotSchemaVersion: z.ZodOptional<z.ZodLiteral<1>>;
         evidenceSnapshotContractName: z.ZodOptional<z.ZodLiteral<"evidence-snapshot">>;
         evidenceSnapshotPolicyName: z.ZodOptional<z.ZodLiteral<"evidence-snapshot-policy">>;
-        evidenceSnapshotPolicyVersion: z.ZodOptional<z.ZodLiteral<"1">>;
+        evidenceSnapshotPolicyVersion: z.ZodOptional<z.ZodLiteral<"2">>;
         sources: z.ZodObject<{
             path: z.ZodEffects<z.ZodString, string, string>;
             sha256: z.ZodString;
@@ -852,7 +852,7 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
         evidenceSnapshotSchemaVersion?: 1 | undefined;
         evidenceSnapshotContractName?: "evidence-snapshot" | undefined;
         evidenceSnapshotPolicyName?: "evidence-snapshot-policy" | undefined;
-        evidenceSnapshotPolicyVersion?: "1" | undefined;
+        evidenceSnapshotPolicyVersion?: "2" | undefined;
     }, {
         sources: {
             sha256: string;
@@ -905,7 +905,7 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
         evidenceSnapshotSchemaVersion?: 1 | undefined;
         evidenceSnapshotContractName?: "evidence-snapshot" | undefined;
         evidenceSnapshotPolicyName?: "evidence-snapshot-policy" | undefined;
-        evidenceSnapshotPolicyVersion?: "1" | undefined;
+        evidenceSnapshotPolicyVersion?: "2" | undefined;
     }>, {
         sources: {
             sha256: string;
@@ -958,7 +958,7 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
         evidenceSnapshotSchemaVersion?: 1 | undefined;
         evidenceSnapshotContractName?: "evidence-snapshot" | undefined;
         evidenceSnapshotPolicyName?: "evidence-snapshot-policy" | undefined;
-        evidenceSnapshotPolicyVersion?: "1" | undefined;
+        evidenceSnapshotPolicyVersion?: "2" | undefined;
     }, {
         sources: {
             sha256: string;
@@ -1011,7 +1011,7 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
         evidenceSnapshotSchemaVersion?: 1 | undefined;
         evidenceSnapshotContractName?: "evidence-snapshot" | undefined;
         evidenceSnapshotPolicyName?: "evidence-snapshot-policy" | undefined;
-        evidenceSnapshotPolicyVersion?: "1" | undefined;
+        evidenceSnapshotPolicyVersion?: "2" | undefined;
     }>;
     links: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
@@ -1156,8 +1156,8 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
                 sourceId: string;
                 visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
             }[];
-            evidenceItemPath: string;
             evidenceItemSha256: string;
+            evidenceItemPath: string;
             claimPath: string;
             claimSha256: string;
         }, {
@@ -1171,8 +1171,8 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
                 sourceId: string;
                 visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
             }[];
-            evidenceItemPath: string;
             evidenceItemSha256: string;
+            evidenceItemPath: string;
             claimPath: string;
             claimSha256: string;
         }>;
@@ -1192,8 +1192,8 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
                 sourceId: string;
                 visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
             }[];
-            evidenceItemPath: string;
             evidenceItemSha256: string;
+            evidenceItemPath: string;
             claimPath: string;
             claimSha256: string;
         };
@@ -1237,8 +1237,8 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
                 sourceId: string;
                 visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
             }[];
-            evidenceItemPath: string;
             evidenceItemSha256: string;
+            evidenceItemPath: string;
             claimPath: string;
             claimSha256: string;
         };
@@ -1567,7 +1567,7 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
         evidenceSnapshotSchemaVersion?: 1 | undefined;
         evidenceSnapshotContractName?: "evidence-snapshot" | undefined;
         evidenceSnapshotPolicyName?: "evidence-snapshot-policy" | undefined;
-        evidenceSnapshotPolicyVersion?: "1" | undefined;
+        evidenceSnapshotPolicyVersion?: "2" | undefined;
     };
     targetType: "job";
     targetId: string;
@@ -1608,8 +1608,8 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
                 sourceId: string;
                 visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
             }[];
-            evidenceItemPath: string;
             evidenceItemSha256: string;
+            evidenceItemPath: string;
             claimPath: string;
             claimSha256: string;
         };
@@ -1718,7 +1718,7 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
         evidenceSnapshotSchemaVersion?: 1 | undefined;
         evidenceSnapshotContractName?: "evidence-snapshot" | undefined;
         evidenceSnapshotPolicyName?: "evidence-snapshot-policy" | undefined;
-        evidenceSnapshotPolicyVersion?: "1" | undefined;
+        evidenceSnapshotPolicyVersion?: "2" | undefined;
     };
     targetType: "job";
     targetId: string;
@@ -1759,8 +1759,8 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
                 sourceId: string;
                 visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
             }[];
-            evidenceItemPath: string;
             evidenceItemSha256: string;
+            evidenceItemPath: string;
             claimPath: string;
             claimSha256: string;
         };
@@ -1837,7 +1837,7 @@ export declare const JobEvidenceMapManifestSchema: z.ZodEffects<z.ZodObject<{
     evidenceSnapshotSchemaVersion: z.ZodOptional<z.ZodLiteral<1>>;
     evidenceSnapshotContractName: z.ZodOptional<z.ZodLiteral<"evidence-snapshot">>;
     evidenceSnapshotPolicyName: z.ZodOptional<z.ZodLiteral<"evidence-snapshot-policy">>;
-    evidenceSnapshotPolicyVersion: z.ZodOptional<z.ZodLiteral<"1">>;
+    evidenceSnapshotPolicyVersion: z.ZodOptional<z.ZodLiteral<"2">>;
     sourcesSha256: z.ZodString;
     evidenceItemsSha256: z.ZodString;
     claimsSha256: z.ZodString;
@@ -1874,7 +1874,7 @@ export declare const JobEvidenceMapManifestSchema: z.ZodEffects<z.ZodObject<{
     evidenceSnapshotSchemaVersion?: 1 | undefined;
     evidenceSnapshotContractName?: "evidence-snapshot" | undefined;
     evidenceSnapshotPolicyName?: "evidence-snapshot-policy" | undefined;
-    evidenceSnapshotPolicyVersion?: "1" | undefined;
+    evidenceSnapshotPolicyVersion?: "2" | undefined;
     evidencePinSha256?: string | undefined;
     evidencePinManifestSha256?: string | undefined;
 }, {
@@ -1906,7 +1906,7 @@ export declare const JobEvidenceMapManifestSchema: z.ZodEffects<z.ZodObject<{
     evidenceSnapshotSchemaVersion?: 1 | undefined;
     evidenceSnapshotContractName?: "evidence-snapshot" | undefined;
     evidenceSnapshotPolicyName?: "evidence-snapshot-policy" | undefined;
-    evidenceSnapshotPolicyVersion?: "1" | undefined;
+    evidenceSnapshotPolicyVersion?: "2" | undefined;
     evidencePinSha256?: string | undefined;
     evidencePinManifestSha256?: string | undefined;
 }>, {
@@ -1938,7 +1938,7 @@ export declare const JobEvidenceMapManifestSchema: z.ZodEffects<z.ZodObject<{
     evidenceSnapshotSchemaVersion?: 1 | undefined;
     evidenceSnapshotContractName?: "evidence-snapshot" | undefined;
     evidenceSnapshotPolicyName?: "evidence-snapshot-policy" | undefined;
-    evidenceSnapshotPolicyVersion?: "1" | undefined;
+    evidenceSnapshotPolicyVersion?: "2" | undefined;
     evidencePinSha256?: string | undefined;
     evidencePinManifestSha256?: string | undefined;
 }, {
@@ -1970,7 +1970,7 @@ export declare const JobEvidenceMapManifestSchema: z.ZodEffects<z.ZodObject<{
     evidenceSnapshotSchemaVersion?: 1 | undefined;
     evidenceSnapshotContractName?: "evidence-snapshot" | undefined;
     evidenceSnapshotPolicyName?: "evidence-snapshot-policy" | undefined;
-    evidenceSnapshotPolicyVersion?: "1" | undefined;
+    evidenceSnapshotPolicyVersion?: "2" | undefined;
     evidencePinSha256?: string | undefined;
     evidencePinManifestSha256?: string | undefined;
 }>;

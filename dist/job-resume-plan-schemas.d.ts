@@ -188,8 +188,8 @@ export declare const JobPlanEvidenceLinkReferenceSchema: z.ZodObject<{
             sourceId: string;
             visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
         }[];
-        evidenceItemPath: string;
         evidenceItemSha256: string;
+        evidenceItemPath: string;
         claimPath: string;
         claimSha256: string;
     }, {
@@ -203,8 +203,8 @@ export declare const JobPlanEvidenceLinkReferenceSchema: z.ZodObject<{
             sourceId: string;
             visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
         }[];
-        evidenceItemPath: string;
         evidenceItemSha256: string;
+        evidenceItemPath: string;
         claimPath: string;
         claimSha256: string;
     }>;
@@ -222,8 +222,8 @@ export declare const JobPlanEvidenceLinkReferenceSchema: z.ZodObject<{
             sourceId: string;
             visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
         }[];
-        evidenceItemPath: string;
         evidenceItemSha256: string;
+        evidenceItemPath: string;
         claimPath: string;
         claimSha256: string;
     };
@@ -262,8 +262,8 @@ export declare const JobPlanEvidenceLinkReferenceSchema: z.ZodObject<{
             sourceId: string;
             visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
         }[];
-        evidenceItemPath: string;
         evidenceItemSha256: string;
+        evidenceItemPath: string;
         claimPath: string;
         claimSha256: string;
     };
@@ -444,8 +444,8 @@ export declare const JobPlanElementProvenanceSchema: z.ZodObject<{
                 sourceId: string;
                 visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
             }[];
-            evidenceItemPath: string;
             evidenceItemSha256: string;
+            evidenceItemPath: string;
             claimPath: string;
             claimSha256: string;
         }, {
@@ -459,8 +459,8 @@ export declare const JobPlanElementProvenanceSchema: z.ZodObject<{
                 sourceId: string;
                 visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
             }[];
-            evidenceItemPath: string;
             evidenceItemSha256: string;
+            evidenceItemPath: string;
             claimPath: string;
             claimSha256: string;
         }>;
@@ -478,8 +478,8 @@ export declare const JobPlanElementProvenanceSchema: z.ZodObject<{
                 sourceId: string;
                 visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
             }[];
-            evidenceItemPath: string;
             evidenceItemSha256: string;
+            evidenceItemPath: string;
             claimPath: string;
             claimSha256: string;
         };
@@ -518,8 +518,8 @@ export declare const JobPlanElementProvenanceSchema: z.ZodObject<{
                 sourceId: string;
                 visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
             }[];
-            evidenceItemPath: string;
             evidenceItemSha256: string;
+            evidenceItemPath: string;
             claimPath: string;
             claimSha256: string;
         };
@@ -583,8 +583,8 @@ export declare const JobPlanElementProvenanceSchema: z.ZodObject<{
                 sourceId: string;
                 visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
             }[];
-            evidenceItemPath: string;
             evidenceItemSha256: string;
+            evidenceItemPath: string;
             claimPath: string;
             claimSha256: string;
         };
@@ -641,8 +641,8 @@ export declare const JobPlanElementProvenanceSchema: z.ZodObject<{
                 sourceId: string;
                 visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
             }[];
-            evidenceItemPath: string;
             evidenceItemSha256: string;
+            evidenceItemPath: string;
             claimPath: string;
             claimSha256: string;
         };
@@ -839,8 +839,8 @@ export declare const JobResumePositioningSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             }, {
@@ -854,8 +854,8 @@ export declare const JobResumePositioningSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             }>;
@@ -873,8 +873,8 @@ export declare const JobResumePositioningSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -913,8 +913,8 @@ export declare const JobResumePositioningSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -978,8 +978,8 @@ export declare const JobResumePositioningSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -1036,8 +1036,8 @@ export declare const JobResumePositioningSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -1096,8 +1096,8 @@ export declare const JobResumePositioningSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -1129,7 +1129,7 @@ export declare const JobResumePositioningSchema: z.ZodObject<{
             version: string;
         };
     };
-    state: "direct" | "indeterminate" | "adjacent" | "stretch" | "insufficient-proof";
+    state: "direct" | "insufficient-proof" | "indeterminate" | "adjacent" | "stretch";
     sourceOverallAssessment: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
     targetTitle: string;
     targetTitleUse: "positioning-only";
@@ -1165,8 +1165,8 @@ export declare const JobResumePositioningSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -1198,7 +1198,7 @@ export declare const JobResumePositioningSchema: z.ZodObject<{
             version: string;
         };
     };
-    state: "direct" | "indeterminate" | "adjacent" | "stretch" | "insufficient-proof";
+    state: "direct" | "insufficient-proof" | "indeterminate" | "adjacent" | "stretch";
     sourceOverallAssessment: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
     targetTitle: string;
     targetTitleUse: "positioning-only";
@@ -1380,8 +1380,8 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             }, {
@@ -1395,8 +1395,8 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             }>;
@@ -1414,8 +1414,8 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -1454,8 +1454,8 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -1519,8 +1519,8 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -1577,8 +1577,8 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -1641,8 +1641,8 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -1717,8 +1717,8 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -1793,8 +1793,8 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -1869,8 +1869,8 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -2119,8 +2119,8 @@ export declare const JobResumeEvidenceSelectionSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             }, {
@@ -2134,8 +2134,8 @@ export declare const JobResumeEvidenceSelectionSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             }>;
@@ -2153,8 +2153,8 @@ export declare const JobResumeEvidenceSelectionSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -2193,8 +2193,8 @@ export declare const JobResumeEvidenceSelectionSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -2258,8 +2258,8 @@ export declare const JobResumeEvidenceSelectionSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -2316,8 +2316,8 @@ export declare const JobResumeEvidenceSelectionSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -2379,8 +2379,8 @@ export declare const JobResumeEvidenceSelectionSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -2456,8 +2456,8 @@ export declare const JobResumeEvidenceSelectionSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -2671,8 +2671,8 @@ export declare const JobResumeClaimBoundarySchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             }, {
@@ -2686,8 +2686,8 @@ export declare const JobResumeClaimBoundarySchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             }>;
@@ -2705,8 +2705,8 @@ export declare const JobResumeClaimBoundarySchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -2745,8 +2745,8 @@ export declare const JobResumeClaimBoundarySchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -2810,8 +2810,8 @@ export declare const JobResumeClaimBoundarySchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -2868,8 +2868,8 @@ export declare const JobResumeClaimBoundarySchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -2930,8 +2930,8 @@ export declare const JobResumeClaimBoundarySchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -3001,8 +3001,8 @@ export declare const JobResumeClaimBoundarySchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -3220,8 +3220,8 @@ export declare const JobMetricPermissionSchema: z.ZodEffects<z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             }, {
@@ -3235,8 +3235,8 @@ export declare const JobMetricPermissionSchema: z.ZodEffects<z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             }>;
@@ -3254,8 +3254,8 @@ export declare const JobMetricPermissionSchema: z.ZodEffects<z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -3294,8 +3294,8 @@ export declare const JobMetricPermissionSchema: z.ZodEffects<z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -3359,8 +3359,8 @@ export declare const JobMetricPermissionSchema: z.ZodEffects<z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -3417,8 +3417,8 @@ export declare const JobMetricPermissionSchema: z.ZodEffects<z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -3480,8 +3480,8 @@ export declare const JobMetricPermissionSchema: z.ZodEffects<z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -3552,8 +3552,8 @@ export declare const JobMetricPermissionSchema: z.ZodEffects<z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -3624,8 +3624,8 @@ export declare const JobMetricPermissionSchema: z.ZodEffects<z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -3696,8 +3696,8 @@ export declare const JobMetricPermissionSchema: z.ZodEffects<z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -3902,8 +3902,8 @@ export declare const JobGapHandlingRuleSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             }, {
@@ -3917,8 +3917,8 @@ export declare const JobGapHandlingRuleSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             }>;
@@ -3936,8 +3936,8 @@ export declare const JobGapHandlingRuleSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -3976,8 +3976,8 @@ export declare const JobGapHandlingRuleSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -4041,8 +4041,8 @@ export declare const JobGapHandlingRuleSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -4099,8 +4099,8 @@ export declare const JobGapHandlingRuleSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -4161,8 +4161,8 @@ export declare const JobGapHandlingRuleSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -4228,8 +4228,8 @@ export declare const JobGapHandlingRuleSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -4437,8 +4437,8 @@ export declare const JobResumeSectionPlanSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             }, {
@@ -4452,8 +4452,8 @@ export declare const JobResumeSectionPlanSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             }>;
@@ -4471,8 +4471,8 @@ export declare const JobResumeSectionPlanSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -4511,8 +4511,8 @@ export declare const JobResumeSectionPlanSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -4576,8 +4576,8 @@ export declare const JobResumeSectionPlanSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -4634,8 +4634,8 @@ export declare const JobResumeSectionPlanSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -4696,8 +4696,8 @@ export declare const JobResumeSectionPlanSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -4770,8 +4770,8 @@ export declare const JobResumeSectionPlanSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -4978,8 +4978,8 @@ export declare const JobResumeContentExclusionSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             }, {
@@ -4993,8 +4993,8 @@ export declare const JobResumeContentExclusionSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             }>;
@@ -5012,8 +5012,8 @@ export declare const JobResumeContentExclusionSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -5052,8 +5052,8 @@ export declare const JobResumeContentExclusionSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -5117,8 +5117,8 @@ export declare const JobResumeContentExclusionSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -5175,8 +5175,8 @@ export declare const JobResumeContentExclusionSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -5238,8 +5238,8 @@ export declare const JobResumeContentExclusionSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -5304,8 +5304,8 @@ export declare const JobResumeContentExclusionSchema: z.ZodObject<{
                     sourceId: string;
                     visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                 }[];
-                evidenceItemPath: string;
                 evidenceItemSha256: string;
+                evidenceItemPath: string;
                 claimPath: string;
                 claimSha256: string;
             };
@@ -5878,8 +5878,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 }, {
@@ -5893,8 +5893,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 }>;
@@ -5912,8 +5912,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -5952,8 +5952,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -6017,8 +6017,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -6075,8 +6075,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -6135,8 +6135,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -6168,7 +6168,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 version: string;
             };
         };
-        state: "direct" | "indeterminate" | "adjacent" | "stretch" | "insufficient-proof";
+        state: "direct" | "insufficient-proof" | "indeterminate" | "adjacent" | "stretch";
         sourceOverallAssessment: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
         targetTitle: string;
         targetTitleUse: "positioning-only";
@@ -6204,8 +6204,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -6237,7 +6237,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 version: string;
             };
         };
-        state: "direct" | "indeterminate" | "adjacent" | "stretch" | "insufficient-proof";
+        state: "direct" | "insufficient-proof" | "indeterminate" | "adjacent" | "stretch";
         sourceOverallAssessment: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
         targetTitle: string;
         targetTitleUse: "positioning-only";
@@ -6419,8 +6419,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 }, {
@@ -6434,8 +6434,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 }>;
@@ -6453,8 +6453,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -6493,8 +6493,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -6558,8 +6558,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -6616,8 +6616,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -6680,8 +6680,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -6756,8 +6756,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -6832,8 +6832,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -6908,8 +6908,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -7139,8 +7139,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 }, {
@@ -7154,8 +7154,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 }>;
@@ -7173,8 +7173,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -7213,8 +7213,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -7278,8 +7278,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -7336,8 +7336,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -7399,8 +7399,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -7476,8 +7476,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -7694,8 +7694,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 }, {
@@ -7709,8 +7709,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 }>;
@@ -7728,8 +7728,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -7768,8 +7768,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -7833,8 +7833,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -7891,8 +7891,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -7953,8 +7953,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -8027,8 +8027,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -8240,8 +8240,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 }, {
@@ -8255,8 +8255,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 }>;
@@ -8274,8 +8274,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -8314,8 +8314,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -8379,8 +8379,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -8437,8 +8437,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -8499,8 +8499,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -8570,8 +8570,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -8789,8 +8789,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 }, {
@@ -8804,8 +8804,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 }>;
@@ -8823,8 +8823,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -8863,8 +8863,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -8928,8 +8928,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -8986,8 +8986,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -9049,8 +9049,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -9121,8 +9121,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -9193,8 +9193,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -9265,8 +9265,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -9471,8 +9471,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 }, {
@@ -9486,8 +9486,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 }>;
@@ -9505,8 +9505,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -9545,8 +9545,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -9610,8 +9610,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -9668,8 +9668,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -9730,8 +9730,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -9797,8 +9797,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -9998,8 +9998,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 }, {
@@ -10013,8 +10013,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 }>;
@@ -10032,8 +10032,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -10072,8 +10072,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -10137,8 +10137,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -10195,8 +10195,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -10258,8 +10258,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -10324,8 +10324,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -10583,8 +10583,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -10702,8 +10702,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -10735,7 +10735,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 version: string;
             };
         };
-        state: "direct" | "indeterminate" | "adjacent" | "stretch" | "insufficient-proof";
+        state: "direct" | "insufficient-proof" | "indeterminate" | "adjacent" | "stretch";
         sourceOverallAssessment: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
         targetTitle: string;
         targetTitleUse: "positioning-only";
@@ -10776,8 +10776,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -10852,8 +10852,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -10929,8 +10929,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -11002,8 +11002,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -11074,8 +11074,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -11143,8 +11143,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -11265,8 +11265,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -11384,8 +11384,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -11417,7 +11417,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 version: string;
             };
         };
-        state: "direct" | "indeterminate" | "adjacent" | "stretch" | "insufficient-proof";
+        state: "direct" | "insufficient-proof" | "indeterminate" | "adjacent" | "stretch";
         sourceOverallAssessment: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
         targetTitle: string;
         targetTitleUse: "positioning-only";
@@ -11458,8 +11458,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -11534,8 +11534,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -11611,8 +11611,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -11684,8 +11684,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -11756,8 +11756,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -11825,8 +11825,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -11947,8 +11947,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -12066,8 +12066,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -12099,7 +12099,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 version: string;
             };
         };
-        state: "direct" | "indeterminate" | "adjacent" | "stretch" | "insufficient-proof";
+        state: "direct" | "insufficient-proof" | "indeterminate" | "adjacent" | "stretch";
         sourceOverallAssessment: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
         targetTitle: string;
         targetTitleUse: "positioning-only";
@@ -12140,8 +12140,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -12216,8 +12216,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -12293,8 +12293,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -12366,8 +12366,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -12438,8 +12438,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -12507,8 +12507,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -12629,8 +12629,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -12748,8 +12748,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -12781,7 +12781,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                 version: string;
             };
         };
-        state: "direct" | "indeterminate" | "adjacent" | "stretch" | "insufficient-proof";
+        state: "direct" | "insufficient-proof" | "indeterminate" | "adjacent" | "stretch";
         sourceOverallAssessment: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
         targetTitle: string;
         targetTitleUse: "positioning-only";
@@ -12822,8 +12822,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -12898,8 +12898,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -12975,8 +12975,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -13048,8 +13048,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -13120,8 +13120,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
@@ -13189,8 +13189,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
                         sourceId: string;
                         visibility: "public" | "private" | "generic_only" | "do_not_use" | "unknown" | "sensitive";
                     }[];
-                    evidenceItemPath: string;
                     evidenceItemSha256: string;
+                    evidenceItemPath: string;
                     claimPath: string;
                     claimSha256: string;
                 };
