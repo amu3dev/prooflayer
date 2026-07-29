@@ -1732,6 +1732,8 @@ The next milestone should validate the completed Job pipeline end to end against
 
 See the [canonical ProofLayer Capability Pipeline architecture](docs/architecture/PIPELINE_ARCHITECTURE.md).
 
+Generated review and report Markdown follows the [Human-Readable Markdown Contract](docs/architecture/HUMAN_READABLE_MARKDOWN_CONTRACT.md): JSON remains canonical, while Markdown is deterministic, derived, read-only, and self-contained for human inspection.
+
 ## License
 
 ProofLayer is available under the [MIT License](LICENSE).

@@ -1,5 +1,5 @@
 export declare const EVIDENCE_REVIEW_WORKSPACE_RENDERER_NAME = "evidence-review-workspace-renderer";
-export declare const EVIDENCE_REVIEW_WORKSPACE_RENDERER_VERSION = "1";
+export declare const EVIDENCE_REVIEW_WORKSPACE_RENDERER_VERSION = "3";
 export interface EvidenceReviewWorkspacePaths {
     rootRelativePath: string;
     rootPath: string;

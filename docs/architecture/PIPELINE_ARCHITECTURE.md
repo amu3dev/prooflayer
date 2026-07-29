@@ -8,6 +8,8 @@ Its purpose is to turn reviewed career evidence into traceable, target-aware car
 
 This document is the canonical architectural reference for ProofLayer pipelines. It defines capability order, responsibilities, boundaries, and artifact philosophy independently of implementation modules or storage details.
 
+Generated human inspection views follow the [Human-Readable Markdown Contract](HUMAN_READABLE_MARKDOWN_CONTRACT.md). Canonical JSON owns workflow state; derived Markdown explains that state without becoming machine input.
+
 ## 2. Core Principles
 
 ### Deterministic By Default

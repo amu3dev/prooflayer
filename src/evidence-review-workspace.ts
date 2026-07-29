@@ -9,6 +9,14 @@ import {
   writeJsonAtomic,
 } from "./fs-utils.js";
 import {
+  deriveHumanTitle,
+  escapeMarkdownInline,
+  inlineCode,
+  quoteMarkdown,
+  renderDerivedMarkdownBanner,
+  renderNextAction,
+} from "./human-readable-markdown.js";
+import {
   EvidenceReviewBatchManifestSchema,
   EvidenceReviewBatchSchema,
   EvidenceReviewInputTemplateSchema,
@@ -37,21 +45,14 @@ import { showTarget } from "./targets.js";
 
 export const EVIDENCE_REVIEW_WORKSPACE_RENDERER_NAME =
   "evidence-review-workspace-renderer";
-export const EVIDENCE_REVIEW_WORKSPACE_RENDERER_VERSION = "1";
+export const EVIDENCE_REVIEW_WORKSPACE_RENDERER_VERSION = "3";
 
 const WORKSPACE_DIR = "review-workspace";
 const INDEX_FILE = "index.review.md";
 const INDEX_MANIFEST_FILE = "index.manifest.json";
-const READ_ONLY_BANNER = [
-  "> GENERATED FILE",
-  ">",
-  "> This document exists only as a human-readable rendering of immutable",
-  "> ProofLayer review artifacts.",
-  ">",
-  "> Editing this file has no effect on ProofLayer.",
-  ">",
-  "> Review decisions must be submitted using the JSON review artifact.",
-].join("\n");
+const READ_ONLY_BANNER = renderDerivedMarkdownBanner(
+  "the immutable evidence-review batch, review template, and Evidence Foundation JSON",
+);
 
 interface ReviewWorkspaceDependency {
   path: string;
@@ -615,30 +616,58 @@ function renderClaimMarkdown(input: ReviewWorkspaceInput, item: ClaimWorkspaceIn
     evidence.id,
     evidence.sourceIds.map((sourceId) => item.sources.find(({ id }) => id === sourceId)!),
   ]));
+  const claimTitle = deriveHumanTitle(item.claim.claim, "Untitled claim");
   const lines = [
     READ_ONLY_BANNER,
     "",
-    "# Claim Review",
+    `# Review Claim: ${escapeMarkdownInline(claimTitle)}`,
     "",
-    `- Claim ID: ${inlineCode(item.claim.id)}`,
+    "## Purpose",
+    "",
+    "Assess whether this exact claim is factually supported, correctly scoped, public-safe, resume-ready, and eligible for Role or Job use.",
+    "",
+    "## Target and Review Context",
+    "",
+    `- Target: ${targetLabel(input.target)}`,
     `- Priority: ${item.entry.priority}`,
     `- Reason selected: ${selectionReason(item.entry)}`,
-    `- Batch ID: ${inlineCode(input.batch.id)}`,
-    `- Review Template ID: ${inlineCode(item.templateId)}`,
-    `- Workspace Rendering ID: ${inlineCode(item.renderId)}`,
     "",
-    "---",
+    "## Claim Being Reviewed",
     "",
-    "## Original Claim",
+    quoteMarkdown(item.claim.claim),
     "",
-    quote(item.claim.claim),
+    "## Current Review State",
     "",
-    "---",
+    "- Reviewer decision: not submitted in the canonical JSON template",
+    `- Source approval status: ${item.claim.approvalStatus}`,
+    `- Source output readiness: ${item.claim.outputReadiness}`,
+    `- Public-safe: ${item.claim.publicSafe ? "yes" : "no"}`,
+    `- Needs confirmation: ${item.claim.needsConfirmation ? "yes" : "no"}`,
+    `- Metric status: ${item.claim.metricStatus}`,
+    "- Role Matching eligibility: not decided",
+    "- Job Mapping eligibility: not decided",
     "",
-    "## Evidence",
+    "This workspace grants no approval or eligibility. Only a submitted canonical JSON review can change review state.",
     "",
-    ...item.evidence.flatMap((evidence) => [
-      `### ${inlineCode(evidence.id)}`,
+    "## Claim Classification",
+    "",
+    `- Claim type: ${item.claim.type}`,
+    `- Work context: ${display(item.claim.sourceSection)}`,
+    `- Date range: ${display(item.claim.dateRange)}`,
+    `- Evidence categories: ${displayList(evidenceCategories)}`,
+    "- Reviewed work context: not decided",
+    "- Reviewed claim nature: not decided",
+    "",
+    "## Supporting Evidence",
+    "",
+    ...item.evidence.flatMap((evidence, index) => [
+      `### Evidence ${index + 1}: ${escapeMarkdownInline(deriveHumanTitle(evidence.normalizedSummary, "Untitled evidence"))}`,
+      "",
+      quoteMarkdown(evidence.normalizedSummary),
+      "",
+      "**Exact source excerpt**",
+      "",
+      quoteMarkdown(evidence.text),
       "",
       `- Category: ${evidence.category}`,
       `- Confidence: ${evidence.confidence}`,
@@ -646,99 +675,89 @@ function renderClaimMarkdown(input: ReviewWorkspaceInput, item: ClaimWorkspaceIn
       `- Date range: ${display(evidence.dateRange)}`,
       `- Company: ${display(evidence.company)}`,
       `- Project: ${display(evidence.project)}`,
-      `- Parent role ID: ${displayCode(evidence.parentRoleId)}`,
-      `- Parent project ID: ${displayCode(evidence.parentProjectId)}`,
       `- Source section: ${display(evidence.sourceSection)}`,
       `- Technologies: ${displayList(evidence.technologies)}`,
       `- Domains: ${displayList(evidence.domains)}`,
       "",
     ]),
-    "---",
-    "",
-    "## Evidence Summary",
-    "",
-    ...item.evidence.flatMap((evidence) => [
-      `### ${inlineCode(evidence.id)}`,
-      "",
-      quote(evidence.normalizedSummary),
-      "",
-    ]),
-    "---",
-    "",
-    "## Relevant Source Excerpt",
-    "",
-    ...item.evidence.flatMap((evidence) => [
-      `### ${inlineCode(evidence.id)}`,
-      "",
-      quote(evidence.text),
-      "",
-    ]),
-    "---",
     "",
     "## Matching Job Requirements",
     "",
     ...(item.requirements.length === 0
       ? ["No matching Job Requirement references were recorded by this batch.", ""]
-      : item.requirements.flatMap((requirement) => [
-          `### ${inlineCode(requirement.id)}`,
+      : item.requirements.flatMap((requirement, index) => [
+          `### Requirement ${index + 1}: ${escapeMarkdownInline(deriveHumanTitle(requirement.normalizedLabel, "Untitled requirement"))}`,
+          "",
+          quoteMarkdown(requirement.sourceText),
           "",
           `- Category: ${requirement.category}`,
           `- Necessity: ${requirement.necessity}`,
           `- Confidence: ${requirement.confidence}`,
           `- Explicitness: ${requirement.explicitness}`,
-          `- Normalized label: ${requirement.normalizedLabel}`,
           `- Named technologies: ${displayList(requirement.namedTechnologies)}`,
           `- Keywords: ${displayList(requirement.keywords)}`,
           "",
-          "Source wording:",
-          "",
-          quote(requirement.sourceText),
-          "",
         ])),
-    "---",
     "",
-    "## Current Classification",
+    "## Reviewer Decision Workspace",
     "",
-    `- Claim type: ${item.claim.type}`,
+    "The canonical JSON review template currently contains no decision. Reviewers should decide whether to approve, qualify, edit, reject, defer, or mark the claim as insufficiently supported.",
+    "",
+    "- Decision: not submitted",
+    "- Corrected wording: not submitted",
+    "- Required qualifiers: none submitted",
+    "- Factual support: not submitted",
+    "- Scope: not submitted",
+    "- Public safety: not submitted",
+    "- Resume readiness: not submitted",
+    "- Metric review: not submitted",
+    "",
+    "Submit decisions through the canonical JSON template; this Markdown is never parsed.",
+    "",
+    "## Validation Checklist",
+    "",
+    "- [ ] Claim wording is supported by the evidence",
+    "- [ ] Scope is accurate and not overstated",
+    "- [ ] Project and employment context remain distinct",
+    "- [ ] Responsibility is not presented as achievement",
+    "- [ ] Public-safety and resume-readiness states are explicit",
+    "- [ ] Role and Job eligibility are explicit",
+    "- [ ] Any metric is verified exactly",
+    "",
+    "## Risks and Warnings",
+    "",
+    "- Priority and terminology overlap organize review work; they do not prove support or fit.",
+    "- Generic-only or non-public evidence must not be copied into public output without an approved safe projection.",
+    "- Private reviewer rationale is intentionally absent from this derived workspace.",
+    "",
+    renderNextAction(
+      `Complete and submit the canonical review template at ${inlineCode(item.templatePath)}. Do not edit this Markdown.`,
+    ),
+    "",
+    "## Internal References and Provenance",
+    "",
+    `- Claim ID: ${inlineCode(item.claim.id)}`,
+    `- Batch ID: ${inlineCode(input.batch.id)}`,
+    `- Review Template ID: ${inlineCode(item.templateId)}`,
+    `- Workspace Rendering ID: ${inlineCode(item.renderId)}`,
     `- Claim parent role ID: ${displayCode(item.claim.parentRoleId)}`,
     `- Claim parent project ID: ${displayCode(item.claim.parentProjectId)}`,
-    `- Claim source section: ${display(item.claim.sourceSection)}`,
-    `- Claim date range: ${display(item.claim.dateRange)}`,
-    `- Evidence categories: ${displayList(evidenceCategories)}`,
-    "- Review work context: unset in canonical JSON template",
-    "- Review claim nature: unset in canonical JSON template",
-    "",
-    "---",
-    "",
-    "## Current Eligibility",
-    "",
-    `- Source approval status: ${item.claim.approvalStatus}`,
-    `- Source output readiness: ${item.claim.outputReadiness}`,
-    `- Source public-safe flag: ${item.claim.publicSafe ? "yes" : "no"}`,
-    `- Source needs confirmation: ${item.claim.needsConfirmation ? "yes" : "no"}`,
-    `- Source metric status: ${item.claim.metricStatus}`,
-    "- Role Matching eligibility: unset in canonical JSON template",
-    "- Job Mapping eligibility: unset in canonical JSON template",
-    "",
-    "The batch and its blank review template grant no approval or eligibility.",
-    "",
-    "---",
-    "",
-    "## Current Provenance",
-    "",
     `- Claim record SHA-256: ${inlineCode(item.claimRecordSha256)}`,
     `- Reviewed claim text SHA-256: ${inlineCode(item.template.reviewedClaimSha256)}`,
-    `- Review template path: ${inlineCode(item.templatePath)}`,
     `- Review template SHA-256: ${inlineCode(item.templateSha256)}`,
     `- Evidence set SHA-256: ${inlineCode(item.evidenceSetSha256)}`,
     `- Provenance set SHA-256: ${inlineCode(item.provenanceSetSha256)}`,
     `- Requirement set SHA-256: ${inlineCode(item.requirementSetSha256)}`,
     "",
-    ...item.evidence.flatMap((evidence) => [
-      `### Evidence ${inlineCode(evidence.id)}`,
+    ...item.evidence.flatMap((evidence, index) => [
+      `### Evidence ${index + 1} References`,
       "",
+      `- Evidence ID: ${inlineCode(evidence.id)}`,
+      `- Parent role ID: ${displayCode(evidence.parentRoleId)}`,
+      `- Parent project ID: ${displayCode(evidence.parentProjectId)}`,
       `- Evidence record SHA-256: ${inlineCode(hashText(stableJson(evidence)))}`,
       ...sourcesByEvidence.get(evidence.id)!.flatMap((source) => [
+        `- Source label: ${escapeMarkdownInline(source.title || source.type)}`,
         `- Source ID: ${inlineCode(source.id)}`,
         `- Source type: ${source.type}`,
         `- Source content SHA-256: ${inlineCode(source.hash)}`,
@@ -747,9 +766,10 @@ function renderClaimMarkdown(input: ReviewWorkspaceInput, item: ClaimWorkspaceIn
       ]),
       "",
     ]),
-    ...item.requirements.flatMap((requirement) => [
-      `### Requirement ${inlineCode(requirement.id)}`,
+    ...item.requirements.flatMap((requirement, index) => [
+      `### Requirement ${index + 1} References`,
       "",
+      `- Requirement ID: ${inlineCode(requirement.id)}`,
       `- Source analysis item ID: ${inlineCode(requirement.provenance.sourceAnalysisItemId)}`,
       `- Source section ID: ${displayCode(requirement.provenance.sourceSectionId ?? undefined)}`,
       ...requirement.provenance.sourceReferences.flatMap((reference) => [
@@ -760,31 +780,6 @@ function renderClaimMarkdown(input: ReviewWorkspaceInput, item: ClaimWorkspaceIn
       ]),
       "",
     ]),
-    "---",
-    "",
-    "## Reviewer Decision Workspace",
-    "",
-    "- Decision: unset in canonical JSON template",
-    "- Corrected wording: unset in canonical JSON template",
-    "- Qualifier: unset in canonical JSON template",
-    "- Metric notes: unset in canonical JSON template",
-    "- Reviewer notes: unset in canonical JSON template",
-    "",
-    "Submit decisions through the canonical JSON template; do not edit this Markdown.",
-    "",
-    "---",
-    "",
-    "## Validation Checklist",
-    "",
-    "- [ ] Supported by evidence",
-    "- [ ] Scope accurate",
-    "- [ ] Not overstated",
-    "- [ ] Public-safe",
-    "- [ ] Resume-ready",
-    "- [ ] Role eligible",
-    "- [ ] Job eligible",
-    "- [ ] Metric verified if applicable",
-    "",
   ];
   return `${lines.join("\n").replace(/\n{3,}/g, "\n\n")}\n`;
 }
@@ -801,43 +796,66 @@ function renderIndexMarkdown(input: ReviewWorkspaceInput, renderId: string): str
     input.target.location,
     input.target.workingModel,
   ].filter(Boolean).join(" | ");
+  const priorityGroups = (["high", "medium", "low"] as const).flatMap((priority) => {
+    const claims = input.claims.filter(({ entry }) => entry.priority === priority);
+    if (claims.length === 0) return [];
+    return [
+      `### ${priority[0]!.toUpperCase()}${priority.slice(1)} Priority`,
+      "",
+      ...claims.flatMap((claim) => [
+        `- [${escapeMarkdownInline(deriveHumanTitle(claim.claim.claim, "Untitled claim"))}](./${claimFileName(claim.claim.id)})`,
+        `  - Why selected: ${selectionReason(claim.entry)}`,
+        `  - Claim ID: ${inlineCode(claim.claim.id)}`,
+      ]),
+      "",
+    ];
+  });
   const lines = [
     READ_ONLY_BANNER,
     "",
     "# Evidence Review Workspace",
     "",
-    `- Batch ID: ${inlineCode(input.batch.id)}`,
+    "## Purpose",
+    "",
+    "Review a controlled set of candidate claims against their supporting evidence and the exact requirements that caused them to be selected.",
+    "",
+    "## Target",
+    "",
     `- Target: ${targetLabel}`,
-    `- Target ID: ${inlineCode(input.target.id)}`,
-    `- Generation time: ${input.batch.createdAt}`,
-    `- Workspace Rendering ID: ${inlineCode(renderId)}`,
     "",
-    "## Priority Summary",
+    "## Current Review State",
     "",
+    `- Claims selected for controlled review: ${input.claims.length}`,
+    "- Completed decisions represented by this workspace: 0",
+    `- Pending canonical JSON submissions: ${input.claims.length}`,
     `- High: ${input.batch.priorityCounts.high} candidates; ${selectedPriority.high} selected`,
     `- Medium: ${input.batch.priorityCounts.medium} candidates; ${selectedPriority.medium} selected`,
     `- Low: ${input.batch.priorityCounts.low} candidates; ${selectedPriority.low} selected`,
     "",
-    "## Claim Review Workspaces",
+    "All canonical review templates are intentionally blank. This workspace displays review context but grants no approval, eligibility, or fit.",
     "",
-    ...input.claims.map((claim) =>
-      `- [${claim.claim.id}](./${claimFileName(claim.claim.id)}) — ${claim.entry.priority}; ${selectionReason(claim.entry)}`),
+    "## Claims to Review",
     "",
-    "## Overall Progress Summary",
-    "",
-    `- Review templates: ${input.claims.length}`,
-    "- Completed decisions represented by this rendering: 0",
-    `- Pending JSON submissions: ${input.claims.length}`,
-    "",
-    "## Review Status Summary",
-    "",
-    "All listed JSON review templates are intentionally blank. This derived workspace does not inspect, submit, or replace claim-review decisions.",
-    "",
-    "## Warnings",
+    ...priorityGroups,
+    "## Warnings and Limitations",
     "",
     `- ${input.batch.warning}`,
+    "- Matching terminology is a review-selection signal, not proof that a claim satisfies a requirement.",
+    "- Private reviewer rationale and raw model responses are not included.",
     "- Markdown is presentation-only and is never parsed or consumed by ProofLayer.",
-    "- Editing Markdown does not change canonical JSON, review state, snapshots, or eligibility.",
+    "",
+    renderNextAction(
+      input.claims.length > 0
+        ? "Open the first high-priority claim workspace, evaluate its evidence and requirement context, then submit the decision through that claim's canonical JSON review template."
+        : "No claim review is pending for this batch.",
+    ),
+    "",
+    "## Internal References",
+    "",
+    `- Batch ID: ${inlineCode(input.batch.id)}`,
+    `- Target ID: ${inlineCode(input.target.id)}`,
+    `- Batch creation time: ${input.batch.createdAt}`,
+    `- Workspace Rendering ID: ${inlineCode(renderId)}`,
     "",
   ];
   return `${lines.join("\n")}\n`;
@@ -1036,19 +1054,29 @@ function renderResult(
 }
 
 function selectionReason(entry: EvidenceReviewBatchClaim): string {
-  const basis = entry.priorityBasis.map((value) => value.replaceAll("-", " ")).join(", ");
+  const explanations: Record<EvidenceReviewBatchClaim["priorityBasis"][number], string> = {
+    "mandatory-requirement-terminology": "overlaps wording from a mandatory requirement",
+    "preferred-requirement-terminology": "overlaps wording from a preferred requirement",
+    "contextual-requirement-terminology": "overlaps wording from a contextual expectation",
+    "named-technology-or-domain": "shares an explicitly named technology or domain",
+    "reviewed-category": "comes from a review-relevant evidence category",
+    "potential-metric": "may contain a metric that requires exact verification",
+    "no-explicit-overlap": "was selected as a low-priority control without explicit requirement wording overlap",
+  };
+  const basis = entry.priorityBasis.map((value) => explanations[value]).join("; ");
   const terms = entry.matchingTerms.length
-    ? `; matching terms: ${entry.matchingTerms.join(", ")}`
-    : "; no explicit requirement-term overlap";
-  return `${basis}${terms}`;
+    ? ` Shared terms: ${entry.matchingTerms.join(", ")}.`
+    : " No shared requirement terms were recorded.";
+  return `${basis}.${terms}`;
 }
 
-function quote(value: string): string {
-  return value.split(/\r?\n/).map((line) => `> ${line}`).join("\n");
-}
-
-function inlineCode(value: string): string {
-  return `\`${value.replaceAll("`", "\\`")}\``;
+function targetLabel(target: JobTarget): string {
+  return [
+    target.title,
+    target.company,
+    target.location,
+    target.workingModel,
+  ].filter(Boolean).join(" | ");
 }
 
 function display(value: string | undefined): string {

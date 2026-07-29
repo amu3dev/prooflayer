@@ -47,6 +47,25 @@ describe("Slice 1.5 output-specific variant review", () => {
     expect(status.finalizationAllowed).toBe(true);
   });
 
+  it("uses canonical JSON review scope and ignores derived Markdown edits", async () => {
+    const workspace = await createReviewWorkspace();
+    const root = path.join(workspace, "outputs/variants/tpm");
+    const unresolvedPath = path.join(root, "unresolved-claims.md");
+    await writeFile(unresolvedPath, "## claim_not_in_manifest\n\nThis derived view was edited.\n", "utf8");
+
+    await initializeVariantReview(workspace, "tpm", new Date("2026-07-15T17:00:00.000Z"));
+    const review = JSON.parse(
+      await readFile(path.join(root, "review-decisions.json"), "utf8")
+    ) as VariantReviewDecisions;
+
+    expect(review.decisions.some((item) => item.claimId === "claim_unresolved_only")).toBe(true);
+    expect(review.decisions.some((item) => item.claimId === "claim_not_in_manifest")).toBe(false);
+
+    await writeFile(unresolvedPath, "", "utf8");
+    const status = await initializeVariantReview(workspace, "tpm", new Date("2026-07-15T18:00:00.000Z"));
+    expect(status.total).toBe(review.decisions.length);
+  });
+
   it("finalizes only reviewed public wording and tracks final output separately", async () => {
     const workspace = await createReviewWorkspace();
     await initializeVariantReview(workspace, "tpm");
@@ -81,6 +100,17 @@ describe("Slice 1.5 output-specific variant review", () => {
     expect(website).not.toMatch(/^\s*\|/m);
     expect(checklist).toContain("claim_pending");
     expect(checklist).toContain("unknown visibility requires explicit approved public wording");
+    expect(checklist).toContain("> GENERATED, READ-ONLY VIEW");
+    expect(checklist).toContain("## Current State");
+    expect(checklist).toContain("## Next Action");
+    expect(checklist.indexOf("Pending private draft wording"))
+      .toBeLessThan(checklist.indexOf("claim_pending"));
+    expect(checklist.indexOf("Built a reviewed public project workflow."))
+      .toBeLessThan(checklist.indexOf("claim_revise"));
+    expect(checklist).toContain("Final-output eligibility: excluded from final output");
+    expect(checklist).not.toContain("Unknown source wording");
+    expect(checklist).not.toContain("Blocked secret wording");
+    expect(checklist).toContain("Source claim wording is withheld");
     expect(manifest.profileFingerprint).toBe("profile-fingerprint");
     expect(manifest.claimIdsUsed).toEqual(expect.arrayContaining(["claim_approve", "claim_revise"]));
     expect(manifest.claimIdsUsed).not.toEqual(expect.arrayContaining(["claim_pending", "claim_draft", "claim_exclude", "claim_blocked", "claim_metric", "claim_unknown"]));
@@ -575,7 +605,7 @@ async function addVariantFixture(
   const root = path.join(workspace, `outputs/variants/${roleKey}`);
   await mkdir(root, { recursive: true });
   const baseClaimIds = ["claim_approve", "claim_revise", "claim_pending", "claim_draft", "claim_exclude", "claim_unknown", "claim_blocked", "claim_metric"];
-  const manifestClaimIds = [...baseClaimIds, "claim_manifest_only"];
+  const manifestClaimIds = [...baseClaimIds, "claim_manifest_only", "claim_unresolved_only"];
   const displayName = roleKey === "tpm" ? "Technical Product Manager" : "AI Product Manager";
   const generationManifest: VariantGenerationManifest = {
     schemaVersion: 1,

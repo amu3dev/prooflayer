@@ -1,7 +1,7 @@
-import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { pathExists, readJson, uniqueSorted, writeJsonAtomic, writeText } from "./fs-utils.js";
 import { detectSensitivity } from "./privacy.js";
+import { deriveHumanTitle, escapeMarkdownInline, inlineCode, quoteMarkdown, renderDerivedMarkdownBanner, renderNextAction, } from "./human-readable-markdown.js";
 import { loadPublicProfile, PUBLIC_PROFILE_FILE } from "./public-profile.js";
 import { getRoleVariant, isRoleKey } from "./role-variants.js";
 import { VariantReviewDecisionsSchema } from "./schemas.js";
@@ -34,17 +34,14 @@ export async function initializeVariantReview(workspace, roleKeyInput, now = new
     const roleKey = reviewRoleKey(roleKeyInput);
     const root = variantRoot(roleKey);
     const manifestPath = path.join(workspace, root, "generation-manifest.json");
-    const unresolvedPath = path.join(workspace, root, "unresolved-claims.md");
-    if (!(await pathExists(manifestPath)) || !(await pathExists(unresolvedPath))) {
+    if (!(await pathExists(manifestPath))) {
         throw new Error(`Generate the ${roleKey} draft before starting review.`);
     }
     const manifest = await readJson(manifestPath, null);
     if (!manifest)
         throw new Error(`Invalid generation manifest for ${roleKey}.`);
-    const unresolvedText = await readFile(unresolvedPath, "utf8");
-    const unresolvedIds = extractUnresolvedClaimIds(unresolvedText);
     const claims = await readJson(path.join(workspace, "kb/claims.json"), []);
-    const reviewIds = buildReviewScopeIds(roleKey, manifest, unresolvedIds, claims);
+    const reviewIds = buildReviewScopeIds(roleKey, manifest, claims);
     const reviewPath = path.join(workspace, root, REVIEW_DECISIONS_FILE);
     const existingRaw = await readJson(reviewPath, null);
     const existing = existingRaw ? VariantReviewDecisionsSchema.parse(existingRaw) : null;
@@ -147,7 +144,7 @@ export async function finalizeVariant(workspace, roleKeyInput, now = new Date())
     const finalizedAt = now.toISOString();
     await writeText(path.join(workspace, files.resume), renderFinalResume(context, selection, decisionCounts));
     await writeText(path.join(workspace, files.website), renderFinalWebsite(context, selection, decisionCounts));
-    await writeText(path.join(workspace, files.checklist), renderFinalChecklist(currentDecisions, selection));
+    await writeText(path.join(workspace, files.checklist), renderFinalChecklist(context, currentDecisions, selection));
     const claimIdsUsed = uniqueSorted(selection.accepted.map((item) => item.claim.id));
     const evidenceIdsUsed = uniqueSorted(selection.accepted.flatMap((item) => item.claim.supportingEvidenceIds));
     const finalManifest = {
@@ -183,10 +180,7 @@ function reviewRoleKey(value) {
 function variantRoot(roleKey) {
     return `${VARIANTS_ROOT}/${roleKey}`;
 }
-function extractUnresolvedClaimIds(markdown) {
-    return [...markdown.matchAll(/^##\s+(claim_[A-Za-z0-9_-]+)\s*$/gm)].map((match) => match[1]);
-}
-export function buildReviewScopeIds(roleKey, manifest, unresolvedIds, claims) {
+export function buildReviewScopeIds(roleKey, manifest, claims) {
     const claimById = new Map(claims.map((claim) => [claim.id, claim]));
     const includeUnresolved = (claimId) => {
         const claim = claimById.get(claimId);
@@ -199,7 +193,6 @@ export function buildReviewScopeIds(roleKey, manifest, unresolvedIds, claims) {
             : [];
     return uniqueInOrder([
         ...manifest.claimIdsUsed.filter(includeUnresolved),
-        ...unresolvedIds.filter(includeUnresolved),
         ...completenessIds.filter(includeUnresolved)
     ]);
 }
@@ -240,9 +233,7 @@ async function loadReviewContext(workspace, roleKey, manifest, review, baseline)
     const publicProfile = await loadPublicProfile(workspace);
     if (!profile)
         throw new Error("Career profile is unavailable. Run refresh first.");
-    const unresolvedPath = path.join(workspace, variantRoot(roleKey), "unresolved-claims.md");
-    const unresolvedText = await pathExists(unresolvedPath) ? await readFile(unresolvedPath, "utf8") : "";
-    const reviewScopeIds = buildReviewScopeIds(roleKey, manifest, extractUnresolvedClaimIds(unresolvedText), claims);
+    const reviewScopeIds = buildReviewScopeIds(roleKey, manifest, claims);
     return {
         roleKey,
         manifest,
@@ -506,29 +497,49 @@ function renderFinalWebsite(context, selection, counts) {
     }
     return `${sections.join("\n\n")}\n`;
 }
-function renderFinalChecklist(decisions, selection) {
+function renderFinalChecklist(context, decisions, selection) {
     const byDecision = (decision) => decisions.filter((item) => item.decision === decision);
-    return `# Final Public Checklist
+    const variant = getRoleVariant(context.roleKey);
+    const nextAction = selection.readiness === "ready"
+        ? "No claim-review action is required. The final candidate may proceed to its existing export or publication workflow."
+        : "Resolve remaining pending decisions or missing approved sections, then rerun finalization explicitly.";
+    return `${renderDerivedMarkdownBanner("the variant review decisions, reviewed claims, and public-profile JSON")}
+
+# ${variant.displayName} Final Public Checklist
+
+## Purpose
+
+Confirm which reviewed claims entered the final candidate, which were revised or withheld, and whether the result is ready for its next public-output stage.
+
+## Current State
+
+- Target variant: ${variant.displayName}
+- Finalization readiness: ${selection.readiness === "ready" ? "ready" : "not ready"}
+- Approved claims: ${byDecision("approve").length}
+- Revised claims: ${byDecision("revise").length}
+- Excluded claims: ${byDecision("exclude").length}
+- Draft-only claims: ${byDecision("draft_only").length}
+- Pending claims: ${byDecision("pending").length}
 
 ## Claims Approved
 
-${renderDecisionList(byDecision("approve"), true)}
+${renderDecisionList(byDecision("approve"), context)}
 
 ## Claims Revised
 
-${renderDecisionList(byDecision("revise"), true)}
+${renderDecisionList(byDecision("revise"), context)}
 
 ## Claims Excluded
 
-${renderDecisionList(byDecision("exclude"))}
+${renderDecisionList(byDecision("exclude"), context)}
 
 ## Claims Still Pending
 
-${renderDecisionList(byDecision("pending"))}
+${renderDecisionList(byDecision("pending"), context)}
 
 ## Draft-Only Claims
 
-${renderDecisionList(byDecision("draft_only"))}
+${renderDecisionList(byDecision("draft_only"), context)}
 
 ## Public Profile Metadata
 
@@ -540,7 +551,6 @@ ${renderDecisionList(byDecision("draft_only"))}
 - Contact fields used: ${selection.publicProfile.contactFieldsUsed.join(", ") || "none"}
 - Education wording overrides applied: ${selection.publicProfile.educationOverrideClaimIds.join(", ") || "none"}
 - Certification wording overrides applied: ${selection.publicProfile.certificationOverrideClaimIds.join(", ") || "none"}
-- Config path: ${PUBLIC_PROFILE_FILE}
 
 ## Public Profile Warnings
 
@@ -556,7 +566,15 @@ ${renderBullets(selection.missingSections)}
 
 ## Finalization Readiness
 
-- ${selection.readiness === "ready" ? "ready" : "not ready"}
+- Result: ${selection.readiness === "ready" ? "ready" : "not ready"}
+- Pending, draft-only, and excluded claims remain outside final output.
+
+${renderNextAction(nextAction)}
+
+## Internal References
+
+- Role key: ${inlineCode(context.roleKey)}
+- Public profile config: ${inlineCode(PUBLIC_PROFILE_FILE)}
 `;
 }
 function renderPublicContactItems(profile) {
@@ -743,13 +761,61 @@ function renderRoleGroup(group) {
 function renderWebsiteRoleGroup(group) {
     return `### ${group.company ?? "[Company]"}\n\n**${group.title ?? "[Role]"}**${group.dateRange ? ` | ${group.dateRange}` : ""}\n\n${renderBullets(group.claims.slice(0, 2).map((item) => item.wording))}`;
 }
-function renderDecisionList(decisions, includeWording = false) {
+function renderDecisionList(decisions, context) {
     if (decisions.length === 0)
         return "- None.";
-    return decisions.map((decision) => {
-        const wording = includeWording && decision.approvedPublicWording ? `: ${decision.approvedPublicWording}` : "";
-        return `- ${decision.claimId}${wording}`;
-    }).join("\n");
+    const claimById = new Map(context.claims.map((claim) => [claim.id, claim]));
+    return decisions.flatMap((decision) => {
+        const claim = claimById.get(decision.claimId);
+        const sourceText = claim && checklistMayShowSourceClaim(context, claim)
+            ? claim.claim
+            : undefined;
+        const displayedText = decision.decision === "revise"
+            ? decision.approvedPublicWording
+            : sourceText;
+        const title = deriveHumanTitle(displayedText, claim ? `${claim.type.replaceAll("_", " ")} review decision` : "Claim review decision");
+        const lines = [
+            `### ${escapeMarkdownInline(title)}`,
+            "",
+            displayedText
+                ? quoteMarkdown(displayedText)
+                : claim
+                    ? "Source claim wording is withheld because its visibility or output policy does not permit display in this derived checklist."
+                    : "Claim wording is unavailable in the current canonical claim inventory.",
+            "",
+            `- Decision: ${decisionLabel(decision.decision)}`,
+        ];
+        if (decision.decision === "revise" && sourceText && sourceText !== displayedText) {
+            lines.push("- Original claim:", "", quoteMarkdown(sourceText));
+        }
+        lines.push(`- Reason or constraint: ${defaultDecisionReason(decision.decision)}`, `- Final-output eligibility: ${["approve", "revise"].includes(decision.decision) ? "eligible under this variant decision" : "excluded from final output"}`, `- Claim ID: ${inlineCode(decision.claimId)}`, "");
+        return lines;
+    }).join("\n").trimEnd();
+}
+function checklistMayShowSourceClaim(context, claim) {
+    if (claim.outputReadiness === "do_not_use")
+        return false;
+    return claim.supportingEvidenceIds.every((evidenceId) => {
+        const visibility = context.evidenceById.get(evidenceId)?.visibility;
+        return visibility === "public" || visibility === "generic_only";
+    });
+}
+function decisionLabel(decision) {
+    return decision.replaceAll("_", " ");
+}
+function defaultDecisionReason(decision) {
+    switch (decision) {
+        case "approve":
+            return "Original wording was accepted for this final variant.";
+        case "revise":
+            return "Only the reviewed public wording may be used.";
+        case "draft_only":
+            return "Useful for drafting, but not eligible for final public output.";
+        case "exclude":
+            return "Not needed or not suitable for this final variant.";
+        case "pending":
+            return "A final output-specific review decision has not been made.";
+    }
 }
 function renderBullets(values) {
     const uniqueValues = uniqueInOrder(values.map((value) => value.trim()).filter(Boolean));

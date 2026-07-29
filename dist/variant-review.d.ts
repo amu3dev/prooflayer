@@ -54,4 +54,4 @@ export declare function initializeVariantReview(workspace: string, roleKeyInput:
 export declare function getVariantReviewStatus(workspace: string, roleKeyInput: string): Promise<VariantReviewStatus>;
 export declare function formatVariantReviewStatus(status: VariantReviewStatus): string;
 export declare function finalizeVariant(workspace: string, roleKeyInput: string, now?: Date): Promise<FinalVariantManifest>;
-export declare function buildReviewScopeIds(roleKey: RoleKey, manifest: VariantGenerationManifest, unresolvedIds: string[], claims: Claim[]): string[];
+export declare function buildReviewScopeIds(roleKey: RoleKey, manifest: VariantGenerationManifest, claims: Claim[]): string[];

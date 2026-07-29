@@ -3,6 +3,7 @@ import { hashFile, pathExists, readJson, uniqueSorted, writeJsonAtomic, writeTex
 import { ROLE_KEYS, getRoleVariant } from "./role-variants.js";
 import { normalizeProjectIdentity } from "./entity-normalization.js";
 import { inspectResumeExportStatus } from "./resume-export.js";
+import { deriveHumanTitle, escapeMarkdownInline, inlineCode, quoteMarkdown, renderNextAction, } from "./human-readable-markdown.js";
 export const VARIANTS_ROOT = "outputs/variants";
 export const OUTPUT_MANIFEST_FILE = "outputs/output-manifest.json";
 const DRAFT_WARNINGS = [
@@ -431,15 +432,73 @@ function renderUnresolvedClaims(claims, evidenceById) {
     const sections = claims.map((claim) => {
         const evidence = claimEvidence(claim, evidenceById);
         const visibility = [...new Set(evidence.map((item) => item.visibility))].sort();
-        return `## ${claim.id}\n\n- Claim text: ${claim.claim}\n- Approval status: ${claim.approvalStatus}\n- Output readiness: ${claim.outputReadiness}\n- Visibility: ${visibility.join(", ") || "unknown"}\n- Supporting evidence IDs: ${claim.supportingEvidenceIds.join(", ")}\n- Reason for review: ${reviewReason(claim, visibility)}\n- Safe for draft only: yes, generalized wording only`;
+        const evidenceSections = evidence.flatMap((item, index) => {
+            const visible = item.visibility === "public" || item.visibility === "generic_only";
+            const labelSource = visible
+                ? item.normalizedSummary
+                : item.project ?? item.company ?? `${item.category} evidence`;
+            return [
+                `### Evidence ${index + 1}: ${escapeMarkdownInline(deriveHumanTitle(labelSource, "Supporting evidence"))}`,
+                "",
+                visible
+                    ? quoteMarkdown(item.normalizedSummary)
+                    : "Evidence wording is withheld from this derived Markdown because its visibility is not public or generic-only.",
+                "",
+                `- Category: ${item.category}`,
+                `- Visibility: ${item.visibility}`,
+                `- Confidence: ${item.confidence}`,
+                "",
+            ];
+        });
+        return [
+            `## ${escapeMarkdownInline(deriveHumanTitle(claim.claim, "Untitled unresolved claim"))}`,
+            "",
+            "### Claim",
+            "",
+            quoteMarkdown(claim.claim),
+            "",
+            "### Why Review Is Required",
+            "",
+            reviewReason(claim, visibility),
+            "",
+            "### Current State",
+            "",
+            `- Approval status: ${claim.approvalStatus}`,
+            `- Output readiness: ${claim.outputReadiness}`,
+            `- Evidence visibility: ${visibility.join(", ") || "unknown"}`,
+            "- Final/public eligibility: not approved",
+            "- Draft use: generalized wording only",
+            "",
+            "### Supporting Evidence",
+            "",
+            ...(evidenceSections.length > 0
+                ? evidenceSections
+                : ["No supporting evidence record was available.", ""]),
+            "### Internal References",
+            "",
+            `- Claim ID: ${inlineCode(claim.id)}`,
+            `- Supporting evidence IDs: ${claim.supportingEvidenceIds.map(inlineCode).join(", ") || "none"}`,
+        ].join("\n");
     });
     return `${renderDraftWarning("Unresolved Claims")}
 
 # Unresolved Claims
 
-These claims contributed to the draft but are not approved and resume-ready. Original wording is retained here for internal review only.
+## Purpose
+
+Review claims that contributed to this role draft but are not both approved and resume-ready. Original claim wording is retained for internal review; private evidence wording remains withheld.
+
+## Current State
+
+- Claims requiring review: ${claims.length}
+- Public-use eligibility: none until explicitly approved or revised
+- Canonical sources: \`kb/claims.json\`, \`kb/evidence-items.json\`, and the variant generation manifest
 
 ${sections.join("\n\n") || "- No unresolved claims were used."}
+
+${renderNextAction(claims.length > 0
+        ? "Review each claim in this variant's output-specific review decision JSON. Approve, safely revise, keep draft-only, or exclude it before finalization."
+        : "No unresolved claim action is required.")}
 `;
 }
 function renderVariantSummary(variant, selected, unresolvedClaims) {
@@ -447,9 +506,23 @@ function renderVariantSummary(variant, selected, unresolvedClaims) {
 
 # ${variant.displayName} Variant Summary
 
-- Role key: ${variant.roleKey}
+## Purpose
+
+Explain the evidence themes, selected content, limitations, and next review step for this role-specific draft projection.
+
+## Target Context
+
 - Headline: ${variant.headline}
 - Output tone: ${variant.outputTone}
+
+## Current State
+
+- Artifact: role-specific draft projection summary
+- Public-output status: requires output-specific human review
+- Selected roles: ${selected.roles.length}
+- Selected projects: ${selected.projects.length}
+- Selected skills: ${selected.skills.length}
+- Unresolved claims used: ${unresolvedClaims.length}
 
 ## Why This Variant Fits
 
@@ -476,7 +549,6 @@ ${renderBullets(selected.skills.map((skill) => skill.name))}
 ## Warnings
 
 ${renderBullets(DRAFT_WARNINGS)}
-- Unresolved claims used: ${unresolvedClaims.length}
 
 ## Suggested Next Review Actions
 
@@ -484,6 +556,11 @@ ${renderBullets(DRAFT_WARNINGS)}
 - Confirm role/project wording and any generalized internal-only evidence.
 - Add verified metrics only when directly supported.
 - Regenerate after the career profile fingerprint changes.
+
+## Internal References
+
+- Role key: ${inlineCode(variant.roleKey)}
+- Canonical machine record: \`generation-manifest.json\`
 `;
 }
 function uniqueContributions(ranked, context, variant, limit) {

@@ -21,6 +21,7 @@ This policy applies to all ProofLayer implementation work unless a task explicit
 - Validate paths and keep persisted paths normalized and workspace-relative where established by the architecture.
 - Treat `missing`, `current`, `stale`, and `invalid` as distinct lifecycle states.
 - Do not silently repair, replace, or accept stale, invalid, corrupted, or dependency-mismatched artifacts. Require an explicit rebuild, refresh, review, or replacement operation.
+- Follow the [Human-Readable Markdown Contract](../architecture/HUMAN_READABLE_MARKDOWN_CONTRACT.md) whenever adding or changing generated review, status, report, or approval Markdown.
 
 ## Workflow Boundaries
 

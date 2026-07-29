@@ -1,0 +1,10 @@
+export declare const HUMAN_READABLE_MARKDOWN_CONTRACT_NAME = "human-readable-markdown-contract";
+export declare const HUMAN_READABLE_MARKDOWN_CONTRACT_VERSION = "1";
+export declare function renderDerivedMarkdownBanner(canonicalSource: string): string;
+export declare function deriveHumanTitle(value: string | undefined, fallback: string, maxLength?: number): string;
+export declare function normalizeHumanText(value: string): string;
+export declare function escapeMarkdownInline(value: string): string;
+export declare function quoteMarkdown(value: string): string;
+export declare function inlineCode(value: string): string;
+export declare function renderMarkdownList(values: readonly string[], emptyMessage?: string): string;
+export declare function renderNextAction(action: string): string;

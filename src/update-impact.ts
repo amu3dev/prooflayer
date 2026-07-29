@@ -10,6 +10,11 @@ import {
   type UpdateImpact
 } from "./change-detector.js";
 import { hashFile, pathExists, readJson, stableId, writeJsonAtomic, writeText } from "./fs-utils.js";
+import {
+  inlineCode,
+  renderDerivedMarkdownBanner,
+  renderNextAction,
+} from "./human-readable-markdown.js";
 import { rebuild } from "./operations.js";
 import { auditSourcesAndEvidence, type PrivacyFinding } from "./privacy.js";
 import type { CareerProfile, Claim, EvidenceItem, Source } from "./schemas.js";
@@ -280,9 +285,19 @@ function renderUpdateImpactReport(latest: LatestRefresh): string {
     ? `${latest.trustTransitions.length} trust/readiness transition(s) detected; inspect the machine-readable changelog for hashed item references.`
     : "No trust/readiness transitions detected.";
 
-  return `# Update Impact Report
+  return `${renderDerivedMarkdownBanner("the latest-refresh JSON and current output manifest")}
 
-Generated: ${latest.refreshedAt}
+# Update Impact Report
+
+## Purpose
+
+Explain what changed during the latest successful refresh and whether downstream outputs need human attention.
+
+## Current State
+
+- Refresh completed: ${latest.refreshedAt}
+- User attention required: ${latest.attentionRequired ? "yes" : "no"}
+- Registered output state: ${formatOutputStatus(latest.outputs)}
 
 ## What Changed?
 
@@ -330,6 +345,17 @@ ${renderList(latest.warnings)}
 - This report contains counts and hashed references only; it does not copy raw extracted text or claims.
 - Source matching uses normalized relative path and source type; file hashes identify versions.
 - Repeated CV variants and repeated exports are grouped for impact reporting rather than treated as independent corroboration.
+
+${renderNextAction(
+  latest.attentionRequired
+    ? "Review the listed changes and warnings, then explicitly rebuild any stale downstream artifact through its owning workflow."
+    : "No action is required; the latest refresh and registered outputs are current.",
+)}
+
+## Internal References
+
+- Refresh ID: ${inlineCode(latest.refreshId)}
+- Profile fingerprint: ${inlineCode(latest.profileFingerprint)}
 `;
 }
 

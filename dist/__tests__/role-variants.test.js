@@ -62,6 +62,13 @@ describe("Slice 1.4 role variants", () => {
         expect(resume).toContain("Project evidence is present, but role-specific public wording needs review.");
         expect(unresolved).toContain("# Unresolved Claims");
         expect(unresolved).toContain("claim_ai");
+        expect(unresolved).toContain("## Purpose");
+        expect(unresolved).toContain("## Next Action");
+        expect(unresolved).toContain("SignalBoard project evidence.");
+        expect(unresolved.indexOf("Built AI-assisted workflows with evaluation scenarios and product validation."))
+            .toBeLessThan(unresolved.indexOf("claim_ai"));
+        expect(unresolved.indexOf("SignalBoard project evidence."))
+            .toBeLessThan(unresolved.indexOf("evi_ai"));
         expect(manifest.profileFingerprint).toBeTruthy();
         expect(manifest.claimIdsUsed.length).toBeGreaterThan(0);
         expect(manifest.claimIdsUsed).not.toContain("claim_blocked_metric");

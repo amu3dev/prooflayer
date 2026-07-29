@@ -40,30 +40,32 @@ describe("deterministic Evidence Review Workspace rendering", () => {
       result: "created",
       claimWorkspaceCount: 4,
     });
-    expect(index).toContain("> GENERATED FILE");
-    expect(index).toContain("Editing this file has no effect on ProofLayer.");
-    expect(index).toContain("## Priority Summary");
-    expect(index).toContain("## Claim Review Workspaces");
-    expect(index).toContain("## Overall Progress Summary");
-    expect(index).toContain("## Review Status Summary");
+    expect(index).toContain("> GENERATED, READ-ONLY VIEW");
+    expect(index).toContain("Editing this file does not change ProofLayer state.");
+    expect(index).toContain("## Purpose");
+    expect(index).toContain("## Current Review State");
+    expect(index).toContain("## Claims to Review");
+    expect(index).toContain("### High Priority");
+    expect(index).toContain("## Next Action");
+    expect(index).toContain("## Internal References");
     expect(index.match(/\.review\.md\)/g)).toHaveLength(4);
     expect(claimMarkdown).toHaveLength(4);
     for (const markdown of claimMarkdown) {
-      expect(markdown).toContain("# Claim Review");
-      expect(markdown).toContain("## Original Claim");
-      expect(markdown).toContain("## Evidence");
-      expect(markdown).toContain("## Evidence Summary");
-      expect(markdown).toContain("## Relevant Source Excerpt");
+      expect(markdown).toContain("# Review Claim:");
+      expect(markdown).toContain("## Purpose");
+      expect(markdown).toContain("## Claim Being Reviewed");
+      expect(markdown).toContain("## Supporting Evidence");
       expect(markdown).toContain("## Matching Job Requirements");
-      expect(markdown).toContain("## Current Classification");
-      expect(markdown).toContain("## Current Eligibility");
-      expect(markdown).toContain("## Current Provenance");
+      expect(markdown).toContain("## Claim Classification");
+      expect(markdown).toContain("## Current Review State");
       expect(markdown).toContain("## Reviewer Decision Workspace");
       expect(markdown).toContain("## Validation Checklist");
+      expect(markdown).toContain("## Next Action");
+      expect(markdown).toContain("## Internal References and Provenance");
       expect(markdown).toContain("Source content SHA-256");
       expect(markdown).not.toContain("/Users/synthetic-private/");
       expect(markdown).not.toContain("reviewerRationale");
-      expect(markdown).not.toContain("Private reviewer rationale");
+      expect(markdown).toContain("Private reviewer rationale is intentionally absent");
     }
     expect(claimMarkdown.some((markdown) =>
       markdown.includes("Supported platform extensibility."))).toBe(true);
@@ -86,7 +88,7 @@ describe("deterministic Evidence Review Workspace rendering", () => {
       expect(await hashFile(path.join(fixture.workspace, claim.manifest.path)))
         .toBe(claim.manifest.sha256);
     }
-    const linkedIds = [...index.matchAll(/\[(claim_[^\]]+)\]\(\.\/claim_/g)]
+    const linkedIds = [...index.matchAll(/\]\(\.\/(claim_[^)]+)\.review\.md\)/g)]
       .map((match) => match[1]!);
     const batch = JSON.parse(await readFile(
       evidenceReviewBatchPaths(fixture.workspace, fixture.batchId).batchPath,
@@ -97,6 +99,28 @@ describe("deterministic Evidence Review Workspace rendering", () => {
     expect(linkedIds).toEqual(batch.claims
       .filter(({ selectedForControlledReview }) => selectedForControlledReview)
       .map(({ claimId }) => claimId));
+    for (const theme of [
+      "Supported AI product workflows and engineering collaboration.",
+      "Supported product discovery and prioritisation.",
+      "Supported platform extensibility.",
+      "Supported unrelated education administration.",
+    ]) {
+      const claimId = `claim_workspace_${[
+        "Supported AI product workflows and engineering collaboration.",
+        "Supported product discovery and prioritisation.",
+        "Supported platform extensibility.",
+        "Supported unrelated education administration.",
+      ].indexOf(theme) + 1}`;
+      expect(index.indexOf(theme)).toBeLessThan(index.indexOf(claimId));
+      const rendered = claimMarkdown.find((markdown) => markdown.includes(theme))!;
+      expect(rendered.indexOf(theme)).toBeLessThan(rendered.indexOf(claimId));
+      expect(rendered.indexOf(theme)).toBeLessThan(rendered.indexOf(`evi_workspace_${[
+        "Supported AI product workflows and engineering collaboration.",
+        "Supported product discovery and prioritisation.",
+        "Supported platform extensibility.",
+        "Supported unrelated education administration.",
+      ].indexOf(theme) + 1}`));
+    }
     expect(await canonicalBytes(fixture.workspace, fixture.batchId)).toEqual(before);
     expect((await listEvidenceClaimReviews(fixture.workspace)).every(
       ({ status }) => status === "missing",
@@ -144,6 +168,26 @@ describe("deterministic Evidence Review Workspace rendering", () => {
         inputsMatch: true,
         rendererMatches: true,
       });
+  });
+
+  it("marks an older Markdown renderer version stale without changing canonical JSON", async () => {
+    const fixture = await workspaceFixture();
+    await renderEvidenceReviewWorkspace(fixture.workspace, fixture.batchId);
+    const before = await canonicalBytes(fixture.workspace, fixture.batchId);
+    const paths = evidenceReviewWorkspacePaths(fixture.workspace, fixture.batchId);
+    const manifest = JSON.parse(await readFile(paths.indexManifestPath, "utf8")) as {
+      renderer: { name: string; version: string; mode: "deterministic" };
+    };
+    manifest.renderer.version = "1";
+    await writeJsonAtomic(paths.indexManifestPath, manifest);
+
+    expect(await getEvidenceReviewWorkspaceStatus(fixture.workspace, fixture.batchId))
+      .toMatchObject({
+        status: "stale",
+        rendererMatches: false,
+        inputsMatch: true,
+      });
+    expect(await canonicalBytes(fixture.workspace, fixture.batchId)).toEqual(before);
   });
 
   it("reports missing, stale, rebuilt, and invalid lifecycle without consuming Markdown edits", async () => {

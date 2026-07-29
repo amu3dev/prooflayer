@@ -4,6 +4,7 @@ import { KNOWN_DOMAINS, KNOWN_TECHNOLOGIES, PUBLIC_SAFETY_RULES, WORKSPACE_DIR, 
 import { extractText } from "./extract.js";
 import { normalizeProjectIdentity, preferredProjectName } from "./entity-normalization.js";
 import { ensureDir, hashFile, pathExists, readJson, stableId, toPosixRelative, uniqueSorted, walkFiles, writeJson, writeJsonAtomic, writeText } from "./fs-utils.js";
+import { deriveHumanTitle, escapeMarkdownInline, inlineCode, renderDerivedMarkdownBanner, renderNextAction, } from "./human-readable-markdown.js";
 import { auditSourcesAndEvidence, detectSensitivity, sourceVisibilityFromPath } from "./privacy.js";
 import { isDateLocationLine, isMarkdownResume, isResumeSectionHeading, parseMarkdownResume } from "./resume-parser.js";
 import { CareerProfileSchema, ClaimSchema, EvidenceItemSchema, SourceSchema } from "./schemas.js";
@@ -884,9 +885,32 @@ function buildSkills(items) {
         .sort((a, b) => a.name.localeCompare(b.name));
 }
 function renderCareerProfile(profile) {
-    return `# Career Profile
+    const roles = profile.roles.map((role) => `### ${escapeMarkdownInline(role.title ?? "Role title not recorded")}
 
-Updated: ${profile.updatedAt}
+- Organization: ${role.company ?? "not recorded"}
+- Date range: ${role.dateRange ?? "not recorded"}
+- Evidence references: ${role.evidenceIds.map(inlineCode).join(", ") || "none"}`).join("\n\n");
+    const projects = profile.projects.map((project) => `### ${escapeMarkdownInline(project.name)}
+
+- Technologies: ${project.technologies?.join(", ") || "none recorded"}
+- Domains: ${project.domains?.join(", ") || "none recorded"}
+- Evidence references: ${project.evidenceIds.map(inlineCode).join(", ") || "none"}`).join("\n\n");
+    const skills = profile.skills.map((skill) => `- ${escapeMarkdownInline(skill.name)}\n  Evidence references: ${skill.evidenceIds.map(inlineCode).join(", ") || "none"}`).join("\n");
+    return `${renderDerivedMarkdownBanner("the canonical career-profile JSON")}
+
+# Career Profile
+
+## Purpose
+
+Provide a human-readable snapshot of the normalized career profile used by downstream role and output workflows.
+
+## Current State
+
+- Profile updated: ${profile.updatedAt}
+- Positioning candidates: ${profile.positioningCandidates.length}
+- Roles: ${profile.roles.length}
+- Projects: ${profile.projects.length}
+- Skills: ${profile.skills.length}
 
 ## Positioning Candidates
 
@@ -898,15 +922,15 @@ ${renderList(profile.summaryThemes)}
 
 ## Roles
 
-${profile.roles.map((role) => `- ${role.title ?? "Unknown role"}${role.dateRange ? ` (${role.dateRange})` : ""} [evidence: ${role.evidenceIds.join(", ")}]`).join("\n") || "- No role evidence detected yet."}
+${roles || "- No role evidence detected yet."}
 
 ## Projects
 
-${profile.projects.map((project) => `- ${project.name} [evidence: ${project.evidenceIds.join(", ")}]`).join("\n") || "- No project evidence detected yet."}
+${projects || "- No project evidence detected yet."}
 
 ## Skills
 
-${profile.skills.map((skill) => `- ${skill.name} [evidence: ${skill.evidenceIds.join(", ")}]`).join("\n") || "- No skill evidence detected yet."}
+${skills || "- No skill evidence detected yet."}
 
 ## Domains
 
@@ -939,15 +963,27 @@ ${renderList(profile.internalOnlyClaims)}
 ## Public Safety Rules
 
 ${renderList(profile.publicSafetyRules)}
+
+${renderNextAction(profile.claimsNeedingConfirmation.length > 0
+        ? "Review claims needing confirmation before using them in public or resume-ready outputs."
+        : "No profile review action is required; downstream target workflows may consume the current canonical JSON.")}
 `;
 }
 function renderPrivacyReport(findings, sources, claims) {
     const high = findings.filter((finding) => finding.severity === "high");
     const medium = findings.filter((finding) => finding.severity === "medium");
     const low = findings.filter((finding) => finding.severity === "low");
-    return `# Privacy Report
+    const renderedFindings = findings.map((finding) => [
+        `- **${finding.severity.toUpperCase()}:** ${finding.finding}`,
+        `  Reference: ${finding.targetType} ${inlineCode(finding.targetId)}`,
+    ].join("\n"));
+    return `${renderDerivedMarkdownBanner("the source, evidence, claim, and privacy-audit JSON state")}
 
-Generated: ${new Date().toISOString()}
+# Privacy Report
+
+## Purpose
+
+Show privacy and visibility risks that require human attention before reviewed evidence enters a public output.
 
 ## Summary
 
@@ -960,13 +996,17 @@ Generated: ${new Date().toISOString()}
 
 ## Findings
 
-${findings.map((finding) => `- ${finding.severity.toUpperCase()} | ${finding.targetType} ${finding.targetId}: ${finding.finding}`).join("\n") || "- No privacy findings detected."}
+${renderedFindings.join("\n") || "- No privacy findings detected."}
 
-## Notes
+## Limitations
 
 - Risky items are flagged only. ProofLayer does not delete or mutate source files.
 - Generic-only content may support generalized wording but is not safe for verbatim public output.
 - Review unknown/private visibility before using related evidence in public outputs.
+
+${renderNextAction(high.length + medium.length > 0
+        ? "Review high- and medium-risk findings before generating or publishing public output."
+        : "No blocking privacy action is indicated by this report.")}
 `;
 }
 async function writeNormalizationQualityReport(workspace) {
@@ -995,11 +1035,15 @@ async function writeNormalizationQualityReport(workspace) {
     const unknownSources = sources.filter((source) => source.visibility === "unknown").length;
     if (unknownSources > 0)
         warnings.push(`${unknownSources} source(s) have unknown visibility and require review.`);
-    await writeText(path.join(workspace, "outputs/reports/normalization-quality-report.md"), `# Normalization Quality Report
+    await writeText(path.join(workspace, "outputs/reports/normalization-quality-report.md"), `${renderDerivedMarkdownBanner("the normalized source, evidence, claim, and statistics JSON")}
 
-Generated: ${new Date().toISOString()}
+# Normalization Quality Report
 
-## Counts
+## Purpose
+
+Summarize what normalization produced and identify structural gaps that need source or normalization review.
+
+## Current State
 
 - Sources: ${sources.length}
 - Evidence items: ${evidenceItems.length}
@@ -1017,6 +1061,10 @@ Generated: ${new Date().toISOString()}
 ## Warnings
 
 ${renderList(uniqueSorted(warnings))}
+
+${renderNextAction(warnings.length > 0
+        ? "Inspect the listed warnings and correct the relevant source or normalization input before relying on missing structures."
+        : "No normalization-quality action is required.")}
 `);
 }
 async function writeTrustModelReport(workspace) {
@@ -1038,11 +1086,15 @@ async function writeTrustModelReport(workspace) {
         warnings.push("No claims are resume-ready; trusted Slice 2 matching must remain disabled.");
     if (sources.some((source) => source.visibility === "generic_only"))
         warnings.push("Generic-only sources require generalized wording or manual approval before public use.");
-    await writeText(path.join(workspace, "outputs/reports/trust-model-report.md"), `# Trust Model Report
+    await writeText(path.join(workspace, "outputs/reports/trust-model-report.md"), `${renderDerivedMarkdownBanner("the canonical source and claim JSON")}
 
-Generated: ${new Date().toISOString()}
+# Trust Model Report
 
-## Status Counts
+## Purpose
+
+Explain the global claim trust boundary and show which claims are eligible for downstream trusted matching.
+
+## Current State
 
 - Approved claims: ${count((claim) => claim.approvalStatus === "approved")}
 - Needs confirmation: ${count((claim) => claim.approvalStatus === "needs_confirmation")}
@@ -1060,13 +1112,17 @@ ${renderList(claimTypes.map((type) => `${type}: ${count((claim) => claim.type ==
 
 ${renderList(downgraded.map((claim) => `${claim.claim} [${claim.type}; factual confidence: ${claim.factualConfidence}; corroboration: ${claim.corroborationLevel}; output: ${claim.outputReadiness}]`))}
 
-## Warnings Before Slice 2
+## Warnings and Limitations
 
 ${renderList(warnings)}
 
 ## Matching Gate
 
 Trusted matching should use only claims with approval status "approved" and output readiness "resume_ready".
+
+${renderNextAction(warnings.length > 0
+        ? "Resolve the listed trust or visibility warnings through the established review workflow; do not edit this report."
+        : "No trust-model action is required before downstream matching.")}
 `);
 }
 async function loadSnapshot(workspace) {
@@ -1090,37 +1146,58 @@ function renderRebuildChangelog(before, after, findings) {
     const addedEvidence = after.evidenceItems.filter((item) => !beforeEvidenceIds.has(item.id));
     const addedClaims = after.claims.filter((claim) => !beforeClaimIds.has(claim.id));
     const needsConfirmation = after.claims.filter((claim) => claim.needsConfirmation);
-    return `# Rebuild Changelog
+    const renderSourceChanges = (sources) => renderList(sources.map((source) => `${escapeMarkdownInline(source.title || source.type)}; source ID ${inlineCode(source.id)}; content SHA-256 ${inlineCode(source.hash)}`));
+    const renderEvidenceChanges = (items) => renderList(items.map((item) => `${escapeMarkdownInline(deriveHumanTitle(item.normalizedSummary, "Evidence item"))}; evidence ID ${inlineCode(item.id)}`));
+    const renderClaimChanges = (items) => renderList(items.map((claim) => `${escapeMarkdownInline(claim.claim)}; claim ID ${inlineCode(claim.id)}`));
+    return `${renderDerivedMarkdownBanner("the before-and-after canonical Knowledge Base snapshots")}
 
-Generated: ${new Date().toISOString()}
+# Rebuild Changelog
+
+## Purpose
+
+Show human-readable Knowledge Base additions, removals, and review needs from the latest rebuild without exposing private source paths.
+
+## Current State
+
+- Added sources: ${addedSources.length}
+- Changed sources: ${changedSources.length}
+- Removed sources: ${removedSources.length}
+- Added evidence items: ${addedEvidence.length}
+- Added claims: ${addedClaims.length}
+- Claims needing confirmation: ${needsConfirmation.length}
+- Privacy findings: ${findings.length}
 
 ## Added Sources
 
-${renderList(addedSources.map((source) => `${source.id}: ${source.path}`))}
+${renderSourceChanges(addedSources)}
 
 ## Changed Sources
 
-${renderList(changedSources.map((source) => `${source.id}: ${source.path}`))}
+${renderSourceChanges(changedSources)}
 
 ## Removed Sources
 
-${renderList(removedSources.map((source) => `${source.id}: ${source.path}`))}
+${renderSourceChanges(removedSources)}
 
 ## Added Evidence
 
-${renderList(addedEvidence.map((item) => `${item.id}: ${item.normalizedSummary}`))}
+${renderEvidenceChanges(addedEvidence)}
 
 ## Added Claims
 
-${renderList(addedClaims.map((claim) => `${claim.id}: ${claim.claim}`))}
+${renderClaimChanges(addedClaims)}
 
 ## Claims Needing Confirmation
 
-${renderList(needsConfirmation.map((claim) => `${claim.id}: ${claim.claim}`))}
+${renderClaimChanges(needsConfirmation)}
 
 ## Risky Privacy Findings
 
-${renderList(findings.map((finding) => `${finding.severity.toUpperCase()} | ${finding.targetType} ${finding.targetId}: ${finding.finding}`))}
+${renderList(findings.map((finding) => `${finding.severity.toUpperCase()}: ${finding.finding}; ${finding.targetType} reference ${inlineCode(finding.targetId)}`))}
+
+${renderNextAction(needsConfirmation.length + findings.length > 0
+        ? "Review claims needing confirmation and privacy findings before relying on rebuilt content in public outputs."
+        : "No rebuild follow-up action is required.")}
 `;
 }
 function renderList(values) {

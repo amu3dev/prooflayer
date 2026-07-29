@@ -52,6 +52,31 @@ describe("Slice 1.6.1 persisted pipeline integration", () => {
     expect(profile.id).toBe("career_profile");
     expect(baseline.successfulRefreshAt).toBe("2026-07-16T08:00:00.000Z");
     expect(changelog.refreshId).toBe(latest.refreshId);
+    for (const reportPath of [
+      "outputs/reports/career-profile.md",
+      "outputs/reports/privacy-report.md",
+      "outputs/reports/normalization-quality-report.md",
+      "outputs/reports/trust-model-report.md",
+      "outputs/reports/update-impact-report.md",
+      "outputs/changelogs/rebuild-changelog.md",
+    ]) {
+      const report = await readFile(path.join(workspace, reportPath), "utf8");
+      expect(report).toContain("> GENERATED, READ-ONLY VIEW");
+      expect(report).toContain("## Purpose");
+      expect(report).toContain("## Next Action");
+      expect(report).not.toContain(workspace);
+    }
+    const careerProfile = await readFile(
+      path.join(workspace, "outputs/reports/career-profile.md"),
+      "utf8",
+    );
+    expect(careerProfile.indexOf("Technical Product Manager"))
+      .toBeLessThan(careerProfile.indexOf("evi_"));
+    const rebuildReport = await readFile(
+      path.join(workspace, "outputs/changelogs/rebuild-changelog.md"),
+      "utf8",
+    );
+    expect(rebuildReport).not.toContain(path.join(workspace, "sources/cvs/resume.md"));
     expect(await findTemporaryFiles(workspace)).toEqual([]);
   });
 

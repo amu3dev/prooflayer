@@ -125,7 +125,7 @@ describe("Slice 1.3 change detection", () => {
     state.evidenceItems[0].sensitivityFlags = ["email"];
     await writeState(workspace, state);
 
-    await refreshWorkspace(workspace, {
+    const latest = await refreshWorkspace(workspace, {
       now: () => new Date("2026-07-15T10:00:00.000Z"),
       runPipeline: async () => undefined
     });
@@ -137,6 +137,11 @@ describe("Slice 1.3 change detection", () => {
     expect(report).not.toContain("Private contact");
     expect(baseline).not.toContain("/Users/");
     expect(report).not.toContain("/Users/");
+    expect(report).toContain("> GENERATED, READ-ONLY VIEW");
+    expect(report).toContain("## Current State");
+    expect(report).toContain("## Next Action");
+    expect(report.indexOf("User attention required"))
+      .toBeLessThan(report.indexOf(latest.refreshId));
   });
 
   it("updates the baseline only after a successful refresh", async () => {
