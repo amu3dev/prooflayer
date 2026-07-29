@@ -1,0 +1,6 @@
+---
+import { evidenceReviewUiRuntimeConfig } from "../lib/runtime.js";
+
+const config = evidenceReviewUiRuntimeConfig();
+return Astro.redirect(`/review/${config.batchId}`, 302);
+---

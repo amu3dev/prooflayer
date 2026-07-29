@@ -1,0 +1,87 @@
+---
+import ClaimCard from "../../../components/ClaimCard.astro";
+import Layout from "../../../layouts/Layout.astro";
+import { evidenceReviewUiRuntimeConfig } from "../../../lib/runtime.js";
+import { loadEvidenceReviewUiBatch } from "../../../../../../src/evidence-review-ui.ts";
+
+const config = evidenceReviewUiRuntimeConfig();
+const batchId = Astro.params.batchId;
+if (batchId !== config.batchId) {
+  return new Response("Review batch not found.", { status: 404 });
+}
+const batch = await loadEvidenceReviewUiBatch(config.workspace, config.batchId);
+const result = Astro.url.searchParams.get("result");
+const reviewId = Astro.url.searchParams.get("review");
+const priorities = ["high", "medium", "low"] as const;
+---
+
+<Layout title="Evidence Review" batchId={batch.batchId} readOnly={config.readOnly}>
+  <p class="eyebrow">{batch.stage}</p>
+  <h1>{batch.target.title}</h1>
+  {batch.target.company && <p class="lede">{batch.target.company}</p>}
+  <p class="meta">
+    {[batch.target.location, batch.target.workingModel].filter(Boolean).join(" · ")}
+  </p>
+
+  {result && (
+    <div class="notice success" role="status">
+      Review {result === "already-current" ? "was already current" : "was saved"}.
+      {reviewId && <> Review reference: <code>{reviewId}</code>.</>}
+    </div>
+  )}
+
+  {config.readOnly && (
+    <div class="notice">
+      This session is read-only. You can inspect every claim, but no canonical review can be submitted.
+    </div>
+  )}
+
+  <section aria-labelledby="purpose-heading">
+    <h2 id="purpose-heading">Review purpose</h2>
+    <p class="lede">{batch.purpose}</p>
+    <p class="notice">{batch.warning}</p>
+  </section>
+
+  <section aria-labelledby="progress-heading">
+    <h2 id="progress-heading">Progress</h2>
+    <div class="progress-grid">
+      <div class="stat"><strong>{batch.progress.reviewed}</strong> reviewed</div>
+      <div class="stat"><strong>{batch.progress.pending}</strong> pending</div>
+      <div class="stat"><strong>{batch.progress.selected}</strong> selected</div>
+    </div>
+  </section>
+
+  <section aria-labelledby="claims-heading">
+    <h2 id="claims-heading">Claims</h2>
+    {priorities.map((priority) => {
+      const claims = batch.claims.filter((claim) => claim.priority === priority);
+      return claims.length > 0 && (
+        <section aria-labelledby={`${priority}-priority-heading`}>
+          <h3 id={`${priority}-priority-heading`}>
+            {priority.slice(0, 1).toUpperCase()}{priority.slice(1)} priority
+            <span class="meta"> · {claims.filter((claim) => claim.review.lifecycle !== "current").length} pending</span>
+          </h3>
+          <div class="claim-list">
+            {claims.map((claim) => <ClaimCard batchId={batch.batchId} claim={claim} />)}
+          </div>
+        </section>
+      );
+    })}
+  </section>
+
+  <section class="panel" aria-labelledby="next-heading">
+    <h2 id="next-heading">Next action</h2>
+    {batch.complete
+      ? <p><a class="button" href={`/review/${batch.batchId}/complete`}>View completed review summary</a></p>
+      : batch.nextPendingClaimId
+        ? <p><a class="button" href={`/review/${batch.batchId}/claim/${batch.nextPendingClaimId}`}>Open next pending claim</a></p>
+        : <p>No pending claim is available.</p>}
+  </section>
+
+  <details>
+    <summary>Internal references</summary>
+    <p class="audit">Batch ID: <code>{batch.batchId}</code></p>
+    <p class="audit">Target ID: <code>{batch.target.id}</code></p>
+    <p class="audit">Canonical JSON remains the source of truth. This interface does not parse or write Markdown.</p>
+  </details>
+</Layout>

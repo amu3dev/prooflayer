@@ -7,7 +7,9 @@
     "prooflayer": "./dist/index.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && npm run build:ui",
+    "build:core": "tsc",
+    "build:ui": "astro build --root apps/reviewer-ui",
     "dev": "node --import tsx src/index.ts",
     "init": "node --import tsx src/index.ts init",
     "ingest": "node --import tsx src/index.ts ingest",
@@ -29,9 +31,12 @@
     "public-profile:init": "node --import tsx src/index.ts public-profile init",
     "public-profile:show": "node --import tsx src/index.ts public-profile show",
     "rebuild": "node --import tsx src/index.ts rebuild",
-    "test": "vitest run"
+    "ui:review": "node --import tsx src/index.ts ui review",
+    "test": "npm run build:ui && vitest run"
   },
   "dependencies": {
+    "@astrojs/node": "^11.0.3",
+    "astro": "^7.1.6",
     "commander": "^12.1.0",
     "gray-matter": "^4.0.3",
     "mammoth": "^1.8.0",

@@ -1,0 +1,29 @@
+---
+import type { EvidenceReviewUiClaim } from "../../../../src/evidence-review-ui.ts";
+
+interface Props {
+  batchId: string;
+  claim: EvidenceReviewUiClaim;
+}
+
+const { batchId, claim } = Astro.props;
+const summary = claim.text.length > 180
+  ? `${claim.text.slice(0, 177).trimEnd()}...`
+  : claim.text;
+---
+
+<article class="claim-card">
+  <div>
+    <h3>{claim.title}</h3>
+    <p class="meta">{summary}</p>
+    <div class="badges" aria-label="Claim status">
+      <span class={`badge ${claim.priority}`}>{claim.priority} priority</span>
+      <span class={`badge ${claim.review.lifecycle}`}>
+        {claim.review.lifecycle === "current" ? claim.review.decision : claim.review.lifecycle}
+      </span>
+    </div>
+  </div>
+  <a class="button secondary" href={`/review/${batchId}/claim/${claim.id}`}>
+    {claim.review.lifecycle === "current" ? "Inspect review" : "Review claim"}
+  </a>
+</article>

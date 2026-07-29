@@ -156,6 +156,9 @@ describe("guided Job workflow", () => {
     expect(result.stageResults.some((entry) =>
       entry.stage === "evidence-review" && entry.result === "built")).toBe(true);
     expect(result.status.evidenceSnapshot.eligibleJobEvidenceCount).toBe(0);
+    expect(formatJobWorkflowStatus(result.status)).toContain(
+      `prooflayer ui review ${batch!.batchId} --open`,
+    );
   });
 
   it("preserves an existing different snapshot pin and requires explicit upgrade", async () => {

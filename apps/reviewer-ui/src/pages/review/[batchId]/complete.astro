@@ -1,0 +1,52 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import { evidenceReviewUiRuntimeConfig } from "../../../lib/runtime.js";
+import { loadEvidenceReviewUiBatch } from "../../../../../../src/evidence-review-ui.ts";
+
+const config = evidenceReviewUiRuntimeConfig();
+const batchId = Astro.params.batchId;
+if (batchId !== config.batchId) {
+  return new Response("Review batch not found.", { status: 404 });
+}
+const batch = await loadEvidenceReviewUiBatch(config.workspace, config.batchId);
+const decisionLabels: Record<string, string> = {
+  approved: "Approved",
+  "approved-with-qualifier": "Qualified",
+  "needs-edit": "Needs edit",
+  rejected: "Rejected",
+  "insufficient-proof": "Insufficient proof",
+  deferred: "Deferred",
+};
+---
+
+<Layout title="Evidence Review Complete" batchId={batch.batchId} readOnly={config.readOnly}>
+  <p class="eyebrow">{batch.complete ? "Review complete" : "Review in progress"}</p>
+  <h1>{batch.complete ? "Evidence Review Complete" : "Evidence Review Is Not Complete"}</h1>
+  <p class="lede">{batch.progress.reviewed} of {batch.progress.selected} selected claims reviewed for {batch.target.title}.</p>
+
+  <section aria-labelledby="decision-heading">
+    <h2 id="decision-heading">Decisions</h2>
+    <div class="summary-grid">
+      {Object.entries(decisionLabels).map(([decision, label]) =>
+        <div class="stat"><strong>{batch.progress.decisions[decision] ?? 0}</strong> {label}</div>
+      )}
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="next-heading">
+    <h2 id="next-heading">Next action</h2>
+    {batch.complete
+      ? <>
+          <p>Return explicitly to the guided Job workflow. Nothing continues automatically.</p>
+          <p><code>{batch.nextCommand}</code></p>
+        </>
+      : <>
+          <p>{batch.progress.pending} canonical review decision(s) remain.</p>
+          <a class="button" href={`/review/${batch.batchId}`}>Return to review batch</a>
+        </>}
+  </section>
+
+  <p class="notice">
+    This UI does not build or upgrade an Evidence Snapshot, change the target pin, or continue the Job pipeline.
+  </p>
+</Layout>

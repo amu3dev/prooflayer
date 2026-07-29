@@ -5,6 +5,8 @@ node_modules/
 coverage/
 .cache/
 .vite/
+apps/reviewer-ui/dist/
+apps/reviewer-ui/.astro/
 *.tsbuildinfo
 
 # Environment and credentials

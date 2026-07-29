@@ -59,9 +59,9 @@ interface ReviewWorkspaceDependency {
   sha256: string;
 }
 
-type EvidenceReviewBatchClaim = EvidenceReviewBatch["claims"][number];
+export type EvidenceReviewBatchClaim = EvidenceReviewBatch["claims"][number];
 
-interface ClaimWorkspaceInput {
+export interface EvidenceReviewWorkspaceClaimData {
   entry: EvidenceReviewBatchClaim;
   claim: Claim;
   evidence: EvidenceItem[];
@@ -79,7 +79,7 @@ interface ClaimWorkspaceInput {
   renderId: string;
 }
 
-interface ReviewWorkspaceInput {
+export interface EvidenceReviewWorkspaceData {
   batch: EvidenceReviewBatch;
   batchManifest: EvidenceReviewBatchManifest;
   batchSha256: string;
@@ -92,7 +92,7 @@ interface ReviewWorkspaceInput {
   claimsSha256: string;
   evidenceSha256: string;
   sourcesSha256: string;
-  claims: ClaimWorkspaceInput[];
+  claims: EvidenceReviewWorkspaceClaimData[];
 }
 
 interface ClaimWorkspaceManifest {
@@ -217,7 +217,7 @@ export async function renderEvidenceReviewWorkspace(
     );
   }
 
-  const input = await loadReviewWorkspaceInput(workspace, batchId);
+  const input = await loadEvidenceReviewWorkspaceData(workspace, batchId);
   const timestamp = (options.now ?? (() => new Date()))().toISOString();
   const claimManifests: ClaimWorkspaceManifest[] = [];
   for (const claimInput of input.claims) {
@@ -373,7 +373,7 @@ export async function getEvidenceReviewWorkspaceStatus(
   let inputsMatch = false;
   let rendererMatches = false;
   try {
-    const input = await loadReviewWorkspaceInput(workspace, batchId);
+    const input = await loadEvidenceReviewWorkspaceData(workspace, batchId);
     const expectedClaims = input.claims.map((claim) =>
       createExpectedClaimManifestInput(input, claim));
     const storedClaims = new Map(claimManifests.map((claim) => [claim.claimId, claim]));
@@ -479,10 +479,10 @@ export function formatEvidenceReviewWorkspaceStatus(
   ].join("\n");
 }
 
-async function loadReviewWorkspaceInput(
+export async function loadEvidenceReviewWorkspaceData(
   workspace: string,
   batchId: string,
-): Promise<ReviewWorkspaceInput> {
+): Promise<EvidenceReviewWorkspaceData> {
   const batchPaths = evidenceReviewBatchPaths(workspace, batchId);
   const batch = EvidenceReviewBatchSchema.parse(await readJson<unknown>(batchPaths.batchPath, null));
   const batchManifest = EvidenceReviewBatchManifestSchema.parse(
@@ -519,7 +519,7 @@ async function loadReviewWorkspaceInput(
     throw new Error("Controlled review subset does not match selected batch entries.");
   }
 
-  const claimInputs: ClaimWorkspaceInput[] = [];
+  const claimInputs: EvidenceReviewWorkspaceClaimData[] = [];
   for (const entry of selectedEntries) {
     const claim = claimById.get(entry.claimId);
     if (!claim) throw new Error(`Batch references missing claim: ${entry.claimId}`);
@@ -610,7 +610,10 @@ async function loadReviewWorkspaceInput(
   };
 }
 
-function renderClaimMarkdown(input: ReviewWorkspaceInput, item: ClaimWorkspaceInput): string {
+function renderClaimMarkdown(
+  input: EvidenceReviewWorkspaceData,
+  item: EvidenceReviewWorkspaceClaimData,
+): string {
   const evidenceCategories = unique(item.evidence.map(({ category }) => category));
   const sourcesByEvidence = new Map(item.evidence.map((evidence) => [
     evidence.id,
@@ -630,7 +633,7 @@ function renderClaimMarkdown(input: ReviewWorkspaceInput, item: ClaimWorkspaceIn
     "",
     `- Target: ${targetLabel(input.target)}`,
     `- Priority: ${item.entry.priority}`,
-    `- Reason selected: ${selectionReason(item.entry)}`,
+    `- Reason selected: ${evidenceReviewSelectionReason(item.entry)}`,
     "",
     "## Claim Being Reviewed",
     "",
@@ -784,7 +787,7 @@ function renderClaimMarkdown(input: ReviewWorkspaceInput, item: ClaimWorkspaceIn
   return `${lines.join("\n").replace(/\n{3,}/g, "\n\n")}\n`;
 }
 
-function renderIndexMarkdown(input: ReviewWorkspaceInput, renderId: string): string {
+function renderIndexMarkdown(input: EvidenceReviewWorkspaceData, renderId: string): string {
   const selectedPriority = {
     high: input.claims.filter(({ entry }) => entry.priority === "high").length,
     medium: input.claims.filter(({ entry }) => entry.priority === "medium").length,
@@ -804,7 +807,7 @@ function renderIndexMarkdown(input: ReviewWorkspaceInput, renderId: string): str
       "",
       ...claims.flatMap((claim) => [
         `- [${escapeMarkdownInline(deriveHumanTitle(claim.claim.claim, "Untitled claim"))}](./${claimFileName(claim.claim.id)})`,
-        `  - Why selected: ${selectionReason(claim.entry)}`,
+        `  - Why selected: ${evidenceReviewSelectionReason(claim.entry)}`,
         `  - Claim ID: ${inlineCode(claim.claim.id)}`,
       ]),
       "",
@@ -862,8 +865,8 @@ function renderIndexMarkdown(input: ReviewWorkspaceInput, renderId: string): str
 }
 
 function createClaimManifest(
-  input: ReviewWorkspaceInput,
-  claim: ClaimWorkspaceInput,
+  input: EvidenceReviewWorkspaceData,
+  claim: EvidenceReviewWorkspaceClaimData,
   outputPath: string,
   outputSha256: string,
   createdAt: string,
@@ -891,8 +894,8 @@ function createClaimManifest(
 }
 
 function createExpectedClaimManifestInput(
-  input: ReviewWorkspaceInput,
-  claim: ClaimWorkspaceInput,
+  input: EvidenceReviewWorkspaceData,
+  claim: EvidenceReviewWorkspaceClaimData,
 ): Pick<ClaimWorkspaceManifest, "claimId" | "renderId" | "templateId" | "input"> {
   return {
     claimId: claim.claim.id,
@@ -921,7 +924,7 @@ function createExpectedClaimManifestInput(
 }
 
 function createIndexManifest(
-  input: ReviewWorkspaceInput,
+  input: EvidenceReviewWorkspaceData,
   renderId: string,
   normalizedInputSha256: string,
   outputPath: string,
@@ -965,7 +968,7 @@ function createIndexManifest(
 }
 
 function indexInputSha256(
-  input: ReviewWorkspaceInput,
+  input: EvidenceReviewWorkspaceData,
   claims: Array<Pick<ClaimWorkspaceManifest, "claimId" | "renderId" | "templateId" | "input">>,
 ): string {
   return hashText(stableJson({
@@ -1053,7 +1056,7 @@ function renderResult(
   };
 }
 
-function selectionReason(entry: EvidenceReviewBatchClaim): string {
+export function evidenceReviewSelectionReason(entry: EvidenceReviewBatchClaim): string {
   const explanations: Record<EvidenceReviewBatchClaim["priorityBasis"][number], string> = {
     "mandatory-requirement-terminology": "overlaps wording from a mandatory requirement",
     "preferred-requirement-terminology": "overlaps wording from a preferred requirement",

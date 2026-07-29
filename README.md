@@ -597,6 +597,20 @@ Derived files are stored under `workspace/evidence-reviews/batches/<batch-id>/re
 
 The JSON batch and review-input templates remain canonical. Markdown is presentation-only: ProofLayer never parses or consumes it, and editing it has no effect on review decisions, snapshots, eligibility, or source evidence. Changed canonical inputs make the workspace stale; missing, modified, or inconsistent rendered files make it invalid. An unchanged render returns `already-current` without rewriting bytes, hashes, timestamps, or modification times. Use `--rebuild` only to replace stale or invalid derived rendering files.
 
+### Local Evidence Review UI
+
+The focused Astro UI provides a local interaction surface for one existing Evidence Review Batch:
+
+```bash
+prooflayer ui review <batch-id>
+prooflayer ui review <batch-id> --open
+prooflayer ui review <batch-id> --read-only
+```
+
+The server binds to `127.0.0.1` by default, works offline, and accepts only the validated batch and its selected claims. It reads the same canonical batch, templates, claims, evidence, requirements, and effective reviews used by the expert CLI. Submissions call the existing Evidence Claim Review service directly, so canonical Zod validation, immutable review versions, explicit supersession, eligibility rules, and atomic persistence remain unchanged.
+
+The UI has no database, authentication, telemetry, remote assets, or persisted session state. JSON remains canonical and Markdown remains derived and read-only. Completing a batch does not build or upgrade a snapshot, change a target pin, or continue the Job pipeline; return explicitly with `prooflayer job continue <target-id>`. The granular `evidence claim-review` commands remain available for automation and expert use.
+
 ## Evidence Snapshot Contract v1
 
 ProofLayer exposes the current reviewed Evidence Foundation through an immutable, content-addressed `evidence-snapshot` schema version `1`. New exports use `evidence-snapshot-exporter` version `2` under `evidence-snapshot-policy` version `2`; the reader remains compatible with immutable policy-version-1 snapshots and existing pins.

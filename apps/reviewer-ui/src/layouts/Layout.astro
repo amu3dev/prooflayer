@@ -1,0 +1,35 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  batchId: string;
+  readOnly: boolean;
+}
+
+const { title, batchId, readOnly } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="referrer" content="no-referrer" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'; object-src 'none'" />
+    <title>{title} | ProofLayer</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="shell">
+        <a class="brand" href={`/review/${batchId}`}>ProofLayer Evidence Review</a>
+        <span class="mode">{readOnly ? "Read-only audit mode" : "Canonical review submissions enabled"}</span>
+      </div>
+    </header>
+    <main>
+      <div class="shell">
+        <slot />
+      </div>
+    </main>
+  </body>
+</html>

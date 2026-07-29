@@ -1,0 +1,222 @@
+---
+import {
+  evidenceReviewUiFormOptions,
+  type EvidenceReviewUiClaim,
+} from "../../../../src/evidence-review-ui.ts";
+
+interface Props {
+  batchId: string;
+  claim: EvidenceReviewUiClaim;
+  csrfToken: string;
+  values: Record<string, string | undefined>;
+  fieldErrors: Record<string, string[]>;
+}
+
+const { batchId, claim, csrfToken, values, fieldErrors } = Astro.props;
+const label = (value: string) => value.split("-").map((word) =>
+  `${word.slice(0, 1).toUpperCase()}${word.slice(1)}`).join(" ");
+const current = (name: string, fallback = "") => values[name] ?? fallback;
+const errors = (name: string) => fieldErrors[name] ?? [];
+---
+
+<form class="review-form" method="post" action={`/review/${batchId}/claim/${claim.id}`} novalidate>
+  <input type="hidden" name="csrfToken" value={csrfToken} />
+
+  <fieldset>
+    <legend>Decision</legend>
+    <label for="decision">
+      Review decision
+      <select id="decision" name="decision" required>
+        <option value="">Select a decision</option>
+        {evidenceReviewUiFormOptions.decisions.map((option) =>
+          <option value={option} selected={current("decision") === option}>{label(option)}</option>
+        )}
+      </select>
+    </label>
+    {errors("decision").map((error) => <p class="field-error">{error}</p>)}
+
+    <label for="reviewerRationale">
+      Reviewer rationale
+      <span class="hint">Required. Record the evidence-based reason for this canonical decision.</span>
+      <textarea id="reviewerRationale" name="reviewerRationale" required>{current("reviewerRationale")}</textarea>
+    </label>
+    {errors("reviewerRationale").map((error) => <p class="field-error">{error}</p>)}
+  </fieldset>
+
+  <fieldset>
+    <legend>Evidence support</legend>
+    <label for="factualSupport">
+      Factual support
+      <select id="factualSupport" name="factualSupport" required>
+        <option value="">Select support state</option>
+        {evidenceReviewUiFormOptions.factualSupport.map((option) =>
+          <option value={option} selected={current("factualSupport") === option}>{label(option)}</option>
+        )}
+      </select>
+    </label>
+    {errors("factualSupport").map((error) => <p class="field-error">{error}</p>)}
+  </fieldset>
+
+  <fieldset>
+    <legend>Scope and wording</legend>
+    <label for="scope">
+      Scope
+      <select id="scope" name="scope" required>
+        <option value="">Select scope state</option>
+        {evidenceReviewUiFormOptions.scopes.map((option) =>
+          <option value={option} selected={current("scope") === option}>{label(option)}</option>
+        )}
+      </select>
+    </label>
+    {errors("scope").map((error) => <p class="field-error">{error}</p>)}
+
+    <label for="correctedClaim">
+      Corrected claim wording
+      <span class="hint">Required only for Approved With Qualifier. It must narrow or clarify without introducing facts.</span>
+      <textarea id="correctedClaim" name="correctedClaim">{current("correctedClaim")}</textarea>
+    </label>
+    {errors("correctedClaim").map((error) => <p class="field-error">{error}</p>)}
+
+    <label for="requiredQualifiers">
+      Required qualifiers
+      <span class="hint">One qualifier per line.</span>
+      <textarea id="requiredQualifiers" name="requiredQualifiers">{current("requiredQualifiers")}</textarea>
+    </label>
+    {errors("requiredQualifiers").map((error) => <p class="field-error">{error}</p>)}
+  </fieldset>
+
+  <fieldset>
+    <legend>Public use</legend>
+    <label for="publicSafety">
+      Public safety
+      <select id="publicSafety" name="publicSafety" required>
+        <option value="">Select public-safety state</option>
+        {evidenceReviewUiFormOptions.publicSafety.map((option) =>
+          <option value={option} selected={current("publicSafety") === option}>{label(option)}</option>
+        )}
+      </select>
+    </label>
+    {errors("publicSafety").map((error) => <p class="field-error">{error}</p>)}
+
+    <label for="resumeReadiness">
+      Resume readiness
+      <select id="resumeReadiness" name="resumeReadiness" required>
+        <option value="">Select resume-readiness state</option>
+        {evidenceReviewUiFormOptions.resumeReadiness.map((option) =>
+          <option value={option} selected={current("resumeReadiness") === option}>{label(option)}</option>
+        )}
+      </select>
+    </label>
+    {errors("resumeReadiness").map((error) => <p class="field-error">{error}</p>)}
+  </fieldset>
+
+  <fieldset>
+    <legend>Resume and matching eligibility</legend>
+    <div>
+      <span id="role-eligibility-label"><strong>Eligible for Role Matching</strong></span>
+      <div class="radio-row" role="radiogroup" aria-labelledby="role-eligibility-label">
+        <label><input type="radio" name="eligibleForRoleMatching" value="true" checked={current("eligibleForRoleMatching") === "true"} required /> Yes</label>
+        <label><input type="radio" name="eligibleForRoleMatching" value="false" checked={current("eligibleForRoleMatching") === "false"} required /> No</label>
+      </div>
+    </div>
+    {errors("eligibleForRoleMatching").map((error) => <p class="field-error">{error}</p>)}
+
+    <div>
+      <span id="job-eligibility-label"><strong>Eligible for Job Mapping</strong></span>
+      <div class="radio-row" role="radiogroup" aria-labelledby="job-eligibility-label">
+        <label><input type="radio" name="eligibleForJobMapping" value="true" checked={current("eligibleForJobMapping") === "true"} required /> Yes</label>
+        <label><input type="radio" name="eligibleForJobMapping" value="false" checked={current("eligibleForJobMapping") === "false"} required /> No</label>
+      </div>
+    </div>
+    {errors("eligibleForJobMapping").map((error) => <p class="field-error">{error}</p>)}
+  </fieldset>
+
+  <details open={claim.potentialMetric}>
+    <summary>Metric verification</summary>
+    <label for="metricState">
+      Metric state
+      <select id="metricState" name="metricState" required>
+        <option value="">Select metric state</option>
+        {evidenceReviewUiFormOptions.metricStates.map((option) =>
+          <option value={option} selected={current("metricState") === option}>{label(option)}</option>
+        )}
+      </select>
+    </label>
+    {errors("metricState").map((error) => <p class="field-error">{error}</p>)}
+
+    <label for="metricExactText">Exact approved metric wording
+      <textarea id="metricExactText" name="metricExactText">{current("metricExactText")}</textarea>
+    </label>
+    <label for="metricUnit">Metric unit
+      <input id="metricUnit" name="metricUnit" type="text" value={current("metricUnit")} />
+    </label>
+    <label for="metricScope">Metric scope
+      <input id="metricScope" name="metricScope" type="text" value={current("metricScope")} />
+    </label>
+    <label for="metricQualifiers">Metric qualifiers
+      <span class="hint">One qualifier per line.</span>
+      <textarea id="metricQualifiers" name="metricQualifiers">{current("metricQualifiers")}</textarea>
+    </label>
+  </details>
+
+  <fieldset>
+    <legend>Classification boundaries</legend>
+    <label for="workContext">
+      Work context
+      <select id="workContext" name="workContext" required>
+        <option value="">Select work context</option>
+        {evidenceReviewUiFormOptions.workContexts.map((option) =>
+          <option value={option} selected={current("workContext") === option}>{label(option)}</option>
+        )}
+      </select>
+    </label>
+    {errors("workContext").map((error) => <p class="field-error">{error}</p>)}
+
+    <label for="claimNature">
+      Claim nature
+      <select id="claimNature" name="claimNature" required>
+        <option value="">Select claim nature</option>
+        {evidenceReviewUiFormOptions.claimNatures.map((option) =>
+          <option value={option} selected={current("claimNature") === option}>{label(option)}</option>
+        )}
+      </select>
+    </label>
+    {errors("claimNature").map((error) => <p class="field-error">{error}</p>)}
+  </fieldset>
+
+  <details>
+    <summary>Risks, warnings, and ambiguities</summary>
+    <label for="risks">
+      Risks
+      <span class="hint">One per line: severity | code | message</span>
+      <textarea id="risks" name="risks">{current("risks")}</textarea>
+    </label>
+    {errors("risks").map((error) => <p class="field-error">{error}</p>)}
+
+    <label for="warnings">Warnings
+      <span class="hint">One warning per line.</span>
+      <textarea id="warnings" name="warnings">{current("warnings")}</textarea>
+    </label>
+    <label for="ambiguities">Ambiguities
+      <span class="hint">One ambiguity per line.</span>
+      <textarea id="ambiguities" name="ambiguities">{current("ambiguities")}</textarea>
+    </label>
+  </details>
+
+  {claim.review.lifecycle === "current" && (
+    <fieldset>
+      <legend>Explicit supersession</legend>
+      <label class="check-row">
+        <input type="checkbox" name="confirmSupersession" value="true" checked={current("confirmSupersession") === "true"} />
+        Replace the current immutable review with a new explicitly linked review version.
+      </label>
+      <span class="hint">An unchanged duplicate can remain already-current. A changed decision requires this explicit confirmation.</span>
+      {errors("confirmSupersession").map((error) => <p class="field-error">{error}</p>)}
+    </fieldset>
+  )}
+
+  <div class="actions">
+    <button type="submit">Validate and submit canonical review</button>
+    <a class="button secondary" href={`/review/${batchId}`}>Return to batch</a>
+  </div>
+</form>

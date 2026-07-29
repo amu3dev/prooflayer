@@ -432,6 +432,8 @@ Approval, qualifiers, public safety, output readiness, Role/Job eligibility, met
 
 Evidence Review Workspace Rendering provides deterministic, human-readable Markdown for a batch's immutable JSON templates. Each claim workspace is self-contained and an index preserves stable batch ordering. The Markdown and its manifests are derived presentation artifacts: they are never parsed, never become review input, and never change source evidence, review decisions, snapshots, or eligibility. Editing rendered Markdown only invalidates that rendering.
 
+The Local Evidence Review UI is a thin, loopback-only Astro adapter over these same domain services. It locks one validated batch into the server process, renders human-readable batch and claim views, and submits decisions only through the canonical Evidence Claim Review service. It introduces no review schema, validation, eligibility, lifecycle, or persistence authority of its own. Read-only mode exposes no submission form and performs no writes. Completion reports the explicit guided-workflow command but never upgrades a snapshot, changes a target pin, or continues the pipeline automatically.
+
 ### Provenance
 
 Stable IDs, source references, hashes, manifests, and statement-level lineage connect every downstream result to reviewed upstream facts.
@@ -523,7 +525,7 @@ Status through Slice 2.7G:
 
 | Capability | Role Pipeline | Job Pipeline |
 | --- | --- | --- |
-| Evidence Review and Eligibility | Completed through human-controlled claim review, read-only workspace rendering, and Snapshot policy v2 | Completed through human-controlled claim review, read-only workspace rendering, and Snapshot policy v2 |
+| Evidence Review and Eligibility | Completed through human-controlled claim review, read-only workspace rendering, the local review UI, and Snapshot policy v2 | Completed through human-controlled claim review, read-only workspace rendering, the local review UI, and Snapshot policy v2 |
 | Target Modeling | Completed | Completed |
 | Expectation Modeling | Completed | Completed as Job Requirement Modeling |
 | Evidence Mapping | Completed | Completed through Slice 2.7B |

@@ -28,7 +28,7 @@ export async function renderEvidenceReviewWorkspace(workspace, batchId, options 
     if ((status.status === "stale" || status.status === "invalid") && !options.rebuild) {
         throw new Error(`Evidence review workspace is ${status.status}; use explicit --rebuild to replace derived rendering files.`);
     }
-    const input = await loadReviewWorkspaceInput(workspace, batchId);
+    const input = await loadEvidenceReviewWorkspaceData(workspace, batchId);
     const timestamp = (options.now ?? (() => new Date()))().toISOString();
     const claimManifests = [];
     for (const claimInput of input.claims) {
@@ -149,7 +149,7 @@ export async function getEvidenceReviewWorkspaceStatus(workspace, batchId) {
     let inputsMatch = false;
     let rendererMatches = false;
     try {
-        const input = await loadReviewWorkspaceInput(workspace, batchId);
+        const input = await loadEvidenceReviewWorkspaceData(workspace, batchId);
         const expectedClaims = input.claims.map((claim) => createExpectedClaimManifestInput(input, claim));
         const storedClaims = new Map(claimManifests.map((claim) => [claim.claimId, claim]));
         const claimInputsMatch = expectedClaims.every((expected) => {
@@ -244,7 +244,7 @@ export function formatEvidenceReviewWorkspaceStatus(status) {
         ...(status.reasons.length ? ["Reasons:", ...status.reasons.map((reason) => `- ${reason}`)] : []),
     ].join("\n");
 }
-async function loadReviewWorkspaceInput(workspace, batchId) {
+export async function loadEvidenceReviewWorkspaceData(workspace, batchId) {
     const batchPaths = evidenceReviewBatchPaths(workspace, batchId);
     const batch = EvidenceReviewBatchSchema.parse(await readJson(batchPaths.batchPath, null));
     const batchManifest = EvidenceReviewBatchManifestSchema.parse(await readJson(batchPaths.manifestPath, null));
@@ -387,7 +387,7 @@ function renderClaimMarkdown(input, item) {
         "",
         `- Target: ${targetLabel(input.target)}`,
         `- Priority: ${item.entry.priority}`,
-        `- Reason selected: ${selectionReason(item.entry)}`,
+        `- Reason selected: ${evidenceReviewSelectionReason(item.entry)}`,
         "",
         "## Claim Being Reviewed",
         "",
@@ -559,7 +559,7 @@ function renderIndexMarkdown(input, renderId) {
             "",
             ...claims.flatMap((claim) => [
                 `- [${escapeMarkdownInline(deriveHumanTitle(claim.claim.claim, "Untitled claim"))}](./${claimFileName(claim.claim.id)})`,
-                `  - Why selected: ${selectionReason(claim.entry)}`,
+                `  - Why selected: ${evidenceReviewSelectionReason(claim.entry)}`,
                 `  - Claim ID: ${inlineCode(claim.claim.id)}`,
             ]),
             "",
@@ -767,7 +767,7 @@ function renderResult(manifest, result) {
         claimWorkspacePaths: manifest.claimWorkspaces.map(({ output }) => output.path),
     };
 }
-function selectionReason(entry) {
+export function evidenceReviewSelectionReason(entry) {
     const explanations = {
         "mandatory-requirement-terminology": "overlaps wording from a mandatory requirement",
         "preferred-requirement-terminology": "overlaps wording from a preferred requirement",

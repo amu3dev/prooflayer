@@ -86,6 +86,11 @@ import {
   showEvidenceReviewWorkspace,
 } from "./evidence-review-workspace.js";
 import {
+  formatEvidenceReviewUiLaunch,
+  launchEvidenceReviewUi,
+  waitForEvidenceReviewUiExit,
+} from "./evidence-review-ui-server.js";
+import {
   formatTargetEvidencePinResult,
   formatTargetEvidencePinStatus,
   getTargetEvidencePinStatus,
@@ -589,6 +594,34 @@ exportCommand
   .action(async (options: { role: string }) => {
     const workspace = getWorkspace();
     console.log(formatResumeExportStatus(await getResumeExportStatus(workspace, options.role)));
+  });
+
+const ui = program
+  .command("ui")
+  .description("Run focused local ProofLayer interaction surfaces.");
+
+ui
+  .command("review <batch-id>")
+  .option("--host <host>", "loopback host", "127.0.0.1")
+  .option("--port <port>", "preferred local port", "4321")
+  .option("--open", "open the local URL in the default browser")
+  .option("--read-only", "disable canonical review submissions")
+  .option("-w, --workspace <path>", "workspace path")
+  .description("Start the local Evidence Review UI for one validated review batch.")
+  .action(async (batchId: string, options: EvidenceReviewUiCliOptions) => {
+    const workspace = resolveWorkspace(
+      options.workspace ?? program.opts<{ workspace?: string }>().workspace,
+    );
+    const { prepared, child } = await launchEvidenceReviewUi({
+      workspace,
+      batchId,
+      host: options.host,
+      port: Number.parseInt(options.port, 10),
+      open: options.open,
+      readOnly: options.readOnly,
+    });
+    console.log(formatEvidenceReviewUiLaunch(prepared));
+    await waitForEvidenceReviewUiExit(child);
   });
 
 const evidence = program
@@ -2626,6 +2659,14 @@ interface GuidedJobFinalizeCliOptions {
   outputDir?: string;
   rebuildStale?: boolean;
   dryRun?: boolean;
+}
+
+interface EvidenceReviewUiCliOptions {
+  host: string;
+  port: string;
+  open?: boolean;
+  readOnly?: boolean;
+  workspace?: string;
 }
 
 function parseGuidedJobRunOptions(options: GuidedJobRunCliOptions) {

@@ -1,0 +1,216 @@
+---
+import ReviewForm from "../../../../components/ReviewForm.astro";
+import Layout from "../../../../layouts/Layout.astro";
+import {
+  evidenceReviewUiRuntimeConfig,
+  formRecord,
+  isSameOriginSubmission,
+} from "../../../../lib/runtime.js";
+import {
+  EvidenceReviewUiSubmissionError,
+  loadEvidenceReviewUiClaim,
+  submitEvidenceReviewUiClaim,
+} from "../../../../../../../src/evidence-review-ui.ts";
+
+const config = evidenceReviewUiRuntimeConfig();
+const batchId = Astro.params.batchId;
+const claimId = Astro.params.claimId;
+if (batchId !== config.batchId || !claimId || !/^claim_[A-Za-z0-9_-]+$/.test(claimId)) {
+  return new Response("Review claim not found.", { status: 404 });
+}
+
+let values: Record<string, string | undefined> = {};
+let fieldErrors: Record<string, string[]> = {};
+let submissionError: string | undefined;
+
+if (Astro.request.method === "POST") {
+  if (config.readOnly) {
+    return new Response("Review submissions are disabled in read-only mode.", {
+      status: 405,
+      headers: { Allow: "GET" },
+    });
+  }
+  const formData = await Astro.request.formData();
+  values = formRecord(formData);
+  if (!isSameOriginSubmission(Astro.request)) {
+    submissionError = "The review submission origin is not allowed.";
+  } else if (values.csrfToken !== config.csrfToken) {
+    submissionError = "The review form expired or failed local request verification. Reload and try again.";
+  } else {
+    try {
+      const submission = await submitEvidenceReviewUiClaim(
+        config.workspace,
+        config.batchId,
+        claimId,
+        values,
+      );
+      const destination = submission.batchComplete
+        ? `/review/${config.batchId}/complete`
+        : submission.nextPendingClaimId
+          ? `/review/${config.batchId}/claim/${submission.nextPendingClaimId}`
+          : `/review/${config.batchId}`;
+      const query = new URLSearchParams({
+        result: submission.result.result,
+        review: submission.result.reviewId,
+      });
+      return Astro.redirect(`${destination}?${query.toString()}`, 303);
+    } catch (error) {
+      if (error instanceof EvidenceReviewUiSubmissionError) {
+        submissionError = error.message;
+        fieldErrors = error.fieldErrors;
+      } else {
+        submissionError = "The review could not be submitted safely. No canonical review was written.";
+      }
+    }
+  }
+}
+
+let loaded;
+try {
+  loaded = await loadEvidenceReviewUiClaim(config.workspace, config.batchId, claimId);
+} catch {
+  return new Response("Review claim not found.", { status: 404 });
+}
+const { batch, claim } = loaded;
+const sourceCategories = [...new Set(claim.evidence.map((entry) => entry.category))];
+---
+
+<Layout title={claim.title} batchId={batch.batchId} readOnly={config.readOnly}>
+  <p class="eyebrow">{claim.priority} priority claim</p>
+  <h1>{claim.title}</h1>
+  <p class="lede">{claim.selectionReason}</p>
+
+  <section aria-labelledby="claim-heading">
+    <h2 id="claim-heading">Claim being reviewed</h2>
+    <div class="excerpt">{claim.text}</div>
+  </section>
+
+  <section aria-labelledby="evidence-heading">
+    <h2 id="evidence-heading">Supporting evidence</h2>
+    <div class="evidence-grid">
+      {claim.evidence.map((evidence, index) => (
+        <article class="evidence-item">
+          <h3>Evidence {index + 1}: {evidence.title}</h3>
+          <p>{evidence.summary}</p>
+          {evidence.sourceExcerpt
+            ? <>
+                <p><strong>Exact source excerpt</strong></p>
+                <div class="excerpt">{evidence.sourceExcerpt}</div>
+              </>
+            : <p class="notice">Exact source excerpt withheld by evidence visibility policy. The safe normalized summary remains available.</p>}
+          <p class="meta">
+            {[evidence.category, evidence.confidence, evidence.visibility, evidence.company, evidence.project]
+              .filter(Boolean).join(" · ")}
+          </p>
+          {evidence.technologies.length > 0 && <p><strong>Technologies:</strong> {evidence.technologies.join(", ")}</p>}
+          {evidence.domains.length > 0 && <p><strong>Domains:</strong> {evidence.domains.join(", ")}</p>}
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section aria-labelledby="requirements-heading">
+    <h2 id="requirements-heading">Matching Job requirements</h2>
+    {claim.requirements.length === 0
+      ? <p>No matching Job Requirement references were recorded by this batch.</p>
+      : <div class="evidence-grid">
+          {claim.requirements.map((requirement, index) => (
+            <article class="evidence-item">
+              <h3>Requirement {index + 1}: {requirement.title}</h3>
+              <div class="excerpt">{requirement.sourceText}</div>
+              <p class="meta">
+                {requirement.category} · {requirement.necessity} · {requirement.confidence} · {requirement.explicitness}
+              </p>
+            </article>
+          ))}
+        </div>}
+  </section>
+
+  <section aria-labelledby="limitations-heading">
+    <h2 id="limitations-heading">Evidence limitations and boundaries</h2>
+    <ul>
+      <li>Priority and matching terms organize human review; they do not prove this claim satisfies a requirement.</li>
+      <li>Source approval is <strong>{claim.sourceApprovalStatus}</strong>; source output readiness is <strong>{claim.sourceOutputReadiness}</strong>.</li>
+      <li>Evidence categories: {sourceCategories.join(", ") || "not classified"}.</li>
+      <li>Project evidence cannot become employment history without explicit role provenance.</li>
+      <li>Responsibility cannot become achievement without supported outcome proof.</li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="state-heading">
+    <h2 id="state-heading">Current classification and eligibility</h2>
+    <div class="summary-grid">
+      <div class="stat"><strong>{claim.review.lifecycle}</strong> Review lifecycle</div>
+      <div class="stat"><strong>{claim.review.decision ?? "not decided"}</strong> Decision</div>
+      <div class="stat"><strong>{claim.review.publicSafety ?? (claim.sourcePublicSafe ? "source public-safe" : "not reviewed")}</strong> Public safety</div>
+      <div class="stat"><strong>{claim.review.resumeReadiness ?? claim.sourceOutputReadiness}</strong> Resume readiness</div>
+      <div class="stat"><strong>{claim.review.eligibleForRoleMatching === undefined ? "not decided" : claim.review.eligibleForRoleMatching ? "yes" : "no"}</strong> Role Matching</div>
+      <div class="stat"><strong>{claim.review.eligibleForJobMapping === undefined ? "not decided" : claim.review.eligibleForJobMapping ? "yes" : "no"}</strong> Job Mapping</div>
+    </div>
+    {claim.review.id && (
+      <p class="meta">
+        Current immutable review reference: <code>{claim.review.id}</code>. Private reviewer rationale is not displayed.
+      </p>
+    )}
+  </section>
+
+  <section aria-labelledby="review-heading">
+    <h2 id="review-heading">Canonical review decision</h2>
+    {submissionError && (
+      <div class="notice error" role="alert">
+        <strong>Review not submitted.</strong>
+        <p>{submissionError}</p>
+        {Object.values(fieldErrors).flat().length > 0 && (
+          <ul>{Object.values(fieldErrors).flat().map((error) => <li>{error}</li>)}</ul>
+        )}
+      </div>
+    )}
+    {config.readOnly
+      ? <div class="notice">Submission is disabled in read-only mode. No POST action is available.</div>
+      : <ReviewForm
+          batchId={batch.batchId}
+          claim={claim}
+          csrfToken={config.csrfToken}
+          values={values}
+          fieldErrors={fieldErrors}
+        />}
+  </section>
+
+  <details>
+    <summary>Internal references and provenance</summary>
+    <div class="audit">
+      <p>Claim ID: <code>{claim.id}</code></p>
+      <p>Batch ID: <code>{claim.audit.batchId}</code></p>
+      <p>Target ID: <code>{claim.audit.targetId}</code></p>
+      <p>Claim record SHA-256: <code>{claim.audit.claimRecordSha256}</code></p>
+      <p>Evidence set SHA-256: <code>{claim.audit.evidenceSetSha256}</code></p>
+      <p>Provenance set SHA-256: <code>{claim.audit.provenanceSetSha256}</code></p>
+      <p>Requirement set SHA-256: <code>{claim.audit.requirementSetSha256}</code></p>
+      <p>Canonical review template: <code>{claim.template.path}</code></p>
+      {claim.evidence.map((evidence) => (
+        <section>
+          <h3>{evidence.title}</h3>
+          <p>Evidence ID: <code>{evidence.id}</code></p>
+          {evidence.sources.map((source) => (
+            <p>
+              Source: {source.label} · ID <code>{source.id}</code> · SHA-256 <code>{source.sha256}</code>
+            </p>
+          ))}
+        </section>
+      ))}
+      {claim.requirements.map((requirement) => (
+        <section>
+          <h3>{requirement.title}</h3>
+          <p>Requirement ID: <code>{requirement.id}</code></p>
+          {requirement.sourceReferences.map((reference) => (
+            <p>
+              {reference.label}, lines {reference.startLine}-{reference.endLine};
+              source SHA-256 <code>{reference.sha256}</code>;
+              excerpt SHA-256 <code>{reference.excerptSha256}</code>
+            </p>
+          ))}
+        </section>
+      ))}
+    </div>
+  </details>
+</Layout>

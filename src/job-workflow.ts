@@ -1096,6 +1096,13 @@ export function formatJobWorkflowStatus(
       String(status.reviewGate.pendingClaimCount),
     );
   }
+  if (status.reviewGate?.batchId && status.reviewGate.pendingClaimCount > 0) {
+    lines.push(
+      "",
+      "Open local review UI:",
+      `prooflayer ui review ${status.reviewGate.batchId} --open`,
+    );
+  }
   if (!status.evidenceSnapshot.snapshotId && status.availableSnapshots.length > 0) {
     lines.push("", "Available Evidence Snapshots:");
     for (const snapshot of status.availableSnapshots) {
