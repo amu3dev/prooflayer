@@ -609,6 +609,10 @@ prooflayer ui review <batch-id> --read-only
 
 The server binds to `127.0.0.1` by default, works offline, and accepts only the validated batch and its selected claims. It reads the same canonical batch, templates, claims, evidence, requirements, and effective reviews used by the expert CLI. Submissions call the existing Evidence Claim Review service directly, so canonical Zod validation, immutable review versions, explicit supersession, eligibility rules, and atomic persistence remain unchanged.
 
+Simple Review Mode is the default: read the claim and evidence, choose **Approve**, **Edit and Approve**, **Reject**, **Not Enough Evidence**, or **Decide Later**, optionally add a note, then use **Submit and Next**. A deterministic UI adapter derives only safe canonical fields from the explicit human intent and immutable metadata; ambiguous classification and potential metrics request only the missing confirmation. Public-safety restrictions cannot be overridden by Simple Review. The full canonical form remains available under collapsed **Advanced Review** for exceptional cases.
+
+Both modes pass the same unchanged review-input schema into the same immutable Evidence Claim Review service. The UI never auto-approves a claim, and projected fields remain subject to authoritative scope, privacy, metric, classification, eligibility, and supersession validation. Existing reviews open read-only until **Create revised review** is selected.
+
 The UI has no database, authentication, telemetry, remote assets, or persisted session state. JSON remains canonical and Markdown remains derived and read-only. Completing a batch does not build or upgrade a snapshot, change a target pin, or continue the Job pipeline; return explicitly with `prooflayer job continue <target-id>`. The granular `evidence claim-review` commands remain available for automation and expert use.
 
 ## Evidence Snapshot Contract v1

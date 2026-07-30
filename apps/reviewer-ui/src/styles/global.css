@@ -67,6 +67,16 @@ button:hover,
   background: var(--accent-strong);
 }
 
+button.secondary-action {
+  border-color: var(--accent);
+  background: var(--surface);
+  color: var(--accent-strong);
+}
+
+button.secondary-action:hover {
+  background: var(--accent-soft);
+}
+
 .button.secondary {
   background: var(--surface);
   color: var(--accent-strong);
@@ -281,6 +291,191 @@ details {
 .review-form {
   display: grid;
   gap: 1rem;
+}
+
+.claim-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem 1rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.7rem;
+  background: rgb(255 255 255 / 82%);
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.navigation-links {
+  display: inline-flex;
+  gap: 0.8rem;
+}
+
+.navigation-links [aria-disabled="true"] {
+  color: #8c958f;
+}
+
+.intent-fieldset {
+  padding: clamp(1rem, 3vw, 1.6rem);
+  border-width: 2px;
+}
+
+.decision-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 0.7rem;
+  margin-top: 1rem;
+}
+
+.decision-card {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  min-height: 7rem;
+  padding: 1rem;
+  border: 2px solid var(--line);
+  border-radius: 0.65rem;
+  background: #fcfdfb;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.decision-card:hover {
+  border-color: #86a491;
+  background: var(--accent-soft);
+}
+
+.decision-card[aria-disabled="true"] {
+  border-color: var(--line);
+  background: #f2f3f1;
+  color: #727a75;
+  cursor: not-allowed;
+}
+
+.decision-card[aria-disabled="true"] small {
+  color: #727a75;
+}
+
+.decision-card:has(input:checked) {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  box-shadow: 0 0 0 2px rgb(20 92 58 / 12%);
+}
+
+.decision-card input {
+  flex: 0 0 auto;
+  margin-top: 0.3rem;
+}
+
+.decision-card strong,
+.decision-card small {
+  display: block;
+}
+
+.decision-card strong {
+  margin-bottom: 0.25rem;
+  font-size: 1.05rem;
+}
+
+.decision-card small {
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.conditional-fields,
+.after-decision,
+.projected-outcome {
+  display: none;
+}
+
+.simple-review-form:has(input[name="intent"]:checked) .after-decision,
+.simple-review-form:has(input[value="approve"]:checked) .for-approve,
+.simple-review-form:has(input[value="approve-with-edit"]:checked) .for-approve-with-edit,
+.simple-review-form:has(input[value="reject"]:checked) .for-reject,
+.simple-review-form:has(input[value="insufficient-proof"]:checked) .for-insufficient-proof,
+.simple-review-form:has(input[value="defer"]:checked) .for-defer,
+.simple-review-form:has(input[value="approve"]:checked) .for-approval,
+.simple-review-form:has(input[value="approve-with-edit"]:checked) .for-approval {
+  display: block;
+}
+
+.simple-review-form:has(input[value="approve"]:checked) .projected-outcome.for-approve,
+.simple-review-form:has(input[value="approve-with-edit"]:checked) .projected-outcome.for-approve-with-edit,
+.simple-review-form:has(input[value="reject"]:checked) .projected-outcome.for-reject,
+.simple-review-form:has(input[value="insufficient-proof"]:checked) .projected-outcome.for-insufficient-proof,
+.simple-review-form:has(input[value="defer"]:checked) .projected-outcome.for-defer {
+  display: block;
+}
+
+.reason-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0.55rem;
+}
+
+.compact-choice {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  padding: 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 0.45rem;
+  font-weight: 600;
+}
+
+.two-column-fields,
+.outcome-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 0.8rem;
+}
+
+.projected-outcome {
+  padding: 1rem 1.1rem;
+  border: 1px solid #9ec9aa;
+  border-radius: 0.65rem;
+  background: var(--accent-soft);
+}
+
+.projected-outcome h3 {
+  margin-top: 0;
+}
+
+.outcome-grid {
+  margin: 0;
+}
+
+.outcome-grid div {
+  padding: 0.65rem;
+  border-radius: 0.4rem;
+  background: rgb(255 255 255 / 66%);
+}
+
+.outcome-grid dt {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.outcome-grid dd {
+  margin: 0.15rem 0 0;
+  font-weight: 800;
+}
+
+.compact-list {
+  margin-bottom: 0;
+}
+
+.advanced-review {
+  margin-top: 1rem;
+}
+
+.current-review-summary h3 {
+  margin-top: 0;
 }
 
 fieldset {

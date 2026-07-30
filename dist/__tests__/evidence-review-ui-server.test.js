@@ -94,6 +94,7 @@ describe("Astro Local Evidence Review UI routes", () => {
         expect(invalidHtml).toContain("Review not submitted");
         expect(invalidHtml).toContain("Review validation failed");
         expect(invalidHtml).toContain("field-error");
+        expect(invalidHtml).not.toMatch(/Invalid enum|Expected .* received/i);
         expect((await listEvidenceClaimReviews(fixture.workspace)).every(({ status }) => status === "missing")).toBe(true);
         const body = new URLSearchParams({
             csrfToken: server.csrfToken,
@@ -134,6 +135,90 @@ describe("Astro Local Evidence Review UI routes", () => {
         });
         expect(wrongOrigin.status).toBe(403);
     }, 20_000);
+    it("uses Simple Review by default and submits a clear claim in one decision", async () => {
+        const fixture = await createEvidenceReviewUiFixture();
+        const server = await startUiServer(fixture.workspace, fixture.batchId, false);
+        const claimUrl = `${server.origin}/review/${fixture.batchId}/claim/claim_review_ui_3`;
+        const claimResponse = await fetch(claimUrl);
+        const claimHtml = await claimResponse.text();
+        expect(claimResponse.status).toBe(200);
+        expect((claimHtml.match(/name="intent"/g) ?? [])).toHaveLength(5);
+        expect(claimHtml).toContain("What should happen to this claim?");
+        expect(claimHtml).toContain("Approve");
+        expect(claimHtml).toContain("Edit and Approve");
+        expect(claimHtml).toContain("Not Enough Evidence");
+        expect(claimHtml).toContain("Decide Later");
+        expect(claimHtml).toContain("What ProofLayer will record");
+        expect(claimHtml).toContain('<details class="advanced-review">');
+        expect(claimHtml).toContain("Exceptional or ambiguous cases only");
+        expect(claimHtml).toContain('name="factualSupport"');
+        expect(claimHtml).toContain('name="submitAction" value="next"');
+        expect(claimHtml).not.toContain('<details class="advanced-review" open>');
+        const invalid = await fetch(claimUrl, {
+            method: "POST",
+            redirect: "manual",
+            headers: {
+                origin: server.origin,
+                "content-type": "application/x-www-form-urlencoded",
+            },
+            body: new URLSearchParams({
+                csrfToken: server.csrfToken,
+                reviewMode: "simple",
+                intent: "approve-with-edit",
+                reviewerNote: "Keep this note after validation.",
+            }),
+        });
+        const invalidHtml = await invalid.text();
+        expect(invalid.status).toBe(200);
+        expect(invalidHtml).toContain("A little more information is needed");
+        expect(invalidHtml).toContain("Enter the narrower wording to approve.");
+        expect(invalidHtml).toContain("Keep this note after validation.");
+        expect(invalidHtml).toMatch(/value="approve-with-edit"[^>]*checked/);
+        expect(invalidHtml).not.toMatch(/Invalid enum|Expected .* received/i);
+        expect((await listEvidenceClaimReviews(fixture.workspace)).every(({ status }) => status === "missing")).toBe(true);
+        const valid = await fetch(claimUrl, {
+            method: "POST",
+            redirect: "manual",
+            headers: {
+                origin: server.origin,
+                "content-type": "application/x-www-form-urlencoded",
+            },
+            body: new URLSearchParams({
+                csrfToken: server.csrfToken,
+                reviewMode: "simple",
+                intent: "approve",
+                submitAction: "next",
+            }),
+        });
+        expect(valid.status).toBe(303);
+        expect(valid.headers.get("location")).toMatch(new RegExp(`/review/${fixture.batchId}/claim/claim_review_ui_(?!3)`));
+        const reviews = await listEvidenceClaimReviews(fixture.workspace);
+        expect(reviews.filter(({ status }) => status === "current")).toEqual([
+            expect.objectContaining({ claimId: "claim_review_ui_3", decision: "approved" }),
+        ]);
+        const currentResponse = await fetch(claimUrl);
+        const currentHtml = await currentResponse.text();
+        expect(currentHtml).toContain("Current immutable review");
+        expect(currentHtml).toContain("Create revised review");
+        expect(currentHtml).not.toContain("<form");
+        const reviseResponse = await fetch(`${claimUrl}?revise=true`);
+        const reviseHtml = await reviseResponse.text();
+        expect(reviseHtml).toContain('name="confirmSupersession" value="true"');
+        expect(reviseHtml).toContain("The prior review remains immutable.");
+    }, 20_000);
+    it("disables simple approval when immutable evidence visibility is private", async () => {
+        const fixture = await createEvidenceReviewUiFixture({ visibility: "private" });
+        const server = await startUiServer(fixture.workspace, fixture.batchId, false);
+        const claimUrl = `${server.origin}/review/${fixture.batchId}/claim/claim_review_ui_3`;
+        const response = await fetch(claimUrl);
+        const html = await response.text();
+        expect(response.status).toBe(200);
+        expect(html).toContain("Simple approval is unavailable.");
+        expect(html).toMatch(/value="approve"[^>]*disabled/);
+        expect(html).toMatch(/value="approve-with-edit"[^>]*disabled/);
+        expect(html).toMatch(/value="reject"(?![^>]*disabled)/);
+        expect(html).not.toContain("/Users/synthetic-private/");
+    }, 20_000);
     it.each(["127.0.0.1", "localhost"])("accepts a browser-like same-origin POST on %s without mixing loopback authorities", async (host) => {
         const fixture = await createEvidenceReviewUiFixture();
         const server = await startUiServer(fixture.workspace, fixture.batchId, false, host);
@@ -141,7 +226,7 @@ describe("Astro Local Evidence Review UI routes", () => {
         const claimResponse = await fetch(claimUrl);
         const claimHtml = await claimResponse.text();
         expect(claimResponse.status).toBe(200);
-        expect(claimHtml).toContain(`<form class="review-form" method="post" action="/review/${fixture.batchId}/claim/claim_review_ui_3" novalidate>`);
+        expect(claimHtml).toContain(`<form class="review-form simple-review-form" method="post" action="/review/${fixture.batchId}/claim/claim_review_ui_3" novalidate>`);
         expect(claimHtml).not.toContain(host === "localhost" ? "127.0.0.1" : "localhost");
         const body = new URLSearchParams({
             csrfToken: server.csrfToken,

@@ -27,6 +27,9 @@ export interface EvidenceReviewUiEvidence {
     category: string;
     confidence: string;
     visibility: string;
+    sensitivityFlags: string[];
+    parentRoleId?: string;
+    parentProjectId?: string;
     dateRange?: string;
     company?: string;
     project?: string;
@@ -64,6 +67,7 @@ export interface EvidenceReviewUiClaim {
     sourcePublicSafe: boolean;
     sourceNeedsConfirmation: boolean;
     sourceMetricStatus: string;
+    sourceUnsafeWording: string[];
     sourceClassification: {
         type: string;
         section?: string;

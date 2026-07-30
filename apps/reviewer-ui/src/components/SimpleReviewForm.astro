@@ -1,0 +1,238 @@
+---
+import {
+  evidenceReviewRejectionReasons,
+  evidenceReviewSimpleIntentOptions,
+  projectEvidenceReviewIntent,
+  type EvidenceReviewSimpleIntent,
+} from "../../../../src/evidence-review-intent.ts";
+import {
+  evidenceReviewUiFormOptions,
+  type EvidenceReviewUiClaim,
+} from "../../../../src/evidence-review-ui.ts";
+
+interface Props {
+  batchId: string;
+  claim: EvidenceReviewUiClaim;
+  csrfToken: string;
+  values: Record<string, string | undefined>;
+  fieldErrors: Record<string, string[]>;
+  superseding?: boolean;
+}
+
+const { batchId, claim, csrfToken, values, fieldErrors, superseding = false } = Astro.props;
+const current = (name: string, fallback = "") => values[name] ?? fallback;
+const errors = (name: string) => fieldErrors[name] ?? [];
+const firstErrorField = values.reviewMode === "simple" ? Object.keys(fieldErrors)[0] : undefined;
+const label = (value: string) => value.split("-").map((word) =>
+  `${word.slice(0, 1).toUpperCase()}${word.slice(1)}`).join(" ");
+const previewFor = (intent: EvidenceReviewSimpleIntent) => projectEvidenceReviewIntent(
+  claim,
+  { ...values, intent },
+);
+const approvalProjection = previewFor("approve");
+const approvalQuestions = approvalProjection.questions;
+const editedApprovalProjection = previewFor("approve-with-edit");
+const blockedApprovalIntents = new Set<EvidenceReviewSimpleIntent>([
+  ...(approvalProjection.status === "blocked" ? ["approve" as const] : []),
+  ...(editedApprovalProjection.status === "blocked" ? ["approve-with-edit" as const] : []),
+]);
+const approvalBlockReasons = [...new Set([
+  ...(approvalProjection.fieldErrors.intent ?? []),
+  ...(editedApprovalProjection.fieldErrors.intent ?? []),
+])];
+const needsWorkContext = approvalQuestions.includes("workContext");
+const needsClaimNature = approvalQuestions.includes("claimNature");
+const metricCandidate = claim.potentialMetric || claim.sourceMetricStatus !== "no_metric";
+---
+
+<form class="review-form simple-review-form" method="post" action={`/review/${batchId}/claim/${claim.id}`} novalidate>
+  <input type="hidden" name="csrfToken" value={csrfToken} />
+  <input type="hidden" name="reviewMode" value="simple" />
+  {superseding && <input type="hidden" name="confirmSupersession" value="true" />}
+
+  <fieldset class="intent-fieldset">
+    <legend>What should happen to this claim?</legend>
+    <p class="hint">Choose one decision. ProofLayer derives the safe canonical fields and validates them before writing anything.</p>
+    {blockedApprovalIntents.size > 0 && (
+      <div class="notice">
+        <strong>Simple approval is unavailable.</strong>
+        {approvalBlockReasons.map((reason) => <p>{reason}</p>)}
+        <p>Use an available conservative decision or Advanced Review without overriding hard privacy restrictions.</p>
+      </div>
+    )}
+    <div class="decision-grid">
+      {evidenceReviewSimpleIntentOptions.map((option, index) => (
+        <label
+          class={`decision-card decision-${option.value}`}
+          aria-disabled={blockedApprovalIntents.has(option.value) ? "true" : undefined}
+        >
+          <input
+            type="radio"
+            name="intent"
+            value={option.value}
+            checked={current("intent") === option.value}
+            required
+            autofocus={firstErrorField === "intent" && index === 0}
+            disabled={blockedApprovalIntents.has(option.value)}
+          />
+          <span>
+            <strong>{option.label}</strong>
+            <small>{option.description}</small>
+          </span>
+        </label>
+      ))}
+    </div>
+    {errors("intent").map((error) => <p class="field-error">{error}</p>)}
+  </fieldset>
+
+  <div class="conditional-fields for-approve-with-edit">
+    <fieldset>
+      <legend>Narrow the wording</legend>
+      <label for="simple-corrected-claim">
+        Corrected wording
+        <span class="hint">Required. Keep it within the displayed claim and evidence; do not add facts.</span>
+        <textarea id="simple-corrected-claim" name="correctedClaim" autofocus={firstErrorField === "correctedClaim"}>{current("correctedClaim")}</textarea>
+      </label>
+      {errors("correctedClaim").map((error) => <p class="field-error">{error}</p>)}
+      <label for="simple-required-qualifiers">
+        Required qualifier
+        <span class="hint">At least one qualifier is required. Put one qualifier per line.</span>
+        <textarea id="simple-required-qualifiers" name="requiredQualifiers" autofocus={firstErrorField === "requiredQualifiers"}>{current("requiredQualifiers")}</textarea>
+      </label>
+      {errors("requiredQualifiers").map((error) => <p class="field-error">{error}</p>)}
+    </fieldset>
+  </div>
+
+  <div class="conditional-fields for-reject">
+    <fieldset>
+      <legend>Why should this claim be rejected?</legend>
+      <div class="reason-grid">
+        {evidenceReviewRejectionReasons.map(([value, reasonLabel], index) => (
+          <label class="compact-choice">
+            <input
+              type="radio"
+              name="rejectionReason"
+              value={value}
+              checked={current("rejectionReason") === value}
+              autofocus={firstErrorField === "rejectionReason" && index === 0}
+            />
+            {reasonLabel}
+          </label>
+        ))}
+      </div>
+      {errors("rejectionReason").map((error) => <p class="field-error">{error}</p>)}
+    </fieldset>
+  </div>
+
+  {(needsWorkContext || needsClaimNature) && (
+    <div class="conditional-fields for-approval">
+      <fieldset>
+        <legend>One classification check</legend>
+        <p class="hint">Immutable metadata does not answer this safely. Choose only what the displayed evidence establishes.</p>
+        {needsWorkContext && (
+          <label for="simple-work-context">
+            Is this project work, employment history, or another context?
+            <select id="simple-work-context" name="workContext" autofocus={firstErrorField === "workContext"}>
+              <option value="">Choose a work context</option>
+              {evidenceReviewUiFormOptions.workContexts.filter((option) => option !== "ambiguous").map((option) =>
+                <option value={option} selected={current("workContext") === option}>{label(option)}</option>
+              )}
+            </select>
+          </label>
+        )}
+        {errors("workContext").map((error) => <p class="field-error">{error}</p>)}
+        {needsClaimNature && (
+          <label for="simple-claim-nature">
+            Is this a responsibility, achievement, capability, credential, or another claim?
+            <select id="simple-claim-nature" name="claimNature" autofocus={firstErrorField === "claimNature"}>
+              <option value="">Choose a claim type</option>
+              {evidenceReviewUiFormOptions.claimNatures.filter((option) => option !== "ambiguous").map((option) =>
+                <option value={option} selected={current("claimNature") === option}>{label(option)}</option>
+              )}
+            </select>
+          </label>
+        )}
+        {errors("claimNature").map((error) => <p class="field-error">{error}</p>)}
+      </fieldset>
+    </div>
+  )}
+
+  {metricCandidate && (
+    <div class="conditional-fields for-approval">
+      <fieldset>
+        <legend>Confirm the exact metric</legend>
+        <p class="hint">Simple approval cannot verify a number automatically. Nothing is calculated, rounded, combined, or inferred.</p>
+        <label for="simple-metric-text">Exact approved metric wording
+          <textarea id="simple-metric-text" name="metricExactText" autofocus={firstErrorField === "metricExactText"}>{current("metricExactText", claim.text)}</textarea>
+        </label>
+        {errors("metricExactText").map((error) => <p class="field-error">{error}</p>)}
+        <div class="two-column-fields">
+          <label for="simple-metric-unit">Exact unit
+            <input id="simple-metric-unit" name="metricUnit" type="text" value={current("metricUnit")} autofocus={firstErrorField === "metricUnit"} />
+          </label>
+          <label for="simple-metric-scope">Exact scope
+            <input id="simple-metric-scope" name="metricScope" type="text" value={current("metricScope")} autofocus={firstErrorField === "metricScope"} />
+          </label>
+        </div>
+        {errors("metricUnit").map((error) => <p class="field-error">{error}</p>)}
+        {errors("metricScope").map((error) => <p class="field-error">{error}</p>)}
+        <label for="simple-metric-qualifiers">Qualifiers already present in the wording
+          <span class="hint">Optional. One exact qualifier per line.</span>
+          <textarea id="simple-metric-qualifiers" name="metricQualifiers">{current("metricQualifiers")}</textarea>
+        </label>
+        <label class="check-row">
+          <input
+            type="checkbox"
+            name="metricSourceConfirmed"
+            value="true"
+            checked={current("metricSourceConfirmed") === "true"}
+            autofocus={firstErrorField === "metricSourceConfirmed"}
+          />
+          I confirmed the exact metric is directly supported by the displayed evidence.
+        </label>
+        {errors("metricSourceConfirmed").map((error) => <p class="field-error">{error}</p>)}
+      </fieldset>
+    </div>
+  )}
+
+  <div class="after-decision">
+    <label for="simple-reviewer-note">
+      Optional reviewer note
+      <span class="hint">Add brief context only when it helps explain your decision.</span>
+      <textarea id="simple-reviewer-note" name="reviewerNote" autofocus={firstErrorField === "reviewerNote"}>{current("reviewerNote")}</textarea>
+    </label>
+    {errors("reviewerNote").map((error) => <p class="field-error">{error}</p>)}
+  </div>
+
+  <div class="after-decision projected-outcomes" aria-live="polite">
+    {evidenceReviewSimpleIntentOptions.map(({ value, label: optionLabel }) => {
+      const projection = previewFor(value);
+      return (
+        <section class={`projected-outcome for-${value}`} aria-label={`${optionLabel} projected outcome`}>
+          <h3>What ProofLayer will record</h3>
+          <dl class="outcome-grid">
+            <div><dt>Decision</dt><dd>{projection.preview.decision}</dd></div>
+            <div><dt>Public safety</dt><dd>{projection.preview.publicSafety}</dd></div>
+            <div><dt>Resume readiness</dt><dd>{projection.preview.resumeReadiness}</dd></div>
+            <div><dt>Role eligibility</dt><dd>{projection.preview.eligibleForRoleMatching ? "eligible" : "not eligible"}</dd></div>
+            <div><dt>Job eligibility</dt><dd>{projection.preview.eligibleForJobMapping ? "eligible" : "not eligible"}</dd></div>
+            <div><dt>Metric state</dt><dd>{projection.preview.metricState}</dd></div>
+          </dl>
+          <p><strong>Final wording:</strong> {projection.preview.finalClaimWording}</p>
+          {projection.preview.qualifiers.length > 0 && (
+            <p><strong>Qualifiers:</strong> {projection.preview.qualifiers.join("; ")}</p>
+          )}
+          {projection.preview.warnings.length > 0 && (
+            <ul class="compact-list">{projection.preview.warnings.map((warning) => <li>{warning}</li>)}</ul>
+          )}
+        </section>
+      );
+    })}
+  </div>
+
+  <div class="after-decision actions">
+    <button type="submit" name="submitAction" value="next">Submit and Next</button>
+    <button class="secondary-action" type="submit" name="submitAction" value="batch">Submit and Return to Batch</button>
+    <a class="button secondary" href={`/review/${batchId}`}>Cancel</a>
+  </div>
+</form>

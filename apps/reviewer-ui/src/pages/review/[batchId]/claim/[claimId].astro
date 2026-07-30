@@ -1,5 +1,6 @@
 ---
 import ReviewForm from "../../../../components/ReviewForm.astro";
+import SimpleReviewForm from "../../../../components/SimpleReviewForm.astro";
 import Layout from "../../../../layouts/Layout.astro";
 import {
   evidenceReviewUiRuntimeConfig,
@@ -50,11 +51,13 @@ if (Astro.request.method === "POST") {
         claimId,
         values,
       );
-      const destination = submission.batchComplete
-        ? `/review/${config.batchId}/complete`
-        : submission.nextPendingClaimId
-          ? `/review/${config.batchId}/claim/${submission.nextPendingClaimId}`
-          : `/review/${config.batchId}`;
+      const destination = values.submitAction === "batch"
+        ? `/review/${config.batchId}`
+        : submission.batchComplete
+          ? `/review/${config.batchId}/complete`
+          : submission.nextPendingClaimId
+            ? `/review/${config.batchId}/claim/${submission.nextPendingClaimId}`
+            : `/review/${config.batchId}`;
       const query = new URLSearchParams({
         result: submission.result.result,
         review: submission.result.reviewId,
@@ -79,9 +82,46 @@ try {
 }
 const { batch, claim } = loaded;
 const sourceCategories = [...new Set(claim.evidence.map((entry) => entry.category))];
+const claimIndex = batch.claims.findIndex((entry) => entry.id === claim.id);
+const previousClaim = claimIndex > 0 ? batch.claims[claimIndex - 1] : undefined;
+const nextClaim = claimIndex >= 0 && claimIndex < batch.claims.length - 1
+  ? batch.claims[claimIndex + 1]
+  : undefined;
+const nextPendingClaim = batch.claims.find((entry) =>
+  entry.id !== claim.id && entry.review.lifecycle !== "current");
+const result = Astro.url.searchParams.get("result");
+const resultReviewId = Astro.url.searchParams.get("review");
+const revising = claim.review.lifecycle === "current" && (
+  Astro.url.searchParams.get("revise") === "true" || values.confirmSupersession === "true"
+);
 ---
 
 <Layout title={claim.title} batchId={batch.batchId} readOnly={config.readOnly}>
+  <nav class="claim-navigation" aria-label="Claim review navigation">
+    <a href={`/review/${batch.batchId}`}>Back to batch</a>
+    <span>Claim {claimIndex + 1} of {batch.claims.length}</span>
+    <span>{batch.progress.reviewed} reviewed · {batch.progress.pending} pending</span>
+    {nextPendingClaim && (
+      <a href={`/review/${batch.batchId}/claim/${nextPendingClaim.id}`}>Next pending: {nextPendingClaim.title}</a>
+    )}
+    <span class="navigation-links">
+      {previousClaim
+        ? <a href={`/review/${batch.batchId}/claim/${previousClaim.id}`}>Previous</a>
+        : <span aria-disabled="true">Previous</span>}
+      {nextClaim
+        ? <a href={`/review/${batch.batchId}/claim/${nextClaim.id}`}>Next</a>
+        : <span aria-disabled="true">Next</span>}
+    </span>
+  </nav>
+
+  {result && (
+    <div class="notice success" role="status">
+      <strong>Review saved.</strong>
+      <p>{result === "already-current" ? "The identical immutable review was already current." : "The canonical review was created successfully."}</p>
+      {resultReviewId && <p class="meta">Review reference: <code>{resultReviewId}</code></p>}
+    </div>
+  )}
+
   <p class="eyebrow">{claim.priority} priority claim</p>
   <h1>{claim.title}</h1>
   <p class="lede">{claim.selectionReason}</p>
@@ -161,7 +201,7 @@ const sourceCategories = [...new Set(claim.evidence.map((entry) => entry.categor
   </section>
 
   <section aria-labelledby="review-heading">
-    <h2 id="review-heading">Canonical review decision</h2>
+    <h2 id="review-heading">Review decision</h2>
     {submissionError && (
       <div class="notice error" role="alert">
         <strong>Review not submitted.</strong>
@@ -173,13 +213,50 @@ const sourceCategories = [...new Set(claim.evidence.map((entry) => entry.categor
     )}
     {config.readOnly
       ? <div class="notice">Submission is disabled in read-only mode. No POST action is available.</div>
-      : <ReviewForm
-          batchId={batch.batchId}
-          claim={claim}
-          csrfToken={csrfToken}
-          values={values}
-          fieldErrors={fieldErrors}
-        />}
+      : claim.review.lifecycle === "current" && !revising
+        ? <div class="panel current-review-summary">
+            <h3>Current immutable review</h3>
+            <p>
+              Decision: <strong>{claim.review.decision}</strong> · Public safety: <strong>{claim.review.publicSafety}</strong> ·
+              Resume readiness: <strong>{claim.review.resumeReadiness}</strong>
+            </p>
+            {claim.review.requiredQualifiers.length > 0 && (
+              <p><strong>Required qualifiers:</strong> {claim.review.requiredQualifiers.join("; ")}</p>
+            )}
+            <p class="meta">The existing review remains read-only. A changed decision creates a new immutable version linked by supersession.</p>
+            <a class="button secondary" href={`/review/${batch.batchId}/claim/${claim.id}?revise=true#review-heading`}>
+              Create revised review
+            </a>
+          </div>
+        : <>
+            {revising && (
+              <div class="notice">
+                A new submission will explicitly supersede review <code>{claim.review.id}</code>. The prior review remains immutable.
+              </div>
+            )}
+            <SimpleReviewForm
+              batchId={batch.batchId}
+              claim={claim}
+              csrfToken={csrfToken}
+              values={values}
+              fieldErrors={fieldErrors}
+              superseding={revising}
+            />
+            <details class="advanced-review" open={values.reviewMode === "advanced"}>
+              <summary>Advanced Review</summary>
+              <div class="notice">
+                Exceptional or ambiguous cases only. This form exposes the full canonical review schema and uses the same authoritative validation and immutable service.
+              </div>
+              <ReviewForm
+                batchId={batch.batchId}
+                claim={claim}
+                csrfToken={csrfToken}
+                values={values}
+                fieldErrors={fieldErrors}
+                superseding={revising}
+              />
+            </details>
+          </>}
   </section>
 
   <details>

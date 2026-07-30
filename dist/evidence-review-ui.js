@@ -3,6 +3,7 @@ import { EvidenceClaimFactualSupportSchema, EvidenceClaimMetricReviewStateSchema
 import { getEvidenceReviewBatchStatus } from "./evidence-review-batch.js";
 import { evidenceReviewSelectionReason, loadEvidenceReviewWorkspaceData, } from "./evidence-review-workspace.js";
 import { deriveHumanTitle } from "./human-readable-markdown.js";
+import { projectEvidenceReviewIntent } from "./evidence-review-intent.js";
 export const EVIDENCE_REVIEW_UI_NAME = "ProofLayer Local Evidence Review UI";
 export const evidenceReviewUiFormOptions = {
     decisions: EvidenceClaimReviewDecisionSchema.options,
@@ -84,7 +85,19 @@ export async function submitEvidenceReviewUiClaim(workspace, batchId, claimId, f
         throw new EvidenceReviewUiSubmissionError("This review session is read-only.");
     }
     const { claim } = await loadEvidenceReviewUiClaim(workspace, batchId, claimId);
-    const rawInput = reviewInputFromFields(claim, fields);
+    let rawInput;
+    if (fields.reviewMode === "simple") {
+        const projection = projectEvidenceReviewIntent(claim, fields);
+        if (projection.status !== "ready" || !projection.input) {
+            throw new EvidenceReviewUiSubmissionError(projection.status === "blocked"
+                ? "This decision cannot be recorded safely in Simple Review. Choose another decision or use Advanced Review."
+                : "A little more information is needed before this review can be recorded.", projection.fieldErrors);
+        }
+        rawInput = projection.input;
+    }
+    else {
+        rawInput = reviewInputFromFields(claim, fields);
+    }
     const parsed = EvidenceClaimReviewInputSchema.safeParse(rawInput);
     if (!parsed.success) {
         throw new EvidenceReviewUiSubmissionError("Review validation failed. Correct the highlighted fields and submit again.", zodFieldErrors(parsed.error.issues));
@@ -130,6 +143,9 @@ function toUiClaim(batchId, targetId, item, lifecycle, review) {
             category: entry.category,
             confidence: entry.confidence,
             visibility: entry.visibility,
+            sensitivityFlags: [...entry.sensitivityFlags],
+            ...(entry.parentRoleId ? { parentRoleId: entry.parentRoleId } : {}),
+            ...(entry.parentProjectId ? { parentProjectId: entry.parentProjectId } : {}),
             ...(entry.dateRange ? { dateRange: entry.dateRange } : {}),
             ...(entry.company ? { company: entry.company } : {}),
             ...(entry.project ? { project: entry.project } : {}),
@@ -175,6 +191,7 @@ function toUiClaim(batchId, targetId, item, lifecycle, review) {
         sourcePublicSafe: item.claim.publicSafe,
         sourceNeedsConfirmation: item.claim.needsConfirmation,
         sourceMetricStatus: item.claim.metricStatus,
+        sourceUnsafeWording: [...(item.claim.unsafeWording ?? [])],
         sourceClassification: {
             type: item.claim.type,
             ...(item.claim.sourceSection ? { section: item.claim.sourceSection } : {}),
@@ -276,9 +293,30 @@ function zodFieldErrors(issues) {
     const result = {};
     for (const issue of issues) {
         const key = formFieldForPath(issue.path.map(String).join("."));
-        result[key] = [...(result[key] ?? []), issue.message];
+        result[key] = [...(result[key] ?? []), friendlyValidationMessage(key, issue.message)];
     }
     return result;
+}
+function friendlyValidationMessage(field, original) {
+    const messages = {
+        decision: "Choose a canonical review decision.",
+        factualSupport: "Choose whether the claim is supported by the evidence.",
+        scope: "Choose the claim's supported scope.",
+        publicSafety: "Choose the permitted public-safety state.",
+        resumeReadiness: "Choose whether the claim is ready for resume use.",
+        eligibleForRoleMatching: "Choose whether the claim is eligible for Role Matching.",
+        eligibleForJobMapping: "Choose whether the claim is eligible for Job Mapping.",
+        metricState: "Choose the metric verification state.",
+        workContext: "Choose the claim's work context.",
+        claimNature: "Choose the claim's factual nature.",
+        reviewerRationale: "Add a concise evidence-based rationale.",
+        correctedClaim: "Enter corrected wording for a qualified approval.",
+    };
+    if (messages[field])
+        return messages[field];
+    if (/invalid enum|expected/i.test(original))
+        return "Choose one of the available values.";
+    return original;
 }
 function formFieldForPath(path) {
     const aliases = {
