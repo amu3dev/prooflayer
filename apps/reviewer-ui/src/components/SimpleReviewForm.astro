@@ -9,6 +9,7 @@ import {
   evidenceReviewUiFormOptions,
   type EvidenceReviewUiClaim,
 } from "../../../../src/evidence-review-ui.ts";
+import { isEvidenceReviewMetricCandidate } from "../../../../src/evidence-review-numeric.ts";
 
 interface Props {
   batchId: string;
@@ -17,9 +18,18 @@ interface Props {
   values: Record<string, string | undefined>;
   fieldErrors: Record<string, string[]>;
   superseding?: boolean;
+  overrideOnly?: boolean;
 }
 
-const { batchId, claim, csrfToken, values, fieldErrors, superseding = false } = Astro.props;
+const {
+  batchId,
+  claim,
+  csrfToken,
+  values,
+  fieldErrors,
+  superseding = false,
+  overrideOnly = false,
+} = Astro.props;
 const current = (name: string, fallback = "") => values[name] ?? fallback;
 const errors = (name: string) => fieldErrors[name] ?? [];
 const firstErrorField = values.reviewMode === "simple" ? Object.keys(fieldErrors)[0] : undefined;
@@ -42,7 +52,10 @@ const approvalBlockReasons = [...new Set([
 ])];
 const needsWorkContext = approvalQuestions.includes("workContext");
 const needsClaimNature = approvalQuestions.includes("claimNature");
-const metricCandidate = claim.potentialMetric || claim.sourceMetricStatus !== "no_metric";
+const metricCandidate = isEvidenceReviewMetricCandidate(claim.text, claim.sourceMetricStatus);
+const intentOptions = overrideOnly
+  ? evidenceReviewSimpleIntentOptions.filter(({ value }) => value !== "approve")
+  : evidenceReviewSimpleIntentOptions;
 ---
 
 <form class="review-form simple-review-form" method="post" action={`/review/${batchId}/claim/${claim.id}`} novalidate>
@@ -51,7 +64,7 @@ const metricCandidate = claim.potentialMetric || claim.sourceMetricStatus !== "n
   {superseding && <input type="hidden" name="confirmSupersession" value="true" />}
 
   <fieldset class="intent-fieldset">
-    <legend>What should happen to this claim?</legend>
+    <legend>{overrideOnly ? "Change decision" : "What should happen to this claim?"}</legend>
     <p class="hint">Choose one decision. ProofLayer derives the safe canonical fields and validates them before writing anything.</p>
     {blockedApprovalIntents.size > 0 && (
       <div class="notice">
@@ -61,7 +74,7 @@ const metricCandidate = claim.potentialMetric || claim.sourceMetricStatus !== "n
       </div>
     )}
     <div class="decision-grid">
-      {evidenceReviewSimpleIntentOptions.map((option, index) => (
+      {intentOptions.map((option, index) => (
         <label
           class={`decision-card decision-${option.value}`}
           aria-disabled={blockedApprovalIntents.has(option.value) ? "true" : undefined}
@@ -205,7 +218,7 @@ const metricCandidate = claim.potentialMetric || claim.sourceMetricStatus !== "n
   </div>
 
   <div class="after-decision projected-outcomes" aria-live="polite">
-    {evidenceReviewSimpleIntentOptions.map(({ value, label: optionLabel }) => {
+    {intentOptions.map(({ value, label: optionLabel }) => {
       const projection = previewFor(value);
       return (
         <section class={`projected-outcome for-${value}`} aria-label={`${optionLabel} projected outcome`}>
@@ -231,7 +244,9 @@ const metricCandidate = claim.potentialMetric || claim.sourceMetricStatus !== "n
   </div>
 
   <div class="after-decision actions">
-    <button type="submit" name="submitAction" value="next">Submit and Next</button>
+    <button type="submit" name="submitAction" value="next">
+      {overrideOnly ? "Save override and Next" : "Submit and Next"}
+    </button>
     <button class="secondary-action" type="submit" name="submitAction" value="batch">Submit and Return to Batch</button>
     <a class="button secondary" href={`/review/${batchId}`}>Cancel</a>
   </div>

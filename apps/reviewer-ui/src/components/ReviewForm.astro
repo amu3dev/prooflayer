@@ -3,6 +3,7 @@ import {
   evidenceReviewUiFormOptions,
   type EvidenceReviewUiClaim,
 } from "../../../../src/evidence-review-ui.ts";
+import { isEvidenceReviewMetricCandidate } from "../../../../src/evidence-review-numeric.ts";
 
 interface Props {
   batchId: string;
@@ -19,6 +20,7 @@ const label = (value: string) => value.split("-").map((word) =>
 const current = (name: string, fallback = "") => values[name] ?? fallback;
 const errors = (name: string) => fieldErrors[name] ?? [];
 const firstErrorField = values.reviewMode === "advanced" ? Object.keys(fieldErrors)[0] : undefined;
+const metricCandidate = isEvidenceReviewMetricCandidate(claim.text, claim.sourceMetricStatus);
 ---
 
 <form class="review-form" method="post" action={`/review/${batchId}/claim/${claim.id}`} novalidate>
@@ -135,7 +137,7 @@ const firstErrorField = values.reviewMode === "advanced" ? Object.keys(fieldErro
     {errors("eligibleForJobMapping").map((error) => <p class="field-error">{error}</p>)}
   </fieldset>
 
-  <details open={claim.potentialMetric}>
+  <details open={metricCandidate}>
     <summary>Metric verification</summary>
     <label for="metricState">
       Metric state

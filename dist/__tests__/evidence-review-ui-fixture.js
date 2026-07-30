@@ -42,13 +42,19 @@ export async function createEvidenceReviewUiFixture(options = {}) {
     const evidence = themes.map((text, index) => ({
         id: `evi_review_ui_${index + 1}`,
         sourceIds: [source.id],
-        category: index === 3 ? "education" : index === 2 ? "project" : "responsibility",
+        category: options.ambiguousWorkContextClaimId === `claim_review_ui_${index + 1}`
+            ? "recommendation"
+            : index === 3 ? "education" : index === 2 ? "project" : "responsibility",
         text,
         normalizedSummary: text,
-        ...(index === 2
-            ? { project: "Synthetic Platform Project", parentProjectId: "project_platform" }
-            : { parentRoleId: "role_product" }),
-        sourceSection: index === 3 ? "Education" : "Experience",
+        ...(options.ambiguousWorkContextClaimId === `claim_review_ui_${index + 1}`
+            ? {}
+            : index === 2
+                ? { project: "Synthetic Platform Project", parentProjectId: "project_platform" }
+                : { parentRoleId: "role_product" }),
+        sourceSection: options.ambiguousWorkContextClaimId === `claim_review_ui_${index + 1}`
+            ? "Other evidence"
+            : index === 3 ? "Education" : "Experience",
         technologies: index === 0 ? ["TypeScript"] : [],
         domains: index === 0 ? ["AI"] : index === 2 ? ["platform"] : [],
         visibility,
@@ -64,10 +70,14 @@ export async function createEvidenceReviewUiFixture(options = {}) {
                 ? "project_claim"
                 : "responsibility_claim",
         supportingEvidenceIds: [evidence[index].id],
-        ...(index === 2
-            ? { parentProjectId: "project_platform" }
-            : { parentRoleId: "role_product" }),
-        sourceSection: index === 3 ? "Education" : "Experience",
+        ...(options.ambiguousWorkContextClaimId === `claim_review_ui_${index + 1}`
+            ? {}
+            : index === 2
+                ? { parentProjectId: "project_platform" }
+                : { parentRoleId: "role_product" }),
+        sourceSection: options.ambiguousWorkContextClaimId === `claim_review_ui_${index + 1}`
+            ? "Other evidence"
+            : index === 3 ? "Education" : "Experience",
         extractionConfidence: "high",
         factualConfidence: "medium",
         corroborationLevel: "single_source",

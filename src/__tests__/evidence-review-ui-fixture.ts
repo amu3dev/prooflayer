@@ -12,7 +12,10 @@ import { NATTERBOX_JOB_DESCRIPTION } from "./fixtures/natterbox-job-description.
 export const UI_FIXTURE_TIME = "2026-07-29T10:00:00.000Z";
 
 export async function createEvidenceReviewUiFixture(
-  options: { visibility?: Source["visibility"] } = {},
+  options: {
+    visibility?: Source["visibility"];
+    ambiguousWorkContextClaimId?: string;
+  } = {},
 ) {
   const workspace = await mkdtemp(path.join(tmpdir(), "prooflayer-review-ui-"));
   const inputPath = path.join(workspace, "imports", "natterbox.md");
@@ -48,13 +51,19 @@ export async function createEvidenceReviewUiFixture(
   const evidence = themes.map((text, index): EvidenceItem => ({
     id: `evi_review_ui_${index + 1}`,
     sourceIds: [source.id],
-    category: index === 3 ? "education" : index === 2 ? "project" : "responsibility",
+    category: options.ambiguousWorkContextClaimId === `claim_review_ui_${index + 1}`
+      ? "recommendation"
+      : index === 3 ? "education" : index === 2 ? "project" : "responsibility",
     text,
     normalizedSummary: text,
-    ...(index === 2
+    ...(options.ambiguousWorkContextClaimId === `claim_review_ui_${index + 1}`
+      ? {}
+      : index === 2
       ? { project: "Synthetic Platform Project", parentProjectId: "project_platform" }
       : { parentRoleId: "role_product" }),
-    sourceSection: index === 3 ? "Education" : "Experience",
+    sourceSection: options.ambiguousWorkContextClaimId === `claim_review_ui_${index + 1}`
+      ? "Other evidence"
+      : index === 3 ? "Education" : "Experience",
     technologies: index === 0 ? ["TypeScript"] : [],
     domains: index === 0 ? ["AI"] : index === 2 ? ["platform"] : [],
     visibility,
@@ -70,10 +79,14 @@ export async function createEvidenceReviewUiFixture(
         ? "project_claim"
         : "responsibility_claim",
     supportingEvidenceIds: [evidence[index]!.id],
-    ...(index === 2
+    ...(options.ambiguousWorkContextClaimId === `claim_review_ui_${index + 1}`
+      ? {}
+      : index === 2
       ? { parentProjectId: "project_platform" }
       : { parentRoleId: "role_product" }),
-    sourceSection: index === 3 ? "Education" : "Experience",
+    sourceSection: options.ambiguousWorkContextClaimId === `claim_review_ui_${index + 1}`
+      ? "Other evidence"
+      : index === 3 ? "Education" : "Experience",
     extractionConfidence: "high",
     factualConfidence: "medium",
     corroborationLevel: "single_source",

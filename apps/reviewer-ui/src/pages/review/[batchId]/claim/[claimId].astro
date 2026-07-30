@@ -1,5 +1,6 @@
 ---
 import ReviewForm from "../../../../components/ReviewForm.astro";
+import RecommendationAction from "../../../../components/RecommendationAction.astro";
 import SimpleReviewForm from "../../../../components/SimpleReviewForm.astro";
 import Layout from "../../../../layouts/Layout.astro";
 import {
@@ -16,6 +17,9 @@ import {
   evidenceReviewUiClaimCsrfToken,
   evidenceReviewUiCsrfTokenMatches,
 } from "../../../../../../../src/evidence-review-ui-csrf.ts";
+import {
+  deriveEvidenceReviewRecommendation,
+} from "../../../../../../../src/evidence-review-recommendation.ts";
 
 const config = evidenceReviewUiRuntimeConfig();
 const batchId = Astro.params.batchId;
@@ -94,6 +98,13 @@ const resultReviewId = Astro.url.searchParams.get("review");
 const revising = claim.review.lifecycle === "current" && (
   Astro.url.searchParams.get("revise") === "true" || values.confirmSupersession === "true"
 );
+const recommendation = deriveEvidenceReviewRecommendation(claim);
+const recommendationFailed = Boolean(
+  submissionError && values.reviewMode === "recommendation",
+);
+const requiresManualReview = revising ||
+  recommendation.interactionLevel === "manual" ||
+  recommendationFailed;
 ---
 
 <Layout title={claim.title} batchId={batch.batchId} readOnly={config.readOnly}>
@@ -131,79 +142,99 @@ const revising = claim.review.lifecycle === "current" && (
     <div class="excerpt">{claim.text}</div>
   </section>
 
-  <section aria-labelledby="evidence-heading">
-    <h2 id="evidence-heading">Supporting evidence</h2>
-    <div class="evidence-grid">
-      {claim.evidence.map((evidence, index) => (
-        <article class="evidence-item">
-          <h3>Evidence {index + 1}: {evidence.title}</h3>
-          <p>{evidence.summary}</p>
-          {evidence.sourceExcerpt
-            ? <>
-                <p><strong>Exact source excerpt</strong></p>
-                <div class="excerpt">{evidence.sourceExcerpt}</div>
-              </>
-            : <p class="notice">Exact source excerpt withheld by evidence visibility policy. The safe normalized summary remains available.</p>}
-          <p class="meta">
-            {[evidence.category, evidence.confidence, evidence.visibility, evidence.company, evidence.project]
-              .filter(Boolean).join(" · ")}
-          </p>
-          {evidence.technologies.length > 0 && <p><strong>Technologies:</strong> {evidence.technologies.join(", ")}</p>}
-          {evidence.domains.length > 0 && <p><strong>Domains:</strong> {evidence.domains.join(", ")}</p>}
-        </article>
-      ))}
-    </div>
-  </section>
-
-  <section aria-labelledby="requirements-heading">
-    <h2 id="requirements-heading">Matching Job requirements</h2>
-    {claim.requirements.length === 0
-      ? <p>No matching Job Requirement references were recorded by this batch.</p>
-      : <div class="evidence-grid">
-          {claim.requirements.map((requirement, index) => (
+  <div class="claim-details">
+    <details>
+      <summary>View evidence</summary>
+      <section aria-labelledby="evidence-heading">
+        <h2 id="evidence-heading">Supporting evidence</h2>
+        <div class="evidence-grid">
+          {claim.evidence.map((evidence, index) => (
             <article class="evidence-item">
-              <h3>Requirement {index + 1}: {requirement.title}</h3>
-              <div class="excerpt">{requirement.sourceText}</div>
+              <h3>Evidence {index + 1}: {evidence.title}</h3>
+              <p>{evidence.summary}</p>
               <p class="meta">
-                {requirement.category} · {requirement.necessity} · {requirement.confidence} · {requirement.explicitness}
+                {[evidence.category, evidence.confidence, evidence.visibility, evidence.company, evidence.project]
+                  .filter(Boolean).join(" · ")}
               </p>
+              {evidence.technologies.length > 0 && <p><strong>Technologies:</strong> {evidence.technologies.join(", ")}</p>}
+              {evidence.domains.length > 0 && <p><strong>Domains:</strong> {evidence.domains.join(", ")}</p>}
             </article>
           ))}
-        </div>}
-  </section>
+        </div>
+      </section>
+    </details>
 
-  <section aria-labelledby="limitations-heading">
-    <h2 id="limitations-heading">Evidence limitations and boundaries</h2>
-    <ul>
-      <li>Priority and matching terms organize human review; they do not prove this claim satisfies a requirement.</li>
-      <li>Source approval is <strong>{claim.sourceApprovalStatus}</strong>; source output readiness is <strong>{claim.sourceOutputReadiness}</strong>.</li>
-      <li>Evidence categories: {sourceCategories.join(", ") || "not classified"}.</li>
-      <li>Project evidence cannot become employment history without explicit role provenance.</li>
-      <li>Responsibility cannot become achievement without supported outcome proof.</li>
-    </ul>
-  </section>
+    <details>
+      <summary>View source excerpt</summary>
+      <section aria-labelledby="source-excerpt-heading">
+        <h2 id="source-excerpt-heading">Exact source excerpt</h2>
+        {claim.evidence.map((evidence, index) => (
+          <article class="evidence-item">
+            <h3>Evidence {index + 1}: {evidence.title}</h3>
+            {evidence.sourceExcerpt
+              ? <div class="excerpt">{evidence.sourceExcerpt}</div>
+              : <p class="notice">Exact source excerpt withheld by evidence visibility policy. The safe normalized summary remains available under View evidence.</p>}
+          </article>
+        ))}
+      </section>
+    </details>
 
-  <section aria-labelledby="state-heading">
-    <h2 id="state-heading">Current classification and eligibility</h2>
-    <div class="summary-grid">
-      <div class="stat"><strong>{claim.review.lifecycle}</strong> Review lifecycle</div>
-      <div class="stat"><strong>{claim.review.decision ?? "not decided"}</strong> Decision</div>
-      <div class="stat"><strong>{claim.review.publicSafety ?? (claim.sourcePublicSafe ? "source public-safe" : "not reviewed")}</strong> Public safety</div>
-      <div class="stat"><strong>{claim.review.resumeReadiness ?? claim.sourceOutputReadiness}</strong> Resume readiness</div>
-      <div class="stat"><strong>{claim.review.eligibleForRoleMatching === undefined ? "not decided" : claim.review.eligibleForRoleMatching ? "yes" : "no"}</strong> Role Matching</div>
-      <div class="stat"><strong>{claim.review.eligibleForJobMapping === undefined ? "not decided" : claim.review.eligibleForJobMapping ? "yes" : "no"}</strong> Job Mapping</div>
-    </div>
-    {claim.review.id && (
-      <p class="meta">
-        Current immutable review reference: <code>{claim.review.id}</code>. Private reviewer rationale is not displayed.
-      </p>
-    )}
-  </section>
+    <details>
+      <summary>View matched requirements</summary>
+      <section aria-labelledby="requirements-heading">
+        <h2 id="requirements-heading">Matching Job requirements</h2>
+        {claim.requirements.length === 0
+          ? <p>No matching Job Requirement references were recorded by this batch.</p>
+          : <div class="evidence-grid">
+              {claim.requirements.map((requirement, index) => (
+                <article class="evidence-item">
+                  <h3>Requirement {index + 1}: {requirement.title}</h3>
+                  <div class="excerpt">{requirement.sourceText}</div>
+                  <p class="meta">
+                    {requirement.category} · {requirement.necessity} · {requirement.confidence} · {requirement.explicitness}
+                  </p>
+                </article>
+              ))}
+            </div>}
+      </section>
+    </details>
+
+    <details>
+      <summary>View limitations and current state</summary>
+      <section aria-labelledby="limitations-heading">
+        <h2 id="limitations-heading">Evidence limitations and boundaries</h2>
+        <ul>
+          <li>Priority and matching terms organize human review; they do not prove this claim satisfies a requirement.</li>
+          <li>Source approval is <strong>{claim.sourceApprovalStatus}</strong>; source output readiness is <strong>{claim.sourceOutputReadiness}</strong>.</li>
+          <li>Evidence categories: {sourceCategories.join(", ") || "not classified"}.</li>
+          <li>Project evidence cannot become employment history without explicit role provenance.</li>
+          <li>Responsibility cannot become achievement without supported outcome proof.</li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="state-heading">
+        <h2 id="state-heading">Current classification and eligibility</h2>
+        <div class="summary-grid">
+          <div class="stat"><strong>{claim.review.lifecycle}</strong> Review lifecycle</div>
+          <div class="stat"><strong>{claim.review.decision ?? "not decided"}</strong> Decision</div>
+          <div class="stat"><strong>{claim.review.publicSafety ?? (claim.sourcePublicSafe ? "source public-safe" : "not reviewed")}</strong> Public safety</div>
+          <div class="stat"><strong>{claim.review.resumeReadiness ?? claim.sourceOutputReadiness}</strong> Resume readiness</div>
+          <div class="stat"><strong>{claim.review.eligibleForRoleMatching === undefined ? "not decided" : claim.review.eligibleForRoleMatching ? "yes" : "no"}</strong> Role Matching</div>
+          <div class="stat"><strong>{claim.review.eligibleForJobMapping === undefined ? "not decided" : claim.review.eligibleForJobMapping ? "yes" : "no"}</strong> Job Mapping</div>
+        </div>
+        {claim.review.id && (
+          <p class="meta">
+            Current immutable review reference: <code>{claim.review.id}</code>. Private reviewer rationale is not displayed.
+          </p>
+        )}
+      </section>
+    </details>
+  </div>
 
   <section aria-labelledby="review-heading">
     <h2 id="review-heading">Review decision</h2>
     {submissionError && (
-      <div class="notice error" role="alert">
+      <div class="notice error" role="alert" tabindex="-1" autofocus>
         <strong>Review not submitted.</strong>
         <p>{submissionError}</p>
         {Object.values(fieldErrors).flat().length > 0 && (
@@ -234,28 +265,73 @@ const revising = claim.review.lifecycle === "current" && (
                 A new submission will explicitly supersede review <code>{claim.review.id}</code>. The prior review remains immutable.
               </div>
             )}
-            <SimpleReviewForm
-              batchId={batch.batchId}
-              claim={claim}
-              csrfToken={csrfToken}
-              values={values}
-              fieldErrors={fieldErrors}
-              superseding={revising}
-            />
-            <details class="advanced-review" open={values.reviewMode === "advanced"}>
-              <summary>Advanced Review</summary>
-              <div class="notice">
-                Exceptional or ambiguous cases only. This form exposes the full canonical review schema and uses the same authoritative validation and immutable service.
-              </div>
-              <ReviewForm
+            {!recommendationFailed && (
+              <RecommendationAction
                 batchId={batch.batchId}
                 claim={claim}
                 csrfToken={csrfToken}
-                values={values}
-                fieldErrors={fieldErrors}
-                superseding={revising}
+                recommendation={recommendation}
               />
-            </details>
+            )}
+            {recommendationFailed && (
+              <div class="notice">
+                The one-click projection did not pass authoritative validation. No review was written; use the manual controls below.
+              </div>
+            )}
+            {requiresManualReview
+              ? <>
+                  <SimpleReviewForm
+                    batchId={batch.batchId}
+                    claim={claim}
+                    csrfToken={csrfToken}
+                    values={values}
+                    fieldErrors={fieldErrors}
+                    superseding={revising}
+                  />
+                  <details class="advanced-review" open={values.reviewMode === "advanced"}>
+                    <summary>Advanced Review</summary>
+                    <div class="notice">
+                      Exceptional or ambiguous cases only. This form exposes the full canonical review schema and uses the same authoritative validation and immutable service.
+                    </div>
+                    <ReviewForm
+                      batchId={batch.batchId}
+                      claim={claim}
+                      csrfToken={csrfToken}
+                      values={values}
+                      fieldErrors={fieldErrors}
+                      superseding={revising}
+                    />
+                  </details>
+                </>
+              : <details
+                  class="change-decision"
+                  open={values.reviewMode === "simple" || values.reviewMode === "advanced"}
+                >
+                  <summary>Change decision</summary>
+                  <SimpleReviewForm
+                    batchId={batch.batchId}
+                    claim={claim}
+                    csrfToken={csrfToken}
+                    values={values}
+                    fieldErrors={fieldErrors}
+                    superseding={revising}
+                    overrideOnly
+                  />
+                  <details class="advanced-review" open={values.reviewMode === "advanced"}>
+                    <summary>Advanced Review</summary>
+                    <div class="notice">
+                      Exceptional or ambiguous cases only. This form exposes the full canonical review schema and uses the same authoritative validation and immutable service.
+                    </div>
+                    <ReviewForm
+                      batchId={batch.batchId}
+                      claim={claim}
+                      csrfToken={csrfToken}
+                      values={values}
+                      fieldErrors={fieldErrors}
+                      superseding={revising}
+                    />
+                  </details>
+                </details>}
           </>}
   </section>
 

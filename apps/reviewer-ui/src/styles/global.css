@@ -474,6 +474,62 @@ details {
   margin-top: 1rem;
 }
 
+.claim-details {
+  display: grid;
+  gap: 0.7rem;
+  margin-top: 1.5rem;
+}
+
+.claim-details h2 {
+  margin-top: 0.4rem;
+}
+
+.recommendation-card {
+  padding: clamp(1rem, 3vw, 1.6rem);
+  border: 2px solid #9ec9aa;
+  border-radius: 0.7rem;
+  background: var(--accent-soft);
+}
+
+.recommendation-heading {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.recommendation-heading h3,
+.recommendation-heading .eyebrow {
+  margin-top: 0;
+}
+
+.recommendation-reasons {
+  margin: 1rem 0;
+}
+
+.recommendation-confirm-form,
+.recommendation-question-form {
+  margin-top: 1.2rem;
+}
+
+.recommendation-question-form fieldset {
+  background: rgb(255 255 255 / 72%);
+}
+
+.question-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.change-decision {
+  margin-top: 1rem;
+}
+
+.change-decision > .simple-review-form {
+  margin-top: 1rem;
+}
+
 .current-review-summary h3 {
   margin-top: 0;
 }

@@ -2,6 +2,7 @@ import type { Source } from "../schemas.js";
 export declare const UI_FIXTURE_TIME = "2026-07-29T10:00:00.000Z";
 export declare function createEvidenceReviewUiFixture(options?: {
     visibility?: Source["visibility"];
+    ambiguousWorkContextClaimId?: string;
 }): Promise<{
     workspace: string;
     batchId: string;

@@ -4,6 +4,7 @@ import { getEvidenceReviewBatchStatus } from "./evidence-review-batch.js";
 import { evidenceReviewSelectionReason, loadEvidenceReviewWorkspaceData, } from "./evidence-review-workspace.js";
 import { deriveHumanTitle } from "./human-readable-markdown.js";
 import { projectEvidenceReviewIntent } from "./evidence-review-intent.js";
+import { projectEvidenceReviewRecommendationSubmission } from "./evidence-review-recommendation.js";
 export const EVIDENCE_REVIEW_UI_NAME = "ProofLayer Local Evidence Review UI";
 export const evidenceReviewUiFormOptions = {
     decisions: EvidenceClaimReviewDecisionSchema.options,
@@ -86,7 +87,14 @@ export async function submitEvidenceReviewUiClaim(workspace, batchId, claimId, f
     }
     const { claim } = await loadEvidenceReviewUiClaim(workspace, batchId, claimId);
     let rawInput;
-    if (fields.reviewMode === "simple") {
+    if (fields.reviewMode === "recommendation") {
+        const submission = projectEvidenceReviewRecommendationSubmission(claim, fields);
+        if (submission.status !== "ready" || !submission.projection?.input) {
+            throw new EvidenceReviewUiSubmissionError("This recommendation could not be recorded safely. Review the explanation and use the manual controls.", submission.fieldErrors);
+        }
+        rawInput = submission.projection.input;
+    }
+    else if (fields.reviewMode === "simple") {
         const projection = projectEvidenceReviewIntent(claim, fields);
         if (projection.status !== "ready" || !projection.input) {
             throw new EvidenceReviewUiSubmissionError(projection.status === "blocked"

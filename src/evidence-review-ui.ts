@@ -25,6 +25,7 @@ import {
 } from "./evidence-review-workspace.js";
 import { deriveHumanTitle } from "./human-readable-markdown.js";
 import { projectEvidenceReviewIntent } from "./evidence-review-intent.js";
+import { projectEvidenceReviewRecommendationSubmission } from "./evidence-review-recommendation.js";
 
 export const EVIDENCE_REVIEW_UI_NAME = "ProofLayer Local Evidence Review UI";
 
@@ -261,7 +262,16 @@ export async function submitEvidenceReviewUiClaim(
   }
   const { claim } = await loadEvidenceReviewUiClaim(workspace, batchId, claimId);
   let rawInput: unknown;
-  if (fields.reviewMode === "simple") {
+  if (fields.reviewMode === "recommendation") {
+    const submission = projectEvidenceReviewRecommendationSubmission(claim, fields);
+    if (submission.status !== "ready" || !submission.projection?.input) {
+      throw new EvidenceReviewUiSubmissionError(
+        "This recommendation could not be recorded safely. Review the explanation and use the manual controls.",
+        submission.fieldErrors,
+      );
+    }
+    rawInput = submission.projection.input;
+  } else if (fields.reviewMode === "simple") {
     const projection = projectEvidenceReviewIntent(claim, fields);
     if (projection.status !== "ready" || !projection.input) {
       throw new EvidenceReviewUiSubmissionError(

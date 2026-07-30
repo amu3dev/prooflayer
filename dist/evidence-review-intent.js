@@ -1,3 +1,4 @@
+import { isEvidenceReviewMetricCandidate } from "./evidence-review-numeric.js";
 export const EVIDENCE_REVIEW_SIMPLE_INTENTS = [
     "approve",
     "approve-with-edit",
@@ -350,6 +351,10 @@ function deriveWorkContext(claim, fallback) {
         return { value: "project", warnings: [] };
     if (hasEmployment && !hasProject)
         return { value: "employment", warnings: [] };
+    const section = claim.sourceClassification.section?.trim().toLocaleLowerCase("en-US");
+    if (section === "summary" || section === "career through-line") {
+        return { value: "other", warnings: [] };
+    }
     if (categories.size > 0 && [...categories].every((category) => category === "skill" || category === "tool" || category === "domain")) {
         return { value: "skill", warnings: [] };
     }
@@ -432,7 +437,7 @@ function incompleteProjection(status, claim, decision, publicSafety, resumeReadi
     };
 }
 function isMetricCandidate(claim) {
-    return claim.potentialMetric || claim.sourceMetricStatus !== "no_metric";
+    return isEvidenceReviewMetricCandidate(claim.text, claim.sourceMetricStatus);
 }
 function isApprovalIntent(intent) {
     return intent === "approve" || intent === "approve-with-edit";

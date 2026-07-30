@@ -1,4 +1,5 @@
 import type { EvidenceClaimReviewInput } from "./evidence-claim-review-schemas.js";
+import { isEvidenceReviewMetricCandidate } from "./evidence-review-numeric.js";
 import type { EvidenceReviewUiClaim } from "./evidence-review-ui.js";
 
 export const EVIDENCE_REVIEW_SIMPLE_INTENTS = [
@@ -485,6 +486,10 @@ function deriveWorkContext(
     claim.evidence.some(({ parentRoleId, category }) => Boolean(parentRoleId) || category === "role");
   if (hasProject && !hasEmployment) return { value: "project", warnings: [] };
   if (hasEmployment && !hasProject) return { value: "employment", warnings: [] };
+  const section = claim.sourceClassification.section?.trim().toLocaleLowerCase("en-US");
+  if (section === "summary" || section === "career through-line") {
+    return { value: "other", warnings: [] };
+  }
   if (categories.size > 0 && [...categories].every((category) =>
     category === "skill" || category === "tool" || category === "domain")) {
     return { value: "skill", warnings: [] };
@@ -593,7 +598,7 @@ function incompleteProjection(
 }
 
 function isMetricCandidate(claim: EvidenceReviewUiClaim): boolean {
-  return claim.potentialMetric || claim.sourceMetricStatus !== "no_metric";
+  return isEvidenceReviewMetricCandidate(claim.text, claim.sourceMetricStatus);
 }
 
 function isApprovalIntent(intent: EvidenceReviewSimpleIntent): boolean {

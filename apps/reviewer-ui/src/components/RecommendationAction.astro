@@ -1,0 +1,80 @@
+---
+import type { EvidenceReviewRecommendation } from "../../../../src/evidence-review-recommendation.ts";
+import type { EvidenceReviewUiClaim } from "../../../../src/evidence-review-ui.ts";
+
+interface Props {
+  batchId: string;
+  claim: EvidenceReviewUiClaim;
+  csrfToken: string;
+  recommendation: EvidenceReviewRecommendation;
+}
+
+const { batchId, claim, csrfToken, recommendation } = Astro.props;
+const question = recommendation.requiredHumanQuestions[0];
+---
+
+<div class={`recommendation-card level-${recommendation.interactionLevel}`}>
+  <div class="recommendation-heading">
+    <div>
+      <p class="eyebrow">Recommended by ProofLayer</p>
+      <h3>Human confirmation required</h3>
+    </div>
+    <span class="badge">{recommendation.recommendationConfidence} confidence</span>
+  </div>
+
+  <ul class="recommendation-reasons">
+    {recommendation.recommendationReasons.map((reason) => <li>{reason}</li>)}
+  </ul>
+
+  {recommendation.interactionLevel === "one-click" && (
+    <form
+      class="recommendation-confirm-form"
+      method="post"
+      action={`/review/${batchId}/claim/${claim.id}`}
+    >
+      <input type="hidden" name="csrfToken" value={csrfToken} />
+      <input type="hidden" name="reviewMode" value="recommendation" />
+      <input type="hidden" name="recommendationAction" value="confirm" />
+      <input type="hidden" name="submitAction" value="next" />
+      <button type="submit">Approve and Next</button>
+    </form>
+  )}
+
+  {recommendation.interactionLevel === "one-question" && question && (
+    <form
+      class="recommendation-question-form"
+      method="post"
+      action={`/review/${batchId}/claim/${claim.id}`}
+    >
+      <input type="hidden" name="csrfToken" value={csrfToken} />
+      <input type="hidden" name="reviewMode" value="recommendation" />
+      <input type="hidden" name="recommendationQuestionId" value={question.id} />
+      <input type="hidden" name="submitAction" value="next" />
+      <fieldset>
+        <legend>{question.prompt}</legend>
+        <p class="hint">{question.context} Choosing an answer records the validated review and advances.</p>
+        <div class="question-actions">
+          {question.options.map((option, index) => (
+            <button
+              class={index === 0 ? undefined : "secondary-action"}
+              type="submit"
+              name="recommendationAnswer"
+              value={option.value}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      </fieldset>
+    </form>
+  )}
+
+  {recommendation.interactionLevel === "manual" && (
+    <div class="notice">
+      <strong>Manual review required.</strong>
+      {recommendation.blockingAmbiguities.length > 0
+        ? <ul>{recommendation.blockingAmbiguities.map((ambiguity) => <li>{ambiguity}</li>)}</ul>
+        : <p>The canonical decision needs more context than a safe one-click recommendation can provide.</p>}
+    </div>
+  )}
+</div>
