@@ -91,6 +91,7 @@ export async function launchEvidenceReviewUi(
     PORT: String(prepared.port),
     PROOFLAYER_UI_WORKSPACE: prepared.workspace,
     PROOFLAYER_UI_BATCH_ID: prepared.batch.batchId,
+    PROOFLAYER_UI_CLAIM_IDS: JSON.stringify(prepared.batch.claims.map(({ id }) => id).sort()),
     PROOFLAYER_UI_READ_ONLY: prepared.readOnly ? "1" : "0",
     PROOFLAYER_UI_CSRF_TOKEN: csrfToken,
     PROOFLAYER_UI_ORIGIN: prepared.origin,

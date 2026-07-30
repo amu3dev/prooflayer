@@ -7,6 +7,8 @@ import {
   buildEvidenceReviewUiOrigin,
   findAvailableLoopbackPort,
 } from "../evidence-review-ui-server.js";
+import { evidenceReviewUiClaimCsrfToken } from "../evidence-review-ui-csrf.js";
+import { isEvidenceReviewUiLoopbackAddress } from "../evidence-review-ui-http-server.js";
 import { listEvidenceClaimReviews } from "../evidence-claim-review.js";
 import { submitEvidenceReviewUiClaim } from "../evidence-review-ui.js";
 import {
@@ -17,6 +19,13 @@ import {
 const children: ChildProcess[] = [];
 let nextIpv4Port = 4700;
 let nextLocalhostPort = 4800;
+const TEST_CSRF_SECRET = "a".repeat(64);
+const TEST_CLAIM_IDS = [
+  "claim_review_ui_1",
+  "claim_review_ui_2",
+  "claim_review_ui_3",
+  "claim_review_ui_4",
+] as const;
 
 afterEach(async () => {
   await Promise.all(children.splice(0).map(stopUiServer));
@@ -65,8 +74,11 @@ describe("Astro Local Evidence Review UI routes", () => {
         method: "POST",
         redirect: "manual",
         headers: {
-          origin: server.origin,
+          origin: "null",
           "content-type": "application/x-www-form-urlencoded",
+          "sec-fetch-site": "same-origin",
+          "sec-fetch-mode": "navigate",
+          "sec-fetch-dest": "document",
         },
         body: new URLSearchParams({ csrfToken: server.csrfToken }),
       },
@@ -178,8 +190,9 @@ describe("Astro Local Evidence Review UI routes", () => {
       const claimResponse = await fetch(claimUrl);
       const claimHtml = await claimResponse.text();
       expect(claimResponse.status).toBe(200);
-      expect(claimHtml).toContain('<form class="review-form" method="post" novalidate>');
-      expect(claimHtml).not.toMatch(/<form[^>]+action=/);
+      expect(claimHtml).toContain(
+        `<form class="review-form" method="post" action="/review/${fixture.batchId}/claim/claim_review_ui_3" novalidate>`,
+      );
       expect(claimHtml).not.toContain(host === "localhost" ? "127.0.0.1" : "localhost");
 
       const body = new URLSearchParams({
@@ -198,6 +211,17 @@ describe("Astro Local Evidence Review UI routes", () => {
       expect(foreignOrigin.status).toBe(403);
 
       const alternateHost = host === "localhost" ? "127.0.0.1" : "localhost";
+      const alternateOrigin = await fetch(claimUrl, {
+        method: "POST",
+        redirect: "manual",
+        headers: {
+          origin: `http://${alternateHost}:${new URL(server.origin).port}`,
+          "content-type": "application/x-www-form-urlencoded",
+        },
+        body,
+      });
+      expect(alternateOrigin.status).toBe(403);
+
       const mismatchedHost = await postWithHost(
         claimUrl,
         `${alternateHost}:${new URL(server.origin).port}`,
@@ -242,6 +266,114 @@ describe("Astro Local Evidence Review UI routes", () => {
     },
     20_000,
   );
+
+  it("accepts an opaque browser origin only with loopback navigation metadata and a claim-bound token", async () => {
+    const fixture = await createEvidenceReviewUiFixture();
+    const server = await startUiServer(fixture.workspace, fixture.batchId, false);
+    const claimUrl = `${server.origin}/review/${fixture.batchId}/claim/claim_review_ui_3`;
+    const validBody = new URLSearchParams({
+      csrfToken: server.csrfToken,
+      ...stringFields(validApprovedFields()),
+    });
+    const nullOriginHeaders = {
+      origin: "null",
+      "content-type": "application/x-www-form-urlencoded",
+      "sec-fetch-site": "same-origin",
+      "sec-fetch-mode": "navigate",
+      "sec-fetch-dest": "document",
+    };
+
+    const missingToken = await postBrowserForm(
+      claimUrl,
+      nullOriginHeaders,
+      new URLSearchParams(stringFields(validApprovedFields())).toString(),
+    );
+    expect(missingToken.status).toBe(403);
+
+    const invalidToken = await postBrowserForm(
+      claimUrl,
+      nullOriginHeaders,
+      new URLSearchParams({ ...Object.fromEntries(validBody), csrfToken: "b".repeat(64) }).toString(),
+    );
+    expect(invalidToken.status).toBe(403);
+
+    const crossSite = await postBrowserForm(
+      claimUrl,
+      { ...nullOriginHeaders, "sec-fetch-site": "cross-site" },
+      validBody.toString(),
+    );
+    expect(crossSite.status).toBe(403);
+
+    const unsafeMode = await postBrowserForm(
+      claimUrl,
+      { ...nullOriginHeaders, "sec-fetch-mode": "cors" },
+      validBody.toString(),
+    );
+    expect(unsafeMode.status).toBe(403);
+
+    const unsafeDestination = await postBrowserForm(
+      claimUrl,
+      { ...nullOriginHeaders, "sec-fetch-dest": "empty" },
+      validBody.toString(),
+    );
+    expect(unsafeDestination.status).toBe(403);
+
+    const missingOrigin = await fetch(claimUrl, {
+      method: "POST",
+      redirect: "manual",
+      headers: { "content-type": "application/x-www-form-urlencoded" },
+      body: validBody,
+    });
+    expect(missingOrigin.status).toBe(403);
+
+    const externalOrigin = await fetch(claimUrl, {
+      method: "POST",
+      redirect: "manual",
+      headers: { ...nullOriginHeaders, origin: "http://external.invalid" },
+      body: validBody,
+    });
+    expect(externalOrigin.status).toBe(403);
+
+    for (const forwardedHeader of ["x-forwarded-host", "x-forwarded-proto", "x-forwarded-port"]) {
+      const forwarded = await postBrowserForm(
+        claimUrl,
+        { ...nullOriginHeaders, [forwardedHeader]: "forged.invalid" },
+        validBody.toString(),
+      );
+      expect(forwarded.status).toBe(400);
+    }
+
+    const crossBatch = await postBrowserForm(
+      `${server.origin}/review/evidence-review-batch_00000000000000000000/claim/claim_review_ui_3`,
+      nullOriginHeaders,
+      validBody.toString(),
+    );
+    expect(crossBatch.status).toBe(403);
+
+    const crossClaim = await postBrowserForm(
+      `${server.origin}/review/${fixture.batchId}/claim/claim_review_ui_1`,
+      nullOriginHeaders,
+      validBody.toString(),
+    );
+    expect(crossClaim.status).toBe(403);
+    expect((await listEvidenceClaimReviews(fixture.workspace)).every(
+      ({ status }) => status === "missing",
+    )).toBe(true);
+
+    expect(isEvidenceReviewUiLoopbackAddress("127.0.0.1")).toBe(true);
+    expect(isEvidenceReviewUiLoopbackAddress("::1")).toBe(true);
+    expect(isEvidenceReviewUiLoopbackAddress("::ffff:127.0.0.1")).toBe(true);
+    expect(isEvidenceReviewUiLoopbackAddress("192.0.2.10")).toBe(false);
+    expect(isEvidenceReviewUiLoopbackAddress(undefined)).toBe(false);
+
+    const valid = await postBrowserForm(claimUrl, nullOriginHeaders, validBody.toString());
+    expect(valid).toEqual({ status: 303, body: "" });
+    expect((await listEvidenceClaimReviews(fixture.workspace)).filter(
+      ({ status }) => status === "current",
+    )).toEqual([
+      expect.objectContaining({ claimId: "claim_review_ui_3", decision: "approved" }),
+    ]);
+  }, 20_000);
 });
 
 async function startUiServer(
@@ -254,7 +386,11 @@ async function startUiServer(
   const port = await findAvailableLoopbackPort(host, requestedPort);
   const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
   const entry = path.join(root, "dist/evidence-review-ui-http-server.js");
-  const csrfToken = "test-csrf-token-local-only";
+  const csrfToken = evidenceReviewUiClaimCsrfToken(
+    TEST_CSRF_SECRET,
+    batchId,
+    "claim_review_ui_3",
+  );
   const origin = buildEvidenceReviewUiOrigin(host, port);
   const child = spawn(process.execPath, [entry], {
     env: {
@@ -263,8 +399,9 @@ async function startUiServer(
       PORT: String(port),
       PROOFLAYER_UI_WORKSPACE: workspace,
       PROOFLAYER_UI_BATCH_ID: batchId,
+      PROOFLAYER_UI_CLAIM_IDS: JSON.stringify(TEST_CLAIM_IDS),
       PROOFLAYER_UI_READ_ONLY: readOnly ? "1" : "0",
-      PROOFLAYER_UI_CSRF_TOKEN: csrfToken,
+      PROOFLAYER_UI_CSRF_TOKEN: TEST_CSRF_SECRET,
       PROOFLAYER_UI_ORIGIN: origin,
       ASTRO_NODE_AUTOSTART: "disabled",
     },
@@ -323,6 +460,35 @@ async function postWithHost(
     }, (response) => {
       response.resume();
       response.once("end", () => resolve(response.statusCode ?? 0));
+    });
+    request.once("error", reject);
+    request.end(body);
+  });
+}
+
+async function postBrowserForm(
+  destination: string,
+  headers: Record<string, string>,
+  body: string,
+): Promise<{ status: number; body: string }> {
+  const url = new URL(destination);
+  return new Promise((resolve, reject) => {
+    const request = httpRequest({
+      hostname: url.hostname,
+      port: url.port,
+      path: `${url.pathname}${url.search}`,
+      method: "POST",
+      headers: {
+        ...headers,
+        "Content-Length": Buffer.byteLength(body),
+      },
+    }, (response) => {
+      const chunks: Buffer[] = [];
+      response.on("data", (chunk: Buffer) => chunks.push(chunk));
+      response.once("end", () => resolve({
+        status: response.statusCode ?? 0,
+        body: Buffer.concat(chunks).toString("utf8"),
+      }));
     });
     request.once("error", reject);
     request.end(body);

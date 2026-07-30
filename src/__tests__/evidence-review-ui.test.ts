@@ -12,6 +12,10 @@ import { listEvidenceClaimReviews } from "../evidence-claim-review.js";
 import { pathExists, walkFiles } from "../fs-utils.js";
 import { evidenceReviewUiHttpRuntime } from "../evidence-review-ui-http-server.js";
 import {
+  evidenceReviewUiClaimCsrfToken,
+  evidenceReviewUiCsrfTokenMatches,
+} from "../evidence-review-ui-csrf.js";
+import {
   assertLoopbackHost,
   buildEvidenceReviewUiOrigin,
   formatEvidenceReviewUiLaunch,
@@ -55,6 +59,31 @@ describe("Local Evidence Review UI domain adapter", () => {
     ]);
     expect(evidenceReviewUiFormOptions.publicSafety).toContain("public-safe");
     expect(evidenceReviewUiFormOptions.workContexts).toContain("project");
+  });
+
+  it("derives session-stable CSRF tokens bound to one batch and claim", () => {
+    const secret = "a".repeat(64);
+    const batchId = "evidence-review-batch_00000000000000000000";
+    const token = evidenceReviewUiClaimCsrfToken(secret, batchId, "claim_review_ui_1");
+
+    expect(token).toBe(evidenceReviewUiClaimCsrfToken(
+      secret,
+      batchId,
+      "claim_review_ui_1",
+    ));
+    expect(token).not.toBe(evidenceReviewUiClaimCsrfToken(
+      secret,
+      batchId,
+      "claim_review_ui_2",
+    ));
+    expect(token).not.toBe(evidenceReviewUiClaimCsrfToken(
+      "b".repeat(64),
+      batchId,
+      "claim_review_ui_1",
+    ));
+    expect(evidenceReviewUiCsrfTokenMatches(token, token)).toBe(true);
+    expect(evidenceReviewUiCsrfTokenMatches("b".repeat(64), token)).toBe(false);
+    expect(evidenceReviewUiCsrfTokenMatches(undefined, token)).toBe(false);
   });
 
   it("creates, deduplicates, and explicitly supersedes canonical reviews", async () => {
@@ -296,6 +325,10 @@ describe("Local Evidence Review UI launcher", () => {
       HOST: "127.0.0.1",
       PORT: "4765",
       PROOFLAYER_UI_ORIGIN: "http://localhost:4765",
+      PROOFLAYER_UI_BATCH_ID: "evidence-review-batch_00000000000000000000",
+      PROOFLAYER_UI_CLAIM_IDS: JSON.stringify(["claim_runtime_test"]),
+      PROOFLAYER_UI_READ_ONLY: "0",
+      PROOFLAYER_UI_CSRF_TOKEN: "a".repeat(64),
     })).toThrow(/does not match its selected host and port/);
   });
 

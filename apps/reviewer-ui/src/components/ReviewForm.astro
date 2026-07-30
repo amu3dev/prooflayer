@@ -19,7 +19,7 @@ const current = (name: string, fallback = "") => values[name] ?? fallback;
 const errors = (name: string) => fieldErrors[name] ?? [];
 ---
 
-<form class="review-form" method="post" novalidate>
+<form class="review-form" method="post" action={`/review/${batchId}/claim/${claim.id}`} novalidate>
   <input type="hidden" name="csrfToken" value={csrfToken} />
 
   <fieldset>

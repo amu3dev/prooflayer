@@ -2,16 +2,16 @@ export interface EvidenceReviewUiRuntimeConfig {
   workspace: string;
   batchId: string;
   readOnly: boolean;
-  csrfToken: string;
+  csrfSecret: string;
   origin: string;
 }
 
 export function evidenceReviewUiRuntimeConfig(): EvidenceReviewUiRuntimeConfig {
   const workspace = process.env.PROOFLAYER_UI_WORKSPACE;
   const batchId = process.env.PROOFLAYER_UI_BATCH_ID;
-  const csrfToken = process.env.PROOFLAYER_UI_CSRF_TOKEN;
+  const csrfSecret = process.env.PROOFLAYER_UI_CSRF_TOKEN;
   const origin = process.env.PROOFLAYER_UI_ORIGIN;
-  if (!workspace || !batchId || !csrfToken || !origin) {
+  if (!workspace || !batchId || !csrfSecret || !origin) {
     throw new Error("Local Evidence Review UI runtime is not configured.");
   }
   if (!/^evidence-review-batch_[a-f0-9]{20}$/.test(batchId)) {
@@ -21,7 +21,7 @@ export function evidenceReviewUiRuntimeConfig(): EvidenceReviewUiRuntimeConfig {
     workspace,
     batchId,
     readOnly: process.env.PROOFLAYER_UI_READ_ONLY === "1",
-    csrfToken,
+    csrfSecret,
     origin: validateRuntimeOrigin(origin),
   };
 }

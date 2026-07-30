@@ -1,12 +1,27 @@
 import http from "node:http";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { evidenceReviewUiClaimCsrfToken, evidenceReviewUiCsrfTokenMatches, } from "./evidence-review-ui-csrf.js";
 import { assertLoopbackHost, buildEvidenceReviewUiOrigin, } from "./evidence-review-ui-server.js";
+const MAX_FORM_BODY_BYTES = 1_048_576;
+const CLAIM_ROUTE_PATTERN = /^\/review\/(evidence-review-batch_[a-f0-9]{20})\/claim\/(claim_[A-Za-z0-9_-]+)\/?$/;
 export function evidenceReviewUiHttpRuntime(environment = process.env) {
     const host = environment.HOST;
     const port = Number(environment.PORT);
     const configuredOrigin = environment.PROOFLAYER_UI_ORIGIN;
-    if (!host || !configuredOrigin || !Number.isInteger(port) || port < 1 || port > 65_535) {
+    const batchId = environment.PROOFLAYER_UI_BATCH_ID;
+    const csrfSecret = environment.PROOFLAYER_UI_CSRF_TOKEN;
+    const claimIds = parseClaimIds(environment.PROOFLAYER_UI_CLAIM_IDS);
+    const readOnly = environment.PROOFLAYER_UI_READ_ONLY === "1";
+    if (!host
+        || !configuredOrigin
+        || !batchId
+        || !/^evidence-review-batch_[a-f0-9]{20}$/.test(batchId)
+        || !csrfSecret
+        || !/^[a-f0-9]{64}$/.test(csrfSecret)
+        || !Number.isInteger(port)
+        || port < 1
+        || port > 65_535) {
         throw new Error("Local Evidence Review UI HTTP runtime is not configured safely.");
     }
     assertLoopbackHost(host);
@@ -19,6 +34,10 @@ export function evidenceReviewUiHttpRuntime(environment = process.env) {
         port,
         origin,
         authority: new URL(origin).host,
+        batchId,
+        claimIds,
+        readOnly,
+        csrfSecret,
         astroServerEntryPath: path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../apps/reviewer-ui/dist/server/entry.mjs"),
     };
 }
@@ -41,17 +60,84 @@ export async function startEvidenceReviewUiHttpServer(environment = process.env)
 }
 function createGuardedRequestListener(runtime, astroHandler) {
     return (request, response) => {
-        const hostRejection = validateRequestHost(request, runtime.authority);
-        if (hostRejection) {
-            rejectRequest(response, hostRejection.status, hostRejection.message);
-            return;
-        }
-        if (!isSafeMethod(request.method) && request.headers.origin !== runtime.origin) {
-            rejectRequest(response, 403, "Cross-site request origin is forbidden.");
-            return;
-        }
-        astroHandler(request, response);
+        void handleGuardedRequest(runtime, astroHandler, request, response).catch(() => {
+            if (!response.headersSent) {
+                rejectRequest(response, 400, "The review submission could not be validated safely.");
+            }
+            else if (!response.writableEnded) {
+                response.end();
+            }
+        });
     };
+}
+async function handleGuardedRequest(runtime, astroHandler, request, response) {
+    const hostRejection = validateRequestHost(request, runtime.authority);
+    if (hostRejection) {
+        rejectRequest(response, hostRejection.status, hostRejection.message);
+        return;
+    }
+    if (isSafeMethod(request.method)) {
+        astroHandler(request, response);
+        return;
+    }
+    if (runtime.readOnly) {
+        rejectReadOnlyRequest(response);
+        return;
+    }
+    const origin = request.headers.origin;
+    if (origin === runtime.origin) {
+        astroHandler(request, response);
+        return;
+    }
+    if (origin === undefined) {
+        rejectRequest(response, 403, "A request Origin is required for review submissions.");
+        return;
+    }
+    if (origin !== "null") {
+        rejectRequest(response, 403, "Cross-site request origin is forbidden.");
+        return;
+    }
+    const nullOriginRejection = await prepareNullOriginSubmission(request, runtime);
+    if (nullOriginRejection) {
+        rejectRequest(response, nullOriginRejection.status, nullOriginRejection.message);
+        return;
+    }
+    astroHandler(request, response);
+}
+async function prepareNullOriginSubmission(request, runtime) {
+    if (request.method !== "POST") {
+        return { status: 403, message: "Null-origin review requests must use POST form navigation." };
+    }
+    if (!isEvidenceReviewUiLoopbackAddress(request.socket.remoteAddress)) {
+        return { status: 403, message: "Null-origin review requests must come from the loopback interface." };
+    }
+    const fetchSite = request.headers["sec-fetch-site"];
+    if (fetchSite !== "same-origin" && fetchSite !== "none") {
+        return { status: 403, message: "Null-origin review requests require same-origin fetch metadata." };
+    }
+    if (request.headers["sec-fetch-mode"] !== "navigate" || request.headers["sec-fetch-dest"] !== "document") {
+        return { status: 403, message: "Null-origin review requests must be document form navigation." };
+    }
+    if (!isFormUrlEncoded(request.headers["content-type"])) {
+        return { status: 415, message: "Null-origin review requests require URL-encoded form content." };
+    }
+    const route = parseLockedClaimRoute(request.url, runtime.origin);
+    if (!route
+        || route.batchId !== runtime.batchId
+        || !runtime.claimIds.has(route.claimId)) {
+        return { status: 403, message: "Null-origin review request target is outside the locked batch context." };
+    }
+    const body = await readRequestBody(request, MAX_FORM_BODY_BYTES);
+    const fields = new URLSearchParams(new TextDecoder("utf-8", { fatal: true }).decode(body));
+    const submittedTokens = fields.getAll("csrfToken");
+    const expectedToken = evidenceReviewUiClaimCsrfToken(runtime.csrfSecret, route.batchId, route.claimId);
+    if (submittedTokens.length !== 1
+        || !evidenceReviewUiCsrfTokenMatches(submittedTokens[0], expectedToken)) {
+        return { status: 403, message: "Null-origin review request CSRF verification failed." };
+    }
+    request.body = body;
+    request.headers.origin = runtime.origin;
+    return undefined;
 }
 function validateRequestHost(request, expectedAuthority) {
     if (request.headers["x-forwarded-host"] !== undefined
@@ -81,6 +167,71 @@ function validateRequestHost(request, expectedAuthority) {
 }
 function isSafeMethod(method) {
     return method === "GET" || method === "HEAD" || method === "OPTIONS";
+}
+function parseClaimIds(value) {
+    if (!value)
+        throw new Error("Local Evidence Review UI claim context is missing.");
+    let parsed;
+    try {
+        parsed = JSON.parse(value);
+    }
+    catch {
+        throw new Error("Local Evidence Review UI claim context is invalid.");
+    }
+    if (!Array.isArray(parsed)
+        || parsed.length === 0
+        || parsed.some((claimId) => typeof claimId !== "string" || !/^claim_[A-Za-z0-9_-]+$/.test(claimId))
+        || new Set(parsed).size !== parsed.length) {
+        throw new Error("Local Evidence Review UI claim context is invalid.");
+    }
+    return new Set(parsed);
+}
+export function isEvidenceReviewUiLoopbackAddress(address) {
+    return address === "127.0.0.1" || address === "::1" || address === "::ffff:127.0.0.1";
+}
+function isFormUrlEncoded(contentType) {
+    return contentType?.split(";", 1)[0]?.trim().toLowerCase()
+        === "application/x-www-form-urlencoded";
+}
+function parseLockedClaimRoute(requestUrl, expectedOrigin) {
+    if (!requestUrl)
+        return undefined;
+    let pathname;
+    try {
+        pathname = new URL(requestUrl, expectedOrigin).pathname;
+    }
+    catch {
+        return undefined;
+    }
+    const match = CLAIM_ROUTE_PATTERN.exec(pathname);
+    return match ? { batchId: match[1], claimId: match[2] } : undefined;
+}
+async function readRequestBody(request, limit) {
+    const contentLength = Number(request.headers["content-length"]);
+    if (Number.isFinite(contentLength) && contentLength > limit) {
+        throw new Error("Review submission exceeds the local form body limit.");
+    }
+    const chunks = [];
+    let received = 0;
+    for await (const chunk of request) {
+        const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+        received += buffer.byteLength;
+        if (received > limit) {
+            throw new Error("Review submission exceeds the local form body limit.");
+        }
+        chunks.push(buffer);
+    }
+    return Buffer.concat(chunks);
+}
+function rejectReadOnlyRequest(response) {
+    const body = Buffer.from("Review submissions are disabled in read-only mode.", "utf8");
+    response.writeHead(405, {
+        Allow: "GET",
+        "Content-Type": "text/plain; charset=utf-8",
+        "Content-Length": String(body.byteLength),
+        "Cache-Control": "no-store",
+    });
+    response.end(body);
 }
 function rejectRequest(response, status, message) {
     const body = Buffer.from(message, "utf8");
