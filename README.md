@@ -57,9 +57,12 @@ ProofLayer's Astro application is the primary local human interface. It projects
 ```bash
 npm run ui:start
 npm run ui:start -- --open
+prooflayer ui start --host 127.0.0.1 --port 4321 --open
 ```
 
 The product shell provides Home, My Career, Create Resume, Tailor to a Job, Updates, Clarifications, and Advanced Review views. One local source is enough to begin; LinkedIn and GitHub are optional. Granular CLI commands remain available for automation, audit, and debugging.
+
+The normal Product Shell is not locked to an Evidence Review Batch. All writes share the same loopback-only server, exact Host and origin checks, constrained browser null-origin handling, read-only mode, and per-session HMAC foundation. Product workflow forms receive route-and-action-scoped tokens, with a target binding when required; Evidence Review forms receive separate batch-and-claim-scoped tokens. Tokens cannot authorize actions across those scopes.
 
 See the [ProofLayer Product Vision and Principles](docs/product/PRODUCT_VISION_AND_PRINCIPLES.md).
 
@@ -609,7 +612,7 @@ The JSON batch and review-input templates remain canonical. Markdown is presenta
 
 ### Local Evidence Review UI
 
-The focused Astro UI provides a local interaction surface for one existing Evidence Review Batch:
+The focused Astro UI deep-links the same local application into one existing Evidence Review Batch:
 
 ```bash
 prooflayer ui review <batch-id>
@@ -617,7 +620,7 @@ prooflayer ui review <batch-id> --open
 prooflayer ui review <batch-id> --read-only
 ```
 
-The server binds to `127.0.0.1` by default, works offline, and accepts only the validated batch and its selected claims. It reads the same canonical batch, templates, claims, evidence, requirements, and effective reviews used by the expert CLI. Submissions call the existing Evidence Claim Review service directly, so canonical Zod validation, immutable review versions, explicit supersession, eligibility rules, and atomic persistence remain unchanged.
+The server binds to `127.0.0.1` by default, works offline, and accepts only the validated batch and its selected claims for review mutations. Product Shell mode can open an existing batch from Advanced Review without becoming globally batch-locked; each review form still receives a batch-and-claim-scoped token and calls the same canonical Evidence Claim Review service. Canonical Zod validation, immutable review versions, explicit supersession, eligibility rules, and atomic persistence remain unchanged.
 
 Evidence Review now derives one conservative, transient recommendation from immutable claim, evidence, provenance, policy, and review metadata. Clear claims use **Approve and Next** as a single human-confirmation click; claims with exactly one safe classification ambiguity ask one compact question whose answer submits immediately; wording changes, true metric verification, privacy restrictions, unsupported scope, multiple ambiguities, and supersession remain manual review. **Change decision** exposes Edit and Approve, Reject, Not Enough Evidence, Decide Later, and the full canonical **Advanced Review** form.
 

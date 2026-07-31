@@ -5,10 +5,14 @@ import { addCareerSource } from "../../../../../src/product-workflows.ts";
 import { refreshWorkspace } from "../../../../../src/update-impact.ts";
 import { proofLayerUiRuntimeConfig } from "../../lib/runtime.js";
 import { field, formatProductDate, productActionToken, productPostRejection, productTokenMatches } from "../../lib/product.js";
+import { PRODUCT_WORKFLOW_ACTIONS } from "../../../../../src/prooflayer-ui-request-scope.ts";
 
 const config = proofLayerUiRuntimeConfig();
 const actionPath = "/career/update";
-const csrfToken = productActionToken(config, actionPath);
+const addAction = PRODUCT_WORKFLOW_ACTIONS.updateCareerSource;
+const processAction = PRODUCT_WORKFLOW_ACTIONS.processCareerUpdates;
+const addCsrfToken = productActionToken(config, actionPath, addAction);
+const processCsrfToken = productActionToken(config, actionPath, processAction);
 let notice: string | undefined;
 let error: string | undefined;
 
@@ -16,17 +20,22 @@ if (Astro.request.method === "POST") {
   const rejection = productPostRejection(Astro.request, config);
   if (rejection) return rejection;
   const formData = await Astro.request.formData();
-  if (!productTokenMatches(formData, csrfToken)) {
-    return new Response("The update form expired or failed local request verification.", { status: 403 });
-  }
   try {
     const action = field(formData, "action");
-    if (action === "process") {
+    const expectedToken = action === addAction
+      ? addCsrfToken
+      : action === processAction
+        ? processCsrfToken
+        : undefined;
+    if (!expectedToken || !productTokenMatches(formData, expectedToken)) {
+      return new Response("The update form expired or failed local request verification.", { status: 403 });
+    }
+    if (action === processAction) {
       const refresh = await refreshWorkspace(config.workspace);
       notice = refresh.attentionRequired
         ? "Sources were processed. Review the detected changes before rebuilding dependent outputs."
         : "Sources were processed. Your Career Twin remains current.";
-    } else if (action === "add") {
+    } else if (action === addAction) {
       const title = field(formData, "title") ?? "Career notes";
       const pasted = field(formData, "content");
       const uploaded = formData.get("file");
@@ -63,8 +72,8 @@ const twin = await projectCareerTwin(config.workspace);
     <section class="panel">
       <h2>Add a source</h2>
       <form method="post" enctype="multipart/form-data" action={actionPath} class="product-form">
-        <input type="hidden" name="csrfToken" value={csrfToken} />
-        <input type="hidden" name="action" value="add" />
+        <input type="hidden" name="csrfToken" value={addCsrfToken} />
+        <input type="hidden" name="action" value={addAction} />
         <label>Source title <input name="title" placeholder="Recent project notes" required /></label>
         <label>Paste text <textarea name="content" rows="8" placeholder="Paste a CV, profile text, or project notes"></textarea></label>
         <div class="form-divider"><span>or</span></div>
@@ -81,8 +90,8 @@ const twin = await projectCareerTwin(config.workspace);
           : twin.sources.map((source) => <div class="list-row static"><span><strong>{source.label}</strong><small>{source.type.replaceAll("_", " ")} · imported {formatProductDate(source.importedAt)}</small></span><span class={`pill ${source.status === "active" ? "current" : "attention"}`}>{source.status}</span></div>)}
       </div>
       <form method="post" action={actionPath} class="process-form">
-        <input type="hidden" name="csrfToken" value={csrfToken} />
-        <input type="hidden" name="action" value="process" />
+        <input type="hidden" name="csrfToken" value={processCsrfToken} />
+        <input type="hidden" name="action" value={processAction} />
         <button type="submit" class="secondary-action" disabled={config.readOnly}>Detect and process changes</button>
       </form>
       <p class="form-help">Processing compares the new source with the existing profile, preserves immutable reviews, and marks affected downstream outputs stale rather than silently replacing them.</p>

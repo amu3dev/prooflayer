@@ -1,10 +1,10 @@
 import http from "node:http";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { evidenceReviewUiClaimCsrfToken, evidenceReviewUiCsrfTokenMatches, } from "./evidence-review-ui-csrf.js";
+import { evidenceReviewUiClaimCsrfToken, evidenceReviewUiCsrfTokenMatches, proofLayerUiActionCsrfToken, } from "./evidence-review-ui-csrf.js";
 import { assertLoopbackHost, buildEvidenceReviewUiOrigin, } from "./evidence-review-ui-server.js";
-const MAX_FORM_BODY_BYTES = 1_048_576;
-const CLAIM_ROUTE_PATTERN = /^\/review\/(evidence-review-batch_[a-f0-9]{20})\/claim\/(claim_[A-Za-z0-9_-]+)\/?$/;
+import { isSafeMethod, productWorkflowActionAllowed, productWorkflowActionRequiresTarget, resolveProofLayerUiRequestScope, } from "./prooflayer-ui-request-scope.js";
+const MAX_FORM_BODY_BYTES = 2_250_000;
 export function evidenceReviewUiHttpRuntime(environment = process.env) {
     const host = environment.HOST;
     const port = Number(environment.PORT);
@@ -65,7 +65,7 @@ function createGuardedRequestListener(runtime, astroHandler) {
     return (request, response) => {
         void handleGuardedRequest(runtime, astroHandler, request, response).catch(() => {
             if (!response.headersSent) {
-                rejectRequest(response, 400, "The review submission could not be validated safely.");
+                rejectRequest(response, 400, "The local UI submission could not be validated safely.");
             }
             else if (!response.writableEnded) {
                 response.end();
@@ -83,8 +83,17 @@ async function handleGuardedRequest(runtime, astroHandler, request, response) {
         astroHandler(request, response);
         return;
     }
+    const scope = resolveProofLayerUiRequestScope(request.method, request.url, runtime.origin);
+    if (scope.scope === "unregistered" || scope.scope === "read-only") {
+        rejectRequest(response, 404, "This writable local UI route is not registered.");
+        return;
+    }
     if (runtime.readOnly) {
         rejectReadOnlyRequest(response);
+        return;
+    }
+    if (!isEvidenceReviewUiLoopbackAddress(request.socket.remoteAddress)) {
+        rejectRequest(response, 403, "Local UI submissions must come from the loopback interface.");
         return;
     }
     const origin = request.headers.origin;
@@ -93,54 +102,70 @@ async function handleGuardedRequest(runtime, astroHandler, request, response) {
         return;
     }
     if (origin === undefined) {
-        rejectRequest(response, 403, "A request Origin is required for review submissions.");
+        rejectRequest(response, 403, "A request Origin is required for local UI submissions.");
         return;
     }
     if (origin !== "null") {
         rejectRequest(response, 403, "Cross-site request origin is forbidden.");
         return;
     }
-    if (runtime.mode !== "review") {
-        rejectRequest(response, 403, "Null-origin product actions are forbidden.");
-        return;
-    }
-    const nullOriginRejection = await prepareNullOriginSubmission(request, runtime);
+    const nullOriginRejection = await prepareNullOriginSubmission(request, runtime, scope);
     if (nullOriginRejection) {
         rejectRequest(response, nullOriginRejection.status, nullOriginRejection.message);
         return;
     }
     astroHandler(request, response);
 }
-async function prepareNullOriginSubmission(request, runtime) {
+async function prepareNullOriginSubmission(request, runtime, scope) {
     if (request.method !== "POST") {
-        return { status: 403, message: "Null-origin review requests must use POST form navigation." };
-    }
-    if (!isEvidenceReviewUiLoopbackAddress(request.socket.remoteAddress)) {
-        return { status: 403, message: "Null-origin review requests must come from the loopback interface." };
+        return { status: 403, message: "Null-origin local UI requests must use POST form navigation." };
     }
     const fetchSite = request.headers["sec-fetch-site"];
     if (fetchSite !== "same-origin" && fetchSite !== "none") {
-        return { status: 403, message: "Null-origin review requests require same-origin fetch metadata." };
+        return { status: 403, message: "Null-origin local UI requests require same-origin fetch metadata." };
     }
     if (request.headers["sec-fetch-mode"] !== "navigate" || request.headers["sec-fetch-dest"] !== "document") {
-        return { status: 403, message: "Null-origin review requests must be document form navigation." };
+        return { status: 403, message: "Null-origin local UI requests must be document form navigation." };
     }
-    if (!isFormUrlEncoded(request.headers["content-type"])) {
-        return { status: 415, message: "Null-origin review requests require URL-encoded form content." };
-    }
-    const route = parseLockedClaimRoute(request.url, runtime.origin);
-    if (!route
-        || route.batchId !== runtime.batchId
-        || !runtime.claimIds.has(route.claimId)) {
-        return { status: 403, message: "Null-origin review request target is outside the locked batch context." };
+    const contentType = request.headers["content-type"];
+    if (!isSupportedFormContentType(contentType)) {
+        return { status: 415, message: "Null-origin local UI requests require supported form content." };
     }
     const body = await readRequestBody(request, MAX_FORM_BODY_BYTES);
-    const fields = new URLSearchParams(new TextDecoder("utf-8", { fatal: true }).decode(body));
-    const submittedTokens = fields.getAll("csrfToken");
-    const expectedToken = evidenceReviewUiClaimCsrfToken(runtime.csrfSecret, route.batchId, route.claimId);
-    if (submittedTokens.length !== 1
-        || !evidenceReviewUiCsrfTokenMatches(submittedTokens[0], expectedToken)) {
-        return { status: 403, message: "Null-origin review request CSRF verification failed." };
+    const fields = await parseFormData(body, contentType, runtime.origin);
+    const submittedToken = singleTextField(fields, "csrfToken");
+    if (scope.scope === "evidence-review") {
+        if (runtime.mode === "review"
+            && (scope.batchId !== runtime.batchId || !runtime.claimIds.has(scope.claimId))) {
+            return { status: 403, message: "Null-origin review request target is outside the locked batch context." };
+        }
+        const expectedToken = evidenceReviewUiClaimCsrfToken(runtime.csrfSecret, scope.batchId, scope.claimId);
+        if (!evidenceReviewUiCsrfTokenMatches(submittedToken, expectedToken)) {
+            return { status: 403, message: "Null-origin review request CSRF verification failed." };
+        }
+    }
+    else {
+        const actionName = singleTextField(fields, "action");
+        if (!productWorkflowActionAllowed(scope.routePath, actionName)) {
+            return { status: 403, message: "Null-origin product workflow action is not registered for this route." };
+        }
+        const targetId = productWorkflowActionRequiresTarget(actionName)
+            ? singleTextField(fields, "targetId")
+            : undefined;
+        let expectedToken;
+        try {
+            expectedToken = proofLayerUiActionCsrfToken(runtime.csrfSecret, {
+                actionName: actionName,
+                routePath: scope.routePath,
+                ...(targetId ? { targetId } : {}),
+            });
+        }
+        catch {
+            return { status: 403, message: "Null-origin product workflow context is invalid." };
+        }
+        if (!evidenceReviewUiCsrfTokenMatches(submittedToken, expectedToken)) {
+            return { status: 403, message: "Null-origin product workflow CSRF verification failed." };
+        }
     }
     request.body = body;
     request.headers.origin = runtime.origin;
@@ -172,9 +197,6 @@ function validateRequestHost(request, expectedAuthority) {
     }
     return undefined;
 }
-function isSafeMethod(method) {
-    return method === "GET" || method === "HEAD" || method === "OPTIONS";
-}
 function parseClaimIds(value) {
     if (!value)
         throw new Error("Local Evidence Review UI claim context is missing.");
@@ -196,27 +218,28 @@ function parseClaimIds(value) {
 export function isEvidenceReviewUiLoopbackAddress(address) {
     return address === "127.0.0.1" || address === "::1" || address === "::ffff:127.0.0.1";
 }
-function isFormUrlEncoded(contentType) {
-    return contentType?.split(";", 1)[0]?.trim().toLowerCase()
-        === "application/x-www-form-urlencoded";
+function isSupportedFormContentType(contentType) {
+    const mediaType = contentType?.split(";", 1)[0]?.trim().toLowerCase();
+    return mediaType === "application/x-www-form-urlencoded" || mediaType === "multipart/form-data";
 }
-function parseLockedClaimRoute(requestUrl, expectedOrigin) {
-    if (!requestUrl)
-        return undefined;
-    let pathname;
-    try {
-        pathname = new URL(requestUrl, expectedOrigin).pathname;
-    }
-    catch {
-        return undefined;
-    }
-    const match = CLAIM_ROUTE_PATTERN.exec(pathname);
-    return match ? { batchId: match[1], claimId: match[2] } : undefined;
+async function parseFormData(body, contentType, expectedOrigin) {
+    const formRequest = new Request(`${expectedOrigin}/_prooflayer-form-validation`, {
+        method: "POST",
+        headers: { "content-type": contentType },
+        body: new Uint8Array(body),
+    });
+    return formRequest.formData();
+}
+function singleTextField(fields, name) {
+    const values = fields.getAll(name);
+    return values.length === 1 && typeof values[0] === "string" && values[0].length > 0
+        ? values[0]
+        : undefined;
 }
 async function readRequestBody(request, limit) {
     const contentLength = Number(request.headers["content-length"]);
     if (Number.isFinite(contentLength) && contentLength > limit) {
-        throw new Error("Review submission exceeds the local form body limit.");
+        throw new Error("Local UI submission exceeds the form body limit.");
     }
     const chunks = [];
     let received = 0;
@@ -224,14 +247,14 @@ async function readRequestBody(request, limit) {
         const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
         received += buffer.byteLength;
         if (received > limit) {
-            throw new Error("Review submission exceeds the local form body limit.");
+            throw new Error("Local UI submission exceeds the form body limit.");
         }
         chunks.push(buffer);
     }
     return Buffer.concat(chunks);
 }
 function rejectReadOnlyRequest(response) {
-    const body = Buffer.from("Review submissions are disabled in read-only mode.", "utf8");
+    const body = Buffer.from("Local UI submissions are disabled in read-only mode.", "utf8");
     response.writeHead(405, {
         Allow: "GET",
         "Content-Type": "text/plain; charset=utf-8",

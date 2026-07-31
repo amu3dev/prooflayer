@@ -103,6 +103,8 @@ Advanced Review preserves the existing Evidence Review UI for evidence audits, c
 
 Astro is a thin, local interaction layer over domain projections and orchestration services. It does not shell out to the CLI, duplicate canonical artifacts, parse derived Markdown, or store pipeline truth.
 
+Normal product workflows and Advanced Review share a loopback-only HTTP security foundation but have separate authorization scopes. Product forms are bound to their registered route, action, and target when applicable. Review forms are independently bound to their batch and claim. Neither token class can authorize the other, and launching the Product Shell does not lock ordinary workflows to one review batch.
+
 The UI does not submit applications, publish outputs, invent connectors, auto-approve model output, or expose internal pipeline artifacts in primary navigation.
 
 The capability order and proof boundaries remain defined by the [ProofLayer Capability Pipeline Architecture](../architecture/PIPELINE_ARCHITECTURE.md).

@@ -4,10 +4,13 @@ import Layout from "../../layouts/Layout.astro";
 import { createProductJobJourney, existingProductTargets, inspectProductJobJourney, runProductJobJourney } from "../../../../../src/product-workflows.ts";
 import { proofLayerUiRuntimeConfig } from "../../lib/runtime.js";
 import { field, productActionToken, productPostRejection, productTokenMatches } from "../../lib/product.js";
+import { PRODUCT_WORKFLOW_ACTIONS } from "../../../../../src/prooflayer-ui-request-scope.ts";
 
 const config = proofLayerUiRuntimeConfig();
 const actionPath = "/resume/job";
-const csrfToken = productActionToken(config, actionPath);
+const createAction = PRODUCT_WORKFLOW_ACTIONS.createJobTarget;
+const continueAction = PRODUCT_WORKFLOW_ACTIONS.continueJobWorkflow;
+const createCsrfToken = productActionToken(config, actionPath, createAction);
 let error: string | undefined;
 let targetId = Astro.url.searchParams.get("target") ?? undefined;
 
@@ -15,13 +18,20 @@ if (Astro.request.method === "POST") {
   const rejection = productPostRejection(Astro.request, config);
   if (rejection) return rejection;
   const formData = await Astro.request.formData();
-  if (!productTokenMatches(formData, csrfToken)) return new Response("The Job form expired or failed local request verification.", { status: 403 });
   try {
-    if (field(formData, "action") === "select") {
+    const action = field(formData, "action");
+    if (action === continueAction) {
       targetId = field(formData, "targetId");
       if (!targetId) throw new Error("Choose an existing Job Target.");
+      const expectedToken = productActionToken(config, actionPath, continueAction, targetId);
+      if (!productTokenMatches(formData, expectedToken)) {
+        return new Response("The Job form expired or failed local request verification.", { status: 403 });
+      }
       const result = await runProductJobJourney(config.workspace, targetId);
       return Astro.redirect(`/resume/job?target=${result.target.id}`, 303);
+    }
+    if (action !== createAction || !productTokenMatches(formData, createCsrfToken)) {
+      return new Response("The Job form expired or failed local request verification.", { status: 403 });
     }
     const pasted = field(formData, "description");
     const uploaded = formData.get("file");
@@ -59,9 +69,9 @@ if (targetId) {
   <p class="lede">Paste a Job Description, upload a text file, or continue an existing opportunity. ProofLayer keeps fit qualitative and never predicts whether you will be hired.</p>
   {error && <div class="notice error" role="alert">{error}</div>}
 
-  {targets.jobs.length > 0 && <section class="panel existing-job-panel"><h2>Continue an existing opportunity</h2><form method="post" action={actionPath} class="inline-form"><input type="hidden" name="csrfToken" value={csrfToken} /><input type="hidden" name="action" value="select" /><label>Job Target <select name="targetId" required>{targets.jobs.map((target) => <option value={target.id} selected={target.id === targetId}>{target.title}{target.company ? ` — ${target.company}` : ""}</option>)}</select></label><button type="submit" disabled={config.readOnly}>Analyze and Tailor</button></form></section>}
+  {targets.jobs.length > 0 && <section class="panel existing-job-panel"><h2>Continue an existing opportunity</h2><div class="stack-list">{targets.jobs.map((target) => <form method="post" action={actionPath} class="list-row"><input type="hidden" name="csrfToken" value={productActionToken(config, actionPath, continueAction, target.id)} /><input type="hidden" name="action" value={continueAction} /><input type="hidden" name="targetId" value={target.id} /><span><strong>{target.title}</strong><small>{[target.company, target.location].filter(Boolean).join(" · ")}</small></span><button type="submit" class="secondary-action" disabled={config.readOnly}>Analyze and Tailor</button></form>)}</div></section>}
 
-  <details class="new-job-panel" open={targets.jobs.length === 0}><summary>Add a new Job Description</summary><form method="post" enctype="multipart/form-data" action={actionPath} class="product-form"><input type="hidden" name="csrfToken" value={csrfToken} /><input type="hidden" name="action" value="create" /><div class="form-grid"><label>Job title <input name="title" placeholder="Optional when front matter provides it" /></label><label>Company <input name="company" placeholder="ExampleCo" /></label><label>Location <input name="location" placeholder="Berlin, Germany" /></label><label>Working model <select name="workingModel"><option value="">Not specified</option><option value="remote">Remote</option><option value="hybrid">Hybrid</option><option value="onsite">On-site</option></select></label></div><p class="meta">Metadata is optional when the uploaded Markdown includes deterministic front matter.</p><label>Paste Job Description <textarea name="description" rows="12"></textarea></label><div class="form-divider"><span>or</span></div><label>Upload Markdown or text <input type="file" name="file" accept=".md,.markdown,.txt,text/plain,text/markdown" /></label><button type="submit" disabled={config.readOnly}>Analyze and Tailor</button></form></details>
+  <details class="new-job-panel" open={targets.jobs.length === 0}><summary>Add a new Job Description</summary><form method="post" enctype="multipart/form-data" action={actionPath} class="product-form"><input type="hidden" name="csrfToken" value={createCsrfToken} /><input type="hidden" name="action" value={createAction} /><div class="form-grid"><label>Job title <input name="title" placeholder="Optional when front matter provides it" /></label><label>Company <input name="company" placeholder="ExampleCo" /></label><label>Location <input name="location" placeholder="Berlin, Germany" /></label><label>Working model <select name="workingModel"><option value="">Not specified</option><option value="remote">Remote</option><option value="hybrid">Hybrid</option><option value="onsite">On-site</option></select></label></div><p class="meta">Metadata is optional when the uploaded Markdown includes deterministic front matter.</p><label>Paste Job Description <textarea name="description" rows="12"></textarea></label><div class="form-divider"><span>or</span></div><label>Upload Markdown or text <input type="file" name="file" accept=".md,.markdown,.txt,text/plain,text/markdown" /></label><button type="submit" disabled={config.readOnly}>Analyze and Tailor</button></form></details>
 
   {journey && <>
     <section class="job-summary"><div><p class="eyebrow">Current opportunity</p><h2>{journey.target.title}</h2><p class="lede">{[journey.target.company, journey.target.location, journey.target.workingModel].filter(Boolean).join(" · ")}</p></div><div class={`fit-badge fit-${journey.fit.label.replace(" ", "-")}`}><small>Overall fit</small><strong>{journey.fit.label}</strong><span>Evidence-based, not hiring probability</span></div></section>

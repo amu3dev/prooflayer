@@ -5,10 +5,12 @@ import { projectCareerTwin } from "../../../../../src/career-twin.ts";
 import { existingProductTargets, inspectRoleResumeJourney, startRoleResumeJourney } from "../../../../../src/product-workflows.ts";
 import { proofLayerUiRuntimeConfig } from "../../lib/runtime.js";
 import { field, productActionToken, productPostRejection, productTokenMatches } from "../../lib/product.js";
+import { PRODUCT_WORKFLOW_ACTIONS } from "../../../../../src/prooflayer-ui-request-scope.ts";
 
 const config = proofLayerUiRuntimeConfig();
 const actionPath = "/resume/role";
-const csrfToken = productActionToken(config, actionPath);
+const actionName = PRODUCT_WORKFLOW_ACTIONS.startRoleWorkflow;
+const csrfToken = productActionToken(config, actionPath, actionName);
 let error: string | undefined;
 let targetId = Astro.url.searchParams.get("target") ?? undefined;
 
@@ -16,7 +18,9 @@ if (Astro.request.method === "POST") {
   const rejection = productPostRejection(Astro.request, config);
   if (rejection) return rejection;
   const formData = await Astro.request.formData();
-  if (!productTokenMatches(formData, csrfToken)) return new Response("The role form expired or failed local request verification.", { status: 403 });
+  if (field(formData, "action") !== actionName || !productTokenMatches(formData, csrfToken)) {
+    return new Response("The role form expired or failed local request verification.", { status: 403 });
+  }
   try {
     const result = await startRoleResumeJourney(config.workspace, {
       title: field(formData, "title") ?? "",
@@ -48,6 +52,7 @@ try {
 
   <form method="post" action={actionPath} class="target-form panel">
     <input type="hidden" name="csrfToken" value={csrfToken} />
+    <input type="hidden" name="action" value={actionName} />
     <label class="primary-input">Target role <input name="title" placeholder="Engineering Manager" value={journey.target?.title} required autofocus /></label>
     <details class="advanced-fields"><summary>Optional details</summary><div class="form-grid"><label>Seniority <input name="seniority" placeholder="Senior" value={journey.target?.seniority} /></label><label>Domain <input name="domain" placeholder="Platform" value={journey.target?.domain} /></label><label>Location <input name="location" placeholder="Remote Europe" value={journey.target?.location} /></label><label>Working model <select name="workingModel"><option value="">Not specified</option><option value="remote">Remote</option><option value="hybrid">Hybrid</option><option value="onsite">On-site</option></select></label></div></details>
     <button type="submit" disabled={config.readOnly}>Create My Resume</button>

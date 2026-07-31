@@ -2,13 +2,26 @@ import {
   evidenceReviewUiCsrfTokenMatches,
   proofLayerUiActionCsrfToken,
 } from "../../../../src/evidence-review-ui-csrf.ts";
+import type {
+  ProductWorkflowActionName,
+  ProductWorkflowRoutePath,
+} from "../../../../src/prooflayer-ui-request-scope.ts";
 import {
   isSameOriginSubmission,
   type ProofLayerUiRuntimeConfig,
 } from "./runtime.js";
 
-export function productActionToken(config: ProofLayerUiRuntimeConfig, actionPath: string): string {
-  return proofLayerUiActionCsrfToken(config.csrfSecret, actionPath);
+export function productActionToken(
+  config: ProofLayerUiRuntimeConfig,
+  routePath: ProductWorkflowRoutePath,
+  actionName: ProductWorkflowActionName,
+  targetId?: string,
+): string {
+  return proofLayerUiActionCsrfToken(config.csrfSecret, {
+    routePath,
+    actionName,
+    ...(targetId ? { targetId } : {}),
+  });
 }
 
 export function productPostRejection(
