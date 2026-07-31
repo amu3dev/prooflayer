@@ -1,6 +1,102 @@
 ---
-import { evidenceReviewUiRuntimeConfig } from "../lib/runtime.js";
+import Layout from "../layouts/Layout.astro";
+import { projectCareerTwin } from "../../../../src/career-twin.ts";
+import { proofLayerUiRuntimeConfig } from "../lib/runtime.js";
+import { formatProductDate } from "../lib/product.js";
 
-const config = evidenceReviewUiRuntimeConfig();
-return Astro.redirect(`/review/${config.batchId}`, 302);
+const config = proofLayerUiRuntimeConfig();
+const twin = await projectCareerTwin(config.workspace);
+const name = twin.identity.name.split(/\s+/, 1)[0] ?? twin.identity.name;
+const recentTargets = twin.targets.slice(0, 4);
+const recentOutputs = twin.outputs.slice(0, 4);
 ---
+
+<Layout title="Home" batchId={config.batchId} readOnly={config.readOnly}>
+  <section class="hero home-hero">
+    <div>
+      <p class="eyebrow">Your career knowledge, ready when you are</p>
+      <h1>Welcome back, {name}.</h1>
+      <p class="lede">ProofLayer has an existing career profile built from your sources. Use it to create a role resume or understand a specific job without starting over.</p>
+    </div>
+    <div class={`trust-card ${twin.status.readyForOutputs ? "ready" : "attention"}`}>
+      <span class="status-dot" aria-hidden="true"></span>
+      <strong>{twin.status.trustLabel}</strong>
+      <p>{twin.status.sourceMessage}</p>
+      <a href="/career">View My Career</a>
+    </div>
+  </section>
+
+  <section aria-labelledby="career-twin-heading">
+    <div class="section-heading">
+      <div><p class="eyebrow">Career Twin</p><h2 id="career-twin-heading">What ProofLayer knows</h2></div>
+      <a href="/career">Explore your career profile</a>
+    </div>
+    <div class="metric-grid">
+      <div class="metric-card"><strong>{twin.roles.length}</strong><span>roles</span></div>
+      <div class="metric-card"><strong>{twin.projects.length}</strong><span>projects</span></div>
+      <div class="metric-card"><strong>{twin.capabilities.length}</strong><span>capabilities</span></div>
+      <div class="metric-card"><strong>{twin.skills.length}</strong><span>skills and technologies</span></div>
+      <div class="metric-card"><strong>{twin.status.sourceCount}</strong><span>sources</span></div>
+      <div class="metric-card"><strong>{twin.status.unresolvedMaterialQuestionCount}</strong><span>material questions</span></div>
+    </div>
+    <div class="panel profile-strip">
+      <div><span class="meta">Current positioning</span><strong>{twin.identity.headline}</strong></div>
+      <div><span class="meta">Last updated</span><strong>{formatProductDate(twin.status.lastUpdate)}</strong></div>
+      <div><span class="meta">Profile state</span><strong>{twin.status.attentionRequired ? "Update available" : "Current"}</strong></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="actions-heading">
+    <p class="eyebrow">Start here</p>
+    <h2 id="actions-heading">What would you like to do?</h2>
+    <div class="action-grid">
+      <a class="action-card primary" href="/resume/role">
+        <span class="action-index">01</span><h3>Create a Resume for a Role</h3>
+        <p>Tell ProofLayer the role. Your Career Twin supplies the career facts.</p><span class="action-link">Create my resume →</span>
+      </a>
+      <a class="action-card" href="/resume/job">
+        <span class="action-index">02</span><h3>Tailor My Resume to a Job</h3>
+        <p>Paste a Job Description or continue an opportunity already in ProofLayer.</p><span class="action-link">Analyze and tailor →</span>
+      </a>
+      <a class="action-card" href="/career/update">
+        <span class="action-index">03</span><h3>Update My Career Profile</h3>
+        <p>Add a CV, profile export, or project notes. One source is enough to start.</p><span class="action-link">Add what I have →</span>
+      </a>
+    </div>
+  </section>
+
+  <div class="two-column">
+    <section aria-labelledby="targets-heading">
+      <div class="section-heading"><h2 id="targets-heading">Current targets</h2></div>
+      <div class="stack-list">
+        {recentTargets.length === 0
+          ? <div class="empty-state"><p>No targets yet.</p><a href="/resume/role">Start with a role</a></div>
+          : recentTargets.map((target) => (
+              <a class="list-row" href={target.type === "job" ? `/resume/job?target=${target.id}` : `/resume/role?target=${target.id}`}>
+                <span><strong>{target.title}</strong><small>{target.type === "job" ? [target.company, target.location].filter(Boolean).join(" · ") : "Role resume"}</small></span>
+                <span class="pill">{target.type === "job" ? "Job" : "Role"}</span>
+              </a>
+            ))}
+      </div>
+    </section>
+    <section aria-labelledby="outputs-heading">
+      <div class="section-heading"><h2 id="outputs-heading">Recent outputs</h2></div>
+      <div class="stack-list">
+        {recentOutputs.length === 0
+          ? <div class="empty-state"><p>No generated outputs yet.</p><span>They will appear here after review.</span></div>
+          : recentOutputs.map((output) => (
+              <div class="list-row static">
+                <span><strong>{output.label}</strong><small>{formatProductDate(output.generatedAt)}</small></span>
+                <span class={`pill ${output.freshness}`}>{output.freshness}</span>
+              </div>
+            ))}
+      </div>
+    </section>
+  </div>
+
+  <section class="trust-band" aria-labelledby="trust-heading">
+    <div><p class="eyebrow">Trust, without the machinery</p><h2 id="trust-heading">Proof stays attached to every output.</h2></div>
+    <p>ProofLayer uses reviewed evidence conservatively, keeps unresolved material details visible, and never turns a target title into career history.</p>
+    {twin.status.unresolvedMaterialQuestionCount > 0 && <a class="button secondary" href="/clarifications">Review material questions</a>}
+  </section>
+</Layout>

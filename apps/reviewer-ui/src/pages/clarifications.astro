@@ -1,0 +1,16 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { projectCareerTwin } from "../../../../src/career-twin.ts";
+import { proofLayerUiRuntimeConfig } from "../lib/runtime.js";
+
+const config = proofLayerUiRuntimeConfig();
+const twin = await projectCareerTwin(config.workspace);
+---
+
+<Layout title="Clarifications" batchId={config.batchId} readOnly={config.readOnly}>
+  <p class="eyebrow">Clarification Center</p><h1>Only the questions that matter now.</h1>
+  <p class="lede">ProofLayer checks current reviews and evidence metadata before asking. Resolved facts are not stored again in a UI-specific answer store.</p>
+  {twin.questions.length === 0
+    ? <section class="empty-state large"><h2>No material questions right now</h2><p>Your existing answers remain in the canonical trust engine. A question returns only if its source changes materially.</p><a class="button" href="/">Return home</a></section>
+    : <div class="question-list">{twin.questions.map((question) => <article class="question-card"><span class={`pill ${question.priority}`}>{question.priority} priority</span><h2>{question.title}</h2><p>{question.question}</p><p class="meta">{question.reason}</p><a class="button secondary" href={`/review/${question.batchId}/claim/${question.claimId}`}>Review this detail</a></article>)}</div>}
+</Layout>

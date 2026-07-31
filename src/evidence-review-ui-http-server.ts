@@ -16,11 +16,12 @@ import {
 } from "./evidence-review-ui-server.js";
 
 interface EvidenceReviewUiHttpRuntime {
+  mode: "product" | "review";
   host: string;
   port: number;
   origin: string;
   authority: string;
-  batchId: string;
+  batchId?: string;
   claimIds: ReadonlySet<string>;
   readOnly: boolean;
   csrfSecret: string;
@@ -45,14 +46,16 @@ export function evidenceReviewUiHttpRuntime(
   const port = Number(environment.PORT);
   const configuredOrigin = environment.PROOFLAYER_UI_ORIGIN;
   const batchId = environment.PROOFLAYER_UI_BATCH_ID;
+  const mode = environment.PROOFLAYER_UI_MODE === "product" ? "product" : "review";
   const csrfSecret = environment.PROOFLAYER_UI_CSRF_TOKEN;
-  const claimIds = parseClaimIds(environment.PROOFLAYER_UI_CLAIM_IDS);
+  const claimIds = mode === "review"
+    ? parseClaimIds(environment.PROOFLAYER_UI_CLAIM_IDS)
+    : new Set<string>();
   const readOnly = environment.PROOFLAYER_UI_READ_ONLY === "1";
   if (
     !host
     || !configuredOrigin
-    || !batchId
-    || !/^evidence-review-batch_[a-f0-9]{20}$/.test(batchId)
+    || (mode === "review" && (!batchId || !/^evidence-review-batch_[a-f0-9]{20}$/.test(batchId)))
     || !csrfSecret
     || !/^[a-f0-9]{64}$/.test(csrfSecret)
     || !Number.isInteger(port)
@@ -67,11 +70,12 @@ export function evidenceReviewUiHttpRuntime(
     throw new Error("Local Evidence Review UI origin does not match its selected host and port.");
   }
   return {
+    mode,
     host,
     port,
     origin,
     authority: new URL(origin).host,
-    batchId,
+    ...(batchId ? { batchId } : {}),
     claimIds,
     readOnly,
     csrfSecret,
@@ -147,6 +151,10 @@ async function handleGuardedRequest(
   }
   if (origin !== "null") {
     rejectRequest(response, 403, "Cross-site request origin is forbidden.");
+    return;
+  }
+  if (runtime.mode !== "review") {
+    rejectRequest(response, 403, "Null-origin product actions are forbidden.");
     return;
   }
   const nullOriginRejection = await prepareNullOriginSubmission(request, runtime);

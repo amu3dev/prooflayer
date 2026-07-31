@@ -8,9 +8,25 @@ export interface EvidenceReviewUiLaunchOptions {
     open?: boolean;
     readOnly?: boolean;
 }
+export interface ProofLayerUiLaunchOptions {
+    workspace: string;
+    host?: string;
+    port?: number;
+    open?: boolean;
+    readOnly?: boolean;
+}
 export interface PreparedEvidenceReviewUiLaunch {
     workspace: string;
     batch: EvidenceReviewUiBatch;
+    host: string;
+    port: number;
+    origin: string;
+    url: string;
+    readOnly: boolean;
+    serverEntryPath: string;
+}
+export interface PreparedProofLayerUiLaunch {
+    workspace: string;
     host: string;
     port: number;
     origin: string;
@@ -25,10 +41,16 @@ interface EvidenceReviewUiLauncherDependencies {
     waitUntilReady?: (url: string, child: ChildProcess) => Promise<void>;
 }
 export declare function prepareEvidenceReviewUiLaunch(options: EvidenceReviewUiLaunchOptions, dependencies?: EvidenceReviewUiLauncherDependencies): Promise<PreparedEvidenceReviewUiLaunch>;
+export declare function prepareProofLayerUiLaunch(options: ProofLayerUiLaunchOptions, dependencies?: EvidenceReviewUiLauncherDependencies): Promise<PreparedProofLayerUiLaunch>;
 export declare function launchEvidenceReviewUi(options: EvidenceReviewUiLaunchOptions, dependencies?: EvidenceReviewUiLauncherDependencies): Promise<{
     prepared: PreparedEvidenceReviewUiLaunch;
     child: ChildProcess;
 }>;
+export declare function launchProofLayerUi(options: ProofLayerUiLaunchOptions, dependencies?: EvidenceReviewUiLauncherDependencies): Promise<{
+    prepared: PreparedProofLayerUiLaunch;
+    child: ChildProcess;
+}>;
+export declare function formatProofLayerUiLaunch(prepared: PreparedProofLayerUiLaunch): string;
 export declare function formatEvidenceReviewUiLaunch(prepared: PreparedEvidenceReviewUiLaunch): string;
 export declare function waitForEvidenceReviewUiExit(child: ChildProcess): Promise<void>;
 export declare function assertLoopbackHost(host: string): void;

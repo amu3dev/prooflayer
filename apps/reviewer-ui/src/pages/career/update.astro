@@ -1,0 +1,91 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { projectCareerTwin } from "../../../../../src/career-twin.ts";
+import { addCareerSource } from "../../../../../src/product-workflows.ts";
+import { refreshWorkspace } from "../../../../../src/update-impact.ts";
+import { proofLayerUiRuntimeConfig } from "../../lib/runtime.js";
+import { field, formatProductDate, productActionToken, productPostRejection, productTokenMatches } from "../../lib/product.js";
+
+const config = proofLayerUiRuntimeConfig();
+const actionPath = "/career/update";
+const csrfToken = productActionToken(config, actionPath);
+let notice: string | undefined;
+let error: string | undefined;
+
+if (Astro.request.method === "POST") {
+  const rejection = productPostRejection(Astro.request, config);
+  if (rejection) return rejection;
+  const formData = await Astro.request.formData();
+  if (!productTokenMatches(formData, csrfToken)) {
+    return new Response("The update form expired or failed local request verification.", { status: 403 });
+  }
+  try {
+    const action = field(formData, "action");
+    if (action === "process") {
+      const refresh = await refreshWorkspace(config.workspace);
+      notice = refresh.attentionRequired
+        ? "Sources were processed. Review the detected changes before rebuilding dependent outputs."
+        : "Sources were processed. Your Career Twin remains current.";
+    } else if (action === "add") {
+      const title = field(formData, "title") ?? "Career notes";
+      const pasted = field(formData, "content");
+      const uploaded = formData.get("file");
+      let bytes: Uint8Array | undefined;
+      if (uploaded instanceof File && uploaded.size > 0) {
+        if (uploaded.size > 2_000_000) throw new Error("Uploaded source must be 2 MB or smaller.");
+        bytes = new Uint8Array(await uploaded.arrayBuffer());
+      } else if (pasted) {
+        bytes = Buffer.from(pasted, "utf8");
+      }
+      if (!bytes) throw new Error("Paste career notes or choose a text file.");
+      const result = await addCareerSource(config.workspace, { title, content: bytes });
+      notice = result.result === "created"
+        ? "Source added safely. Process updates when you are ready to compare it with your existing Career Twin."
+        : "The identical source is already available. Nothing was duplicated.";
+    } else {
+      throw new Error("Unknown update action.");
+    }
+  } catch (caught) {
+    error = caught instanceof Error ? caught.message : "The source could not be added safely.";
+  }
+}
+const twin = await projectCareerTwin(config.workspace);
+---
+
+<Layout title="Update My Career" batchId={config.batchId} readOnly={config.readOnly}>
+  <p class="eyebrow">Updates</p><h1>Add what you have.</h1>
+  <p class="lede">A CV, profile export, document, or a few project notes are enough. ProofLayer keeps your current Career Twin and processes only what changed.</p>
+  <div class="notice success"><strong>{twin.status.sourceMessage}</strong> LinkedIn and GitHub are optional, not prerequisites.</div>
+  {notice && <div class="notice success" role="status">{notice}</div>}
+  {error && <div class="notice error" role="alert">{error}</div>}
+
+  <div class="two-column form-layout">
+    <section class="panel">
+      <h2>Add a source</h2>
+      <form method="post" enctype="multipart/form-data" action={actionPath} class="product-form">
+        <input type="hidden" name="csrfToken" value={csrfToken} />
+        <input type="hidden" name="action" value="add" />
+        <label>Source title <input name="title" placeholder="Recent project notes" required /></label>
+        <label>Paste text <textarea name="content" rows="8" placeholder="Paste a CV, profile text, or project notes"></textarea></label>
+        <div class="form-divider"><span>or</span></div>
+        <label>Upload a text or Markdown file <input type="file" name="file" accept=".md,.markdown,.txt,text/plain,text/markdown" /></label>
+        <p class="form-help">Nothing is published. The source is stored locally and reviewed information is never overwritten automatically.</p>
+        <button type="submit" disabled={config.readOnly}>Add source</button>
+      </form>
+    </section>
+    <section>
+      <h2>Known sources</h2>
+      <div class="stack-list">
+        {twin.sources.length === 0
+          ? <div class="empty-state"><p>No source has been processed yet.</p></div>
+          : twin.sources.map((source) => <div class="list-row static"><span><strong>{source.label}</strong><small>{source.type.replaceAll("_", " ")} · imported {formatProductDate(source.importedAt)}</small></span><span class={`pill ${source.status === "active" ? "current" : "attention"}`}>{source.status}</span></div>)}
+      </div>
+      <form method="post" action={actionPath} class="process-form">
+        <input type="hidden" name="csrfToken" value={csrfToken} />
+        <input type="hidden" name="action" value="process" />
+        <button type="submit" class="secondary-action" disabled={config.readOnly}>Detect and process changes</button>
+      </form>
+      <p class="form-help">Processing compares the new source with the existing profile, preserves immutable reviews, and marks affected downstream outputs stale rather than silently replacing them.</p>
+    </section>
+  </div>
+</Layout>

@@ -1,0 +1,19 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { listEvidenceReviewBatches } from "../../../../src/evidence-review-batch.ts";
+import { loadEvidenceReviewUiBatch } from "../../../../src/evidence-review-ui.ts";
+import { proofLayerUiRuntimeConfig } from "../lib/runtime.js";
+
+const config = proofLayerUiRuntimeConfig();
+const statuses = await listEvidenceReviewBatches(config.workspace);
+const batches = await Promise.all(statuses.filter((status) => status.status === "current").map((status) => loadEvidenceReviewUiBatch(config.workspace, status.batchId)));
+---
+
+<Layout title="Advanced Review" batchId={config.batchId} readOnly={config.readOnly}>
+  <p class="eyebrow">Advanced Review</p><h1>Audit the evidence behind an output.</h1>
+  <p class="lede">Use this only when a material ambiguity, public-use boundary, corrected claim, or metric needs explicit review. Normal resume journeys do not require reviewing every claim.</p>
+  {batches.length === 0
+    ? <div class="empty-state large"><h2>No active review workspace</h2><p>ProofLayer will create one only when a current workflow needs controlled evidence review.</p></div>
+    : <div class="stack-list">{batches.map((batch) => <a class="list-row" href={`/review/${batch.batchId}`}><span><strong>{batch.target.title}</strong><small>{[batch.target.company, `${batch.progress.reviewed} reviewed`, `${batch.progress.pending} pending`].filter(Boolean).join(" · ")}</small></span><span class={`pill ${batch.complete ? "current" : "attention"}`}>{batch.complete ? "Complete" : "Needs review"}</span></a>)}</div>}
+  <div class="notice">Advanced Review writes immutable canonical JSON decisions. Markdown review workspaces remain derived and read-only.</div>
+</Layout>

@@ -1,0 +1,59 @@
+---
+import ProgressSteps from "../../components/ProgressSteps.astro";
+import Layout from "../../layouts/Layout.astro";
+import { projectCareerTwin } from "../../../../../src/career-twin.ts";
+import { existingProductTargets, inspectRoleResumeJourney, startRoleResumeJourney } from "../../../../../src/product-workflows.ts";
+import { proofLayerUiRuntimeConfig } from "../../lib/runtime.js";
+import { field, productActionToken, productPostRejection, productTokenMatches } from "../../lib/product.js";
+
+const config = proofLayerUiRuntimeConfig();
+const actionPath = "/resume/role";
+const csrfToken = productActionToken(config, actionPath);
+let error: string | undefined;
+let targetId = Astro.url.searchParams.get("target") ?? undefined;
+
+if (Astro.request.method === "POST") {
+  const rejection = productPostRejection(Astro.request, config);
+  if (rejection) return rejection;
+  const formData = await Astro.request.formData();
+  if (!productTokenMatches(formData, csrfToken)) return new Response("The role form expired or failed local request verification.", { status: 403 });
+  try {
+    const result = await startRoleResumeJourney(config.workspace, {
+      title: field(formData, "title") ?? "",
+      seniority: field(formData, "seniority"),
+      domain: field(formData, "domain"),
+      location: field(formData, "location"),
+      workingModel: field(formData, "workingModel"),
+    });
+    return Astro.redirect(`/resume/role?target=${result.target!.id}`, 303);
+  } catch (caught) {
+    error = caught instanceof Error ? caught.message : "The Role Resume journey could not start safely.";
+  }
+}
+const twin = await projectCareerTwin(config.workspace);
+const targets = await existingProductTargets(config.workspace);
+let journey;
+try {
+  journey = await inspectRoleResumeJourney(config.workspace, targetId);
+} catch {
+  targetId = undefined;
+  journey = await inspectRoleResumeJourney(config.workspace);
+  error ??= "That Role Target is not available in this workspace.";
+}
+---
+
+<Layout title="Create Resume for a Role" batchId={config.batchId} readOnly={config.readOnly}>
+  <section class="hero compact-hero"><div><p class="eyebrow">Create Resume</p><h1>What role do you want this resume for?</h1><p class="lede">Start with a title. ProofLayer uses your existing Career Twin, so you do not need to upload your background again.</p></div><div class="trust-card ready"><strong>{twin.status.trustLabel}</strong><p>{twin.roles.length} roles and {twin.projects.length} projects are already organized.</p></div></section>
+  {error && <div class="notice error" role="alert">{error}</div>}
+
+  <form method="post" action={actionPath} class="target-form panel">
+    <input type="hidden" name="csrfToken" value={csrfToken} />
+    <label class="primary-input">Target role <input name="title" placeholder="Engineering Manager" value={journey.target?.title} required autofocus /></label>
+    <details class="advanced-fields"><summary>Optional details</summary><div class="form-grid"><label>Seniority <input name="seniority" placeholder="Senior" value={journey.target?.seniority} /></label><label>Domain <input name="domain" placeholder="Platform" value={journey.target?.domain} /></label><label>Location <input name="location" placeholder="Remote Europe" value={journey.target?.location} /></label><label>Working model <select name="workingModel"><option value="">Not specified</option><option value="remote">Remote</option><option value="hybrid">Hybrid</option><option value="onsite">On-site</option></select></label></div></details>
+    <button type="submit" disabled={config.readOnly}>Create My Resume</button>
+  </form>
+
+  {targets.roles.length > 0 && <p class="existing-targets"><span>Continue an existing target:</span>{targets.roles.map((target) => <a class="pill" href={`/resume/role?target=${target.id}`}>{target.title}</a>)}</p>}
+
+  {journey.target && <section aria-labelledby="role-progress-heading"><div class="section-heading"><div><p class="eyebrow">Current progress</p><h2 id="role-progress-heading">{journey.target.title}</h2></div></div><ProgressSteps steps={journey.progress} /><div class={journey.blocker ? "notice" : "notice success"}><strong>Current value</strong><p>{journey.currentValue}</p>{journey.blocker && <p>{journey.blocker}</p>}<strong>Smallest next action</strong><p>{journey.nextAction}</p></div><details><summary>Advanced Details</summary><div class="status-table">{journey.advanced.map((stage) => <div><span>{stage.label}</span><strong>{stage.status}</strong></div>)}</div><p class="audit">The Role Target title is positioning input only. It never becomes employment history or proof of seniority.</p></details></section>}
+</Layout>

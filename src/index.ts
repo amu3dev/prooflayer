@@ -87,7 +87,9 @@ import {
 } from "./evidence-review-workspace.js";
 import {
   formatEvidenceReviewUiLaunch,
+  formatProofLayerUiLaunch,
   launchEvidenceReviewUi,
+  launchProofLayerUi,
   waitForEvidenceReviewUiExit,
 } from "./evidence-review-ui-server.js";
 import {
@@ -599,6 +601,29 @@ exportCommand
 const ui = program
   .command("ui")
   .description("Run focused local ProofLayer interaction surfaces.");
+
+ui
+  .command("start")
+  .option("--host <host>", "loopback host", "127.0.0.1")
+  .option("--port <port>", "preferred local port", "4321")
+  .option("--open", "open the local URL in the default browser")
+  .option("--read-only", "disable product actions and review submissions")
+  .option("-w, --workspace <path>", "workspace path")
+  .description("Start the local ProofLayer Career Twin product shell.")
+  .action(async (options: EvidenceReviewUiCliOptions) => {
+    const workspace = resolveWorkspace(
+      options.workspace ?? program.opts<{ workspace?: string }>().workspace,
+    );
+    const { prepared, child } = await launchProofLayerUi({
+      workspace,
+      host: options.host,
+      port: Number.parseInt(options.port, 10),
+      open: options.open,
+      readOnly: options.readOnly,
+    });
+    console.log(formatProofLayerUiLaunch(prepared));
+    await waitForEvidenceReviewUiExit(child);
+  });
 
 ui
   .command("review <batch-id>")

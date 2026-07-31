@@ -50,6 +50,19 @@ Phase 2 Slice 2.7G renders a current approved Job Resume Draft through one canon
 
 Human-controlled Evidence Foundation claim reviews now provide the reusable eligibility boundary projected into immutable Evidence Snapshot Contract v1 exports.
 
+## Product Experience
+
+ProofLayer's Astro application is the primary local human interface. It projects the existing Evidence Foundation and Career Profile as a persistent **Career Twin**, then organizes normal use around creating a resume for a Role or tailoring one to a Job. It does not create a second source of career truth.
+
+```bash
+npm run ui:start
+npm run ui:start -- --open
+```
+
+The product shell provides Home, My Career, Create Resume, Tailor to a Job, Updates, Clarifications, and Advanced Review views. One local source is enough to begin; LinkedIn and GitHub are optional. Granular CLI commands remain available for automation, audit, and debugging.
+
+See the [ProofLayer Product Vision and Principles](docs/product/PRODUCT_VISION_AND_PRINCIPLES.md).
+
 ## What Slice 1 Does
 
 ProofLayer turns a messy local folder of career files into a structured career knowledge base:
@@ -88,10 +101,7 @@ It creates:
 ProofLayer does not yet include:
 
 - Numeric fit, hiring-probability, or candidate-ranking scores
-- Role/job resume construction from approved assessments
 - Final website publishing
-- Job-description-specific generation
-- Dashboard UI
 - OAuth connectors
 - SaaS/cloud sync
 - Database storage
@@ -1773,6 +1783,8 @@ The next milestone should validate the completed Job pipeline end to end against
 See the [canonical ProofLayer Capability Pipeline architecture](docs/architecture/PIPELINE_ARCHITECTURE.md).
 
 Generated review and report Markdown follows the [Human-Readable Markdown Contract](docs/architecture/HUMAN_READABLE_MARKDOWN_CONTRACT.md): JSON remains canonical, while Markdown is deterministic, derived, read-only, and self-contained for human inspection.
+
+The [Product Vision and Principles](docs/product/PRODUCT_VISION_AND_PRINCIPLES.md) defines the Career Twin projection and the Role and Job user journeys built over the trust engine.
 
 ## License
 

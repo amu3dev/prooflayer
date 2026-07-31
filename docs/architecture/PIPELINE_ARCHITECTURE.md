@@ -10,6 +10,8 @@ This document is the canonical architectural reference for ProofLayer pipelines.
 
 Generated human inspection views follow the [Human-Readable Markdown Contract](HUMAN_READABLE_MARKDOWN_CONTRACT.md). Canonical JSON owns workflow state; derived Markdown explains that state without becoming machine input.
 
+The [Product Vision and Principles](../product/PRODUCT_VISION_AND_PRINCIPLES.md) defines the Career Twin product projection and the human Role and Job journeys layered over this capability architecture.
+
 ## 2. Core Principles
 
 ### Deterministic By Default
@@ -462,6 +464,12 @@ Role and Job pipelines share rendering capabilities where both consume equivalen
 
 Format adapters, hash verification, source-map validation, and export lifecycle should remain target-agnostic when approved input contracts match.
 
+### Product Surface
+
+The local Astro product shell projects canonical Evidence Foundation, Career Profile, target, review, lifecycle, and output state into the Career Twin experience. It orchestrates existing capabilities directly through domain adapters, translates pipeline state into human progress, and exposes only the smallest safe next action.
+
+The projection is not a canonical artifact and has no independent trust authority. It does not duplicate career facts, parse Markdown, shell out to the CLI, auto-approve model output, or turn targets and outputs into evidence. Advanced Review remains available as an explicit trust-boundary escalation.
+
 ## 7. Architectural Boundaries
 
 These boundaries are permanent capability contracts:
@@ -536,7 +544,10 @@ Status through Slice 2.7G:
 | Rendering | Completed through Slice 2.6C | Completed through Slice 2.7G |
 | Export | Completed through Slice 2.6C | Completed through Slice 2.7G |
 | Guided Orchestration | Granular expert workflow remains available | Completed as a derived, trust-preserving normal workflow |
+| Product Surface | Career Twin Role journey projects current value and safe gates | Career Twin Job journey projects guided fit, tailoring, review, and export state |
 
 The canonical Job resume pipeline is complete through deterministic rendering and export. Normal Job usage is available through a guided lifecycle-aware orchestrator, while all granular capability commands remain available for expert use.
+
+The first Career Twin product shell is implemented in the existing Astro application. Home, My Career, Updates, Role Resume, Job Tailoring, Clarifications, and Advanced Review remain thin projections over the same canonical trust engine.
 
 The Evidence Snapshot Contract v1 is implemented as a shared Evidence Foundation boundary. Job Evidence Mapping consumes the explicit target pin. Role targets can pin and read the same contract, while the existing Role matcher remains on its documented legacy adapter pending a focused migration.

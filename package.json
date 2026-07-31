@@ -32,6 +32,7 @@
     "public-profile:show": "node --import tsx src/index.ts public-profile show",
     "rebuild": "node --import tsx src/index.ts rebuild",
     "ui:review": "node --import tsx src/index.ts ui review",
+    "ui:start": "node --import tsx src/index.ts ui start",
     "test": "npm run build:ui && vitest run"
   },
   "dependencies": {

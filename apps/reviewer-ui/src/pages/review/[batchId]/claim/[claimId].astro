@@ -4,7 +4,7 @@ import RecommendationAction from "../../../../components/RecommendationAction.as
 import SimpleReviewForm from "../../../../components/SimpleReviewForm.astro";
 import Layout from "../../../../layouts/Layout.astro";
 import {
-  evidenceReviewUiRuntimeConfig,
+  proofLayerUiRuntimeConfig,
   formRecord,
   isSameOriginSubmission,
 } from "../../../../lib/runtime.js";
@@ -21,10 +21,10 @@ import {
   deriveEvidenceReviewRecommendation,
 } from "../../../../../../../src/evidence-review-recommendation.ts";
 
-const config = evidenceReviewUiRuntimeConfig();
+const config = proofLayerUiRuntimeConfig();
 const batchId = Astro.params.batchId;
 const claimId = Astro.params.claimId;
-if (batchId !== config.batchId || !claimId || !/^claim_[A-Za-z0-9_-]+$/.test(claimId)) {
+if (!batchId || (config.mode === "review" && batchId !== config.batchId) || !claimId || !/^claim_[A-Za-z0-9_-]+$/.test(claimId)) {
   return new Response("Review claim not found.", { status: 404 });
 }
 const csrfToken = evidenceReviewUiClaimCsrfToken(config.csrfSecret, batchId, claimId);
@@ -51,17 +51,17 @@ if (Astro.request.method === "POST") {
     try {
       const submission = await submitEvidenceReviewUiClaim(
         config.workspace,
-        config.batchId,
+        batchId,
         claimId,
         values,
       );
       const destination = values.submitAction === "batch"
-        ? `/review/${config.batchId}`
+        ? `/review/${batchId}`
         : submission.batchComplete
-          ? `/review/${config.batchId}/complete`
+          ? `/review/${batchId}/complete`
           : submission.nextPendingClaimId
-            ? `/review/${config.batchId}/claim/${submission.nextPendingClaimId}`
-            : `/review/${config.batchId}`;
+            ? `/review/${batchId}/claim/${submission.nextPendingClaimId}`
+            : `/review/${batchId}`;
       const query = new URLSearchParams({
         result: submission.result.result,
         review: submission.result.reviewId,
@@ -80,7 +80,7 @@ if (Astro.request.method === "POST") {
 
 let loaded;
 try {
-  loaded = await loadEvidenceReviewUiClaim(config.workspace, config.batchId, claimId);
+  loaded = await loadEvidenceReviewUiClaim(config.workspace, batchId, claimId);
 } catch {
   return new Response("Review claim not found.", { status: 404 });
 }

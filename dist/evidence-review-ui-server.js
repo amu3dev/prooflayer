@@ -35,6 +35,27 @@ export async function prepareEvidenceReviewUiLaunch(options, dependencies = {}) 
         serverEntryPath,
     };
 }
+export async function prepareProofLayerUiLaunch(options, dependencies = {}) {
+    const host = options.host ?? DEFAULT_HOST;
+    assertLoopbackHost(host);
+    const requestedPort = options.port ?? DEFAULT_PORT;
+    assertPort(requestedPort);
+    const port = await (dependencies.findPort ?? findAvailableLoopbackPort)(host, requestedPort);
+    const serverEntryPath = reviewerUiServerEntryPath();
+    if (!(await pathExists(serverEntryPath)) || !(await pathExists(reviewerUiAstroServerEntryPath()))) {
+        throw new Error("Local ProofLayer UI is not built. Run `npm run build` before starting it.");
+    }
+    const origin = buildEvidenceReviewUiOrigin(host, port);
+    return {
+        workspace: path.resolve(options.workspace),
+        host,
+        port,
+        origin,
+        url: origin,
+        readOnly: Boolean(options.readOnly),
+        serverEntryPath,
+    };
+}
 export async function launchEvidenceReviewUi(options, dependencies = {}) {
     const prepared = await prepareEvidenceReviewUiLaunch(options, dependencies);
     const csrfToken = randomBytes(32).toString("hex");
@@ -48,6 +69,7 @@ export async function launchEvidenceReviewUi(options, dependencies = {}) {
         PROOFLAYER_UI_READ_ONLY: prepared.readOnly ? "1" : "0",
         PROOFLAYER_UI_CSRF_TOKEN: csrfToken,
         PROOFLAYER_UI_ORIGIN: prepared.origin,
+        PROOFLAYER_UI_MODE: "review",
         ASTRO_NODE_AUTOSTART: "disabled",
     };
     const child = (dependencies.spawnServer ?? spawnEvidenceReviewUiServer)(prepared.serverEntryPath, environment);
@@ -56,6 +78,38 @@ export async function launchEvidenceReviewUi(options, dependencies = {}) {
         await (dependencies.openBrowser ?? openLocalBrowser)(prepared.url);
     }
     return { prepared, child };
+}
+export async function launchProofLayerUi(options, dependencies = {}) {
+    const prepared = await prepareProofLayerUiLaunch(options, dependencies);
+    const environment = {
+        ...process.env,
+        HOST: prepared.host,
+        PORT: String(prepared.port),
+        PROOFLAYER_UI_WORKSPACE: prepared.workspace,
+        PROOFLAYER_UI_READ_ONLY: prepared.readOnly ? "1" : "0",
+        PROOFLAYER_UI_CSRF_TOKEN: randomBytes(32).toString("hex"),
+        PROOFLAYER_UI_ORIGIN: prepared.origin,
+        PROOFLAYER_UI_MODE: "product",
+        ASTRO_NODE_AUTOSTART: "disabled",
+    };
+    const child = (dependencies.spawnServer ?? spawnEvidenceReviewUiServer)(prepared.serverEntryPath, environment);
+    await (dependencies.waitUntilReady ?? waitUntilEvidenceReviewUiReady)(prepared.url, child);
+    if (options.open)
+        await (dependencies.openBrowser ?? openLocalBrowser)(prepared.url);
+    return { prepared, child };
+}
+export function formatProofLayerUiLaunch(prepared) {
+    return [
+        "ProofLayer Career Twin",
+        "",
+        "Mode:",
+        prepared.readOnly ? "read-only" : "local product actions enabled",
+        "",
+        "Local URL:",
+        prepared.url,
+        "",
+        "The server is local-only. Canonical JSON remains the source of truth.",
+    ].join("\n");
 }
 export function formatEvidenceReviewUiLaunch(prepared) {
     const target = prepared.batch.target;

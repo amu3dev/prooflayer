@@ -1,0 +1,18 @@
+---
+import type { ProductProgressStep } from "../../../../src/product-workflows.ts";
+
+interface Props {
+  steps: ProductProgressStep[];
+}
+
+const { steps } = Astro.props;
+---
+
+<ol class="progress-steps">
+  {steps.map((step, index) => (
+    <li class={`progress-step ${step.state}`}>
+      <span class="step-number" aria-hidden="true">{step.state === "complete" ? "✓" : index + 1}</span>
+      <span><strong>{step.label}</strong><small>{step.detail}</small></span>
+    </li>
+  ))}
+</ol>

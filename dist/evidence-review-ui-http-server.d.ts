@@ -1,10 +1,11 @@
 import { type Server } from "node:http";
 interface EvidenceReviewUiHttpRuntime {
+    mode: "product" | "review";
     host: string;
     port: number;
     origin: string;
     authority: string;
-    batchId: string;
+    batchId?: string;
     claimIds: ReadonlySet<string>;
     readOnly: boolean;
     csrfSecret: string;

@@ -1,29 +1,45 @@
-export interface EvidenceReviewUiRuntimeConfig {
+export interface ProofLayerUiRuntimeConfig {
   workspace: string;
-  batchId: string;
+  mode: "product" | "review";
+  batchId?: string;
   readOnly: boolean;
   csrfSecret: string;
   origin: string;
 }
 
-export function evidenceReviewUiRuntimeConfig(): EvidenceReviewUiRuntimeConfig {
+export interface EvidenceReviewUiRuntimeConfig extends ProofLayerUiRuntimeConfig {
+  mode: "review";
+  batchId: string;
+}
+
+export function proofLayerUiRuntimeConfig(): ProofLayerUiRuntimeConfig {
   const workspace = process.env.PROOFLAYER_UI_WORKSPACE;
   const batchId = process.env.PROOFLAYER_UI_BATCH_ID;
   const csrfSecret = process.env.PROOFLAYER_UI_CSRF_TOKEN;
   const origin = process.env.PROOFLAYER_UI_ORIGIN;
-  if (!workspace || !batchId || !csrfSecret || !origin) {
-    throw new Error("Local Evidence Review UI runtime is not configured.");
+  const mode = process.env.PROOFLAYER_UI_MODE === "product" ? "product" : "review";
+  if (!workspace || !csrfSecret || !origin) {
+    throw new Error("Local ProofLayer UI runtime is not configured.");
   }
-  if (!/^evidence-review-batch_[a-f0-9]{20}$/.test(batchId)) {
+  if (mode === "review" && (!batchId || !/^evidence-review-batch_[a-f0-9]{20}$/.test(batchId))) {
     throw new Error("Local Evidence Review UI batch identity is invalid.");
   }
   return {
     workspace,
-    batchId,
+    mode,
+    ...(batchId ? { batchId } : {}),
     readOnly: process.env.PROOFLAYER_UI_READ_ONLY === "1",
     csrfSecret,
     origin: validateRuntimeOrigin(origin),
   };
+}
+
+export function evidenceReviewUiRuntimeConfig(): EvidenceReviewUiRuntimeConfig {
+  const config = proofLayerUiRuntimeConfig();
+  if (config.mode !== "review" || !config.batchId) {
+    throw new Error("Local Evidence Review UI runtime is not locked to a review batch.");
+  }
+  return { ...config, mode: "review", batchId: config.batchId };
 }
 
 export function isSameOriginSubmission(request: Request, expectedOrigin: string): boolean {

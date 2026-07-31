@@ -1,15 +1,20 @@
 ---
 import ClaimCard from "../../../components/ClaimCard.astro";
 import Layout from "../../../layouts/Layout.astro";
-import { evidenceReviewUiRuntimeConfig } from "../../../lib/runtime.js";
+import { proofLayerUiRuntimeConfig } from "../../../lib/runtime.js";
 import { loadEvidenceReviewUiBatch } from "../../../../../../src/evidence-review-ui.ts";
 
-const config = evidenceReviewUiRuntimeConfig();
+const config = proofLayerUiRuntimeConfig();
 const batchId = Astro.params.batchId;
-if (batchId !== config.batchId) {
+if (!batchId || (config.mode === "review" && batchId !== config.batchId)) {
   return new Response("Review batch not found.", { status: 404 });
 }
-const batch = await loadEvidenceReviewUiBatch(config.workspace, config.batchId);
+let batch;
+try {
+  batch = await loadEvidenceReviewUiBatch(config.workspace, batchId);
+} catch {
+  return new Response("Review batch not found.", { status: 404 });
+}
 const result = Astro.url.searchParams.get("result");
 const reviewId = Astro.url.searchParams.get("review");
 const priorities = ["high", "medium", "low"] as const;

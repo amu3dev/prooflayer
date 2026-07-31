@@ -3,11 +3,20 @@ import "../styles/global.css";
 
 interface Props {
   title: string;
-  batchId: string;
+  batchId?: string;
   readOnly: boolean;
 }
 
 const { title, batchId, readOnly } = Astro.props;
+const path = Astro.url.pathname;
+const navigation = [
+  { href: "/", label: "Home", active: path === "/" },
+  { href: "/career", label: "My Career", active: path.startsWith("/career") && path !== "/career/update" },
+  { href: "/resume/role", label: "Create Resume", active: path.startsWith("/resume/role") },
+  { href: "/resume/job", label: "Tailor to a Job", active: path.startsWith("/resume/job") },
+  { href: "/career/update", label: "Updates", active: path === "/career/update" },
+  { href: batchId ? `/review/${batchId}` : "/advanced-review", label: "Advanced Review", active: path.startsWith("/review") || path === "/advanced-review" },
+];
 ---
 
 <!doctype html>
@@ -21,10 +30,18 @@ const { title, batchId, readOnly } = Astro.props;
   </head>
   <body>
     <header class="site-header">
-      <div class="shell">
-        <a class="brand" href={`/review/${batchId}`}>ProofLayer Evidence Review</a>
-        <span class="mode">{readOnly ? "Read-only audit mode" : "Canonical review submissions enabled"}</span>
+      <div class="shell header-row">
+        <a class="brand" href="/" aria-label="ProofLayer home">
+          <span class="brand-mark" aria-hidden="true">P</span>
+          <span>ProofLayer</span>
+        </a>
+        <span class="mode">{readOnly ? "Read-only" : "Local-first"}</span>
       </div>
+      <nav class="shell global-nav" aria-label="Main navigation">
+        {navigation.map((item) => (
+          <a href={item.href} aria-current={item.active ? "page" : undefined}>{item.label}</a>
+        ))}
+      </nav>
     </header>
     <main>
       <div class="shell">

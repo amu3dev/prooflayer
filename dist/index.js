@@ -13,7 +13,7 @@ import { buildEvidenceSnapshot, formatEvidenceSnapshotBuild, formatEvidenceSnaps
 import { createEvidenceClaimReview, formatEvidenceClaimReviewList, formatEvidenceClaimReviewResult, formatEvidenceClaimReviewStatus, getEvidenceClaimReviewStatus, listEvidenceClaimReviews, readEvidenceClaimReviewInputFile, showEvidenceClaimReview, } from "./evidence-claim-review.js";
 import { buildEvidenceReviewBatch, formatEvidenceReviewBatchList, formatEvidenceReviewBatchResult, formatEvidenceReviewBatchStatus, getEvidenceReviewBatchStatus, listEvidenceReviewBatches, showEvidenceReviewBatch, } from "./evidence-review-batch.js";
 import { formatEvidenceReviewWorkspaceResult, formatEvidenceReviewWorkspaceStatus, getEvidenceReviewWorkspaceStatus, renderEvidenceReviewWorkspace, showEvidenceReviewWorkspace, } from "./evidence-review-workspace.js";
-import { formatEvidenceReviewUiLaunch, launchEvidenceReviewUi, waitForEvidenceReviewUiExit, } from "./evidence-review-ui-server.js";
+import { formatEvidenceReviewUiLaunch, formatProofLayerUiLaunch, launchEvidenceReviewUi, launchProofLayerUi, waitForEvidenceReviewUiExit, } from "./evidence-review-ui-server.js";
 import { formatTargetEvidencePinResult, formatTargetEvidencePinStatus, getTargetEvidencePinStatus, loadTargetEvidencePin, pinTargetEvidenceSnapshot, upgradeTargetEvidenceSnapshot, } from "./target-evidence-pin.js";
 import { analyzeTarget, formatAnalyzeTargetResult, formatTargetAnalysisStatus, getTargetAnalysisStatus, showTargetAnalysis } from "./target-analysis.js";
 import { formatInterpretTargetResult, formatTargetInterpretationStatus, getTargetInterpretationStatus, interpretTarget, showTargetInterpretation } from "./target-interpretation.js";
@@ -206,6 +206,26 @@ exportCommand
 const ui = program
     .command("ui")
     .description("Run focused local ProofLayer interaction surfaces.");
+ui
+    .command("start")
+    .option("--host <host>", "loopback host", "127.0.0.1")
+    .option("--port <port>", "preferred local port", "4321")
+    .option("--open", "open the local URL in the default browser")
+    .option("--read-only", "disable product actions and review submissions")
+    .option("-w, --workspace <path>", "workspace path")
+    .description("Start the local ProofLayer Career Twin product shell.")
+    .action(async (options) => {
+    const workspace = resolveWorkspace(options.workspace ?? program.opts().workspace);
+    const { prepared, child } = await launchProofLayerUi({
+        workspace,
+        host: options.host,
+        port: Number.parseInt(options.port, 10),
+        open: options.open,
+        readOnly: options.readOnly,
+    });
+    console.log(formatProofLayerUiLaunch(prepared));
+    await waitForEvidenceReviewUiExit(child);
+});
 ui
     .command("review <batch-id>")
     .option("--host <host>", "loopback host", "127.0.0.1")
