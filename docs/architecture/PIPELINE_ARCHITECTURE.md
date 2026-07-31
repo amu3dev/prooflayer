@@ -365,6 +365,8 @@ The implemented Role workflow covers the canonical pipeline through export:
 - deterministic rendering;
 - Markdown, HTML, DOCX, and adapter-based PDF export.
 
+The title-only guided Role journey is a product adapter over this pipeline. It persists one versioned generated role-understanding artifact because reuse, provider replay provenance, lifecycle, and the never-ask-twice behavior consume it. Conservative evidence links, qualitative positioning, and a prose-free section outline remain derived projections until the corresponding canonical approved artifacts exist. Generated role knowledge is never represented as candidate history or human-approved interpretation, and it cannot bypass final draft review.
+
 The shared Evidence Snapshot reader and target pin contract accept Role targets. The existing Role Evidence Matching implementation still uses its legacy target-local evidence snapshot adapter; full migration to the global pinned snapshot remains a bounded compatibility follow-up rather than a broad Role refactor.
 
 Some current capabilities combine adjacent canonical concerns in one implementation boundary. For example, expectation coverage may be emitted with evidence matching. The canonical stages remain distinct responsibilities even when a current implementation stores them together.

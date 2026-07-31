@@ -1,21 +1,20 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { getApprovedEvidenceMatchingStatus } from "./evidence-matching.js";
-import { getFitAssessmentStatus } from "./fit-assessment.js";
 import { hashText, pathExists, writeBufferAtomic } from "./fs-utils.js";
 import { getApprovedJobResumeDraftStatus } from "./approved-job-resume-draft.js";
-import { getApprovedRoleResumeDraftStatus } from "./approved-role-resume-draft.js";
 import { showJobFitProofAssessment, getJobFitProofAssessmentStatus } from "./job-fit-proof-assessment.js";
 import { showJobRequirementModel, getJobRequirementModelStatus } from "./job-requirements.js";
 import { getJobResumeDraftScaffoldStatus } from "./job-resume-drafting.js";
 import { getJobResumePlanStatus, showJobResumePlan } from "./job-resume-planning.js";
 import { inspectJobWorkflow, runJobWorkflow, type JobWorkflowStatus } from "./job-workflow.js";
-import { getRoleResumeDraftScaffoldStatus } from "./role-resume-drafting.js";
-import { getRoleResumePlanStatus } from "./role-resume-planning.js";
-import { getRoleResumeRenderDocumentStatus } from "./role-resume-rendering.js";
+import {
+  continueRoleWorkflow,
+  inspectRoleWorkflow,
+  runRoleWorkflow,
+  type RoleWorkflowStatus,
+} from "./role-workflow.js";
 import type { RoleTarget, Target } from "./schemas.js";
 import { analyzeTarget, getTargetAnalysisStatus } from "./target-analysis.js";
-import { getTargetInterpretationStatus, interpretTarget, showTargetInterpretation } from "./target-interpretation.js";
 import {
   createJobTarget,
   createRoleTarget,
@@ -38,6 +37,30 @@ export interface RoleJourneyProjection {
   currentValue: string;
   blocker?: string;
   nextAction: string;
+  understanding?: {
+    state: "generated" | "generated-with-ambiguity" | "reviewed" | "stale" | "invalid";
+    summary: string;
+    sourceLabel: string;
+    specialization: string;
+    expectations: string[];
+  };
+  positioning?: {
+    label: string;
+    fit: "strong" | "credible" | "mixed" | "stretch" | "insufficient evidence";
+    strongestThemes: Array<{ theme: string; evidence: string }>;
+    weakerThemes: string[];
+    gaps: string[];
+    limitations: string[];
+  };
+  materialQuestion?: {
+    question: string;
+    options: Array<{ id: string; label: string }>;
+    selectedOptionId: string;
+  };
+  draftPreview?: {
+    items: string[];
+    requiresHumanReview: true;
+  };
   advanced: Array<{ label: string; status: string }>;
 }
 
@@ -82,9 +105,21 @@ export async function startRoleResumeJourney(
 
   const analysis = await getTargetAnalysisStatus(workspace, target.id);
   if (analysis.status === "missing") await analyzeTarget(workspace, target.id);
-  const interpretation = await getTargetInterpretationStatus(workspace, target.id);
-  if (interpretation.status === "missing") await interpretTarget(workspace, target.id);
+  await runRoleWorkflow(workspace, target.id, { offline: true });
   return inspectRoleResumeJourney(workspace, target.id);
+}
+
+export async function continueRoleResumeJourney(
+  workspace: string,
+  targetId: string,
+  specialization?: string,
+): Promise<RoleJourneyProjection> {
+  await continueRoleWorkflow(workspace, targetId, {
+    offline: true,
+    specialization,
+    rebuildStale: Boolean(specialization),
+  });
+  return inspectRoleResumeJourney(workspace, targetId);
 }
 
 export async function inspectRoleResumeJourney(
@@ -102,62 +137,78 @@ export async function inspectRoleResumeJourney(
   }
   const target = await showTarget(workspace, targetId);
   if (target.type !== "role") throw new Error("Role Resume journey accepts only Role Targets.");
-  const [analysis, interpretation, matching, assessment, planning, scaffold, approvedDraft, rendering] = await Promise.all([
-    safeStatus(() => getTargetAnalysisStatus(workspace, targetId)),
-    safeStatus(() => getTargetInterpretationStatus(workspace, targetId)),
-    safeStatus(() => getApprovedEvidenceMatchingStatus(workspace, targetId)),
-    safeStatus(() => getFitAssessmentStatus(workspace, targetId)),
-    safeStatus(() => getRoleResumePlanStatus(workspace, targetId)),
-    safeStatus(() => getRoleResumeDraftScaffoldStatus(workspace, targetId)),
-    safeStatus(() => getApprovedRoleResumeDraftStatus(workspace, targetId)),
-    safeStatus(() => getRoleResumeRenderDocumentStatus(workspace, targetId)),
-  ]);
-  let expectationCount = 0;
-  if (interpretation.status === "current") {
-    const value = await showTargetInterpretation(workspace, targetId);
-    expectationCount = value.expectations.length;
-  }
-  const roleUnderstood = analysis.status === "current" && interpretation.status === "current" && expectationCount > 0;
-  const selected = matching.status === "current" && assessment.status === "current";
-  const prepared = planning.status === "current" && scaffold.status === "current";
-  const ready = approvedDraft.status === "current";
+  const workflow = await inspectRoleWorkflow(workspace, targetId);
+  return projectRoleJourney(workflow);
+}
+
+function projectRoleJourney(workflow: RoleWorkflowStatus): RoleJourneyProjection {
+  const roleUnderstood = workflow.understandingStatus === "current";
+  const selected = workflow.selectedEvidenceIds.length > 0 || workflow.canonical.approvedMatching === "current";
+  const prepared = workflow.canonical.scaffold === "current" || (roleUnderstood && selected);
+  const ready = workflow.canonical.approvedDraft === "current";
+  const rendering = workflow.canonical.rendering === "current";
   const progress: ProductProgressStep[] = [
-    step("Target role understood", roleUnderstood, interpretation.status === "current" && expectationCount === 0,
-      roleUnderstood ? `${expectationCount} reviewed role expectations are available.` : "The title is saved; role expectations still need a reviewed source."),
+    step("Role understood", roleUnderstood, !roleUnderstood,
+      roleUnderstood ? `${workflow.understanding!.expectations.length} conservative generated expectations are available.` : "The title is saved; ProofLayer can generate a conservative role understanding."),
     step("Relevant experience selected", selected, roleUnderstood && !selected,
-      selected ? "Approved evidence has been selected for this role." : "Selection waits for reviewed role expectations."),
-    step("Draft prepared", prepared, selected && !prepared,
-      prepared ? "A constrained draft structure is available." : "No resume prose has been prepared yet."),
+      selected ? `${workflow.selectedEvidenceIds.length} reviewed evidence item(s) support the current positioning.` : "No eligible evidence can yet be connected safely."),
+    step("Resume prepared", prepared, selected && !prepared,
+      prepared ? "A conservative prose-free resume outline is available; canonical drafting gates remain unchanged." : "No resume prose has been prepared."),
     step("Ready for review", ready, prepared && !ready,
-      ready ? "An approved structured draft is ready." : "Human review has not produced an approved draft."),
-    step("Exported", rendering.status === "current", ready && rendering.status !== "current",
-      rendering.status === "current" ? "A canonical render document is current." : "No current export exists for this target."),
+      ready ? "An approved structured draft is ready." : "Human review is required before model-authored wording can become approved."),
+    step("Exported", rendering, ready && !rendering,
+      rendering ? "A canonical render document is current." : "No current export exists for this target."),
   ];
-  const blocker = interpretation.status === "current" && expectationCount === 0
-    ? "ProofLayer will not infer role expectations from a title alone."
-    : undefined;
   return {
-    target,
+    target: workflow.target,
     progress,
-    careerReady: true,
+    careerReady: workflow.selectedEvidenceIds.length > 0,
     currentValue: roleUnderstood
-      ? "The role is understood and can be matched against your existing Career Twin."
+      ? "ProofLayer generated a conservative role understanding and checked it against your existing Career Twin. No source re-upload is required."
       : "Your target and existing Career Twin are saved; no source re-upload is required.",
-    ...(blocker ? { blocker } : {}),
-    nextAction: blocker
-      ? "Add or review a role-expectations profile for this target."
-      : ready
-        ? "Review the approved draft and export when ready."
-        : "Continue the next current Role workflow gate in Advanced Details.",
+    ...(workflow.blocker ? { blocker: workflow.blocker.message } : {}),
+    nextAction: workflow.nextAction,
+    ...(workflow.understanding ? {
+      understanding: {
+        state: workflow.understanding.state,
+        summary: workflow.understanding.summary,
+        sourceLabel: workflow.understanding.source.type === "built-in-taxonomy"
+          ? "Conservative built-in role model"
+          : `Untrusted ${workflow.understanding.source.provider} proposal`,
+        specialization: workflow.understanding.specialization.label,
+        expectations: workflow.understanding.expectations.map((entry) => entry.statement),
+      },
+      positioning: {
+        label: workflow.positioning,
+        fit: workflow.fit,
+        strongestThemes: workflow.strongestThemes.map(({ theme, evidence }) => ({ theme, evidence })),
+        weakerThemes: workflow.weakerThemes,
+        gaps: workflow.materialGaps,
+        limitations: workflow.limitations,
+      },
+    } : {}),
+    ...(workflow.ambiguity ? {
+      materialQuestion: {
+        question: workflow.ambiguity.question,
+        options: workflow.ambiguity.options,
+        selectedOptionId: workflow.ambiguity.selectedOptionId,
+      },
+    } : {}),
+    ...(workflow.draftPreview.status === "evidence-backed-preview" ? {
+      draftPreview: {
+        items: workflow.draftPreview.items.map((entry) => entry.text),
+        requiresHumanReview: true,
+      },
+    } : {}),
     advanced: [
-      { label: "Target structure", status: analysis.status },
-      { label: "Role expectations", status: interpretation.status },
-      { label: "Evidence selection", status: matching.status },
-      { label: "Assessment", status: assessment.status },
-      { label: "Content plan", status: planning.status },
-      { label: "Draft structure", status: scaffold.status },
-      { label: "Approved draft", status: approvedDraft.status },
-      { label: "Rendering", status: rendering.status },
+      { label: "Generated role understanding", status: workflow.understandingStatus },
+      { label: "Approved interpretation", status: workflow.canonical.approvedInterpretation },
+      { label: "Approved evidence matching", status: workflow.canonical.approvedMatching },
+      { label: "Approved assessment", status: workflow.canonical.assessment },
+      { label: "Approved content plan", status: workflow.canonical.plan },
+      { label: "Draft structure", status: workflow.canonical.scaffold },
+      { label: "Approved draft", status: workflow.canonical.approvedDraft },
+      { label: "Rendering", status: workflow.canonical.rendering },
     ],
   };
 }
@@ -344,9 +395,9 @@ function productJobNextAction(workflow: JobWorkflowStatus, planningUsable: boole
 
 function defaultRoleProgress(): ProductProgressStep[] {
   return [
-    { label: "Target role understood", state: "current", detail: "Enter a role title to begin." },
+    { label: "Role understood", state: "current", detail: "Enter a role title to begin." },
     { label: "Relevant experience selected", state: "waiting", detail: "Uses your existing Career Twin." },
-    { label: "Draft prepared", state: "waiting", detail: "No resume prose exists yet." },
+    { label: "Resume prepared", state: "waiting", detail: "No resume prose exists yet." },
     { label: "Ready for review", state: "waiting", detail: "Human review remains required for model-authored prose." },
     { label: "Exported", state: "waiting", detail: "Exports follow an approved draft." },
   ];
@@ -354,14 +405,6 @@ function defaultRoleProgress(): ProductProgressStep[] {
 
 function step(label: string, complete: boolean, current: boolean, detail: string): ProductProgressStep {
   return { label, state: complete ? "complete" : current ? "current" : "waiting", detail };
-}
-
-async function safeStatus(load: () => Promise<{ status: string }>): Promise<{ status: string }> {
-  try {
-    return await load();
-  } catch {
-    return { status: "missing" };
-  }
 }
 
 function assertRoleInputCompatible(existing: RoleTarget, input: RoleTargetInput): void {

@@ -32,8 +32,13 @@ describe("Career Twin product projection", () => {
         expect(result.target?.id).toBe("role-engineering-manager");
         expect(rerun.target?.id).toBe(result.target?.id);
         expect(stored).toMatchObject({ type: "role", title: "Engineering Manager" });
-        expect(result.currentValue).toContain("no source re-upload is required");
-        expect(result.blocker).toContain("will not infer role expectations from a title alone");
+        expect(result.currentValue.toLowerCase()).toContain("no source re-upload is required");
+        expect(result.understanding).toMatchObject({
+            state: "generated-with-ambiguity",
+            sourceLabel: "Conservative built-in role model",
+        });
+        expect(result.blocker).toBeUndefined();
+        expect(result.nextAction).not.toMatch(/role-expectations profile/i);
         expect(twin.roles.map(({ title }) => title)).not.toContain("Engineering Manager");
         expect((await stat(path.join(fixture.workspace, fixture.source.path))).mtimeMs).toBe(sourceBefore.mtimeMs);
     });

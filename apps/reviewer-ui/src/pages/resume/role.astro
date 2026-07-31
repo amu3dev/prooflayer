@@ -2,15 +2,15 @@
 import ProgressSteps from "../../components/ProgressSteps.astro";
 import Layout from "../../layouts/Layout.astro";
 import { projectCareerTwin } from "../../../../../src/career-twin.ts";
-import { existingProductTargets, inspectRoleResumeJourney, startRoleResumeJourney } from "../../../../../src/product-workflows.ts";
+import { continueRoleResumeJourney, existingProductTargets, inspectRoleResumeJourney, startRoleResumeJourney } from "../../../../../src/product-workflows.ts";
 import { proofLayerUiRuntimeConfig } from "../../lib/runtime.js";
 import { field, productActionToken, productPostRejection, productTokenMatches } from "../../lib/product.js";
 import { PRODUCT_WORKFLOW_ACTIONS } from "../../../../../src/prooflayer-ui-request-scope.ts";
 
 const config = proofLayerUiRuntimeConfig();
 const actionPath = "/resume/role";
-const actionName = PRODUCT_WORKFLOW_ACTIONS.startRoleWorkflow;
-const csrfToken = productActionToken(config, actionPath, actionName);
+const startActionName = PRODUCT_WORKFLOW_ACTIONS.startRoleWorkflow;
+const csrfToken = productActionToken(config, actionPath, startActionName);
 let error: string | undefined;
 let targetId = Astro.url.searchParams.get("target") ?? undefined;
 
@@ -18,17 +18,26 @@ if (Astro.request.method === "POST") {
   const rejection = productPostRejection(Astro.request, config);
   if (rejection) return rejection;
   const formData = await Astro.request.formData();
-  if (field(formData, "action") !== actionName || !productTokenMatches(formData, csrfToken)) {
+  const submittedAction = field(formData, "action");
+  const submittedTargetId = field(formData, "targetId");
+  const expectedToken = submittedAction === PRODUCT_WORKFLOW_ACTIONS.continueRoleWorkflow && submittedTargetId
+    ? productActionToken(config, actionPath, PRODUCT_WORKFLOW_ACTIONS.continueRoleWorkflow, submittedTargetId)
+    : csrfToken;
+  if (!productTokenMatches(formData, expectedToken)) {
     return new Response("The role form expired or failed local request verification.", { status: 403 });
   }
   try {
-    const result = await startRoleResumeJourney(config.workspace, {
-      title: field(formData, "title") ?? "",
-      seniority: field(formData, "seniority"),
-      domain: field(formData, "domain"),
-      location: field(formData, "location"),
-      workingModel: field(formData, "workingModel"),
-    });
+    const result = submittedAction === PRODUCT_WORKFLOW_ACTIONS.continueRoleWorkflow && submittedTargetId
+      ? await continueRoleResumeJourney(config.workspace, submittedTargetId, field(formData, "specialization"))
+      : submittedAction === startActionName
+        ? await startRoleResumeJourney(config.workspace, {
+            title: field(formData, "title") ?? "",
+            seniority: field(formData, "seniority"),
+            domain: field(formData, "domain"),
+            location: field(formData, "location"),
+            workingModel: field(formData, "workingModel"),
+          })
+        : (() => { throw new Error("The requested Role action is not registered."); })();
     return Astro.redirect(`/resume/role?target=${result.target!.id}`, 303);
   } catch (caught) {
     error = caught instanceof Error ? caught.message : "The Role Resume journey could not start safely.";
@@ -52,7 +61,7 @@ try {
 
   <form method="post" action={actionPath} class="target-form panel">
     <input type="hidden" name="csrfToken" value={csrfToken} />
-    <input type="hidden" name="action" value={actionName} />
+    <input type="hidden" name="action" value={startActionName} />
     <label class="primary-input">Target role <input name="title" placeholder="Engineering Manager" value={journey.target?.title} required autofocus /></label>
     <details class="advanced-fields"><summary>Optional details</summary><div class="form-grid"><label>Seniority <input name="seniority" placeholder="Senior" value={journey.target?.seniority} /></label><label>Domain <input name="domain" placeholder="Platform" value={journey.target?.domain} /></label><label>Location <input name="location" placeholder="Remote Europe" value={journey.target?.location} /></label><label>Working model <select name="workingModel"><option value="">Not specified</option><option value="remote">Remote</option><option value="hybrid">Hybrid</option><option value="onsite">On-site</option></select></label></div></details>
     <button type="submit" disabled={config.readOnly}>Create My Resume</button>
@@ -60,5 +69,35 @@ try {
 
   {targets.roles.length > 0 && <p class="existing-targets"><span>Continue an existing target:</span>{targets.roles.map((target) => <a class="pill" href={`/resume/role?target=${target.id}`}>{target.title}</a>)}</p>}
 
-  {journey.target && <section aria-labelledby="role-progress-heading"><div class="section-heading"><div><p class="eyebrow">Current progress</p><h2 id="role-progress-heading">{journey.target.title}</h2></div></div><ProgressSteps steps={journey.progress} /><div class={journey.blocker ? "notice" : "notice success"}><strong>Current value</strong><p>{journey.currentValue}</p>{journey.blocker && <p>{journey.blocker}</p>}<strong>Smallest next action</strong><p>{journey.nextAction}</p></div><details><summary>Advanced Details</summary><div class="status-table">{journey.advanced.map((stage) => <div><span>{stage.label}</span><strong>{stage.status}</strong></div>)}</div><p class="audit">The Role Target title is positioning input only. It never becomes employment history or proof of seniority.</p></details></section>}
+  {journey.target && <section aria-labelledby="role-progress-heading">
+    <div class="section-heading"><div><p class="eyebrow">Role</p><h2 id="role-progress-heading">{journey.target.title}</h2></div></div>
+    {journey.understanding && <div class="panel"><p class="eyebrow">ProofLayer's current understanding</p><h3>{journey.understanding.specialization}</h3><p>{journey.understanding.summary}</p><p class="audit">{journey.understanding.sourceLabel}. Generated guidance is not employment history and remains unapproved until human review.</p><ul>{journey.understanding.expectations.slice(0, 6).map((expectation) => <li>{expectation}</li>)}</ul></div>}
+    {journey.positioning && <div class="journey-grid">
+      <article class="panel"><p class="eyebrow">Recommended positioning</p><h3>{journey.positioning.label}</h3><p><strong>Qualitative fit: </strong>{journey.positioning.fit}</p></article>
+      <article class="panel"><p class="eyebrow">Your strongest match</p>{journey.positioning.strongestThemes.length ? journey.positioning.strongestThemes.map((entry) => <div class="evidence-theme"><strong>{entry.theme}</strong><p>{entry.evidence}</p></div>) : <p>No eligible reviewed evidence is currently connected to this role.</p>}</article>
+      <article class="panel"><p class="eyebrow">Gaps and cautions</p>{journey.positioning.gaps.length ? <ul>{journey.positioning.gaps.map((gap) => <li>{gap}</li>)}</ul> : <p>No additional material gap was identified by the conservative projection.</p>}{journey.positioning.weakerThemes.length > 0 && <><h4>Adjacent or weaker matches</h4><ul>{journey.positioning.weakerThemes.map((theme) => <li>{theme}</li>)}</ul></>}<details><summary>Why ProofLayer is cautious</summary><ul>{journey.positioning.limitations.map((item) => <li>{item}</li>)}</ul></details></article>
+    </div>}
+    {journey.materialQuestion && <form method="post" action={actionPath} class="panel clarification-card">
+      <input type="hidden" name="csrfToken" value={productActionToken(config, actionPath, PRODUCT_WORKFLOW_ACTIONS.continueRoleWorkflow, journey.target.id)} />
+      <input type="hidden" name="action" value={PRODUCT_WORKFLOW_ACTIONS.continueRoleWorkflow} />
+      <input type="hidden" name="targetId" value={journey.target.id} />
+      <p class="eyebrow">One optional clarification</p><h3>{journey.materialQuestion.question}</h3>
+      <label>Direction <select name="specialization">{journey.materialQuestion.options.map((option) => <option value={option.id} selected={option.id === journey.materialQuestion?.selectedOptionId}>{option.label}</option>)}</select></label>
+      <button type="submit" disabled={config.readOnly}>Use This Direction</button>
+    </form>}
+    {journey.draftPreview && <section class="panel draft-preview" aria-labelledby="role-preview-heading"><p class="eyebrow">Resume preview</p><h3 id="role-preview-heading">Evidence-backed content ready for drafting</h3><p>These statements reuse exact reviewed, public-safe wording. They are a safe preview, not an approved resume.</p><ul>{journey.draftPreview.items.map((item) => <li>{item}</li>)}</ul><div class="notice"><strong>Human review required</strong><p>Approve, edit, or reject final wording through the canonical Role draft review before export.</p></div></section>}
+    <div class="section-heading"><div><p class="eyebrow">Progress</p><h2>Preparing your resume</h2></div></div><ProgressSteps steps={journey.progress} />
+    <div class={journey.blocker ? "notice" : "notice success"}><strong>Current value</strong><p>{journey.currentValue}</p>{journey.blocker && <p>{journey.blocker}</p>}<strong>Smallest next action</strong><p>{journey.nextAction}</p></div>
+    <details><summary>Advanced Details</summary><div class="status-table">{journey.advanced.map((stage) => <div><span>{stage.label}</span><strong>{stage.status}</strong></div>)}</div><p class="audit">The Role Target title is positioning input only. It never becomes employment history or proof of seniority. Generated expectations do not alter the Evidence Foundation or become approved automatically.</p></details>
+  </section>}
 </Layout>
+
+<style>
+  .journey-grid { display: grid; gap: 1rem; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 1rem 0 2rem; }
+  .evidence-theme + .evidence-theme { border-top: 1px solid var(--line); margin-top: 1rem; padding-top: 1rem; }
+  .evidence-theme p { margin-bottom: 0; }
+  .clarification-card { border-color: var(--accent); margin: 1.5rem 0; }
+  .clarification-card label { display: grid; gap: .45rem; max-width: 32rem; }
+  .clarification-card button { margin-top: 1rem; }
+  @media (max-width: 880px) { .journey-grid { grid-template-columns: 1fr; } }
+</style>

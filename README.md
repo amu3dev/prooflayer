@@ -62,6 +62,18 @@ prooflayer ui start --host 127.0.0.1 --port 4321 --open
 
 The product shell provides Home, My Career, Create Resume, Tailor to a Job, Updates, Clarifications, and Advanced Review views. One local source is enough to begin; LinkedIn and GitHub are optional. Granular CLI commands remain available for automation, audit, and debugging.
 
+The Role Resume journey starts from one title. ProofLayer creates or reuses the Role Target, generates a visibly unapproved role understanding, checks current reviewed Career Twin evidence conservatively, and shows positioning, strengths, gaps, progress, and the smallest next action. Common titles use the offline built-in taxonomy when no provider is selected. One optional specialization may refine the direction; users are never asked to author a Role Expectations schema or upload their career sources again. Canonical draft approval and export still require the existing human-reviewed Role pipeline.
+
+```bash
+prooflayer role create --title "CTO"
+prooflayer role run role-cto --offline
+prooflayer role status role-cto
+prooflayer role continue role-cto --offline --specialization startup-product-cto --rebuild-stale
+prooflayer role finalize role-cto --formats markdown,html,docx
+```
+
+Use `--provider <configured-provider>` for an explicit untrusted role-understanding proposal. Fake providers require `--offline`; normal product mode never silently selects one. `--dry-run` inspects without writes or model calls. Existing granular `target` Role commands remain available for expert review, approval, lifecycle repair, drafting, and rendering.
+
 The normal Product Shell is not locked to an Evidence Review Batch. All writes share the same loopback-only server, exact Host and origin checks, constrained browser null-origin handling, read-only mode, and per-session HMAC foundation. Product workflow forms receive route-and-action-scoped tokens, with a target binding when required; Evidence Review forms receive separate batch-and-claim-scoped tokens. Tokens cannot authorize actions across those scopes.
 
 See the [ProofLayer Product Vision and Principles](docs/product/PRODUCT_VISION_AND_PRINCIPLES.md).

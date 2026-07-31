@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
 import { projectCareerTwin } from "../career-twin.js";
 import { listEvidenceClaimReviews } from "../evidence-claim-review.js";
+import { submitEvidenceReviewUiClaim } from "../evidence-review-ui.js";
 import {
   evidenceReviewUiClaimCsrfToken,
   proofLayerUiActionCsrfToken,
@@ -14,7 +15,7 @@ import {
 import { buildEvidenceReviewUiOrigin, findAvailableLoopbackPort } from "../evidence-review-ui-server.js";
 import { PRODUCT_WORKFLOW_ACTIONS } from "../prooflayer-ui-request-scope.js";
 import { showTarget } from "../targets.js";
-import { createEvidenceReviewUiFixture } from "./evidence-review-ui-fixture.js";
+import { createEvidenceReviewUiFixture, validApprovedFields } from "./evidence-review-ui-fixture.js";
 import { createProductShellFixture } from "./product-shell-fixture.js";
 
 const children: ChildProcess[] = [];
@@ -184,14 +185,64 @@ describe("ProofLayer product shell over real HTTP", () => {
     const statusHtml = await statusPage.text();
     expect(statusPage.status).toBe(200);
     expect(statusHtml).toContain("CTO");
-    expect(statusHtml).toContain("no source re-upload is required");
+    expect(statusHtml.toLowerCase()).toContain("no source re-upload is required");
+    expect(statusHtml).toContain("ProofLayer's current understanding");
+    expect(statusHtml).toContain("Recommended positioning");
+    expect(statusHtml).toContain("Your strongest match");
+    expect(statusHtml).toContain("Gaps and cautions");
+    expect(statusHtml).not.toMatch(/add or review a role-expectations profile/i);
     expect(statusHtml).toContain("Smallest next action");
     expect(statusHtml).not.toContain("locked batch context");
+
+    const refine = await fetch(`${server.origin}/resume/role`, {
+      method: "POST",
+      redirect: "manual",
+      headers: { origin: server.origin, "content-type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        csrfToken: productToken(
+          "/resume/role",
+          PRODUCT_WORKFLOW_ACTIONS.continueRoleWorkflow,
+          "role-cto",
+        ),
+        action: PRODUCT_WORKFLOW_ACTIONS.continueRoleWorkflow,
+        targetId: "role-cto",
+        specialization: "startup-product-cto",
+      }),
+    });
+    expect(refine.status).toBe(303);
+    const refinedPage = await fetch(`${server.origin}${refine.headers.get("location")}`);
+    const refinedHtml = await refinedPage.text();
+    expect(refinedHtml).toContain("Startup / Product CTO");
+    expect(refinedHtml).not.toContain("One optional clarification");
     expect(await readFile(path.join(fixture.workspace, fixture.source.path))).toEqual(sourceBefore);
     expect(await listEvidenceClaimReviews(fixture.workspace)).toEqual(reviewsBefore);
     },
     20_000,
   );
+
+  it("shows an evidence-backed Role draft preview only from reviewed eligible claims", async () => {
+    const fixture = await createEvidenceReviewUiFixture();
+    for (const claimId of ["claim_review_ui_1", "claim_review_ui_2", "claim_review_ui_3"]) {
+      await submitEvidenceReviewUiClaim(fixture.workspace, fixture.batchId, claimId, validApprovedFields());
+    }
+    const server = await startProductServer(fixture.workspace, false);
+    const response = await fetch(`${server.origin}/resume/role`, {
+      method: "POST",
+      redirect: "manual",
+      headers: { origin: server.origin, "content-type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        csrfToken: productToken("/resume/role", PRODUCT_WORKFLOW_ACTIONS.startRoleWorkflow),
+        action: PRODUCT_WORKFLOW_ACTIONS.startRoleWorkflow,
+        title: "AI Product Manager",
+      }),
+    });
+    expect(response.status).toBe(303);
+    const html = await (await fetch(`${server.origin}${response.headers.get("location")}`)).text();
+    expect(html).toContain("Resume preview");
+    expect(html).toContain("Supported AI product workflows and engineering collaboration.");
+    expect(html).toContain("Human review required");
+    expect(html).not.toMatch(/role-expectations profile|auto-approved/i);
+  }, 20_000);
 
   it("keeps review and workflow tokens isolated in normal Product Shell mode", async () => {
     const fixture = await createEvidenceReviewUiFixture();

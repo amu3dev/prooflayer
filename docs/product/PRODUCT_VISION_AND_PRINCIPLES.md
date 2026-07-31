@@ -59,13 +59,15 @@ The primary input is the target role title. Seniority, domain, location, and wor
 
 The product translates the Role pipeline into:
 
-1. Target role understood
+1. Role understood
 2. Relevant experience selected
-3. Draft prepared
+3. Resume prepared
 4. Ready for review
 5. Exported
 
-Role expectations are not inferred from a title alone. When a reviewed expectation source is missing, the UI preserves the target and Career Twin value, explains the gate, and shows the smallest safe next action.
+A title alone is enough to begin. ProofLayer creates a generated role understanding using an explicitly selected provider or a conservative built-in taxonomy for common role families, then derives cautious evidence, fit, section-planning, and exact-approved-wording preview projections from current reviewed evidence. Generated expectations remain visibly unapproved and never become candidate facts. At most one material specialization question is shown; a conservative general direction remains usable when the user skips it.
+
+Canonical Role interpretation, matching, assessment, planning, drafting, and rendering approvals remain unchanged. Model-authored wording still requires human review before approval or export, and the expert CLI remains available for detailed audit and control.
 
 ## Tailor a Resume to a Job
 

@@ -55,6 +55,7 @@ import { composeRoleResumeRenderDocument, formatComposeRoleResumeResult, formatR
 import { exportAllRoleResume, exportRoleResume, formatExportAllRoleResumeResult, formatExportRoleResumeResult, formatRoleResumeExportList, formatRoleResumeExportStatus, getRoleResumeExportStatus, listRoleResumeExports, showRoleResumeExport, validateStoredRoleResumeExport, } from "./role-resume-render-export.js";
 import { RoleResumeDateFormatSchema, RoleResumeExportFormatSchema, RoleResumePageSizeSchema, RoleResumeRenderProfileNameSchema, } from "./role-resume-render-schemas.js";
 import { continueJobWorkflow, createGuidedJob, finalizeJobWorkflow, formatFinalizeJobWorkflowResult, formatGuidedJobCreation, formatJobWorkflowJson, formatJobWorkflowRunResult, formatJobWorkflowStatus, inspectJobWorkflow, runJobWorkflow, } from "./job-workflow.js";
+import { continueRoleWorkflow, createGuidedRole, finalizeRoleWorkflow, formatFinalizeRoleWorkflowResult, formatRoleWorkflowJson, formatRoleWorkflowRunResult, formatRoleWorkflowStatus, inspectRoleWorkflow, replayGeneratedRoleUnderstanding, runRoleWorkflow, } from "./role-workflow.js";
 const program = new Command();
 program
     .name("prooflayer")
@@ -372,6 +373,93 @@ evidence
     console.log(formatEvidenceSnapshotStatus(await validateEvidenceSnapshot(getWorkspace(), snapshotId)));
 });
 const target = program.command("target").description("Create and inspect deterministic role and job targets.");
+const guidedRole = program
+    .command("role")
+    .description("Create and run the guided title-only Role Resume workflow.");
+guidedRole
+    .command("create")
+    .requiredOption("--title <title>", "target role title")
+    .option("--seniority <seniority>", "optional seniority")
+    .option("--domain <domain>", "optional target domain or specialization")
+    .option("--location <location>", "optional target location")
+    .option("--working-model <model>", "optional working model")
+    .option("--replace", "explicitly replace an existing target with the same deterministic ID")
+    .description("Create a title-first Role Target without requiring a Role Expectations profile.")
+    .action(async (options) => {
+    console.log(formatTargetCreation(await createGuidedRole(getWorkspace(), {
+        title: options.title,
+        seniority: options.seniority,
+        domain: options.domain,
+        location: options.location,
+        workingModel: options.workingModel,
+    }, { replace: options.replace })));
+});
+guidedRole
+    .command("run <target-id>")
+    .option("--provider <provider-name>", "configured provider name for an untrusted role-understanding proposal")
+    .option("--offline", "use the conservative built-in role taxonomy; required for fake configured providers")
+    .option("--specialization <value>", "one explicit role specialization choice")
+    .option("--rebuild-stale", "explicitly rebuild stale or replace current generated role understanding")
+    .option("--dry-run", "inspect current state without writes or model calls")
+    .description("Generate or reuse role understanding and continue to the earliest safe human gate.")
+    .action(async (targetId, options) => {
+    console.log(formatRoleWorkflowRunResult(await runRoleWorkflow(getWorkspace(), targetId, parseGuidedRoleRunOptions(options))));
+});
+guidedRole
+    .command("continue <target-id>")
+    .option("--provider <provider-name>", "configured provider name for an untrusted role-understanding proposal")
+    .option("--offline", "use the conservative built-in role taxonomy; required for fake configured providers")
+    .option("--specialization <value>", "one explicit role specialization choice")
+    .option("--rebuild-stale", "explicitly rebuild stale or replace current generated role understanding")
+    .option("--dry-run", "inspect current state without writes or model calls")
+    .description("Resume the guided Role workflow without bypassing review or approval.")
+    .action(async (targetId, options) => {
+    console.log(formatRoleWorkflowRunResult(await continueRoleWorkflow(getWorkspace(), targetId, parseGuidedRoleRunOptions(options))));
+});
+guidedRole
+    .command("status <target-id>")
+    .option("--json", "print stable machine-readable status")
+    .option("--verbose", "include internal lifecycle stages")
+    .description("Inspect the guided Role workflow without mutating artifacts.")
+    .action(async (targetId, options) => {
+    const status = await inspectRoleWorkflow(getWorkspace(), targetId);
+    process.stdout.write(options.json
+        ? formatRoleWorkflowJson(status)
+        : `${formatRoleWorkflowStatus(status, { verbose: options.verbose })}\n`);
+});
+guidedRole
+    .command("replay-understanding <target-id>")
+    .description("Replay a current provider-backed role understanding from exact stored raw bytes without a model call.")
+    .action(async (targetId) => {
+    const replay = await replayGeneratedRoleUnderstanding(getWorkspace(), targetId);
+    console.log([
+        `Target ID: ${replay.targetId}`,
+        `Original SHA-256: ${replay.originalSha256}`,
+        `Replay SHA-256: ${replay.replaySha256}`,
+        `Replay matches: ${replay.matches ? "yes" : "no"}`,
+    ].join("\n"));
+});
+guidedRole
+    .command("finalize <target-id>")
+    .option("--profile <profile>", "ats-standard or compact-professional")
+    .option("--page-size <size>", "A4 or LETTER")
+    .option("--date-format <format>", "MMM-YYYY, YYYY, or exact-source")
+    .option("--formats <formats>", "comma-separated markdown,html,docx,pdf", "markdown,html,docx")
+    .option("--output-dir <path>", "safe relative subdirectory below the Role target export root")
+    .option("--rebuild-stale", "explicitly rebuild stale render/export artifacts")
+    .option("--dry-run", "inspect finalization without writes")
+    .description("Export only a current human-approved Role Resume Draft.")
+    .action(async (targetId, options) => {
+    console.log(formatFinalizeRoleWorkflowResult(await finalizeRoleWorkflow(getWorkspace(), targetId, {
+        profile: options.profile ? RoleResumeRenderProfileNameSchema.parse(options.profile) : undefined,
+        pageSize: options.pageSize ? RoleResumePageSizeSchema.parse(options.pageSize) : undefined,
+        dateFormat: options.dateFormat ? RoleResumeDateFormatSchema.parse(options.dateFormat) : undefined,
+        formats: parseGuidedExportFormats(options.formats),
+        outputDir: options.outputDir,
+        rebuild: options.rebuildStale,
+        dryRun: options.dryRun,
+    })));
+});
 const job = program
     .command("job")
     .description("Run the guided Job application workflow while preserving trust boundaries and lifecycle controls.");
@@ -1783,6 +1871,15 @@ function parseGuidedJobRunOptions(options) {
         upgradeSnapshotId: options.upgradeSnapshot,
         providerName: options.provider,
         offline: options.offline,
+        rebuildStale: options.rebuildStale,
+        dryRun: options.dryRun,
+    };
+}
+function parseGuidedRoleRunOptions(options) {
+    return {
+        providerName: options.provider,
+        offline: options.offline,
+        specialization: options.specialization,
         rebuildStale: options.rebuildStale,
         dryRun: options.dryRun,
     };

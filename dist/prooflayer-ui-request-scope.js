@@ -1,6 +1,7 @@
 export const EVIDENCE_REVIEW_SUBMIT_ACTION = "submit-claim-review";
 export const PRODUCT_WORKFLOW_ACTIONS = {
     startRoleWorkflow: "start-role-workflow",
+    continueRoleWorkflow: "continue-role-workflow",
     createJobTarget: "create-job-target",
     continueJobWorkflow: "continue-job-workflow",
     updateCareerSource: "update-career-source",
@@ -8,7 +9,10 @@ export const PRODUCT_WORKFLOW_ACTIONS = {
 };
 const CLAIM_ROUTE_PATTERN = /^\/review\/(evidence-review-batch_[a-f0-9]{20})\/claim\/(claim_[A-Za-z0-9_-]+)\/?$/;
 const PRODUCT_WORKFLOW_ROUTE_ACTIONS = {
-    "/resume/role": [PRODUCT_WORKFLOW_ACTIONS.startRoleWorkflow],
+    "/resume/role": [
+        PRODUCT_WORKFLOW_ACTIONS.startRoleWorkflow,
+        PRODUCT_WORKFLOW_ACTIONS.continueRoleWorkflow,
+    ],
     "/resume/job": [
         PRODUCT_WORKFLOW_ACTIONS.createJobTarget,
         PRODUCT_WORKFLOW_ACTIONS.continueJobWorkflow,
@@ -54,7 +58,8 @@ export function productWorkflowActionAllowed(routePath, actionName) {
         && PRODUCT_WORKFLOW_ROUTE_ACTIONS[routePath].some((entry) => entry === actionName);
 }
 export function productWorkflowActionRequiresTarget(actionName) {
-    return actionName === PRODUCT_WORKFLOW_ACTIONS.continueJobWorkflow;
+    return actionName === PRODUCT_WORKFLOW_ACTIONS.continueJobWorkflow
+        || actionName === PRODUCT_WORKFLOW_ACTIONS.continueRoleWorkflow;
 }
 export function isSafeMethod(method) {
     return method === "GET" || method === "HEAD" || method === "OPTIONS";

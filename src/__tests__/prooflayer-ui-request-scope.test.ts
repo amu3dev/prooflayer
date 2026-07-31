@@ -52,6 +52,11 @@ describe("ProofLayer local UI request scopes", () => {
       routePath: "/resume/job",
       targetId: "job-example-one",
     });
+    const continueRoleToken = proofLayerUiActionCsrfToken(SECRET, {
+      actionName: PRODUCT_WORKFLOW_ACTIONS.continueRoleWorkflow,
+      routePath: "/resume/role",
+      targetId: "role-engineering-manager",
+    });
     const otherJobToken = proofLayerUiActionCsrfToken(SECRET, {
       actionName: PRODUCT_WORKFLOW_ACTIONS.continueJobWorkflow,
       routePath: "/resume/job",
@@ -62,10 +67,11 @@ describe("ProofLayer local UI request scopes", () => {
       routePath: "/resume/job",
     });
 
-    expect(new Set([reviewToken, roleToken, jobToken, otherJobToken, createJobToken]).size).toBe(5);
+    expect(new Set([reviewToken, roleToken, continueRoleToken, jobToken, otherJobToken, createJobToken]).size).toBe(6);
     expect(evidenceReviewUiCsrfTokenMatches(reviewToken, roleToken)).toBe(false);
     expect(evidenceReviewUiCsrfTokenMatches(jobToken, otherJobToken)).toBe(false);
     expect(evidenceReviewUiCsrfTokenMatches(jobToken, createJobToken)).toBe(false);
+    expect(evidenceReviewUiCsrfTokenMatches(roleToken, continueRoleToken)).toBe(false);
     const tamperedRoleToken = `${roleToken.startsWith("0") ? "1" : "0"}${roleToken.slice(1)}`;
     expect(evidenceReviewUiCsrfTokenMatches(tamperedRoleToken, roleToken)).toBe(false);
     expect(() => proofLayerUiActionCsrfToken(SECRET, {

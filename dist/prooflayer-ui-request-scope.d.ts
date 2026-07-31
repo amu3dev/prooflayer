@@ -1,6 +1,7 @@
 export declare const EVIDENCE_REVIEW_SUBMIT_ACTION: "submit-claim-review";
 export declare const PRODUCT_WORKFLOW_ACTIONS: {
     readonly startRoleWorkflow: "start-role-workflow";
+    readonly continueRoleWorkflow: "continue-role-workflow";
     readonly createJobTarget: "create-job-target";
     readonly continueJobWorkflow: "continue-job-workflow";
     readonly updateCareerSource: "update-career-source";
@@ -26,7 +27,7 @@ export type ProofLayerUiRequestScope = {
 };
 export type ProductWorkflowRoutePath = keyof typeof PRODUCT_WORKFLOW_ROUTE_ACTIONS;
 declare const PRODUCT_WORKFLOW_ROUTE_ACTIONS: {
-    readonly "/resume/role": readonly ["start-role-workflow"];
+    readonly "/resume/role": readonly ["start-role-workflow", "continue-role-workflow"];
     readonly "/resume/job": readonly ["create-job-target", "continue-job-workflow"];
     readonly "/career/update": readonly ["update-career-source", "process-career-updates"];
 };

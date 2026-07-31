@@ -13,6 +13,36 @@ export interface RoleJourneyProjection {
     currentValue: string;
     blocker?: string;
     nextAction: string;
+    understanding?: {
+        state: "generated" | "generated-with-ambiguity" | "reviewed" | "stale" | "invalid";
+        summary: string;
+        sourceLabel: string;
+        specialization: string;
+        expectations: string[];
+    };
+    positioning?: {
+        label: string;
+        fit: "strong" | "credible" | "mixed" | "stretch" | "insufficient evidence";
+        strongestThemes: Array<{
+            theme: string;
+            evidence: string;
+        }>;
+        weakerThemes: string[];
+        gaps: string[];
+        limitations: string[];
+    };
+    materialQuestion?: {
+        question: string;
+        options: Array<{
+            id: string;
+            label: string;
+        }>;
+        selectedOptionId: string;
+    };
+    draftPreview?: {
+        items: string[];
+        requiresHumanReview: true;
+    };
     advanced: Array<{
         label: string;
         status: string;
@@ -49,6 +79,7 @@ export interface AddCareerSourceInput {
     content: Uint8Array;
 }
 export declare function startRoleResumeJourney(workspace: string, input: RoleTargetInput): Promise<RoleJourneyProjection>;
+export declare function continueRoleResumeJourney(workspace: string, targetId: string, specialization?: string): Promise<RoleJourneyProjection>;
 export declare function inspectRoleResumeJourney(workspace: string, targetId?: string): Promise<RoleJourneyProjection>;
 export declare function runProductJobJourney(workspace: string, targetId: string): Promise<JobJourneyProjection>;
 export declare function createProductJobJourney(workspace: string, input: Omit<JobTargetInput, "file"> & {
