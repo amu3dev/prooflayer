@@ -2,6 +2,10 @@ export const EVIDENCE_REVIEW_SUBMIT_ACTION = "submit-claim-review";
 export const PRODUCT_WORKFLOW_ACTIONS = {
     startRoleWorkflow: "start-role-workflow",
     continueRoleWorkflow: "continue-role-workflow",
+    reviewRoleDraftDecision: "review-role-draft-decision",
+    completeRoleDraftReview: "complete-role-draft-review",
+    approveRoleDraft: "approve-role-draft",
+    exportRoleResume: "export-role-resume",
     createJobTarget: "create-job-target",
     continueJobWorkflow: "continue-job-workflow",
     updateCareerSource: "update-career-source",
@@ -12,6 +16,12 @@ const PRODUCT_WORKFLOW_ROUTE_ACTIONS = {
     "/resume/role": [
         PRODUCT_WORKFLOW_ACTIONS.startRoleWorkflow,
         PRODUCT_WORKFLOW_ACTIONS.continueRoleWorkflow,
+        PRODUCT_WORKFLOW_ACTIONS.exportRoleResume,
+    ],
+    "/resume/role/review": [
+        PRODUCT_WORKFLOW_ACTIONS.reviewRoleDraftDecision,
+        PRODUCT_WORKFLOW_ACTIONS.completeRoleDraftReview,
+        PRODUCT_WORKFLOW_ACTIONS.approveRoleDraft,
     ],
     "/resume/job": [
         PRODUCT_WORKFLOW_ACTIONS.createJobTarget,
@@ -59,7 +69,11 @@ export function productWorkflowActionAllowed(routePath, actionName) {
 }
 export function productWorkflowActionRequiresTarget(actionName) {
     return actionName === PRODUCT_WORKFLOW_ACTIONS.continueJobWorkflow
-        || actionName === PRODUCT_WORKFLOW_ACTIONS.continueRoleWorkflow;
+        || actionName === PRODUCT_WORKFLOW_ACTIONS.continueRoleWorkflow
+        || actionName === PRODUCT_WORKFLOW_ACTIONS.exportRoleResume
+        || actionName === PRODUCT_WORKFLOW_ACTIONS.reviewRoleDraftDecision
+        || actionName === PRODUCT_WORKFLOW_ACTIONS.completeRoleDraftReview
+        || actionName === PRODUCT_WORKFLOW_ACTIONS.approveRoleDraft;
 }
 export function isSafeMethod(method) {
     return method === "GET" || method === "HEAD" || method === "OPTIONS";

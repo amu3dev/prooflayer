@@ -403,6 +403,20 @@ export interface RoleWorkflowStatus {
         requiresHumanReview: true;
         canonicalApprovedDraft: false;
     };
+    draftProposal?: {
+        id: string;
+        status: "missing" | "current" | "stale" | "invalid";
+        readyForReview: boolean;
+    };
+    draftReview?: {
+        status: "missing" | "in-progress" | "completed" | "invalid";
+        pendingCount: number;
+    };
+    exports: Array<{
+        format: RoleResumeExportFormat;
+        exportId: string;
+        status: "missing" | "current" | "stale" | "invalid";
+    }>;
     ambiguity?: GeneratedRoleUnderstanding["ambiguities"][number];
     currentStage: RoleWorkflowStage;
     overallState: "not-started" | "running" | "paused" | "ready-for-review" | "ready-to-finalize" | "complete" | "invalid";

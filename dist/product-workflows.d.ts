@@ -1,6 +1,12 @@
+import { setRoleResumeDraftReviewDecision, type RoleResumeDraftReviewStatus } from "./role-resume-draft-review.js";
+import { type ExportRoleResumeResult } from "./role-resume-render-export.js";
+import type { InterpretationModelProvider } from "./model-provider.js";
+import type { RoleResumeDraftProposal, RoleResumeDraftReview } from "./role-resume-draft-schemas.js";
+import type { RoleResumeExportFormat } from "./role-resume-render-schemas.js";
 import { type JobWorkflowStatus } from "./job-workflow.js";
 import type { RoleTarget, Target } from "./schemas.js";
 import { type JobTargetInput, type RoleTargetInput } from "./targets.js";
+import { type ProductWorkflowActionName } from "./prooflayer-ui-request-scope.js";
 export interface ProductProgressStep {
     label: string;
     state: "complete" | "current" | "waiting" | "blocked";
@@ -13,6 +19,14 @@ export interface RoleJourneyProjection {
     currentValue: string;
     blocker?: string;
     nextAction: string;
+    primaryAction?: {
+        kind: "create" | "continue" | "review" | "approve" | "export" | "view" | "blocked";
+        label: string;
+        detail: string;
+        method: "GET" | "POST";
+        href: string;
+        action?: ProductWorkflowActionName;
+    };
     understanding?: {
         state: "generated" | "generated-with-ambiguity" | "reviewed" | "stale" | "invalid";
         summary: string;
@@ -40,9 +54,24 @@ export interface RoleJourneyProjection {
         selectedOptionId: string;
     };
     draftPreview?: {
+        state: "proposal" | "review-in-progress" | "review-complete" | "approved";
+        proposalId: string;
+        sections: Array<{
+            type: string;
+            heading: string;
+            items: string[];
+        }>;
         items: string[];
-        requiresHumanReview: true;
+        requiresHumanReview: boolean;
+        warnings: string[];
+        review?: Pick<RoleResumeDraftReviewStatus, "status" | "counts" | "unresolvedCount">;
     };
+    exports?: Array<{
+        format: RoleResumeExportFormat;
+        exportId: string;
+        status: string;
+        outputPath?: string;
+    }>;
     advanced: Array<{
         label: string;
         status: string;
@@ -79,8 +108,36 @@ export interface AddCareerSourceInput {
     content: Uint8Array;
 }
 export declare function startRoleResumeJourney(workspace: string, input: RoleTargetInput): Promise<RoleJourneyProjection>;
-export declare function continueRoleResumeJourney(workspace: string, targetId: string, specialization?: string): Promise<RoleJourneyProjection>;
+export declare function continueRoleResumeJourney(workspace: string, targetId: string, specialization?: string, options?: {
+    provider?: InterpretationModelProvider;
+    now?: () => Date;
+    rebuild?: boolean;
+}): Promise<RoleJourneyProjection>;
 export declare function inspectRoleResumeJourney(workspace: string, targetId?: string): Promise<RoleJourneyProjection>;
+export declare function advanceRoleResumePreparation(workspace: string, targetId: string, options?: {
+    provider?: InterpretationModelProvider;
+    now?: () => Date;
+    rebuild?: boolean;
+}): Promise<{
+    result: "advanced" | "paused" | "already-current";
+    message?: string;
+}>;
+export declare function inspectRoleResumeDraftForProduct(workspace: string, targetId: string, proposalId?: string): Promise<{
+    proposal: RoleResumeDraftProposal;
+    review: RoleResumeDraftReview;
+    reviewStatus: RoleResumeDraftReviewStatus;
+}>;
+export declare function setRoleResumeDraftReviewDecisionForProduct(workspace: string, targetId: string, proposalId: string, itemType: Parameters<typeof setRoleResumeDraftReviewDecision>[2], itemId: string, input: Parameters<typeof setRoleResumeDraftReviewDecision>[4]): Promise<RoleResumeDraftReviewStatus>;
+export declare function completeRoleResumeDraftReviewForProduct(workspace: string, targetId: string, proposalId: string): Promise<RoleResumeDraftReviewStatus>;
+export declare function approveRoleResumeDraftForProduct(workspace: string, targetId: string, proposalId: string): Promise<{
+    targetId: string;
+    proposalId: string;
+    result: string;
+}>;
+export declare function exportRoleResumeForProduct(workspace: string, targetId: string, options?: {
+    rebuild?: boolean;
+    now?: () => Date;
+}): Promise<ExportRoleResumeResult[]>;
 export declare function runProductJobJourney(workspace: string, targetId: string): Promise<JobJourneyProjection>;
 export declare function createProductJobJourney(workspace: string, input: Omit<JobTargetInput, "file"> & {
     description: string;

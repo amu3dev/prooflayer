@@ -244,6 +244,48 @@ describe("ProofLayer product shell over real HTTP", () => {
     expect(html).not.toMatch(/role-expectations profile|auto-approved/i);
   }, 20_000);
 
+  it("turns an existing Role Target into a contextual continuation instead of restarting it", async () => {
+    const fixture = await createProductShellFixture();
+    const server = await startProductServer(fixture.workspace, false);
+    const created = await fetch(`${server.origin}/resume/role`, {
+      method: "POST",
+      redirect: "manual",
+      headers: { origin: server.origin, "content-type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        csrfToken: productToken("/resume/role", PRODUCT_WORKFLOW_ACTIONS.startRoleWorkflow),
+        action: PRODUCT_WORKFLOW_ACTIONS.startRoleWorkflow,
+        title: "AI Product Manager",
+      }),
+    });
+    expect(created.status).toBe(303);
+    const initial = await fetch(`${server.origin}/resume/role?target=role-ai-product-manager`);
+    const initialHtml = await initial.text();
+    expect(initial.status).toBe(200);
+    expect(initialHtml).toContain("Continue Preparing Resume");
+    expect(initialHtml).not.toContain("Create My Resume");
+    expect(initialHtml).not.toContain("Review Resume");
+
+    const continued = await fetch(`${server.origin}/resume/role`, {
+      method: "POST",
+      redirect: "manual",
+      headers: { origin: server.origin, "content-type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        csrfToken: productToken(
+          "/resume/role",
+          PRODUCT_WORKFLOW_ACTIONS.continueRoleWorkflow,
+          "role-ai-product-manager",
+        ),
+        action: PRODUCT_WORKFLOW_ACTIONS.continueRoleWorkflow,
+        targetId: "role-ai-product-manager",
+      }),
+    });
+    expect(continued.status).toBe(303);
+    const after = await (await fetch(`${server.origin}${continued.headers.get("location")}`)).text();
+    expect(after).toContain("Review and approve the role interpretation before preparing the resume.");
+    expect(after).toContain("Continue Preparing Resume");
+    expect(after).not.toContain("Review Resume");
+  }, 20_000);
+
   it("keeps review and workflow tokens isolated in normal Product Shell mode", async () => {
     const fixture = await createEvidenceReviewUiFixture();
     const server = await startProductServer(fixture.workspace, false);

@@ -11,6 +11,9 @@ import { getFitAssessmentStatus } from "./fit-assessment.js";
 import { getRoleResumePlanStatus } from "./role-resume-planning.js";
 import { getRoleResumeDraftScaffoldStatus } from "./role-resume-drafting.js";
 import { getApprovedRoleResumeDraftStatus } from "./approved-role-resume-draft.js";
+import { getRoleResumeDraftProposalStatus, listRoleResumeDraftProposals, } from "./role-resume-draft-proposal.js";
+import { getRoleResumeDraftReviewStatus, } from "./role-resume-draft-review.js";
+import { listRoleResumeExports, getRoleResumeExportStatus } from "./role-resume-render-export.js";
 import { composeRoleResumeRenderDocument, getRoleResumeRenderDocumentStatus, normalizeRoleResumeRenderOptions, } from "./role-resume-rendering.js";
 import { exportRoleResume, } from "./role-resume-render-export.js";
 import { stableJson } from "./target-proposal.js";
@@ -23,6 +26,7 @@ export const ROLE_UNDERSTANDING_PROMPT_VERSION = "1";
 const UNDERSTANDING_FILE = "role-understanding.json";
 const MANIFEST_FILE = "role-understanding-manifest.json";
 const RAW_RESPONSE_FILE = "raw-model-response.txt";
+const REQUIRED_ROLE_RESUME_EXPORTS = ["markdown", "html", "docx"];
 const RoleExpectationSchema = z.object({
     id: z.string().min(1),
     kind: z.enum(["responsibility", "capability", "leadership", "technical", "business", "operating-context"]),
@@ -312,6 +316,11 @@ export async function inspectRoleWorkflow(workspace, targetId) {
         safeStatus(() => getRoleResumeRenderDocumentStatus(workspace, targetId)),
     ]);
     const [approvedInterpretation, approvedMatching, assessment, plan, scaffold, approvedDraft, rendering] = canonicalEntries;
+    const proposal = await latestRoleDraftProposal(workspace, targetId);
+    const draftReview = proposal
+        ? await getRoleResumeDraftReviewStatus(workspace, proposal.id)
+        : undefined;
+    const exports = await currentRoleExports(workspace, targetId);
     const projection = understanding
         ? await deriveConservativeProjection(workspace, understanding)
         : emptyProjection(target.title);
@@ -320,6 +329,9 @@ export async function inspectRoleWorkflow(workspace, targetId) {
     const scaffoldReady = scaffold.status === "current";
     const approvedReady = approvedDraft.status === "current";
     const rendered = rendering.status === "current";
+    const proposalReady = proposal?.status === "current" && proposal.readyForReview;
+    const reviewCompleted = draftReview?.status === "completed";
+    const exportsReady = REQUIRED_ROLE_RESUME_EXPORTS.every((format) => exports.some((entry) => entry.format === format && entry.status === "current"));
     const stages = [
         stage("target", "current", "Role Target is available; its title is positioning input only."),
         stage("role-understanding", understandingLifecycle.status, understanding ? `${understanding.expectations.length} generated expectations are available from ${sourceLabel(understanding)}.` : "No generated role understanding is available."),
@@ -327,37 +339,61 @@ export async function inspectRoleWorkflow(workspace, targetId) {
         stage("positioning", understanding ? "current" : "waiting", understanding ? projection.positioning : "Positioning waits for role understanding."),
         stage("planning", planReady ? "current" : selected ? "current" : "waiting", planReady ? "A canonical approved Role Resume Content Plan is current." : selected ? "A derived conservative section outline is available; it is not a canonical approved plan." : "Planning waits for safe evidence."),
         stage("scaffold", scaffoldReady ? "current" : selected ? "current" : "waiting", scaffoldReady ? "A canonical prose-free scaffold is current." : selected ? "A product-level prose-free outline is available; canonical drafting gates remain unchanged." : "Draft structure waits for safe evidence."),
-        stage("draft-proposal", "waiting", approvedInterpretation.status === "current" && planReady && scaffoldReady
-            ? "Use the existing explicit Role draft proposal command; model output remains untrusted." : "Draft wording requires current canonical approvals and an explicit provider call."),
-        stage("draft-review", approvedReady ? "current" : "human-action-required", approvedReady ? "Human-reviewed wording is approved." : "Human review is required before model-authored wording can be approved."),
+        stage("draft-proposal", proposalReady ? "current" : scaffoldReady ? "human-action-required" : "waiting", proposalReady
+            ? "A current structured draft proposal is ready for human review." : scaffoldReady ? "Draft wording requires an explicit configured provider." : "Draft wording waits for a current approved plan and scaffold."),
+        stage("draft-review", reviewCompleted ? "current" : proposalReady ? "human-action-required" : "waiting", reviewCompleted ? "Human review is complete." : proposalReady ? "Review the generated resume wording before approval." : "Resume review begins after a valid draft proposal."),
         stage("approved-draft", approvedReady ? "current" : "missing", approvedReady ? "Approved structured draft is current." : "No approved structured draft is current."),
         stage("rendering", rendered ? "current" : "missing", rendered ? "Canonical rendering is current." : "Rendering waits for an approved draft."),
-        stage("export", rendered ? "current" : "missing", rendered ? "Inspect current exports in Advanced Details." : "Export waits for approved rendering."),
+        stage("export", exportsReady ? "current" : rendered ? "human-action-required" : "waiting", exportsReady ? "Current resume exports are available." : rendered ? "Export the approved resume." : "Export waits for approved rendering."),
     ];
-    const overallState = rendered ? "complete"
+    const overallState = exportsReady ? "complete"
         : approvedReady ? "ready-to-finalize"
-            : understanding ? "ready-for-review"
-                : understandingLifecycle.status === "invalid" ? "invalid"
-                    : "not-started";
-    const currentStage = rendered ? "export"
-        : approvedReady ? "rendering"
-            : selected ? "draft-review"
-                : understanding ? "evidence-selection"
-                    : "role-understanding";
+            : reviewCompleted ? "ready-to-finalize"
+                : proposalReady || draftReview?.status === "in-progress" ? "ready-for-review"
+                    : understandingLifecycle.status === "invalid" ? "invalid"
+                        : understanding ? "paused"
+                            : "not-started";
+    const currentStage = exportsReady ? "export"
+        : rendered ? "rendering"
+            : approvedReady || reviewCompleted ? "approved-draft"
+                : proposalReady || draftReview?.status === "in-progress" ? "draft-review"
+                    : scaffoldReady ? "draft-proposal"
+                        : selected ? "planning"
+                            : understanding ? "evidence-selection"
+                                : "role-understanding";
     const noEvidence = projection.eligibleEvidenceCount === 0;
-    const nextAction = rendered
-        ? "No action is required; current Role resume rendering is available."
+    const canonicalPreparationAction = approvedInterpretation.status !== "current"
+        ? "Review and approve the role interpretation before preparing the resume."
+        : approvedMatching.status !== "current"
+            ? "Review and approve the selected role evidence before preparing the resume."
+            : assessment.status !== "current"
+                ? "Complete the approved role assessment before preparing the resume."
+                : plan.status !== "current"
+                    ? "Review and approve the Role Resume Content Plan before preparing the resume."
+                    : undefined;
+    const nextAction = exportsReady
+        ? "No action is required; current Role resume exports are available."
         : approvedReady
             ? "Export the approved resume."
-            : !understanding
-                ? "Generate a conservative role understanding from the title."
-                : understanding.ambiguities[0]
-                    ? "Choose one role direction, or keep the conservative default and continue."
-                    : noEvidence
-                        ? "Confirm only the material career evidence needed for this role; no source re-upload is required."
-                        : selected
-                            ? "Review the generated role understanding before approving any draft wording."
-                            : "Generate a conservative role understanding from the title.";
+            : reviewCompleted
+                ? "Approve the reviewed resume."
+                : proposalReady || draftReview?.status === "in-progress"
+                    ? "Review the generated resume wording before approval."
+                    : scaffoldReady
+                        ? proposal && ["stale", "invalid"].includes(proposal.status)
+                            ? "The existing resume wording proposal needs an explicit rebuild before review."
+                            : "A writing provider is needed to prepare the resume wording."
+                        : !understanding
+                            ? "Generate a conservative role understanding from the title."
+                            : understanding.ambiguities[0]
+                                ? "Choose one role direction, or keep the conservative default and continue."
+                                : canonicalPreparationAction
+                                    ? canonicalPreparationAction
+                                    : noEvidence
+                                        ? "Confirm only the material career evidence needed for this role; no source re-upload is required."
+                                        : selected
+                                            ? "Continue preparing the resume from current approved Role pipeline artifacts."
+                                            : "Generate a conservative role understanding from the title.";
     return {
         schemaVersion: 1,
         target,
@@ -383,6 +419,9 @@ export async function inspectRoleWorkflow(workspace, targetId) {
             requiresHumanReview: true,
             canonicalApprovedDraft: false,
         },
+        ...(proposal ? { draftProposal: { id: proposal.id, status: proposal.status, readyForReview: proposal.readyForReview } } : {}),
+        ...(draftReview ? { draftReview: { status: draftReview.status, pendingCount: draftReview.counts.pending } } : {}),
+        exports,
         ...(understanding?.ambiguities[0] ? { ambiguity: understanding.ambiguities[0] } : {}),
         currentStage,
         overallState,
@@ -399,6 +438,24 @@ export async function inspectRoleWorkflow(workspace, targetId) {
             rendering: rendering.status,
         },
     };
+}
+async function latestRoleDraftProposal(workspace, targetId) {
+    const proposals = await listRoleResumeDraftProposals(workspace, targetId);
+    for (const proposal of proposals.slice().reverse()) {
+        const status = await getRoleResumeDraftProposalStatus(workspace, proposal.id);
+        if (status.status !== "missing")
+            return { id: proposal.id, status: status.status, readyForReview: status.readyForReview };
+    }
+    return undefined;
+}
+async function currentRoleExports(workspace, targetId) {
+    const manifests = await listRoleResumeExports(workspace, targetId);
+    const statuses = await Promise.all(manifests.map(async (manifest) => ({
+        format: manifest.format,
+        exportId: manifest.exportId,
+        status: (await getRoleResumeExportStatus(workspace, manifest.exportId)).status,
+    })));
+    return statuses.sort((a, b) => a.format.localeCompare(b.format));
 }
 export async function finalizeRoleWorkflow(workspace, targetId, options = {}) {
     const status = await inspectRoleWorkflow(workspace, targetId);

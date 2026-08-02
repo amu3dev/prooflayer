@@ -15,6 +15,8 @@ describe("ProofLayer local UI request scopes", () => {
         });
         expect(resolveProofLayerUiRequestScope("POST", "/resume/role", ORIGIN))
             .toMatchObject({ scope: "product-workflow", routePath: "/resume/role" });
+        expect(resolveProofLayerUiRequestScope("POST", "/resume/role/review", ORIGIN))
+            .toMatchObject({ scope: "product-workflow", routePath: "/resume/role/review" });
         expect(resolveProofLayerUiRequestScope("POST", "/resume/job", ORIGIN))
             .toMatchObject({ scope: "product-workflow", routePath: "/resume/job" });
         expect(resolveProofLayerUiRequestScope("POST", "/career/update", ORIGIN))
@@ -42,6 +44,11 @@ describe("ProofLayer local UI request scopes", () => {
             routePath: "/resume/role",
             targetId: "role-engineering-manager",
         });
+        const roleDraftReviewToken = proofLayerUiActionCsrfToken(SECRET, {
+            actionName: PRODUCT_WORKFLOW_ACTIONS.reviewRoleDraftDecision,
+            routePath: "/resume/role/review",
+            targetId: "role-engineering-manager",
+        });
         const otherJobToken = proofLayerUiActionCsrfToken(SECRET, {
             actionName: PRODUCT_WORKFLOW_ACTIONS.continueJobWorkflow,
             routePath: "/resume/job",
@@ -51,7 +58,7 @@ describe("ProofLayer local UI request scopes", () => {
             actionName: PRODUCT_WORKFLOW_ACTIONS.createJobTarget,
             routePath: "/resume/job",
         });
-        expect(new Set([reviewToken, roleToken, continueRoleToken, jobToken, otherJobToken, createJobToken]).size).toBe(6);
+        expect(new Set([reviewToken, roleDraftReviewToken, roleToken, continueRoleToken, jobToken, otherJobToken, createJobToken]).size).toBe(7);
         expect(evidenceReviewUiCsrfTokenMatches(reviewToken, roleToken)).toBe(false);
         expect(evidenceReviewUiCsrfTokenMatches(jobToken, otherJobToken)).toBe(false);
         expect(evidenceReviewUiCsrfTokenMatches(jobToken, createJobToken)).toBe(false);

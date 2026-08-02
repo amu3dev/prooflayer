@@ -65,7 +65,7 @@ describe("guided title-only Role Resume workflow", () => {
         expect(understanding.source).toMatchObject({ type: "model-proposal", promptId: ROLE_UNDERSTANDING_PROMPT_ID });
         expect(understanding.trust.state).toBe("generated-unapproved");
         expect(result.status.canonical.approvedInterpretation).toBe("missing");
-        expect(result.status.stages.find((entry) => entry.stage === "draft-review")?.status).toBe("human-action-required");
+        expect(result.status.stages.find((entry) => entry.stage === "draft-review")?.status).toBe("waiting");
         expect(await readFile(path.join(fixture.workspace, understanding.source.type === "model-proposal" ? understanding.source.rawResponsePath : ""), "utf8")).toContain("planning and delivery");
         expect((await replayGeneratedRoleUnderstanding(fixture.workspace, target.target.id)).matches).toBe(true);
         const cached = await runRoleWorkflow(fixture.workspace, target.target.id, { provider });

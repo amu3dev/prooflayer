@@ -1,0 +1,36 @@
+---
+import path from "node:path";
+import { readFile } from "node:fs/promises";
+import Layout from "../../layouts/Layout.astro";
+import { getRoleResumeExportStatus, showRoleResumeExport } from "../../../../../src/role-resume-render-export.ts";
+import { proofLayerUiRuntimeConfig } from "../../lib/runtime.js";
+
+const config = proofLayerUiRuntimeConfig();
+const exportId = Astro.url.searchParams.get("exportId");
+if (exportId) {
+  const status = await getRoleResumeExportStatus(config.workspace, exportId);
+  if (status.status !== "current" || !status.outputPath) {
+    return new Response(`Resume export is not current: ${status.status}.`, { status: 409 });
+  }
+  const manifest = await showRoleResumeExport(config.workspace, exportId);
+  const root = path.resolve(config.workspace);
+  const outputPath = path.resolve(root, manifest.outputPath);
+  if (outputPath !== root && !outputPath.startsWith(`${root}${path.sep}`)) {
+    return new Response("Resume export path is unsafe.", { status: 400 });
+  }
+  const body = await readFile(outputPath);
+  const contentType = manifest.format === "html"
+    ? "text/html; charset=utf-8"
+    : manifest.format === "markdown"
+      ? "text/markdown; charset=utf-8"
+      : "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+  const disposition = manifest.format === "html" ? "inline" : `attachment; filename="${path.basename(outputPath)}"`;
+  return new Response(body, { headers: { "content-type": contentType, "content-disposition": disposition } });
+}
+---
+
+<Layout title="Resume Export" batchId={config.batchId} readOnly={config.readOnly}>
+  <p class="eyebrow">Resume export</p><h1>Choose a current resume export</h1>
+  <p class="lede">Use the Role Resume page to prepare or export the approved wording.</p>
+  <a class="button" href="/resume/role">Back to Role Resume</a>
+</Layout>
