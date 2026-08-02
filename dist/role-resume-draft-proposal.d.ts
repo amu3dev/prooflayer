@@ -2,8 +2,8 @@ import { type InterpretationModelProvider } from "./model-provider.js";
 import { type ModelRoleResumeDraftPayload, type ResumeDraftClaimLedgerEntry, type ResumeDraftEvidenceUsage, type RoleResumeDraftProposal, type RoleResumeDraftScaffold, type RoleResumeDraftSection } from "./role-resume-draft-schemas.js";
 import { loadRoleResumeDraftingContext } from "./role-resume-drafting.js";
 export declare const ROLE_RESUME_DRAFT_PROMPT_TEMPLATE_ID = "target-role-resume-draft-proposal";
-export declare const ROLE_RESUME_DRAFT_PROMPT_TEMPLATE_VERSION = "1";
-export declare const ROLE_RESUME_DRAFT_PROMPT_POLICY_VERSION = "1";
+export declare const ROLE_RESUME_DRAFT_PROMPT_TEMPLATE_VERSION = "2";
+export declare const ROLE_RESUME_DRAFT_PROMPT_POLICY_VERSION = "2";
 export interface GenerateRoleResumeDraftProposalOptions {
     refresh?: boolean;
     provider?: InterpretationModelProvider;
@@ -54,6 +54,18 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
         title: string;
         seniority: string | undefined;
         domain: string | undefined;
+    };
+    targetProfile: {
+        mode: string;
+        positioningScope: "insufficient-evidence" | "direct-role-positioning" | "adjacent-role-positioning" | "stretch-positioning";
+        primaryThemes: string[];
+        secondaryThemes: string[];
+    };
+    pageProfile: {
+        name: string;
+        pageSize: string;
+        layout: string;
+        purpose: string;
     };
     approvedInterpretation: {
         expectations: {
@@ -975,6 +987,141 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
             restrictions: string[];
         }[];
     };
+    resumeComposition: {
+        schemaVersion: 1;
+        createdAt: string;
+        updatedAt: string;
+        id: string;
+        mode: "market-positioning";
+        sections: {
+            type: "education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information";
+            status: "exclude" | "include" | "optional";
+            id: string;
+            order: number;
+            planSectionId: string;
+            objective: string;
+            slotIds: string[];
+            requiredSlotIds: string[];
+        }[];
+        targetType: "role";
+        targetId: string;
+        completeness: {
+            status: "blocked" | "complete" | "incomplete" | "constrained-but-usable";
+            warnings: string[];
+            blockingReasons: string[];
+            usableForDrafting: boolean;
+            identityPresent: boolean;
+            selectedEvidenceAccounted: boolean;
+            matureCareerTwin: boolean;
+            headlinePlanned: boolean;
+            summaryPlanned: boolean;
+            capabilityThemeCount: number;
+            includedExperienceCount: number;
+            includedProjectCount: number;
+            includedSkillCount: number;
+            evidenceBackedBulletSlotCount: number;
+            selectedEvidenceCount: number;
+            accountedSelectedEvidenceCount: number;
+            careerEntriesAccounted: boolean;
+        };
+        provenance: {
+            targetSha256: string;
+            approvedInterpretationSha256: string;
+            eligibleEvidenceSetSha256: string;
+            approvedMatchingSha256: string;
+            evidenceSnapshotSha256: string;
+            selectedEvidenceSetSha256: string;
+            approvedAssessmentSha256: string;
+            approvedPlanSha256: string;
+            approvedPlanManifestSha256: string;
+            careerProfileSha256: string;
+            publicProfileSha256: string;
+            careerProfilePath: string;
+            publicProfilePath: string;
+        };
+        skills: {
+            decision: "exclude" | "include";
+            id: string;
+            rationale: string;
+            evidenceIds: string[];
+            label: string;
+            order: number;
+        }[];
+        policy: {
+            name: "role-resume-composition-policy";
+            version: "1";
+        };
+        exclusions: {
+            reason: string;
+            id: string;
+            label: string;
+            subjectType: "role" | "project" | "skill" | "section" | "evidence";
+            subjectId: string;
+        }[];
+        roleTitle: string;
+        identity: {
+            source: "unavailable" | "public-profile";
+            contactItems: string[];
+            name?: string | undefined;
+        };
+        approvedPlan: {
+            sha256: string;
+            path: string;
+            manifestPath: string;
+            manifestSha256: string;
+        };
+        experienceEntries: {
+            decision: "exclude" | "include";
+            id: string;
+            sourceType: "role" | "project";
+            rationale: string;
+            evidenceIds: string[];
+            technologies: string[];
+            domains: string[];
+            label: string;
+            selectedEvidenceIds: string[];
+            order: number;
+            sourceIndex: number;
+            title?: string | undefined;
+            dateRange?: string | undefined;
+            organization?: string | undefined;
+        }[];
+        projectEntries: {
+            decision: "exclude" | "include";
+            id: string;
+            sourceType: "role" | "project";
+            rationale: string;
+            evidenceIds: string[];
+            technologies: string[];
+            domains: string[];
+            label: string;
+            selectedEvidenceIds: string[];
+            order: number;
+            sourceIndex: number;
+            title?: string | undefined;
+            dateRange?: string | undefined;
+            organization?: string | undefined;
+        }[];
+        slots: {
+            id: string;
+            required: boolean;
+            mode: "fixed" | "provider-worded";
+            sourceExpectationIds: string[];
+            rationale: string;
+            evidenceIds: string[];
+            approvedMatchIds: string[];
+            qualifiers: string[];
+            order: number;
+            claimBoundaryIds: string[];
+            itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability" | "identity" | "contact" | "project-bullet";
+            claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
+            sectionType: "education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information";
+            sourceAssessmentIds: string[];
+            sourceLabel: string;
+            exactText?: string | undefined;
+            careerEntryId?: string | undefined;
+        }[];
+    };
     draftScaffold: {
         schemaVersion: 1;
         createdAt: string;
@@ -1002,6 +1149,8 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
             allowedMatchIds: string[];
             metricPermission: "prohibited" | "reviewed-only";
             scopePermissions: string[];
+            compositionSlotIds: string[];
+            requiredCompositionSlotIds: string[];
             maximumSentenceCount?: number | undefined;
         }[];
         targetType: "role";
@@ -1020,7 +1169,11 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
             assessmentSetSha256: string;
             evidenceSetSha256: string;
             approvedPlanSha256: string;
+            compositionSha256: string;
             approvedPlanManifestSha256: string;
+            compositionManifestSha256: string;
+            careerProfileSha256: string;
+            publicProfileSha256: string;
         };
         approvedInterpretation: {
             sha256: string;
@@ -1058,6 +1211,12 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
             manifestPath: string;
             manifestSha256: string;
         };
+        composition: {
+            sha256: string;
+            path: string;
+            manifestPath: string;
+            manifestSha256: string;
+        };
     };
     selectedApprovedEvidence: {
         id: string;
@@ -1074,6 +1233,14 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
         sensitivityFlags: string[];
     }[];
     reviewedMetricEvidenceIds: string[];
+    reviewedMetrics: {
+        claimId: string;
+        evidenceIds: string[];
+        exactText: string;
+        unit?: string;
+        attributionScope?: string;
+        qualifiers: string[];
+    }[];
     policy: {
         name: string;
         version: string;
@@ -1082,6 +1249,8 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
         targetTitleIsNotEmploymentEvidence: boolean;
         projectScopeIsNotEmploymentScope: boolean;
         jobSpecificContentForbidden: boolean;
+        fixedCompositionFactsMustRemainExact: boolean;
+        completeCareerChronologyRequired: boolean;
     };
 };
 export declare function validateRoleResumeDraftPayload(payload: ModelRoleResumeDraftPayload, proposalId: string, scaffold: RoleResumeDraftScaffold, context: Awaited<ReturnType<typeof loadRoleResumeDraftingContext>>, scaffoldSha256: string): {
@@ -1121,8 +1290,11 @@ export declare function validateRoleResumeDraftPayload(payload: ModelRoleResumeD
                     scaffoldSha256: string;
                     approvedAssessmentSha256: string;
                     approvedPlanSha256: string;
+                    compositionSha256: string;
                 };
                 approvedPlanId: string;
+                compositionId: string;
+                compositionSlotId: string;
                 model?: {
                     provider: string;
                     model: string;
@@ -1143,7 +1315,7 @@ export declare function validateRoleResumeDraftPayload(payload: ModelRoleResumeD
             text: string;
             qualifiers: string[];
             claimBoundaryIds: string[];
-            itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
+            itemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability" | "identity" | "contact" | "project-bullet";
             claimTypes: ("domain" | "responsibility" | "project" | "certification" | "education" | "achievement" | "scope" | "technology" | "role-title" | "capability-theme" | "quantified-outcome" | "leadership-behavior" | "delivery-outcome" | "product-outcome" | "business-outcome")[];
             metricReferences: {
                 evidenceId: string;
@@ -1162,6 +1334,7 @@ export declare function validateRoleResumeDraftPayload(payload: ModelRoleResumeD
                 evidenceIds: string[];
             }[];
             sourceAssessmentIds: string[];
+            compositionSlotId: string;
         }[];
         provenance: {
             targetId: string;
@@ -1171,6 +1344,7 @@ export declare function validateRoleResumeDraftPayload(payload: ModelRoleResumeD
                 version: string;
             };
             approvedPlanId: string;
+            compositionId: string;
             approvedPlanSha256: string;
         };
         order: number;

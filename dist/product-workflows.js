@@ -6,6 +6,7 @@ import { getApprovedJobResumeDraftStatus } from "./approved-job-resume-draft.js"
 import { showJobFitProofAssessment, getJobFitProofAssessmentStatus } from "./job-fit-proof-assessment.js";
 import { showJobRequirementModel, getJobRequirementModelStatus } from "./job-requirements.js";
 import { buildRoleResumeDraftScaffold, getRoleResumeDraftScaffoldStatus, loadRoleResumeDraftingContext } from "./role-resume-drafting.js";
+import { buildRoleResumeComposition, getRoleResumeCompositionStatus, showRoleResumeComposition } from "./role-resume-composition.js";
 import { buildRoleResumePlan, getRoleResumePlanStatus, promoteDeterministicRoleResumePlan } from "./role-resume-planning.js";
 import { getJobResumeDraftScaffoldStatus } from "./job-resume-drafting.js";
 import { getJobResumePlanStatus, showJobResumePlan } from "./job-resume-planning.js";
@@ -180,6 +181,30 @@ export async function advanceRoleResumePreparation(workspace, targetId, options 
         approvedPlan = await getRoleResumePlanStatus(workspace, targetId, "approved");
         advanced = true;
     }
+    const compositionStatus = await getRoleResumeCompositionStatus(workspace, targetId);
+    if (compositionStatus.status !== "current") {
+        if (["stale", "invalid"].includes(compositionStatus.status) && !options.rebuild) {
+            return { result: "paused", message: `Resume composition is ${compositionStatus.status}; rebuild is required.`, providerCallMade: false };
+        }
+        const result = await buildRoleResumeComposition(workspace, targetId, { rebuild: options.rebuild, now: options.now });
+        advanced = true;
+        if (!result.usableForDrafting) {
+            const composition = await showRoleResumeComposition(workspace, targetId);
+            return {
+                result: "paused",
+                message: `Resume composition is ${composition.completeness.status}: ${composition.completeness.blockingReasons.join(" ")}`,
+                providerCallMade: false,
+            };
+        }
+    }
+    const composition = await showRoleResumeComposition(workspace, targetId);
+    if (!composition.completeness.usableForDrafting) {
+        return {
+            result: "paused",
+            message: `Resume composition is ${composition.completeness.status}: ${composition.completeness.blockingReasons.join(" ")}`,
+            providerCallMade: false,
+        };
+    }
     const scaffoldStatus = await getRoleResumeDraftScaffoldStatus(workspace, targetId);
     if (scaffoldStatus.status !== "current") {
         if (["stale", "invalid"].includes(scaffoldStatus.status) && !options.rebuild) {
@@ -318,6 +343,14 @@ export async function inspectRoleResumeDraftForProduct(workspace, targetId, prop
         proposal,
         review: await showRoleResumeDraftReview(workspace, proposal.id),
         reviewStatus: await getRoleResumeDraftReviewStatus(workspace, proposal.id),
+        composition: {
+            status: context.composition.completeness.status,
+            experienceEntryCount: context.composition.completeness.includedExperienceCount,
+            projectEntryCount: context.composition.completeness.includedProjectCount,
+            skillCount: context.composition.completeness.includedSkillCount,
+            warnings: context.composition.completeness.warnings,
+            exclusions: context.composition.exclusions.map((entry) => ({ label: entry.label, reason: entry.reason })),
+        },
         itemContext,
     };
 }

@@ -37,7 +37,7 @@ import { showTarget } from "./targets.js";
 
 export const ROLE_RESUME_RENDERING_POLICY_NAME = "role-resume-rendering-policy";
 export const ROLE_RESUME_RENDERING_POLICY_VERSION = "1";
-export const ROLE_RESUME_COMPOSITION_RULES_VERSION = "1";
+export const ROLE_RESUME_COMPOSITION_RULES_VERSION = "2";
 export const ROLE_RESUME_RENDER_PROFILE_VERSION = "1";
 
 export interface RoleResumeRenderOptions {
@@ -100,13 +100,16 @@ const SECTION_HEADINGS: Record<RoleResumeSectionType, string | null> = {
 };
 
 const ITEM_BLOCK_TYPES: Record<RoleResumeDraftItem["itemType"], RoleResumeRenderBlock["type"]> = {
-  headline: "headline",
+  identity: "headline",
+  contact: "paragraph",
+  headline: "paragraph",
   summary: "paragraph",
   capability: "capability",
   impact: "bullet",
   "experience-role": "role-header",
   "experience-bullet": "bullet",
   project: "project-header",
+  "project-bullet": "bullet",
   technology: "technology",
   "leadership-capability": "leadership-capability",
   education: "education",
@@ -221,9 +224,11 @@ export async function composeRoleResumeRenderDocument(
     documentId,
     sections,
   );
+  const identityItem = context.approvedDraft.sections.flatMap((section) => section.items).find((item) => item.itemType === "identity");
+  const contactItem = context.approvedDraft.sections.flatMap((section) => section.items).find((item) => item.itemType === "contact");
   const warnings = [
-    renderNotice(documentId, "NO_CANDIDATE_NAME_AVAILABLE", "Candidate name is not present in the approved structured draft."),
-    renderNotice(documentId, "NO_CONTACT_INFORMATION_AVAILABLE", "Contact information is not present in the approved structured draft."),
+    ...(!identityItem ? [renderNotice(documentId, "NO_CANDIDATE_NAME_AVAILABLE", "Candidate name is not present in the approved structured draft.")] : []),
+    ...(!contactItem ? [renderNotice(documentId, "NO_CONTACT_INFORMATION_AVAILABLE", "Contact information is not present in the approved structured draft.")] : []),
     renderNotice(documentId, "ACCESSIBILITY_NOT_FORMALLY_CERTIFIED", "The profile applies deterministic accessibility rules but does not claim formal certification."),
     renderNotice(documentId, "EXPORT_NOT_JOB_SPECIFIC", "This document is a role-positioning resume and is not tailored to a Job Target."),
   ];
@@ -261,6 +266,7 @@ export async function composeRoleResumeRenderDocument(
     metadata: {
       documentTitle: `${context.approvedDraft.roleTitle} Resume`,
       targetRoleTitle: context.approvedDraft.roleTitle,
+      ...(identityItem ? { candidateName: identityItem.text } : {}),
       language: "en",
       direction: "ltr",
       documentType: "role-resume",

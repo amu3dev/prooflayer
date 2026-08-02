@@ -18,6 +18,14 @@ export interface RoleResumePlanningContext extends AssessmentContext {
     evidenceSetSha256: string;
     evidenceItems: EvidenceItem[];
     reviewedMetricEvidenceIds: Set<string>;
+    reviewedMetrics: Array<{
+        claimId: string;
+        evidenceIds: string[];
+        exactText: string;
+        unit?: string;
+        attributionScope?: string;
+        qualifiers: string[];
+    }>;
 }
 export interface BuildRoleResumePlanOptions {
     rebuild?: boolean;

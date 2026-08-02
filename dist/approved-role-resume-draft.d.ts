@@ -1,5 +1,6 @@
 import { type ApprovedRoleResumeDraft, type RoleResumeDraftCompleteness } from "./role-resume-draft-schemas.js";
 import { showRoleResumeDraftScaffold } from "./role-resume-drafting.js";
+import { showRoleResumeComposition } from "./role-resume-composition.js";
 export interface ApproveRoleResumeDraftOptions {
     rebuild?: boolean;
     now?: () => Date;
@@ -12,7 +13,7 @@ export interface ApproveRoleResumeDraftResult {
     humanApprovedCount: number;
     humanEditedCount: number;
     rejectedItemCount: number;
-    completeness: "empty" | "partial" | "complete";
+    completeness: "complete" | "constrained-but-usable" | "incomplete" | "blocked";
     usableForRendering: boolean;
     draftPath: string;
     manifestPath: string;
@@ -24,6 +25,7 @@ export interface ApprovedRoleResumeDraftStatus {
     draftHashMatches: boolean | null;
     dependenciesMatch: boolean | null;
     scaffoldHashMatches: boolean | null;
+    compositionHashMatches: boolean | null;
     proposalHashMatches: boolean | null;
     reviewHashMatches: boolean | null;
     policyVersionMatches: boolean | null;
@@ -36,7 +38,7 @@ export interface ApprovedRoleResumeDraftStatus {
 export declare function approveRoleResumeDraftProposal(workspace: string, proposalId: string, options?: ApproveRoleResumeDraftOptions): Promise<ApproveRoleResumeDraftResult>;
 export declare function showApprovedRoleResumeDraft(workspace: string, targetId: string): Promise<ApprovedRoleResumeDraft>;
 export declare function getApprovedRoleResumeDraftStatus(workspace: string, targetId: string): Promise<ApprovedRoleResumeDraftStatus>;
-export declare function deriveRoleResumeDraftCompleteness(scaffold: Awaited<ReturnType<typeof showRoleResumeDraftScaffold>>, sections: ApprovedRoleResumeDraft["sections"], claimLedger: ApprovedRoleResumeDraft["claimLedger"], risks: ApprovedRoleResumeDraft["risks"], ambiguities: ApprovedRoleResumeDraft["ambiguities"]): RoleResumeDraftCompleteness;
+export declare function deriveRoleResumeDraftCompleteness(scaffold: Awaited<ReturnType<typeof showRoleResumeDraftScaffold>>, composition: Awaited<ReturnType<typeof showRoleResumeComposition>>, sections: ApprovedRoleResumeDraft["sections"], claimLedger: ApprovedRoleResumeDraft["claimLedger"], risks: ApprovedRoleResumeDraft["risks"], ambiguities: ApprovedRoleResumeDraft["ambiguities"]): RoleResumeDraftCompleteness;
 export declare function assertApprovedRoleResumeDraft(draft: ApprovedRoleResumeDraft): void;
 export declare function approvedRoleResumeDraftPaths(workspace: string, targetId: string): {
     draftRelativePath: string;

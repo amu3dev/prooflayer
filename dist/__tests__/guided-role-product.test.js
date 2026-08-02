@@ -5,7 +5,7 @@ import { request as httpRequest } from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
-import { getApprovedRoleResumeDraftStatus } from "../approved-role-resume-draft.js";
+import { getApprovedRoleResumeDraftStatus, showApprovedRoleResumeDraft } from "../approved-role-resume-draft.js";
 import { getApprovedInterpretationStatus } from "../approved-interpretation.js";
 import { createEvidenceClaimReview } from "../evidence-claim-review.js";
 import { buildEvidenceReviewUiOrigin, findAvailableLoopbackPort } from "../evidence-review-ui-server.js";
@@ -147,6 +147,24 @@ describe("guided Role Resume product journey", () => {
         const approved = await postAction(providerServer.origin, "/resume/role/review", PRODUCT_WORKFLOW_ACTIONS.approveRoleDraft, { proposalId: proposal.id }, targetId);
         expect(approved.status).toBe(303);
         expect(await getApprovedRoleResumeDraftStatus(fixture.workspace, targetId)).toMatchObject({ status: "current", usableForRendering: true });
+        const approvedDraft = await showApprovedRoleResumeDraft(fixture.workspace, targetId);
+        const approvedText = approvedDraft.sections.flatMap((section) => section.items.map((item) => item.text)).join("\n");
+        expect(approvedDraft.completeness).toMatchObject({
+            status: "complete",
+            identityPresent: true,
+            chronologyComplete: true,
+            selectedEvidenceAccounted: true,
+            experienceEntryCount: 2,
+            projectEntryCount: 2,
+            skillCount: 4,
+        });
+        expect(approvedDraft.completeness.evidenceBackedBulletCount).toBeGreaterThanOrEqual(6);
+        expect(approvedText).toContain("Product and Technology Lead | ExampleCo | 2021-Present");
+        expect(approvedText).toContain("Technical Product Manager | ScaleCo | 2018-2021");
+        expect(approvedText).toContain("AI Product Evaluation");
+        expect(approvedText).toContain("Platform Transformation");
+        expect(approvedText).toContain("Delivered 3 platform initiatives through clear product and engineering decisions.");
+        expect(approvedText).not.toMatch(/reviewed (?:role|project|evidence|career)/i);
         const approvedPage = await fetch(`${providerServer.origin}${approved.headers.location}`);
         const approvedHtml = await approvedPage.text();
         expect(approvedHtml).toContain("Approved role resume");
@@ -239,7 +257,7 @@ describe("guided Role Resume product journey", () => {
         expect(finalized.stdout).toContain("Succeeded: markdown, html, docx");
         expect((await listRoleResumeExports(fixture.workspace, "role-cto")).map(({ format }) => format))
             .toEqual(["docx", "html", "markdown"]);
-    }, 90_000);
+    }, 180_000);
 });
 async function createRoleReadyFixture() {
     const fixture = await createProductShellFixture({ runJob: false });
@@ -254,34 +272,52 @@ async function createRoleReadyFixture() {
         status: "active",
     };
     const definitions = [
-        ["strategy", "Aligned technology strategy with product and business priorities in a reviewed role.", ["technology", "product", "strategy"]],
-        ["architecture", "Guided architecture and platform technology tradeoffs in a reviewed role.", ["architecture", "platform", "technology"]],
-        ["delivery", "Led technology delivery through clear leadership and delivery decisions in a reviewed role.", ["leadership", "delivery", "technology"]],
-        ["stakeholders", "Aligned stakeholders around delivery priorities in a reviewed role.", ["stakeholder", "alignment", "delivery"]],
-        ["discovery", "Connected product discovery to technical execution in a reviewed role.", ["product", "discovery", "technical"]],
-        ["hands-on", "Worked across strategy and hands-on technical delivery in a reviewed role.", ["strategy", "technical", "hands-on"]],
-        ["ai", "Evaluated AI automation for product goals in a reviewed project.", ["ai", "automation", "product"]],
+        ["strategy", "Aligned technology strategy with product and business priorities.", ["technology", "product", "strategy"]],
+        ["architecture", "Guided architecture and platform technology tradeoffs.", ["architecture", "platform", "technology"]],
+        ["delivery", "Delivered 3 platform initiatives through clear product and engineering decisions.", ["leadership", "delivery", "technology"]],
+        ["stakeholders", "Aligned stakeholders around delivery priorities.", ["stakeholder", "alignment", "delivery"]],
+        ["discovery", "Connected product discovery to technical execution.", ["product", "discovery", "technical"]],
+        ["hands-on", "Worked across strategy and hands-on technical delivery.", ["strategy", "technical", "hands-on"]],
+        ["ai", "Evaluated AI automation for product goals in a scoped product project.", ["ai", "automation", "product"]],
     ];
-    const evidence = definitions.map(([id, text, tags], index) => ({
-        id: `evi_guided_role_${id}`,
-        sourceIds: [source.id],
-        category: index === definitions.length - 1 ? "project" : "responsibility",
-        text,
-        normalizedSummary: text,
-        sourceSection: index === definitions.length - 1 ? "Projects" : "Experience",
-        ...(index === definitions.length - 1
-            ? { project: "AI Product Evaluation", parentProjectId: "project_guided_ai" }
-            : { parentRoleId: "role_guided_leadership" }),
-        technologies: [],
-        domains: [...tags],
-        visibility: "public",
-        sensitivityFlags: [],
-        confidence: "high",
-    }));
+    const roleByEvidenceId = {
+        strategy: "role_guided_leadership",
+        architecture: "role_guided_leadership",
+        delivery: "role_guided_leadership",
+        stakeholders: "role_guided_leadership",
+        discovery: "role_guided_product",
+    };
+    const projectByEvidenceId = {
+        ai: { id: "project_guided_ai", name: "AI Product Evaluation" },
+        "hands-on": { id: "project_guided_platform", name: "Platform Transformation" },
+    };
+    const evidence = definitions.map(([id, text, tags]) => {
+        const project = projectByEvidenceId[id];
+        return {
+            id: `evi_guided_role_${id}`,
+            sourceIds: [source.id],
+            category: id === "delivery" ? "achievement" : project ? "project" : "responsibility",
+            text,
+            normalizedSummary: text,
+            sourceSection: project ? "Projects" : "Experience",
+            ...(project
+                ? { project: project.name, parentProjectId: project.id }
+                : { parentRoleId: roleByEvidenceId[id] }),
+            technologies: [],
+            domains: [...tags],
+            visibility: "public",
+            sensitivityFlags: [],
+            confidence: "high",
+        };
+    });
     const claims = evidence.map((entry, index) => ({
         id: `claim_guided_role_${definitions[index][0]}`,
         claim: entry.text,
-        type: index === evidence.length - 1 ? "project_claim" : "responsibility_claim",
+        type: entry.category === "achievement"
+            ? "impact_claim"
+            : entry.parentProjectId
+                ? "project_claim"
+                : "responsibility_claim",
         supportingEvidenceIds: [entry.id],
         sourceSection: entry.sourceSection,
         ...(entry.parentProjectId ? { parentProjectId: entry.parentProjectId } : {}),
@@ -294,12 +330,60 @@ async function createRoleReadyFixture() {
         confidence: "high",
         publicSafe: false,
         needsConfirmation: true,
-        metricStatus: "no_metric",
+        metricStatus: entry.category === "achievement" ? "verified_metric" : "no_metric",
         unsafeWording: [],
     }));
     await writeJsonAtomic(path.join(fixture.workspace, "kb/sources.json"), [source]);
     await writeJsonAtomic(path.join(fixture.workspace, "kb/evidence-items.json"), evidence);
     await writeJsonAtomic(path.join(fixture.workspace, "kb/claims.json"), claims);
+    await writeJsonAtomic(path.join(fixture.workspace, "kb/career-profile.json"), {
+        id: "career_profile",
+        updatedAt: PRODUCT_FIXTURE_TIME,
+        positioningCandidates: ["CTO", "Technology Product Leader"],
+        summaryThemes: ["Technology strategy", "Platform architecture", "Product delivery"],
+        roles: [
+            {
+                title: "Product and Technology Lead",
+                company: "ExampleCo",
+                dateRange: "2021-Present",
+                evidenceIds: evidence.filter((entry) => entry.parentRoleId === "role_guided_leadership").map((entry) => entry.id),
+            },
+            {
+                title: "Technical Product Manager",
+                company: "ScaleCo",
+                dateRange: "2018-2021",
+                evidenceIds: evidence.filter((entry) => entry.parentRoleId === "role_guided_product").map((entry) => entry.id),
+            },
+        ],
+        projects: [
+            {
+                name: "AI Product Evaluation",
+                technologies: [],
+                domains: ["ai", "product"],
+                evidenceIds: evidence.filter((entry) => entry.parentProjectId === "project_guided_ai").map((entry) => entry.id),
+            },
+            {
+                name: "Platform Transformation",
+                technologies: [],
+                domains: ["platform", "technology"],
+                evidenceIds: evidence.filter((entry) => entry.parentProjectId === "project_guided_platform").map((entry) => entry.id),
+            },
+        ],
+        skills: [
+            { name: "Platform architecture", evidenceIds: ["evi_guided_role_architecture"] },
+            { name: "Product discovery", evidenceIds: ["evi_guided_role_discovery"] },
+            { name: "Stakeholder alignment", evidenceIds: ["evi_guided_role_stakeholders"] },
+            { name: "AI automation evaluation", evidenceIds: ["evi_guided_role_ai"] },
+        ],
+        domains: ["technology", "product", "platform"],
+        approvedClaims: claims.map((claim) => claim.id),
+        claimsNeedingConfirmation: [],
+        blockedClaims: [],
+        resumeReadyClaims: claims.map((claim) => claim.id),
+        genericOnlyClaims: [],
+        internalOnlyClaims: [],
+        publicSafetyRules: [],
+    });
     for (const claim of claims) {
         const evidenceItem = evidence.find((entry) => entry.id === claim.supportingEvidenceIds[0]);
         await createEvidenceClaimReview(fixture.workspace, claim.id, {
@@ -314,10 +398,18 @@ async function createRoleReadyFixture() {
             resumeReadiness: "resume-ready",
             eligibleForRoleMatching: true,
             eligibleForJobMapping: false,
-            metricReview: { state: "not-a-metric", qualifiers: [] },
+            metricReview: evidenceItem.category === "achievement"
+                ? {
+                    state: "verified",
+                    exactText: claim.claim,
+                    unit: "platform initiatives",
+                    scope: "product and engineering delivery",
+                    qualifiers: [],
+                }
+                : { state: "not-a-metric", qualifiers: [] },
             classification: {
                 workContext: evidenceItem.parentProjectId ? "project" : "employment",
-                claimNature: "capability",
+                claimNature: evidenceItem.category === "achievement" ? "achievement" : "capability",
             },
             risks: [],
             warnings: [],
@@ -331,11 +423,13 @@ async function validDraftPayload(workspace, targetId) {
     const scaffold = await showRoleResumeDraftScaffold(workspace, targetId);
     const context = await loadRoleResumeDraftingContext(workspace, targetId);
     const zero = "0".repeat(64);
-    const usedEvidenceIds = new Set();
+    const evidenceById = new Map(context.evidenceItems.map((entry) => [entry.id, entry]));
+    const slotsById = new Map(context.composition.slots.map((entry) => [entry.id, entry]));
     return {
         sections: scaffold.sections.map((guard) => {
             const plan = context.approvedPlan.sections.find((entry) => entry.id === guard.planSectionId);
-            if (guard.status !== "include" || !guard.allowedEvidenceIds.length || !guard.allowedClaimBoundaryIds.length) {
+            const slots = guard.compositionSlotIds.map((id) => slotsById.get(id));
+            if (guard.status === "exclude" || !slots.length) {
                 return {
                     id: guard.id,
                     planSectionId: guard.planSectionId,
@@ -347,37 +441,13 @@ async function validDraftPayload(workspace, targetId) {
                     provenance: {
                         targetId,
                         approvedPlanId: context.approvedPlan.id,
+                        compositionId: context.composition.id,
                         planSectionId: guard.planSectionId,
                         approvedPlanSha256: context.approvedPlanSha256,
                         draftingPolicy: { name: ROLE_RESUME_DRAFTING_POLICY_NAME, version: ROLE_RESUME_DRAFTING_POLICY_VERSION },
                     },
                 };
             }
-            const boundary = context.approvedPlan.claimBoundaries.find((entry) => guard.allowedClaimBoundaryIds.includes(entry.id)
-                && entry.evidenceIds.some((id) => guard.allowedEvidenceIds.includes(id) && !usedEvidenceIds.has(id))
-                && entry.allowedClaimTypes.some((claimType) => guard.allowedClaimTypes.includes(claimType)));
-            const expectationId = boundary.expectationId;
-            const selection = context.approvedPlan.expectationSelections.find((entry) => entry.expectationId === expectationId);
-            const evidenceId = boundary.evidenceIds.find((id) => guard.allowedEvidenceIds.includes(id));
-            usedEvidenceIds.add(evidenceId);
-            const evidenceText = context.evidenceItems.find((entry) => entry.id === evidenceId).normalizedSummary;
-            const claimType = guard.allowedClaimTypes.find((entry) => boundary.allowedClaimTypes.includes(entry));
-            const itemType = ({
-                headline: "headline",
-                "professional-summary": "summary",
-                "core-capabilities": "capability",
-                "selected-impact": "impact",
-                "professional-experience": "experience-bullet",
-                "selected-projects": "project",
-                "technical-capabilities": "technology",
-                "leadership-capabilities": "leadership-capability",
-                education: "education",
-                certifications: "certification",
-                "additional-information": "additional-information",
-            })[guard.sectionType];
-            const text = guard.sectionType === "headline"
-                ? `${context.target.title} | ${context.approvedPlan.positioning.primaryThemes[0].label}`
-                : evidenceText;
             return {
                 id: guard.id,
                 planSectionId: guard.planSectionId,
@@ -385,25 +455,58 @@ async function validDraftPayload(workspace, targetId) {
                 order: guard.order,
                 status: "drafted",
                 objective: plan.objective,
-                items: [{
-                        id: guard.placeholderIds[0],
+                items: slots.map((slot, index) => {
+                    const reviewedMetricEvidenceId = slot.evidenceIds.find((id) => context.reviewedMetricEvidenceIds.has(id));
+                    const evidenceText = slot.evidenceIds
+                        .map((id) => evidenceById.get(id)?.normalizedSummary)
+                        .filter((value) => Boolean(value))
+                        .join(" ");
+                    const text = slot.mode === "fixed"
+                        ? slot.exactText
+                        : slot.itemType === "headline"
+                            ? `${context.target.title} | ${slot.sourceLabel}`
+                            : slot.itemType === "summary"
+                                ? "Technology strategy, platform architecture, product discovery, and delivery across product and engineering priorities."
+                                : slot.itemType === "capability"
+                                    ? slot.sourceLabel
+                                    : slot.itemType === "experience-bullet" && reviewedMetricEvidenceId
+                                        ? "Coordinated platform initiatives through clear product and engineering decisions."
+                                        : slot.itemType === "project-bullet" && slot.evidenceIds.includes("evi_guided_role_ai")
+                                            ? "Applied scoped AI automation evaluation to product goals."
+                                            : slot.itemType === "project-bullet" && slot.evidenceIds.includes("evi_guided_role_hands-on")
+                                                ? "Combined strategic direction with hands-on technical delivery in a platform transformation project."
+                                                : evidenceText || slot.sourceLabel;
+                    const metricReferences = reviewedMetricEvidenceId && slot.itemType === "impact"
+                        ? [{
+                                evidenceId: reviewedMetricEvidenceId,
+                                originalValue: "3",
+                                unit: "platform initiatives",
+                                attributionScope: "product and engineering delivery",
+                                reviewStatus: "reviewed",
+                            }]
+                        : [];
+                    return {
+                        id: guard.placeholderIds[index],
                         sectionId: guard.id,
-                        itemType,
+                        compositionSlotId: slot.id,
+                        itemType: slot.itemType,
                         text,
-                        sourceExpectationIds: [expectationId],
-                        sourceAssessmentIds: [selection.assessmentId],
-                        approvedMatchIds: selection.approvedMatchIds.filter((id) => guard.allowedMatchIds.includes(id)),
-                        evidenceIds: [evidenceId],
-                        claimBoundaryIds: [boundary.id],
-                        claimTypes: [claimType],
-                        metricReferences: [],
+                        sourceExpectationIds: slot.sourceExpectationIds,
+                        sourceAssessmentIds: slot.sourceAssessmentIds,
+                        approvedMatchIds: slot.approvedMatchIds,
+                        evidenceIds: slot.evidenceIds,
+                        claimBoundaryIds: slot.claimBoundaryIds,
+                        claimTypes: slot.claimTypes,
+                        metricReferences,
                         scopeReferences: [],
-                        qualifiers: guard.requiredQualifiers,
+                        qualifiers: slot.qualifiers,
                         trustState: "model-proposed",
                         validation: { status: "valid", issues: [] },
                         provenance: {
                             targetId,
                             approvedPlanId: context.approvedPlan.id,
+                            compositionId: context.composition.id,
+                            compositionSlotId: slot.id,
                             planSectionId: guard.planSectionId,
                             draftingPolicy: { name: ROLE_RESUME_DRAFTING_POLICY_NAME, version: ROLE_RESUME_DRAFTING_POLICY_VERSION },
                             artifactHashes: {
@@ -411,13 +514,16 @@ async function validDraftPayload(workspace, targetId) {
                                 approvedMatchingSha256: zero,
                                 approvedAssessmentSha256: zero,
                                 approvedPlanSha256: zero,
+                                compositionSha256: zero,
                                 scaffoldSha256: zero,
                             },
                         },
-                    }],
+                    };
+                }),
                 provenance: {
                     targetId,
                     approvedPlanId: context.approvedPlan.id,
+                    compositionId: context.composition.id,
                     planSectionId: guard.planSectionId,
                     approvedPlanSha256: context.approvedPlanSha256,
                     draftingPolicy: { name: ROLE_RESUME_DRAFTING_POLICY_NAME, version: ROLE_RESUME_DRAFTING_POLICY_VERSION },

@@ -28,6 +28,7 @@ import {
   loadRoleResumeDraftingContext,
   showRoleResumeDraftScaffold,
 } from "./role-resume-drafting.js";
+import { evaluateRoleResumeDraftAgainstComposition } from "./role-resume-composition.js";
 
 export interface RoleResumeDraftReviewStatus {
   proposalId: string;
@@ -208,6 +209,10 @@ export async function completeRoleResumeDraftReview(
   if (unresolvedAmbiguities.length) throw new Error(`${unresolvedAmbiguities.length} draft ambiguities remain unresolved.`);
   if (validated.claimLedger.length !== validated.sections.flatMap((entry) => entry.items).length) {
     throw new Error("Claim ledger is incomplete.");
+  }
+  const composition = evaluateRoleResumeDraftAgainstComposition(context.composition, validated.sections);
+  if (!composition.usableForDrafting) {
+    throw new Error(`Role resume composition is ${composition.status}: ${composition.blockingReasons.join(" ")}`);
   }
   review.status = "completed";
   review.updatedAt = (options.now ?? (() => new Date()))().toISOString();

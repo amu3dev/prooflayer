@@ -62,7 +62,7 @@ prooflayer ui start --host 127.0.0.1 --port 4321 --open
 
 The product shell provides Home, My Career, Create Resume, Tailor to a Job, Updates, Clarifications, and Advanced Review views. One local source is enough to begin; LinkedIn and GitHub are optional. Granular CLI commands remain available for automation, audit, and debugging.
 
-The Role Resume journey starts from one title. ProofLayer creates or reuses the Role Target, generates a visibly unapproved role understanding, checks current reviewed Career Twin evidence conservatively, and shows positioning, strengths, gaps, progress, and the smallest next action. The user confirms that direction before deterministic evidence selection and preparation continue; a writing provider is used only for explicit draft proposal generation. Actual wording is reviewed at `/resume/role/review`, deterministically approved without a model call, and made available at `/resume/role/download`. Common titles use the offline built-in taxonomy when no provider is selected. One optional specialization may refine the direction; users are never asked to author a Role Expectations schema or upload their career sources again. If wording cannot be prepared safely, the product shows the exact missing approval or writing-provider action instead of presenting a fake draft.
+The Role Resume journey starts from one title. ProofLayer creates or reuses the Role Target, generates a visibly unapproved role understanding, checks current reviewed Career Twin evidence conservatively, and shows positioning, strengths, gaps, progress, and the smallest next action. The user confirms that direction before deterministic evidence selection, planning, and complete-resume composition continue; a writing provider is used only for explicit wording proposal generation. Actual wording is reviewed at `/resume/role/review`, deterministically approved without a model call, and made available at `/resume/role/download`. Common titles use the offline built-in taxonomy when no provider is selected. One optional specialization may refine the direction; users are never asked to author a Role Expectations schema or upload their career sources again. If chronology or evidence cannot support a usable resume, the product shows the exact completeness blocker instead of presenting a sparse document as ready.
 
 ```bash
 prooflayer role create --title "CTO"
@@ -1231,12 +1231,23 @@ The approved plan is a constraint system for future drafting, not finished resum
 
 ## Slice 2.6B Role Resume Draft Proposal
 
-Role Resume Draft Proposal converts one current approved Role Resume Content Plan into reviewed, structured resume wording. It supports role-based market positioning only. Job Targets and Job Descriptions are rejected, and no opportunity-specific tailoring occurs.
+Role Resume Draft Proposal converts one current approved Role Resume Content Plan and its current deterministic Role Resume Composition into reviewed, structured resume wording. It supports role-based market positioning only. Job Targets and Job Descriptions are rejected, and no opportunity-specific tailoring occurs.
+
+Evidence statements are ingredients, not final resume structure. Before the prose-free drafting scaffold is built, `role-resume-composition-policy` version `1` combines the approved plan with the current reviewed Career Twin. It preserves exact public identity and contact details, chronological role title/company/date facts, distinct projects, supported skills, education and certifications, evidence allocation, and explicit exclusions. It assigns provider-worded slots only to summaries, capability phrases, and evidence-backed bullets.
+
+```bash
+npm run dev -- target resume-composition build role-engineering-manager
+npm run dev -- target resume-composition show role-engineering-manager
+npm run dev -- target resume-composition status role-engineering-manager
+```
+
+Composition artifacts live under `workspace/targets/roles/<target-id>/resume-composition/deterministic/`. They are separately manifested and become stale when the Career Twin, public profile, evidence snapshot, approved plan, or composition policy changes.
 
 The approved Role Resume Content Plan is a constraint system. Drafting may not exceed it. The pipeline is:
 
 ```text
 Current approved Role artifacts
+-> deterministic complete Role Resume Composition
 -> deterministic prose-free scaffold
 -> optional model-assisted structured proposal
 -> strict validation
@@ -1244,7 +1255,7 @@ Current approved Role artifacts
 -> approved structured Role Resume Draft
 ```
 
-The explicit drafting policy is `role-resume-drafting-policy` version `1`. The prompt identity is `target-role-resume-draft-proposal` version `1`. Model-assisted drafting reuses the existing `InterpretationModelProvider`; API keys and credentials are never persisted.
+The explicit drafting policy is `role-resume-drafting-policy` version `2`. The prompt identity is `target-role-resume-draft-proposal` version `2`. Model-assisted drafting reuses the existing `InterpretationModelProvider`; API keys and credentials are never persisted.
 
 Build and inspect the deterministic scaffold:
 
@@ -1267,7 +1278,7 @@ npm run dev -- target resume-draft-proposal status <proposal-id>
 npm run dev -- target resume-draft-proposal replay <proposal-id>
 ```
 
-Model input is limited to the Role Target, current approved interpretation, matching, assessment, plan, deterministic scaffold, selected reviewed evidence, claim boundaries, qualifiers, metric references, section limits, and policy. It excludes Job Descriptions, stale or rejected artifacts, arbitrary prior resumes, unrelated biography, unreviewed sources, market keyword lists, and application instructions.
+Model input is limited to the Role Target, current approved interpretation, matching, assessment, plan, complete deterministic composition, drafting scaffold, selected reviewed evidence, claim boundaries, qualifiers, metric references, section limits, and policy. Fixed Career Twin facts cannot be altered. It excludes Job Descriptions, stale or rejected artifacts, arbitrary prior resumes, unrelated biography, unreviewed sources, market keyword lists, and application instructions.
 
 The model must return strict JSON with one structured item per proposed statement. Every substantive resume statement must retain claim-to-evidence provenance: target, plan and section, expectation, assessment, approved match, evidence, claim boundary, policy, proposal, model/prompt identity, artifact hashes, and review decision. Evidence is linked narrowly to the statement it supports, not attached indiscriminately.
 
@@ -1315,7 +1326,7 @@ npm run dev -- target resume-draft approved-show role-engineering-manager
 npm run dev -- target resume-draft approved-status role-engineering-manager
 ```
 
-Accepted statements become `human-approved`; validated edits become `human-edited`; rejected model wording is omitted. `model-proposed` and rejected wording cannot enter the approved artifact. Approval requires a complete current review, current dependencies, complete claim ledger, complete provenance, valid required sections, and no unresolved critical issue. Completeness is structural: `usableForRendering` means a future renderer may consume the structured artifact, not that the candidate is qualified or the output is job-specific.
+Accepted statements become `human-approved`; validated edits become `human-edited`; rejected model wording is omitted. `model-proposed` and rejected wording cannot enter the approved artifact. Approval requires a complete current review, current dependencies, complete claim ledger, complete provenance, exact composition-slot coverage, valid chronology, selected-evidence accounting, valid required sections, no audit-placeholder language, and no unresolved critical issue. Completeness is `complete`, `constrained-but-usable`, `incomplete`, or `blocked`; only the first two states may set `usableForRendering`.
 
 Artifacts live under:
 

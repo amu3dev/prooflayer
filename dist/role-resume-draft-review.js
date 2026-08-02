@@ -4,6 +4,7 @@ import { hashFile, pathExists, readJson, writeJsonAtomic, } from "./fs-utils.js"
 import { ResumeDraftAmbiguitySchema, ResumeDraftClaimLedgerEntrySchema, RoleResumeDraftItemSchema, RoleResumeDraftReviewManifestSchema, RoleResumeDraftReviewSchema, RoleResumeDraftSectionSchema, } from "./role-resume-draft-schemas.js";
 import { getRoleResumeDraftProposalStatus, showRoleResumeDraftProposal, validateRoleResumeDraftPayload, } from "./role-resume-draft-proposal.js";
 import { loadRoleResumeDraftingContext, showRoleResumeDraftScaffold, } from "./role-resume-drafting.js";
+import { evaluateRoleResumeDraftAgainstComposition } from "./role-resume-composition.js";
 export async function initializeRoleResumeDraftReview(workspace, proposalId, options = {}) {
     const proposalStatus = await getRoleResumeDraftProposalStatus(workspace, proposalId);
     if (proposalStatus.status !== "current" || !proposalStatus.readyForReview) {
@@ -143,6 +144,10 @@ export async function completeRoleResumeDraftReview(workspace, proposalId, optio
         throw new Error(`${unresolvedAmbiguities.length} draft ambiguities remain unresolved.`);
     if (validated.claimLedger.length !== validated.sections.flatMap((entry) => entry.items).length) {
         throw new Error("Claim ledger is incomplete.");
+    }
+    const composition = evaluateRoleResumeDraftAgainstComposition(context.composition, validated.sections);
+    if (!composition.usableForDrafting) {
+        throw new Error(`Role resume composition is ${composition.status}: ${composition.blockingReasons.join(" ")}`);
     }
     review.status = "completed";
     review.updatedAt = (options.now ?? (() => new Date()))().toISOString();

@@ -1,14 +1,13 @@
 import { type RoleResumeDraftScaffold, type RoleResumeDraftScaffoldManifest } from "./role-resume-draft-schemas.js";
-import { type RoleResumeContentPlan } from "./role-resume-plan-schemas.js";
-import { type RoleResumePlanningContext } from "./role-resume-planning.js";
+import { showRoleResumeComposition, type RoleResumeCompositionContext } from "./role-resume-composition.js";
 export declare const ROLE_RESUME_DRAFTING_POLICY_NAME = "role-resume-drafting-policy";
-export declare const ROLE_RESUME_DRAFTING_POLICY_VERSION = "1";
-export interface RoleResumeDraftingContext extends RoleResumePlanningContext {
-    approvedPlan: RoleResumeContentPlan;
-    approvedPlanPath: string;
-    approvedPlanSha256: string;
-    approvedPlanManifestPath: string;
-    approvedPlanManifestSha256: string;
+export declare const ROLE_RESUME_DRAFTING_POLICY_VERSION = "2";
+export interface RoleResumeDraftingContext extends RoleResumeCompositionContext {
+    composition: Awaited<ReturnType<typeof showRoleResumeComposition>>;
+    compositionPath: string;
+    compositionSha256: string;
+    compositionManifestPath: string;
+    compositionManifestSha256: string;
 }
 export interface BuildRoleResumeDraftScaffoldOptions {
     rebuild?: boolean;

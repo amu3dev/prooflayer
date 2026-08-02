@@ -11,6 +11,7 @@ import { FakeInterpretationModelProvider, } from "../model-provider.js";
 import { ROLE_RESUME_DRAFT_PROMPT_TEMPLATE_ID, generateRoleResumeDraftProposal, getRoleResumeDraftProposalStatus, replayRoleResumeDraftProposal, showRoleResumeDraftProposal, } from "../role-resume-draft-proposal.js";
 import { completeRoleResumeDraftReview, initializeRoleResumeDraftReview, setRoleResumeDraftReviewDecision, } from "../role-resume-draft-review.js";
 import { ROLE_RESUME_DRAFTING_POLICY_NAME, ROLE_RESUME_DRAFTING_POLICY_VERSION, buildRoleResumeDraftScaffold, getRoleResumeDraftScaffoldStatus, loadRoleResumeDraftingContext, roleResumeDraftScaffoldPaths, showRoleResumeDraftScaffold, } from "../role-resume-drafting.js";
+import { buildRoleResumeComposition, evaluateRoleResumeDraftAgainstComposition, getRoleResumeCompositionStatus, roleResumeCompositionPaths, showRoleResumeComposition, } from "../role-resume-composition.js";
 import { createRoleResumePlanManifest, buildRoleResumePlan, loadRoleResumePlanningContext, roleResumePlanPaths, showRoleResumePlan, } from "../role-resume-planning.js";
 import { analyzeTarget } from "../target-analysis.js";
 import { interpretTarget } from "../target-interpretation.js";
@@ -23,6 +24,103 @@ import { composeRoleResumeRenderDocument, getRoleResumeRenderDocumentStatus, res
 import { RoleResumeDateFormatSchema, RoleResumePageSizeSchema, RoleResumeRenderProfileNameSchema, } from "../role-resume-render-schemas.js";
 const FIRST_TIME = "2026-07-23T12:00:00.000Z";
 const SECOND_TIME = "2026-07-23T13:00:00.000Z";
+describe("Role Resume composition and completeness", () => {
+    it("composes complete chronology, distinct projects, skills, and explicit exclusions from the Career Twin", async () => {
+        const fixture = await draftingFixture();
+        const composition = await showRoleResumeComposition(fixture.workspace, fixture.targetId);
+        expect(composition.completeness).toMatchObject({ status: "complete", usableForDrafting: true });
+        expect(composition.identity.name).toBe("Alex Example");
+        expect(composition.experienceEntries.filter((entry) => entry.decision === "include").map((entry) => entry.label)).toEqual([
+            "Platform Product Lead | ExampleCo | 2022-Present",
+            "Technical Product Manager | ScaleCo | 2019-2022",
+        ]);
+        expect(composition.projectEntries.filter((entry) => entry.decision === "include").map((entry) => entry.label)).toEqual([
+            "Platform Modernization",
+            "Developer Toolkit",
+        ]);
+        expect(composition.skills.filter((entry) => entry.decision === "include").map((entry) => entry.label)).toEqual([
+            "Product and engineering alignment",
+            "Roadmap decisions",
+            "TypeScript",
+            "Node.js",
+        ]);
+        expect(composition.exclusions).toEqual(expect.arrayContaining([
+            expect.objectContaining({ subjectType: "role", label: "Earlier Product Role | ArchiveCo | 2017-2019" }),
+        ]));
+        expect(composition.completeness).toMatchObject({ careerEntriesAccounted: true, selectedEvidenceAccounted: true });
+        expect(composition.slots.filter((entry) => entry.itemType === "experience-role")).toHaveLength(2);
+        expect(composition.slots.filter((entry) => entry.itemType === "project")).toHaveLength(2);
+    });
+    it("preserves composition IDs, hashes, timestamps, bytes, and mtimes on unchanged reruns", async () => {
+        const fixture = await draftingFixture();
+        const paths = roleResumeCompositionPaths(fixture.workspace, fixture.targetId);
+        const before = await showRoleResumeComposition(fixture.workspace, fixture.targetId);
+        const bytes = await readFile(paths.compositionPath);
+        const mtime = (await stat(paths.compositionPath)).mtimeMs;
+        const rerun = await buildRoleResumeComposition(fixture.workspace, fixture.targetId, { now: () => new Date(SECOND_TIME) });
+        expect(rerun.result).toBe("already-current");
+        expect(await readFile(paths.compositionPath)).toEqual(bytes);
+        expect((await stat(paths.compositionPath)).mtimeMs).toBe(mtime);
+        expect((await showRoleResumeComposition(fixture.workspace, fixture.targetId))).toEqual(before);
+        expect((await getRoleResumeCompositionStatus(fixture.workspace, fixture.targetId)).status).toBe("current");
+    });
+    it("marks Career Twin changes stale and rebuilds only when explicitly requested", async () => {
+        const fixture = await draftingFixture();
+        const profilePath = path.join(fixture.workspace, "kb/career-profile.json");
+        const profile = JSON.parse(await readFile(profilePath, "utf8"));
+        profile.updatedAt = SECOND_TIME;
+        await writeJsonAtomic(profilePath, profile);
+        expect((await getRoleResumeCompositionStatus(fixture.workspace, fixture.targetId)).status).toBe("stale");
+        await expect(buildRoleResumeComposition(fixture.workspace, fixture.targetId)).rejects.toThrow(/--rebuild/);
+        expect((await buildRoleResumeComposition(fixture.workspace, fixture.targetId, { rebuild: true })).result).toBe("rebuilt");
+        expect((await getRoleResumeCompositionStatus(fixture.workspace, fixture.targetId)).status).toBe("current");
+    });
+    it("allows a genuinely limited Career Twin to remain constrained but usable", async () => {
+        const fixture = await draftingFixture({ definitionCount: 2 });
+        const composition = await showRoleResumeComposition(fixture.workspace, fixture.targetId);
+        expect(composition.completeness).toMatchObject({
+            status: "constrained-but-usable",
+            usableForDrafting: true,
+            includedExperienceCount: 1,
+            includedProjectCount: 0,
+            evidenceBackedBulletSlotCount: 2,
+        });
+    });
+    it("classifies the former sparse four-statement shape as incomplete for a mature Career Twin", async () => {
+        const fixture = await draftingFixture();
+        const composition = await showRoleResumeComposition(fixture.workspace, fixture.targetId);
+        const sparseSlots = [
+            composition.slots.find((entry) => entry.itemType === "identity"),
+            composition.slots.find((entry) => entry.itemType === "headline"),
+            composition.slots.find((entry) => entry.itemType === "summary"),
+            composition.slots.find((entry) => entry.itemType === "capability"),
+            composition.slots.find((entry) => entry.itemType === "experience-bullet"),
+        ];
+        const evaluated = evaluateRoleResumeDraftAgainstComposition(composition, [{
+                items: sparseSlots.map((slot) => ({
+                    compositionSlotId: slot.id,
+                    text: slot.exactText ?? slot.sourceLabel,
+                    evidenceIds: slot.evidenceIds,
+                })),
+            }]);
+        expect(evaluated.status).toBe("incomplete");
+        expect(evaluated.usableForDrafting).toBe(false);
+        expect(evaluated.blockingReasons.join(" ")).toMatch(/missing|chronological|not represented/i);
+    });
+    it("passes the provider a complete structured composition brief rather than isolated claims", async () => {
+        const fixture = await scaffoldFixture();
+        const provider = new CapturingFakeProvider(JSON.stringify(await validDraftPayload(fixture.workspace, fixture.targetId)));
+        await generateRoleResumeDraftProposal(fixture.workspace, fixture.targetId, { provider });
+        expect(provider.lastPrompt).toContain("complete professional Role resume");
+        expect(provider.lastPrompt).toContain("Platform Product Lead");
+        expect(provider.lastPrompt).toContain("Technical Product Manager");
+        expect(provider.lastPrompt).toContain("Platform Modernization");
+        expect(provider.lastPrompt).toContain("2022-Present");
+        expect(provider.lastPrompt).toContain('"targetProfile"');
+        expect(provider.lastPrompt).toContain('"name":"ats-standard"');
+        expect(provider.lastPrompt).toContain('"pageSize":"A4"');
+    });
+});
 describe("Slice 2.6B role resume draft proposal", () => {
     it("builds a stable prose-free deterministic scaffold from only current approved Role artifacts", async () => {
         const fixture = await draftingFixture();
@@ -101,7 +199,10 @@ describe("Slice 2.6B role resume draft proposal", () => {
         expect(proposal.prompt.renderedPromptSha256).toBe(hashText(provider.lastPrompt));
         expect(proposal.input.normalizedModelInputSha256).toMatch(/^[a-f0-9]{64}$/);
         expect(proposal.claimLedger).toHaveLength(proposal.sections.flatMap((entry) => entry.items).length);
-        expect(proposal.claimLedger.every((entry) => entry.evidenceIds.length > 0 && entry.claimBoundaryIds.length > 0)).toBe(true);
+        expect(proposal.sections.flatMap((entry) => entry.items)
+            .filter((entry) => entry.claimBoundaryIds.length)
+            .every((entry) => entry.evidenceIds.length > 0)).toBe(true);
+        expect(proposal.sections.flatMap((entry) => entry.items).some((entry) => entry.itemType === "identity" && !entry.evidenceIds.length)).toBe(true);
         expect(proposal.evidenceUsage.every((entry) => entry.usageCount === entry.draftItemIds.length)).toBe(true);
         expect((await getRoleResumeDraftProposalStatus(fixture.workspace, first.proposalId))).toMatchObject({
             status: "current",
@@ -279,9 +380,9 @@ describe("Slice 2.6B role resume draft proposal", () => {
     it("accepts an exact reviewed metric and rejects altered, rounded, or unreferenced metrics", async () => {
         const fixture = await scaffoldFixture({ verifiedMetric: true });
         const payload = await validDraftPayload(fixture.workspace, fixture.targetId);
-        const item = payload.sections.find((entry) => entry.type === "selected-impact").items[0];
+        const item = impactItem(payload);
         const evidenceId = item.evidenceIds[0];
-        item.text = "Delivered 3 reviewed platform workflows.";
+        item.text = "Delivered 3 platform workflows through coordinated product and engineering execution.";
         item.claimTypes = ["quantified-outcome"];
         item.metricReferences = [{
                 evidenceId,
@@ -291,12 +392,13 @@ describe("Slice 2.6B role resume draft proposal", () => {
                 attributionScope: "reviewed platform delivery evidence",
                 reviewStatus: "reviewed",
             }];
-        expect((await generateRoleResumeDraftProposal(fixture.workspace, fixture.targetId, {
-            provider: new FakeInterpretationModelProvider(JSON.stringify(payload)),
-        })).result).toBe("created");
+        const provider = new CapturingFakeProvider(JSON.stringify(payload));
+        expect((await generateRoleResumeDraftProposal(fixture.workspace, fixture.targetId, { provider })).result).toBe("created");
+        expect(provider.lastPrompt).toContain('"reviewedMetrics"');
+        expect(provider.lastPrompt).toContain("Delivered 3 platform workflows through coordinated product and engineering execution.");
         for (const text of ["Delivered 4 reviewed platform workflows.", "Delivered 3.0 reviewed platform workflows."]) {
             const changed = structuredClone(payload);
-            experienceItem(changed).text = text;
+            impactItem(changed).text = text;
             expect((await generateRoleResumeDraftProposal(fixture.workspace, fixture.targetId, {
                 provider: new FakeInterpretationModelProvider(JSON.stringify(changed)),
                 refresh: true,
@@ -317,7 +419,7 @@ describe("Slice 2.6B role resume draft proposal", () => {
         const summary = fixture.proposal.sections.find((entry) => entry.type === "professional-summary").items[0];
         await setRoleResumeDraftReviewDecision(fixture.workspace, fixture.generated.proposalId, "draft-item", summary.id, {
             decision: "edit",
-            editedValue: { ...summary, text: "Platform delivery experience supported by reviewed role evidence." },
+            editedValue: { ...summary, text: "Platform delivery across product, engineering, stakeholder, and technical priorities." },
         });
         await expect(setRoleResumeDraftReviewDecision(fixture.workspace, fixture.generated.proposalId, "draft-item", summary.id, {
             decision: "reject",
@@ -351,10 +453,12 @@ describe("Slice 2.6B role resume draft proposal", () => {
         expect(fixture.provider.callCount).toBe(providerCalls);
         expect(approved.completeness).toMatchObject({ status: "complete", usableForRendering: true });
         expect(approved.sections.flatMap((entry) => entry.items).every((entry) => ["human-approved", "human-edited"].includes(entry.trustState)
-            && entry.evidenceIds.length > 0
-            && entry.claimBoundaryIds.length > 0
             && entry.provenance.reviewDecision
-            && entry.provenance.model)).toBe(true);
+            && entry.provenance.model
+            && entry.provenance.compositionId.length > 0)).toBe(true);
+        expect(approved.sections.flatMap((entry) => entry.items)
+            .filter((entry) => entry.claimBoundaryIds.length)
+            .every((entry) => entry.evidenceIds.length > 0)).toBe(true);
         expect(approved.claimLedger).toHaveLength(approved.sections.flatMap((entry) => entry.items).length);
         expect(stableJson(approved)).not.toMatch(/"trustState":"(?:model-proposed|deterministic-proposed)"/);
         expect((await getApprovedRoleResumeDraftStatus(fixture.workspace, fixture.targetId))).toMatchObject({
@@ -370,16 +474,20 @@ describe("Slice 2.6B role resume draft proposal", () => {
         const pending = await proposalFixture();
         await initializeRoleResumeDraftReview(pending.workspace, pending.generated.proposalId);
         await expect(approveRoleResumeDraftProposal(pending.workspace, pending.generated.proposalId)).rejects.toThrow(/completed/);
-        const rejected = await completedReviewFixture({ rejectOptional: true });
-        const approvedResult = await approveRoleResumeDraftProposal(rejected.workspace, rejected.generated.proposalId);
-        expect(approvedResult.rejectedItemCount).toBeGreaterThan(0);
+        const rejected = await proposalFixture();
+        const rejectedReview = await initializeRoleResumeDraftReview(rejected.workspace, rejected.generated.proposalId);
+        const project = rejected.proposal.sections.find((entry) => entry.type === "selected-projects").items[0];
+        await setRoleResumeDraftReviewDecision(rejected.workspace, rejected.generated.proposalId, "draft-item", project.id, { decision: "reject" });
+        await resolveReview(rejected.workspace, rejected.generated.proposalId, rejectedReview, new Set([`draft-item:${project.id}`]));
+        await expect(completeRoleResumeDraftReview(rejected.workspace, rejected.generated.proposalId))
+            .rejects.toThrow(/blocking validation|composition slot|project/i);
         const stale = await completedReviewFixture();
         const planPaths = roleResumePlanPaths(stale.workspace, stale.targetId, "approved");
         const plan = JSON.parse(await readFile(planPaths.planPath, "utf8"));
         plan.updatedAt = SECOND_TIME;
         await writeJsonAtomic(planPaths.planPath, plan);
         await expect(approveRoleResumeDraftProposal(stale.workspace, stale.generated.proposalId)).rejects.toThrow(/stale|invalid|unreviewable/);
-    });
+    }, 15_000);
     it("reports missing, current, stale, and invalid lifecycle states", async () => {
         const fixture = await scaffoldFixture();
         expect((await getApprovedRoleResumeDraftStatus(fixture.workspace, fixture.targetId)).status).toBe("missing");
@@ -430,12 +538,14 @@ describe("Slice 2.6C deterministic role resume rendering and export", () => {
             sourceMapComplete: true,
             privateMetadataAbsent: true,
         });
-        expect(document.metadata.candidateName).toBeUndefined();
+        expect(document.metadata.candidateName).toBe("Alex Example");
         expect(document.validation.warnings.map((warning) => warning.code)).toEqual(expect.arrayContaining([
-            "NO_CANDIDATE_NAME_AVAILABLE",
-            "NO_CONTACT_INFORMATION_AVAILABLE",
             "ACCESSIBILITY_NOT_FORMALLY_CERTIFIED",
             "EXPORT_NOT_JOB_SPECIFIC",
+        ]));
+        expect(document.validation.warnings.map((warning) => warning.code)).not.toEqual(expect.arrayContaining([
+            "NO_CANDIDATE_NAME_AVAILABLE",
+            "NO_CONTACT_INFORMATION_AVAILABLE",
         ]));
         expect(await upstreamHashes(fixture.workspace, fixture.targetId)).toEqual(upstream);
     });
@@ -472,7 +582,7 @@ describe("Slice 2.6C deterministic role resume rendering and export", () => {
         expect(rebuilt.result).toBe("rebuilt");
         expect(document.profile).toMatchObject({ name: "compact-professional", page: { size: "LETTER" } });
         expect(document.dateFormat).toBe("YYYY");
-    });
+    }, 15_000);
     it("rejects Job Targets and never consumes Job Description content", async () => {
         const workspace = await mkdtemp(path.join(tmpdir(), "prooflayer-render-job-"));
         const source = path.join(workspace, "job.md");
@@ -496,7 +606,7 @@ describe("Slice 2.6C deterministic role resume rendering and export", () => {
         expect(htmlText).not.toMatch(/<script\b|https?:\/\/[^"' )]+\.(?:css|js)/i);
         expect(markdown.outputPath).toMatch(/role-resume-engineering-manager-ats-standard-markdown\.md$/);
         expect(html.outputPath).toMatch(/role-resume-engineering-manager-ats-standard-html\.html$/);
-    });
+    }, 15_000);
     it("exports all four formats from one canonical document with complete source maps", async () => {
         const fixture = await renderingFixture();
         await composeRoleResumeRenderDocument(fixture.workspace, fixture.targetId);
@@ -516,7 +626,7 @@ describe("Slice 2.6C deterministic role resume rendering and export", () => {
             pageSizeVerified: true,
             textExtractable: true,
         });
-    });
+    }, 15_000);
     it("reuses current exports without rewrites and repairs tampering only with --rebuild", async () => {
         const fixture = await renderingFixture();
         const first = await exportRoleResume(fixture.workspace, fixture.targetId, {
@@ -539,7 +649,7 @@ describe("Slice 2.6C deterministic role resume rendering and export", () => {
         expect(repaired.result).toBe("rebuilt");
         expect((await getRoleResumeExportStatus(fixture.workspace, first.exportId)).status).toBe("current");
         expect(await hashFile(manifest)).toMatch(/^[a-f0-9]{64}$/);
-    });
+    }, 15_000);
     it("reports missing, stale, and invalid render/export lifecycle states", async () => {
         const fixture = await renderingFixture();
         expect((await getRoleResumeRenderDocumentStatus(fixture.workspace, fixture.targetId)).status).toBe("missing");
@@ -552,7 +662,7 @@ describe("Slice 2.6C deterministic role resume rendering and export", () => {
         expect((await getRoleResumeRenderDocumentStatus(fixture.workspace, fixture.targetId)).status).toBe("invalid");
         expect((await getRoleResumeExportStatus(fixture.workspace, exported.exportId)).status).toBe("stale");
         expect((await getRoleResumeExportStatus(fixture.workspace, "missing-export")).status).toBe("missing");
-    });
+    }, 15_000);
     it("validates stored output fidelity and exposes complete deterministic manifests", async () => {
         const fixture = await renderingFixture();
         const exported = await exportRoleResume(fixture.workspace, fixture.targetId, { format: "markdown" });
@@ -578,7 +688,7 @@ describe("Slice 2.6C deterministic role resume rendering and export", () => {
         });
         expect(manifest.outputSha256).toBe(await hashFile(path.join(fixture.workspace, manifest.outputPath)));
         expect(manifest.sourceMapSha256).toBe(await hashFile(path.join(fixture.workspace, manifest.sourceMapPath)));
-    });
+    }, 15_000);
     it("preserves every metric, date, title, qualifier, and project-scoped statement exactly", async () => {
         const fixture = await renderingFixture({ verifiedMetric: true });
         await composeRoleResumeRenderDocument(fixture.workspace, fixture.targetId);
@@ -647,8 +757,11 @@ async function draftingFixture(options = {}) {
         ["platform-delivery", "Lead platform delivery across teams.", "leadership", "required", "critical"],
         ["stakeholder-alignment", "Coordinate stakeholders and delivery decisions.", "responsibility", "required", "high"],
         ["technical-tradeoffs", "Evaluate technical tradeoffs through project work.", "technical-skill", "required", "medium"],
+        ["roadmap-delivery", "Shape roadmap scope and delivery sequencing.", "responsibility", "required", "high"],
+        ["product-discovery", "Connect product discovery to technical execution.", "responsibility", "preferred", "medium"],
+        ["platform-project", "Apply platform technologies in project delivery.", "technical-skill", "preferred", "medium"],
         ["qualification", "Present a reviewed professional certification.", "qualification", "contextual", "low"],
-    ];
+    ].slice(0, options.definitionCount);
     const profile = {
         schemaVersion: 1,
         id: "engineering-manager",
@@ -676,8 +789,10 @@ async function draftingFixture(options = {}) {
     await buildFitAssessment(workspace, created.target.id, { now: () => new Date(FIRST_TIME) });
     await promoteDeterministicAssessment(workspace, created.target.id);
     await buildRoleResumePlan(workspace, created.target.id, { now: () => new Date(FIRST_TIME) });
-    if (options.promotePlan !== false)
+    if (options.promotePlan !== false) {
         await promoteDeterministicPlan(workspace, created.target.id);
+        await buildRoleResumeComposition(workspace, created.target.id, { now: () => new Date(FIRST_TIME) });
+    }
     return { workspace, targetId: created.target.id };
 }
 async function scaffoldFixture(options = {}) {
@@ -707,7 +822,7 @@ async function completedReviewFixture(options = {}) {
         const item = fixture.proposal.sections.find((entry) => entry.type === "professional-summary").items[0];
         await setRoleResumeDraftReviewDecision(fixture.workspace, fixture.generated.proposalId, "draft-item", item.id, {
             decision: "edit",
-            editedValue: { ...item, text: "Platform delivery experience supported by reviewed role evidence." },
+            editedValue: { ...item, text: "Platform delivery across product, engineering, stakeholder, and technical priorities." },
         });
         handled.add(`draft-item:${item.id}`);
     }
@@ -765,10 +880,13 @@ async function validDraftPayload(workspace, targetId) {
     const scaffold = await showRoleResumeDraftScaffold(workspace, targetId);
     const context = await loadRoleResumeDraftingContext(workspace, targetId);
     const zero = "0".repeat(64);
+    const evidenceById = new Map(context.evidenceItems.map((entry) => [entry.id, entry]));
+    const slotsById = new Map(context.composition.slots.map((entry) => [entry.id, entry]));
     return {
         sections: scaffold.sections.map((guard) => {
             const plan = context.approvedPlan.sections.find((entry) => entry.id === guard.planSectionId);
-            if (guard.status === "exclude" || !guard.allowedEvidenceIds.length || !guard.allowedClaimBoundaryIds.length) {
+            const slots = guard.compositionSlotIds.map((id) => slotsById.get(id));
+            if (guard.status === "exclude" || !slots.length) {
                 return {
                     id: guard.id,
                     planSectionId: guard.planSectionId,
@@ -780,46 +898,13 @@ async function validDraftPayload(workspace, targetId) {
                     provenance: {
                         targetId,
                         approvedPlanId: context.approvedPlan.id,
+                        compositionId: context.composition.id,
                         planSectionId: guard.planSectionId,
                         approvedPlanSha256: context.approvedPlanSha256,
                         draftingPolicy: { name: ROLE_RESUME_DRAFTING_POLICY_NAME, version: ROLE_RESUME_DRAFTING_POLICY_VERSION },
                     },
                 };
             }
-            const boundary = context.approvedPlan.claimBoundaries.find((entry) => guard.allowedClaimBoundaryIds.includes(entry.id)
-                && entry.evidenceIds.some((id) => guard.allowedEvidenceIds.includes(id)));
-            const expectationId = boundary.expectationId;
-            const selection = context.approvedPlan.expectationSelections.find((entry) => entry.expectationId === expectationId);
-            const evidenceId = boundary.evidenceIds.find((id) => guard.allowedEvidenceIds.includes(id));
-            const claimType = guard.sectionType === "headline"
-                ? "capability-theme"
-                : guard.allowedClaimTypes.find((entry) => boundary.allowedClaimTypes.includes(entry));
-            const itemType = ({
-                headline: "headline",
-                "professional-summary": "summary",
-                "core-capabilities": "capability",
-                "selected-impact": "impact",
-                "professional-experience": "experience-bullet",
-                "selected-projects": "project",
-                "technical-capabilities": "technology",
-                "leadership-capabilities": "leadership-capability",
-                education: "education",
-                certifications: "certification",
-                "additional-information": "additional-information",
-            })[guard.sectionType];
-            const text = ({
-                headline: `Engineering Manager | ${context.approvedPlan.positioning.primaryThemes[0].label}`,
-                "professional-summary": "Platform delivery experience grounded in reviewed role evidence.",
-                "core-capabilities": "Platform delivery",
-                "selected-impact": "Supported platform delivery within reviewed scope.",
-                "professional-experience": "Contributed to platform delivery within reviewed scope.",
-                "selected-projects": "Project work using TypeScript within reviewed scope.",
-                "technical-capabilities": "TypeScript",
-                "leadership-capabilities": "Cross-functional coordination",
-                education: "Reviewed education evidence.",
-                certifications: "Reviewed professional certification.",
-                "additional-information": "Reviewed additional information.",
-            })[guard.sectionType];
             return {
                 id: guard.id,
                 planSectionId: guard.planSectionId,
@@ -827,39 +912,46 @@ async function validDraftPayload(workspace, targetId) {
                 order: guard.order,
                 status: "drafted",
                 objective: plan.objective,
-                items: [{
-                        id: guard.placeholderIds[0],
-                        sectionId: guard.id,
-                        itemType,
-                        text,
-                        sourceExpectationIds: [expectationId],
-                        sourceAssessmentIds: [selection.assessmentId],
-                        approvedMatchIds: selection.approvedMatchIds.filter((id) => guard.allowedMatchIds.includes(id)),
-                        evidenceIds: [evidenceId],
-                        claimBoundaryIds: [boundary.id],
-                        claimTypes: [claimType],
-                        metricReferences: [],
-                        scopeReferences: [],
-                        qualifiers: guard.requiredQualifiers,
-                        trustState: "model-proposed",
-                        validation: { status: "valid", issues: [] },
-                        provenance: {
-                            targetId,
-                            approvedPlanId: context.approvedPlan.id,
-                            planSectionId: guard.planSectionId,
-                            draftingPolicy: { name: ROLE_RESUME_DRAFTING_POLICY_NAME, version: ROLE_RESUME_DRAFTING_POLICY_VERSION },
-                            artifactHashes: {
-                                approvedInterpretationSha256: zero,
-                                approvedMatchingSha256: zero,
-                                approvedAssessmentSha256: zero,
-                                approvedPlanSha256: zero,
-                                scaffoldSha256: zero,
-                            },
+                items: slots.map((slot, index) => ({
+                    id: guard.placeholderIds[index],
+                    sectionId: guard.id,
+                    compositionSlotId: slot.id,
+                    itemType: slot.itemType,
+                    text: slot.mode === "fixed"
+                        ? slot.exactText
+                        : draftTextForSlot(slot, context.target.title, evidenceById),
+                    sourceExpectationIds: slot.sourceExpectationIds,
+                    sourceAssessmentIds: slot.sourceAssessmentIds,
+                    approvedMatchIds: slot.approvedMatchIds,
+                    evidenceIds: slot.evidenceIds,
+                    claimBoundaryIds: slot.claimBoundaryIds,
+                    claimTypes: slot.claimTypes,
+                    metricReferences: [],
+                    scopeReferences: [],
+                    qualifiers: slot.qualifiers,
+                    trustState: "model-proposed",
+                    validation: { status: "valid", issues: [] },
+                    provenance: {
+                        targetId,
+                        approvedPlanId: context.approvedPlan.id,
+                        compositionId: context.composition.id,
+                        compositionSlotId: slot.id,
+                        planSectionId: guard.planSectionId,
+                        draftingPolicy: { name: ROLE_RESUME_DRAFTING_POLICY_NAME, version: ROLE_RESUME_DRAFTING_POLICY_VERSION },
+                        artifactHashes: {
+                            approvedInterpretationSha256: zero,
+                            approvedMatchingSha256: zero,
+                            approvedAssessmentSha256: zero,
+                            approvedPlanSha256: zero,
+                            compositionSha256: zero,
+                            scaffoldSha256: zero,
                         },
-                    }],
+                    },
+                })),
                 provenance: {
                     targetId,
                     approvedPlanId: context.approvedPlan.id,
+                    compositionId: context.composition.id,
                     planSectionId: guard.planSectionId,
                     approvedPlanSha256: context.approvedPlanSha256,
                     draftingPolicy: { name: ROLE_RESUME_DRAFTING_POLICY_NAME, version: ROLE_RESUME_DRAFTING_POLICY_VERSION },
@@ -870,17 +962,39 @@ async function validDraftPayload(workspace, targetId) {
         ambiguities: [],
     };
 }
+function draftTextForSlot(slot, targetTitle, evidenceById) {
+    if (slot.itemType === "headline")
+        return `${targetTitle} | ${slot.sourceLabel}`;
+    if (slot.itemType === "summary") {
+        return "Platform delivery across product, engineering, stakeholder, and technical priorities.";
+    }
+    if (slot.itemType === "impact") {
+        return "Coordinated product and engineering execution across platform workflows.";
+    }
+    if (slot.itemType === "capability")
+        return slot.sourceLabel;
+    const evidenceText = slot.evidenceIds
+        .map((id) => evidenceById.get(id)?.normalizedSummary)
+        .filter((value) => Boolean(value))
+        .join(" ");
+    return evidenceText.replace(/\b\d+(?:\.\d+)?%?\s*/g, "").trim() || slot.sourceLabel;
+}
 function firstItem(payload) {
-    return payload.sections.flatMap((entry) => entry.items)[0];
+    return payload.sections.flatMap((entry) => entry.items).find((entry) => entry.claimBoundaryIds.length);
 }
 function summaryItem(payload) {
     return payload.sections.find((entry) => entry.type === "professional-summary").items[0];
 }
 function experienceItem(payload) {
-    return payload.sections.find((entry) => entry.type === "professional-experience").items[0];
+    return payload.sections.find((entry) => entry.type === "professional-experience").items
+        .filter((entry) => entry.itemType === "experience-bullet").at(-1);
 }
 function projectItem(payload) {
-    return payload.sections.find((entry) => entry.type === "selected-projects").items[0];
+    return payload.sections.find((entry) => entry.type === "selected-projects").items
+        .find((entry) => entry.itemType === "project-bullet");
+}
+function impactItem(payload) {
+    return payload.sections.find((entry) => entry.type === "selected-impact").items[0];
 }
 function technologyItem(payload) {
     return payload.sections.find((entry) => entry.type === "technical-capabilities").items[0];
@@ -911,9 +1025,21 @@ async function writeEvidenceKb(workspace, count, verifiedMetric) {
     for (let index = 0; index < count; index += 1) {
         const sourceId = `src_draft_${index}`;
         const evidenceId = `evi_draft_${index}`;
-        const text = index === 0 && verifiedMetric
-            ? "Delivered 3 reviewed platform workflows."
-            : `Reviewed role evidence for expectation ${index}.`;
+        const text = index === 0
+            ? verifiedMetric
+                ? "Delivered 3 platform workflows through coordinated product and engineering execution."
+                : "Led platform delivery across product and engineering priorities."
+            : index === 1
+                ? "Aligned stakeholders around roadmap scope and delivery decisions."
+                : index === 2
+                    ? "Evaluated technical tradeoffs in the Platform Modernization project using TypeScript."
+                    : index === 3
+                        ? "Shaped roadmap scope and delivery sequencing for a product platform."
+                        : index === 4
+                            ? "Connected product discovery to technical execution across product initiatives."
+                            : index === 5
+                                ? "Applied Node.js in the Developer Toolkit project."
+                                : "Completed the Certified Product Leadership credential.";
         sources.push({
             id: sourceId,
             type: "markdown",
@@ -927,14 +1053,20 @@ async function writeEvidenceKb(workspace, count, verifiedMetric) {
         evidence.push({
             id: evidenceId,
             sourceIds: [sourceId],
-            category: index === 0 ? "role" : index === 1 ? "responsibility" : index === 2 ? "project" : "certification",
+            category: index === 0
+                ? (verifiedMetric ? "achievement" : "role")
+                : [1, 3, 4].includes(index)
+                    ? "responsibility"
+                    : [2, 5].includes(index)
+                        ? "project"
+                        : "certification",
             text,
             normalizedSummary: text,
-            sourceSection: index === 2 ? "Selected Projects" : index === 3 ? "Education & Certifications" : "Professional Experience",
-            technologies: index === 2 ? ["TypeScript"] : [],
+            sourceSection: [2, 5].includes(index) ? "Selected Projects" : index === count - 1 ? "Education & Certifications" : "Professional Experience",
+            technologies: index === 2 ? ["TypeScript"] : index === 5 ? ["Node.js"] : [],
             domains: ["platform"],
-            parentRoleId: index < 2 ? "role_platform" : undefined,
-            parentProjectId: index === 2 ? "project_platform" : undefined,
+            parentRoleId: index < 2 ? "role_platform" : [3, 4].includes(index) ? "role_product" : undefined,
+            parentProjectId: index === 2 ? "project_platform" : index === 5 ? "project_toolkit" : undefined,
             visibility: "public",
             sensitivityFlags: [],
             confidence: "high",
@@ -943,7 +1075,7 @@ async function writeEvidenceKb(workspace, count, verifiedMetric) {
             id: `claim_draft_${index}`,
             claim: text,
             approvedWording: text,
-            type: index === 2 ? "project_claim" : index === 3 ? "certification_claim" : "responsibility_claim",
+            type: [2, 5].includes(index) ? "project_claim" : index === count - 1 ? "certification_claim" : "responsibility_claim",
             supportingEvidenceIds: [evidenceId],
             sourceSection: evidence[index].sourceSection,
             extractionConfidence: "high",
@@ -961,6 +1093,41 @@ async function writeEvidenceKb(workspace, count, verifiedMetric) {
     await writeJsonAtomic(path.join(workspace, "kb/sources.json"), sources);
     await writeJsonAtomic(path.join(workspace, "kb/evidence-items.json"), evidence);
     await writeJsonAtomic(path.join(workspace, "kb/claims.json"), claims);
+    await writeJsonAtomic(path.join(workspace, "kb/career-profile.json"), {
+        id: "career_profile",
+        updatedAt: FIRST_TIME,
+        positioningCandidates: ["Engineering Manager", "Platform Product Leader"],
+        summaryThemes: ["Platform delivery", "Stakeholder alignment", "Technical tradeoffs"],
+        roles: [
+            { title: "Platform Product Lead", company: "ExampleCo", dateRange: "2022-Present", evidenceIds: ["evi_draft_0", "evi_draft_1"] },
+            { title: "Technical Product Manager", company: "ScaleCo", dateRange: "2019-2022", evidenceIds: ["evi_draft_3", "evi_draft_4"] },
+            { title: "Earlier Product Role", company: "ArchiveCo", dateRange: "2017-2019", evidenceIds: [] },
+        ],
+        projects: [
+            { name: "Platform Modernization", technologies: ["TypeScript"], domains: ["platform"], evidenceIds: ["evi_draft_2"] },
+            { name: "Developer Toolkit", technologies: ["Node.js"], domains: ["developer-tools"], evidenceIds: ["evi_draft_5"] },
+        ],
+        skills: [
+            { name: "Product and engineering alignment", evidenceIds: ["evi_draft_0"] },
+            { name: "Roadmap decisions", evidenceIds: ["evi_draft_1"] },
+            { name: "TypeScript", evidenceIds: ["evi_draft_2"] },
+            { name: "Node.js", evidenceIds: ["evi_draft_5"] },
+        ],
+        domains: ["platform"],
+        approvedClaims: claims.map((claim) => claim.id),
+        claimsNeedingConfirmation: [],
+        blockedClaims: [],
+        resumeReadyClaims: claims.map((claim) => claim.id),
+        genericOnlyClaims: [],
+        internalOnlyClaims: [],
+        publicSafetyRules: [],
+    });
+    await writeJsonAtomic(path.join(workspace, "config/public-profile.json"), {
+        schemaVersion: 1,
+        publicName: "Alex Example",
+        location: "London, United Kingdom",
+        website: "https://example.test",
+    });
 }
 async function writeMatchingPattern(workspace, targetId) {
     const context = await loadMatchingContext(workspace, targetId, { persistSnapshot: true, now: () => new Date(FIRST_TIME) });

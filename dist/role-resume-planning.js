@@ -4,6 +4,7 @@ import { ClaimSchema, EvidenceItemSchema, } from "./schemas.js";
 import { FitAssessmentManifestSchema, } from "./fit-assessment-schemas.js";
 import { showTarget } from "./targets.js";
 import { getFitAssessmentStatus, loadAssessmentContext, showFitAssessment, } from "./fit-assessment.js";
+import { loadEffectiveEvidenceClaimReviews } from "./evidence-claim-review.js";
 import { RoleResumeContentPlanSchema, RoleResumePlanManifestSchema, } from "./role-resume-plan-schemas.js";
 import { stableJson } from "./target-proposal.js";
 export const ROLE_RESUME_PLANNING_POLICY_NAME = "role-resume-content-planning-policy";
@@ -31,9 +32,39 @@ export async function loadRoleResumePlanningContext(workspace, targetId, options
     const assessmentManifest = FitAssessmentManifestSchema.parse(await readJson(resolveWithin(workspace, status.manifestPath), null));
     const evidenceItems = (await readJson(path.join(workspace, "kb/evidence-items.json"), [])).map((entry) => EvidenceItemSchema.parse(entry));
     const claims = (await readJson(path.join(workspace, "kb/claims.json"), [])).map((entry) => ClaimSchema.parse(entry));
-    const reviewedMetricEvidenceIds = new Set(claims
-        .filter((claim) => claim.approvalStatus === "approved" && claim.outputReadiness === "resume_ready" && claim.metricStatus === "verified_metric")
-        .flatMap((claim) => claim.supportingEvidenceIds));
+    const effectiveReviews = await loadEffectiveEvidenceClaimReviews(workspace);
+    const effectiveReviewedMetrics = [...effectiveReviews.values()]
+        .filter(({ review }) => review.metricReview.state === "verified"
+        && Boolean(review.metricReview.exactText)
+        && review.resumeReadiness === "resume-ready"
+        && review.publicSafety === "public-safe"
+        && review.eligibleForRoleMatching
+        && Boolean(review.approvedProjection))
+        .map(({ review }) => ({
+        claimId: review.claimId,
+        evidenceIds: [...review.evidenceItemIds].sort(),
+        exactText: review.metricReview.exactText,
+        ...(review.metricReview.unit ? { unit: review.metricReview.unit } : {}),
+        ...(review.metricReview.scope ? { attributionScope: review.metricReview.scope } : {}),
+        qualifiers: [...review.metricReview.qualifiers].sort(),
+    }));
+    const effectivelyReviewedClaimIds = new Set(effectiveReviewedMetrics.map((entry) => entry.claimId));
+    const legacyReviewedMetrics = claims
+        .filter((claim) => !effectivelyReviewedClaimIds.has(claim.id)
+        && claim.approvalStatus === "approved"
+        && claim.outputReadiness === "resume_ready"
+        && claim.metricStatus === "verified_metric")
+        .map((claim) => ({
+        claimId: claim.id,
+        evidenceIds: [...claim.supportingEvidenceIds].sort(),
+        exactText: claim.approvedWording ?? claim.claim,
+        qualifiers: [],
+    }));
+    const reviewedMetrics = [...effectiveReviewedMetrics, ...legacyReviewedMetrics]
+        .sort((a, b) => a.claimId.localeCompare(b.claimId));
+    const reviewedMetricEvidenceIds = new Set([
+        ...reviewedMetrics.flatMap((entry) => entry.evidenceIds),
+    ]);
     return {
         ...base,
         target,
@@ -46,6 +77,7 @@ export async function loadRoleResumePlanningContext(workspace, targetId, options
         evidenceSetSha256: hashText(stableJson(base.approvedMatching.evidenceSnapshot.eligibleEvidenceIds)),
         evidenceItems,
         reviewedMetricEvidenceIds,
+        reviewedMetrics,
     };
 }
 export async function buildRoleResumePlan(workspace, targetId, options = {}) {

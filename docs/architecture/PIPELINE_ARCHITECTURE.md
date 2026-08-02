@@ -89,6 +89,9 @@ Assessment
 Planning
       |
       v
+Composition
+      |
+      v
 Draft Construction
       |
       v
@@ -247,6 +250,31 @@ Export
 - bypass assessment or evidence restrictions;
 - render or export a document.
 
+### Composition
+
+**Purpose:** Turn an approved content plan and the reviewed Career Twin into a complete, format-neutral document structure before prose is drafted.
+
+**Inputs:**
+
+- a current approved content plan;
+- reviewed Career Twin chronology, projects, skills, identity, and contact facts;
+- selected public-safe evidence, exact dates, titles, organizations, metrics, and claim boundaries.
+
+**Outputs:**
+
+- deterministic ordered sections and item slots;
+- exact fixed identity, chronology, project, skill, education, and certification facts;
+- evidence allocation for provider-worded summaries, capabilities, and bullets;
+- explicit inclusion, exclusion, and completeness accounting.
+
+**Must not:**
+
+- write or rewrite provider-authored prose;
+- invent or infer historical titles, organizations, dates, projects, metrics, or scope;
+- convert projects into employment;
+- omit selected evidence or Career Twin entries without an explicit decision;
+- perform rendering or format-specific layout.
+
 ### Draft Construction
 
 **Purpose:** Convert an approved content plan into structured candidate wording while preserving its evidence and permission boundaries.
@@ -345,6 +373,9 @@ Role Assessment
 Resume Content Plan
     |
     v
+Resume Composition
+    |
+    v
 Structured Resume Draft
     |
     v
@@ -361,11 +392,12 @@ The implemented Role workflow covers the canonical pipeline through export:
 - reviewed evidence mapping with expectation coverage;
 - fit and proof assessment;
 - resume content planning;
+- deterministic complete-resume composition from Career Twin chronology, projects, skills, and approved evidence;
 - constrained structured drafting and approval;
 - deterministic rendering;
 - Markdown, HTML, DOCX, and adapter-based PDF export.
 
-The title-only guided Role journey is a product adapter over this pipeline. It persists one versioned generated role-understanding artifact because reuse, provider replay provenance, lifecycle, and the never-ask-twice behavior consume it. Conservative evidence links, qualitative positioning, and a prose-free section outline remain derived projections until the corresponding canonical approved artifacts exist. Generated role knowledge is never represented as candidate history or human-approved interpretation, and it cannot bypass final draft review.
+The title-only guided Role journey is a product adapter over this pipeline. It persists one versioned generated role-understanding artifact because reuse, provider replay provenance, lifecycle, and the never-ask-twice behavior consume it. After planning, the Role Resume Composition binds exact Career Twin chronology and selected evidence into a complete structured brief. Generated role knowledge is never represented as candidate history or human-approved interpretation, and it cannot bypass final draft review.
 
 The shared Evidence Snapshot reader and target pin contract accept Role targets. The existing Role Evidence Matching implementation still uses its legacy target-local evidence snapshot adapter; full migration to the global pinned snapshot remains a bounded compatibility follow-up rather than a broad Role refactor.
 
@@ -544,6 +576,7 @@ Status through Slice 2.7G:
 | Coverage Analysis | Completed within reviewed Role matching | Completed through Slice 2.7C |
 | Assessment | Completed through Slice 2.5 | Completed through Slice 2.7D |
 | Planning | Completed through Slice 2.6A | Completed through Slice 2.7E |
+| Composition | Complete Career Twin composition and completeness validation implemented before Role drafting | Represented by the job-specific plan and deterministic draft scaffold |
 | Draft Construction | Completed through Slice 2.6B | Completed through Slice 2.7F |
 | Rendering | Completed through Slice 2.6C | Completed through Slice 2.7G |
 | Export | Completed through Slice 2.6C | Completed through Slice 2.7G |

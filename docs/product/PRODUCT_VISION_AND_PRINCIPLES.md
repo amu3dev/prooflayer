@@ -67,7 +67,11 @@ The product translates the Role pipeline into:
 
 A title alone is enough to begin. ProofLayer creates a generated role understanding using an explicitly selected provider or a conservative built-in taxonomy for common role families, then derives cautious evidence, fit, section-planning, and exact-approved-wording preview projections from current reviewed evidence. Generated expectations remain visibly unapproved and never become candidate facts. At most one material specialization question is shown; a conservative general direction remains usable when the user skips it.
 
+After the content plan is approved, ProofLayer deterministically composes a complete resume structure from the Career Twin. Reviewed evidence statements are ingredients, not the final document structure. The composition accounts for identity, chronological employment, distinct projects, capabilities, skills, education, certifications, selected evidence, and explicit exclusions before a provider is allowed to phrase summaries or bullets. A mature Career Twin cannot be approved as a sparse collection of disconnected statements.
+
 Canonical Role interpretation, matching, assessment, planning, drafting, and rendering approvals remain unchanged. Model-authored wording still requires human review before approval or export, and the expert CLI remains available for detailed audit and control.
+
+Role resume completeness uses controlled `complete`, `constrained-but-usable`, `incomplete`, and `blocked` states. A usable draft must preserve identity, targeted positioning, summary, supported capabilities, Career Twin chronology or explicitly scoped projects, evidence-backed bullets, selected evidence accounting, and exact fixed facts. Rendering never repairs missing structure or changes approved wording.
 
 ## Tailor a Resume to a Job
 

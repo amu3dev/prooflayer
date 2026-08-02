@@ -322,7 +322,6 @@ export declare const RoleResumeDocumentMetadataSchema: z.ZodObject<{
         policyName: string;
         system: "ProofLayer";
     };
-    candidateName?: string | undefined;
     contact?: {
         location?: string | undefined;
         email?: string | undefined;
@@ -331,6 +330,7 @@ export declare const RoleResumeDocumentMetadataSchema: z.ZodObject<{
         github?: string | undefined;
         phone?: string | undefined;
     } | undefined;
+    candidateName?: string | undefined;
 }, {
     language: "en";
     targetRoleTitle: string;
@@ -342,7 +342,6 @@ export declare const RoleResumeDocumentMetadataSchema: z.ZodObject<{
         policyName: string;
         system: "ProofLayer";
     };
-    candidateName?: string | undefined;
     contact?: {
         location?: string | undefined;
         email?: string | undefined;
@@ -351,12 +350,13 @@ export declare const RoleResumeDocumentMetadataSchema: z.ZodObject<{
         github?: string | undefined;
         phone?: string | undefined;
     } | undefined;
+    candidateName?: string | undefined;
 }>;
 export declare const RoleResumeRenderBlockSchema: z.ZodObject<{
     id: z.ZodString;
     sectionId: z.ZodString;
     draftItemId: z.ZodString;
-    draftItemType: z.ZodEnum<["headline", "summary", "capability", "impact", "experience-role", "experience-bullet", "project", "technology", "leadership-capability", "education", "certification", "additional-information"]>;
+    draftItemType: z.ZodEnum<["identity", "contact", "headline", "summary", "capability", "impact", "experience-role", "experience-bullet", "project", "project-bullet", "technology", "leadership-capability", "education", "certification", "additional-information"]>;
     type: z.ZodEnum<["headline", "paragraph", "bullet", "role-header", "project-header", "capability", "technology", "leadership-capability", "education", "certification", "additional-information"]>;
     order: z.ZodNumber;
     text: z.ZodString;
@@ -373,7 +373,7 @@ export declare const RoleResumeRenderBlockSchema: z.ZodObject<{
     draftItemId: string;
     keepWithNext: boolean;
     avoidBreakInside: boolean;
-    draftItemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
+    draftItemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability" | "identity" | "contact" | "project-bullet";
 }, {
     type: "paragraph" | "capability" | "certification" | "education" | "technology" | "headline" | "additional-information" | "leadership-capability" | "bullet" | "role-header" | "project-header";
     id: string;
@@ -384,7 +384,7 @@ export declare const RoleResumeRenderBlockSchema: z.ZodObject<{
     draftItemId: string;
     keepWithNext: boolean;
     avoidBreakInside: boolean;
-    draftItemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
+    draftItemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability" | "identity" | "contact" | "project-bullet";
 }>;
 export declare const RoleResumeRenderSectionSchema: z.ZodObject<{
     id: z.ZodString;
@@ -396,7 +396,7 @@ export declare const RoleResumeRenderSectionSchema: z.ZodObject<{
         id: z.ZodString;
         sectionId: z.ZodString;
         draftItemId: z.ZodString;
-        draftItemType: z.ZodEnum<["headline", "summary", "capability", "impact", "experience-role", "experience-bullet", "project", "technology", "leadership-capability", "education", "certification", "additional-information"]>;
+        draftItemType: z.ZodEnum<["identity", "contact", "headline", "summary", "capability", "impact", "experience-role", "experience-bullet", "project", "project-bullet", "technology", "leadership-capability", "education", "certification", "additional-information"]>;
         type: z.ZodEnum<["headline", "paragraph", "bullet", "role-header", "project-header", "capability", "technology", "leadership-capability", "education", "certification", "additional-information"]>;
         order: z.ZodNumber;
         text: z.ZodString;
@@ -413,7 +413,7 @@ export declare const RoleResumeRenderSectionSchema: z.ZodObject<{
         draftItemId: string;
         keepWithNext: boolean;
         avoidBreakInside: boolean;
-        draftItemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
+        draftItemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability" | "identity" | "contact" | "project-bullet";
     }, {
         type: "paragraph" | "capability" | "certification" | "education" | "technology" | "headline" | "additional-information" | "leadership-capability" | "bullet" | "role-header" | "project-header";
         id: string;
@@ -424,7 +424,7 @@ export declare const RoleResumeRenderSectionSchema: z.ZodObject<{
         draftItemId: string;
         keepWithNext: boolean;
         avoidBreakInside: boolean;
-        draftItemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
+        draftItemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability" | "identity" | "contact" | "project-bullet";
     }>, "many">;
 }, "strict", z.ZodTypeAny, {
     type: "education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information";
@@ -442,7 +442,7 @@ export declare const RoleResumeRenderSectionSchema: z.ZodObject<{
         draftItemId: string;
         keepWithNext: boolean;
         avoidBreakInside: boolean;
-        draftItemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
+        draftItemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability" | "identity" | "contact" | "project-bullet";
     }[];
 }, {
     type: "education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information";
@@ -460,7 +460,7 @@ export declare const RoleResumeRenderSectionSchema: z.ZodObject<{
         draftItemId: string;
         keepWithNext: boolean;
         avoidBreakInside: boolean;
-        draftItemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
+        draftItemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability" | "identity" | "contact" | "project-bullet";
     }[];
 }>;
 export declare const RoleResumeRenderSourceMapEntrySchema: z.ZodObject<{
@@ -1077,7 +1077,6 @@ export declare const RoleResumeRenderDocumentSchema: z.ZodObject<{
             policyName: string;
             system: "ProofLayer";
         };
-        candidateName?: string | undefined;
         contact?: {
             location?: string | undefined;
             email?: string | undefined;
@@ -1086,6 +1085,7 @@ export declare const RoleResumeRenderDocumentSchema: z.ZodObject<{
             github?: string | undefined;
             phone?: string | undefined;
         } | undefined;
+        candidateName?: string | undefined;
     }, {
         language: "en";
         targetRoleTitle: string;
@@ -1097,7 +1097,6 @@ export declare const RoleResumeRenderDocumentSchema: z.ZodObject<{
             policyName: string;
             system: "ProofLayer";
         };
-        candidateName?: string | undefined;
         contact?: {
             location?: string | undefined;
             email?: string | undefined;
@@ -1106,6 +1105,7 @@ export declare const RoleResumeRenderDocumentSchema: z.ZodObject<{
             github?: string | undefined;
             phone?: string | undefined;
         } | undefined;
+        candidateName?: string | undefined;
     }>;
     sections: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
@@ -1117,7 +1117,7 @@ export declare const RoleResumeRenderDocumentSchema: z.ZodObject<{
             id: z.ZodString;
             sectionId: z.ZodString;
             draftItemId: z.ZodString;
-            draftItemType: z.ZodEnum<["headline", "summary", "capability", "impact", "experience-role", "experience-bullet", "project", "technology", "leadership-capability", "education", "certification", "additional-information"]>;
+            draftItemType: z.ZodEnum<["identity", "contact", "headline", "summary", "capability", "impact", "experience-role", "experience-bullet", "project", "project-bullet", "technology", "leadership-capability", "education", "certification", "additional-information"]>;
             type: z.ZodEnum<["headline", "paragraph", "bullet", "role-header", "project-header", "capability", "technology", "leadership-capability", "education", "certification", "additional-information"]>;
             order: z.ZodNumber;
             text: z.ZodString;
@@ -1134,7 +1134,7 @@ export declare const RoleResumeRenderDocumentSchema: z.ZodObject<{
             draftItemId: string;
             keepWithNext: boolean;
             avoidBreakInside: boolean;
-            draftItemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
+            draftItemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability" | "identity" | "contact" | "project-bullet";
         }, {
             type: "paragraph" | "capability" | "certification" | "education" | "technology" | "headline" | "additional-information" | "leadership-capability" | "bullet" | "role-header" | "project-header";
             id: string;
@@ -1145,7 +1145,7 @@ export declare const RoleResumeRenderDocumentSchema: z.ZodObject<{
             draftItemId: string;
             keepWithNext: boolean;
             avoidBreakInside: boolean;
-            draftItemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
+            draftItemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability" | "identity" | "contact" | "project-bullet";
         }>, "many">;
     }, "strict", z.ZodTypeAny, {
         type: "education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information";
@@ -1163,7 +1163,7 @@ export declare const RoleResumeRenderDocumentSchema: z.ZodObject<{
             draftItemId: string;
             keepWithNext: boolean;
             avoidBreakInside: boolean;
-            draftItemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
+            draftItemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability" | "identity" | "contact" | "project-bullet";
         }[];
     }, {
         type: "education" | "headline" | "professional-summary" | "core-capabilities" | "selected-impact" | "professional-experience" | "selected-projects" | "technical-capabilities" | "leadership-capabilities" | "certifications" | "additional-information";
@@ -1181,7 +1181,7 @@ export declare const RoleResumeRenderDocumentSchema: z.ZodObject<{
             draftItemId: string;
             keepWithNext: boolean;
             avoidBreakInside: boolean;
-            draftItemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
+            draftItemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability" | "identity" | "contact" | "project-bullet";
         }[];
     }>, "many">;
     sourceMap: z.ZodArray<z.ZodObject<{
@@ -1486,7 +1486,7 @@ export declare const RoleResumeRenderDocumentSchema: z.ZodObject<{
             draftItemId: string;
             keepWithNext: boolean;
             avoidBreakInside: boolean;
-            draftItemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
+            draftItemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability" | "identity" | "contact" | "project-bullet";
         }[];
     }[];
     targetType: "role";
@@ -1566,7 +1566,6 @@ export declare const RoleResumeRenderDocumentSchema: z.ZodObject<{
             policyName: string;
             system: "ProofLayer";
         };
-        candidateName?: string | undefined;
         contact?: {
             location?: string | undefined;
             email?: string | undefined;
@@ -1575,6 +1574,7 @@ export declare const RoleResumeRenderDocumentSchema: z.ZodObject<{
             github?: string | undefined;
             phone?: string | undefined;
         } | undefined;
+        candidateName?: string | undefined;
     };
     sourceMap: {
         id: string;
@@ -1653,7 +1653,7 @@ export declare const RoleResumeRenderDocumentSchema: z.ZodObject<{
             draftItemId: string;
             keepWithNext: boolean;
             avoidBreakInside: boolean;
-            draftItemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability";
+            draftItemType: "capability" | "project" | "certification" | "education" | "summary" | "technology" | "headline" | "additional-information" | "impact" | "experience-role" | "experience-bullet" | "leadership-capability" | "identity" | "contact" | "project-bullet";
         }[];
     }[];
     targetType: "role";
@@ -1733,7 +1733,6 @@ export declare const RoleResumeRenderDocumentSchema: z.ZodObject<{
             policyName: string;
             system: "ProofLayer";
         };
-        candidateName?: string | undefined;
         contact?: {
             location?: string | undefined;
             email?: string | undefined;
@@ -1742,6 +1741,7 @@ export declare const RoleResumeRenderDocumentSchema: z.ZodObject<{
             github?: string | undefined;
             phone?: string | undefined;
         } | undefined;
+        candidateName?: string | undefined;
     };
     sourceMap: {
         id: string;

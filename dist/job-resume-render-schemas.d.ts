@@ -737,7 +737,6 @@ export declare const JobResumeRenderDocumentSchema: z.ZodObject<{
             policyName: "job-resume-rendering-policy";
             system: "ProofLayer";
         };
-        candidateName?: string | undefined;
         contact?: {
             location?: string | undefined;
             email?: string | undefined;
@@ -746,6 +745,7 @@ export declare const JobResumeRenderDocumentSchema: z.ZodObject<{
             github?: string | undefined;
             phone?: string | undefined;
         } | undefined;
+        candidateName?: string | undefined;
     }, {
         language: "en";
         targetRoleTitle: string;
@@ -757,7 +757,6 @@ export declare const JobResumeRenderDocumentSchema: z.ZodObject<{
             policyName: "job-resume-rendering-policy";
             system: "ProofLayer";
         };
-        candidateName?: string | undefined;
         contact?: {
             location?: string | undefined;
             email?: string | undefined;
@@ -766,6 +765,7 @@ export declare const JobResumeRenderDocumentSchema: z.ZodObject<{
             github?: string | undefined;
             phone?: string | undefined;
         } | undefined;
+        candidateName?: string | undefined;
     }>;
     sections: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
@@ -1254,7 +1254,6 @@ export declare const JobResumeRenderDocumentSchema: z.ZodObject<{
             policyName: "job-resume-rendering-policy";
             system: "ProofLayer";
         };
-        candidateName?: string | undefined;
         contact?: {
             location?: string | undefined;
             email?: string | undefined;
@@ -1263,6 +1262,7 @@ export declare const JobResumeRenderDocumentSchema: z.ZodObject<{
             github?: string | undefined;
             phone?: string | undefined;
         } | undefined;
+        candidateName?: string | undefined;
     };
     sourceMap: {
         id: string;
@@ -1429,7 +1429,6 @@ export declare const JobResumeRenderDocumentSchema: z.ZodObject<{
             policyName: "job-resume-rendering-policy";
             system: "ProofLayer";
         };
-        candidateName?: string | undefined;
         contact?: {
             location?: string | undefined;
             email?: string | undefined;
@@ -1438,6 +1437,7 @@ export declare const JobResumeRenderDocumentSchema: z.ZodObject<{
             github?: string | undefined;
             phone?: string | undefined;
         } | undefined;
+        candidateName?: string | undefined;
     };
     sourceMap: {
         id: string;

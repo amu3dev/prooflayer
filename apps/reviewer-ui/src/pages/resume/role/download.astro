@@ -5,6 +5,7 @@ import Layout from "../../../layouts/Layout.astro";
 import { getRoleResumeExportStatus, listRoleResumeExports, showRoleResumeExport } from "../../../../../../src/role-resume-render-export.ts";
 import { proofLayerUiRuntimeConfig } from "../../../lib/runtime.js";
 import { showTarget } from "../../../../../../src/targets.ts";
+import { getApprovedRoleResumeDraftStatus, showApprovedRoleResumeDraft } from "../../../../../../src/approved-role-resume-draft.ts";
 
 const config = proofLayerUiRuntimeConfig();
 const targetId = Astro.url.searchParams.get("target");
@@ -37,11 +38,14 @@ if (exportId) {
 let targetTitle: string | undefined;
 let currentExports: Awaited<ReturnType<typeof listRoleResumeExports>> = [];
 let error: string | undefined;
+let completeness: Awaited<ReturnType<typeof showApprovedRoleResumeDraft>>["completeness"] | undefined;
 if (targetId) {
   try {
     const target = await showTarget(config.workspace, targetId);
     if (target.type !== "role") throw new Error("Resume downloads accept only Role Targets.");
     targetTitle = target.title;
+    const approvedStatus = await getApprovedRoleResumeDraftStatus(config.workspace, targetId);
+    if (approvedStatus.status === "current") completeness = (await showApprovedRoleResumeDraft(config.workspace, targetId)).completeness;
     const manifests = await listRoleResumeExports(config.workspace, targetId);
     currentExports = (await Promise.all(manifests.map(async (manifest) => ({
       manifest,
@@ -58,6 +62,7 @@ if (targetId) {
   {error && <div class="notice error" role="alert">{error}</div>}
   {!targetId && <div class="empty-state large"><p>Choose a Role Target from the Role Resume journey first.</p></div>}
   {targetId && !error && currentExports.length === 0 && <div class="empty-state large"><h2>No current downloads</h2><p>Prepare downloads from the approved Role Resume first.</p></div>}
+  {completeness && <section class="panel"><p class="eyebrow">Approved resume completeness</p><h2>{completeness.status}</h2><p>{completeness.completedRequiredSectionCount} required sections, {completeness.experienceEntryCount} employment entries, {completeness.projectEntryCount} projects, {completeness.evidenceBackedBulletCount} evidence-backed bullets, and {completeness.skillCount} skills are present.</p>{completeness.blockingReasons.length > 0 && <div class="notice"><strong>Warnings</strong><ul>{completeness.blockingReasons.map((reason) => <li>{reason}</li>)}</ul></div>}</section>}
   {currentExports.length > 0 && <section class="panel"><h2>Available formats</h2><div class="download-list">{currentExports.map((entry) => <a class="button secondary-action" href={`/resume/role/download?target=${encodeURIComponent(entry.targetId)}&exportId=${encodeURIComponent(entry.exportId)}`}>Download {entry.format.toUpperCase()}</a>)}</div></section>}
   <a class="button" href={`/resume/role${targetId ? `?target=${encodeURIComponent(targetId)}` : ""}`}>Back to Role Resume</a>
 </Layout>

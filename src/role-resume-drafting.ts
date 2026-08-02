@@ -15,28 +15,26 @@ import {
   type RoleResumeDraftScaffoldSection,
 } from "./role-resume-draft-schemas.js";
 import {
-  RoleResumePlanManifestSchema,
-  type RoleResumeContentPlan,
   type RoleResumeSectionType,
 } from "./role-resume-plan-schemas.js";
 import {
-  assertRoleResumePlanConsistency,
-  getRoleResumePlanStatus,
-  loadRoleResumePlanningContext,
-  showRoleResumePlan,
-  type RoleResumePlanningContext,
-} from "./role-resume-planning.js";
+  getRoleResumeCompositionStatus,
+  loadRoleResumeCompositionContext,
+  roleResumeCompositionPaths,
+  showRoleResumeComposition,
+  type RoleResumeCompositionContext,
+} from "./role-resume-composition.js";
 import { stableJson } from "./target-proposal.js";
 
 export const ROLE_RESUME_DRAFTING_POLICY_NAME = "role-resume-drafting-policy";
-export const ROLE_RESUME_DRAFTING_POLICY_VERSION = "1";
+export const ROLE_RESUME_DRAFTING_POLICY_VERSION = "2";
 
-export interface RoleResumeDraftingContext extends RoleResumePlanningContext {
-  approvedPlan: RoleResumeContentPlan;
-  approvedPlanPath: string;
-  approvedPlanSha256: string;
-  approvedPlanManifestPath: string;
-  approvedPlanManifestSha256: string;
+export interface RoleResumeDraftingContext extends RoleResumeCompositionContext {
+  composition: Awaited<ReturnType<typeof showRoleResumeComposition>>;
+  compositionPath: string;
+  compositionSha256: string;
+  compositionManifestPath: string;
+  compositionManifestSha256: string;
 }
 export interface BuildRoleResumeDraftScaffoldOptions {
   rebuild?: boolean;
@@ -69,41 +67,23 @@ export async function loadRoleResumeDraftingContext(
   workspace: string,
   targetId: string,
 ): Promise<RoleResumeDraftingContext> {
-  const base = await loadRoleResumePlanningContext(workspace, targetId);
-  const approvedPlanStatus = await getRoleResumePlanStatus(workspace, targetId, "approved");
-  if (approvedPlanStatus.status !== "current") {
-    throw new Error(`Approved Role Resume Content Plan must be current before drafting. Current status: ${approvedPlanStatus.status}`);
+  const base = await loadRoleResumeCompositionContext(workspace, targetId);
+  const compositionStatus = await getRoleResumeCompositionStatus(workspace, targetId);
+  if (compositionStatus.status !== "current") {
+    throw new Error(`Role Resume Composition must be current before drafting. Current status: ${compositionStatus.status}`);
   }
-  const approvedPlan = await showRoleResumePlan(workspace, targetId, "approved");
-  if (approvedPlan.targetType !== "role" || approvedPlan.mode !== "market-positioning") {
-    throw new Error("Role resume drafting accepts approved Role plans in market-positioning mode only.");
+  const composition = await showRoleResumeComposition(workspace, targetId);
+  if (!composition.completeness.usableForDrafting) {
+    throw new Error(`Role Resume Composition is ${composition.completeness.status} and cannot be drafted: ${composition.completeness.blockingReasons.join(" ")}`);
   }
-  if (approvedPlan.completeness.status !== "complete" || !approvedPlan.completeness.usableForResumeDrafting) {
-    throw new Error("Approved Role Resume Content Plan must be complete and usable for drafting.");
-  }
-  assertRoleResumePlanConsistency(approvedPlan, base);
-  if (
-    approvedPlan.approvedInterpretation.sha256 !== base.approvedInterpretationSha256 ||
-    approvedPlan.approvedMatching.sha256 !== base.approvedMatchingSha256 ||
-    approvedPlan.approvedAssessment.sha256 !== base.approvedAssessmentSha256
-  ) {
-    throw new Error("Approved plan dependencies do not match current interpretation, matching, or assessment.");
-  }
-  const approvedPlanPath = approvedPlanStatus.planPath;
-  const approvedPlanManifestPath = approvedPlanStatus.manifestPath;
-  const manifest = RoleResumePlanManifestSchema.parse(
-    await readJson<unknown>(resolveWithin(workspace, approvedPlanManifestPath), null),
-  );
-  if (manifest.planId !== approvedPlan.id || manifest.planSha256 !== await hashFile(resolveWithin(workspace, approvedPlanPath))) {
-    throw new Error("Approved plan manifest does not match the approved plan.");
-  }
+  const compositionPaths = roleResumeCompositionPaths(workspace, targetId);
   return {
     ...base,
-    approvedPlan,
-    approvedPlanPath,
-    approvedPlanSha256: manifest.planSha256,
-    approvedPlanManifestPath,
-    approvedPlanManifestSha256: await hashFile(resolveWithin(workspace, approvedPlanManifestPath)),
+    composition,
+    compositionPath: compositionStatus.compositionPath,
+    compositionSha256: await hashFile(compositionPaths.compositionPath),
+    compositionManifestPath: compositionStatus.manifestPath,
+    compositionManifestSha256: await hashFile(compositionPaths.manifestPath),
   };
 }
 
@@ -153,56 +133,40 @@ export function deriveRoleResumeDraftScaffold(
   updatedAt: string,
 ): RoleResumeDraftScaffold {
   const scaffoldId = deterministicRoleResumeDraftScaffoldId(context);
-  const assessmentById = new Map(
-    context.approvedAssessment.expectationAssessments.map((entry) => [entry.id, entry]),
-  );
-  const boundaryByExpectation = new Map(
-    context.approvedPlan.claimBoundaries
-      .filter((entry) => entry.expectationId)
-      .map((entry) => [entry.expectationId!, entry]),
-  );
-  const sections = context.approvedPlan.sections
+  const boundaryById = new Map(context.approvedPlan.claimBoundaries.map((entry) => [entry.id, entry]));
+  const planSectionById = new Map(context.approvedPlan.sections.map((entry) => [entry.id, entry]));
+  const slotsById = new Map(context.composition.slots.map((entry) => [entry.id, entry]));
+  const sections = context.composition.sections
     .slice()
     .sort((a, b) => a.order - b.order || a.type.localeCompare(b.type))
     .map<RoleResumeDraftScaffoldSection>((section) => {
-      const positioningThemes = section.type === "headline"
-        ? context.approvedPlan.positioning.primaryThemes
-        : [];
-      const sourceExpectationIds = section.type === "headline"
-        ? uniqueSorted(positioningThemes.flatMap((entry) => entry.sourceExpectationIds))
-        : section.sourceExpectationIds;
-      const sourceAssessmentIds = section.type === "headline"
-        ? uniqueSorted(positioningThemes.flatMap((entry) => entry.sourceAssessmentIds))
-        : section.sourceAssessmentIds;
-      const approvedMatchIds = section.type === "headline"
-        ? uniqueSorted(positioningThemes.flatMap((entry) => entry.approvedMatchIds))
-        : section.approvedMatchIds;
-      const evidenceIds = section.type === "headline"
-        ? uniqueSorted(positioningThemes.flatMap((entry) => entry.evidenceIds))
-        : section.evidenceIds;
-      const boundaries = sourceExpectationIds
-        .map((id) => boundaryByExpectation.get(id))
+      const planSection = planSectionById.get(section.planSectionId);
+      if (!planSection) throw new Error(`Composition references an unknown plan section: ${section.planSectionId}`);
+      const slots = section.slotIds.map((id) => slotsById.get(id)).filter((entry) => Boolean(entry));
+      const boundaries = uniqueSorted(slots.flatMap((entry) => entry!.claimBoundaryIds))
+        .map((id) => boundaryById.get(id))
         .filter((entry) => Boolean(entry));
-      const maximumItemCount = section.maximumItemCount ?? defaultMaximumItems(section.type);
+      const maximumItemCount = Math.max(1, slots.length || defaultMaximumItems(section.type));
       return {
         id: `draft-scaffold-section_${hashText([
           scaffoldId,
-          section.id,
+          section.planSectionId,
           section.type,
           ROLE_RESUME_DRAFTING_POLICY_VERSION,
         ].join("\0")).slice(0, 16)}`,
-        planSectionId: section.id,
+        planSectionId: section.planSectionId,
         sectionType: section.type,
         status: section.status,
         order: section.order,
         objective: section.objective,
-        allowedExpectationIds: uniqueSorted(sourceExpectationIds),
-        allowedAssessmentIds: uniqueSorted(sourceAssessmentIds.filter((id) => assessmentById.has(id))),
-        allowedMatchIds: uniqueSorted(approvedMatchIds),
-        allowedEvidenceIds: uniqueSorted(evidenceIds),
+        allowedExpectationIds: uniqueSorted(slots.flatMap((entry) => entry!.sourceExpectationIds)),
+        allowedAssessmentIds: uniqueSorted(slots.flatMap((entry) => entry!.sourceAssessmentIds)),
+        allowedMatchIds: uniqueSorted(slots.flatMap((entry) => entry!.approvedMatchIds)),
+        allowedEvidenceIds: uniqueSorted(slots.flatMap((entry) => entry!.evidenceIds)),
         allowedClaimBoundaryIds: uniqueSorted(boundaries.map((entry) => entry!.id)),
-        allowedClaimTypes: typedUnique(section.allowedContentTypes),
-        prohibitedClaimTypes: typedUnique(section.prohibitedContentTypes),
+        allowedClaimTypes: typedUnique(slots.flatMap((entry) => entry!.claimTypes)),
+        prohibitedClaimTypes: typedUnique(planSection.prohibitedContentTypes.filter((type) =>
+          !slots.some((slot) => slot!.claimTypes.includes(type)))),
         maximumItemCount,
         ...(maximumSentences(section.type) ? { maximumSentenceCount: maximumSentences(section.type) } : {}),
         metricPermission: boundaries.some((entry) => entry!.allowedClaimTypes.includes("quantified-outcome"))
@@ -216,20 +180,16 @@ export function deriveRoleResumeDraftScaffold(
           ...(entry!.allowedScope?.temporalScope ?? []),
         ])),
         cautionNotes: uniqueSorted([
-          ...section.cautionNotes,
+          ...planSection.cautionNotes,
           ...boundaries.flatMap((entry) => entry!.boundaryType === "allowed-with-caution" || entry!.boundaryType === "requires-review"
             ? [entry!.rationale]
             : []),
         ]),
         prohibitedInferences: uniqueSorted(boundaries.flatMap((entry) => entry!.prohibitedInferences)),
         requiredQualifiers: uniqueSorted(boundaries.flatMap((entry) => entry!.requiredQualifiers)),
-        placeholderIds: section.status === "exclude"
-          ? []
-          : Array.from({ length: maximumItemCount }, (_, index) => `draft-slot_${hashText([
-            scaffoldId,
-            section.id,
-            String(index),
-          ].join("\0")).slice(0, 16)}`),
+        compositionSlotIds: section.slotIds,
+        requiredCompositionSlotIds: section.requiredSlotIds,
+        placeholderIds: section.status === "exclude" ? [] : section.slotIds,
       };
     });
   return RoleResumeDraftScaffoldSchema.parse({
@@ -248,6 +208,12 @@ export function deriveRoleResumeDraftScaffold(
       manifestPath: context.approvedPlanManifestPath,
       manifestSha256: context.approvedPlanManifestSha256,
     },
+    composition: {
+      path: context.compositionPath,
+      sha256: context.compositionSha256,
+      manifestPath: context.compositionManifestPath,
+      manifestSha256: context.compositionManifestSha256,
+    },
     draftingPolicy: {
       name: ROLE_RESUME_DRAFTING_POLICY_NAME,
       version: ROLE_RESUME_DRAFTING_POLICY_VERSION,
@@ -255,6 +221,7 @@ export function deriveRoleResumeDraftScaffold(
     sections,
     draftingConstraints: [
       constraint(scaffoldId, "APPROVED_PLAN_IS_CONSTRAINT_SYSTEM", "Drafting may not exceed the approved Role Resume Content Plan.", sections, true),
+      constraint(scaffoldId, "COMPLETE_COMPOSITION_IS_REQUIRED", "Every required Career Twin composition slot must be represented before approval.", sections, true),
       constraint(scaffoldId, "STATEMENT_PROVENANCE_REQUIRED", "Every substantive statement requires exact claim-to-evidence provenance.", sections, true),
       constraint(scaffoldId, "TARGET_TITLE_IS_POSITIONING_ONLY", "The target role title is positioning context, not employment history.", sections, true),
       constraint(scaffoldId, "PROJECT_SCOPE_MUST_REMAIN_PROJECT_SCOPE", "Project evidence cannot be represented as employment without reviewed evidence.", sections, true),
@@ -327,7 +294,11 @@ export async function getRoleResumeDraftScaffoldStatus(
     && manifest.approvedAssessmentSha256 === context.approvedAssessmentSha256
     && manifest.approvedAssessmentManifestSha256 === context.approvedAssessmentManifestSha256
     && manifest.approvedPlanSha256 === context.approvedPlanSha256
-    && manifest.approvedPlanManifestSha256 === context.approvedPlanManifestSha256;
+    && manifest.approvedPlanManifestSha256 === context.approvedPlanManifestSha256
+    && manifest.compositionSha256 === context.compositionSha256
+    && manifest.compositionManifestSha256 === context.compositionManifestSha256
+    && manifest.careerProfileSha256 === context.careerProfileSha256
+    && manifest.publicProfileSha256 === context.publicProfileSha256;
   const policyVersionMatches = manifest.policyName === ROLE_RESUME_DRAFTING_POLICY_NAME
     && manifest.policyVersion === ROLE_RESUME_DRAFTING_POLICY_VERSION;
   const reasons = [
@@ -358,43 +329,39 @@ export function assertRoleResumeDraftScaffoldConsistency(
   ) throw new Error("Scaffold drafting policy is unsupported.");
   if (
     scaffold.approvedPlan.sha256 !== context.approvedPlanSha256 ||
+    scaffold.composition.sha256 !== context.compositionSha256 ||
     scaffold.approvedInterpretation.sha256 !== context.approvedInterpretationSha256 ||
     scaffold.approvedMatching.sha256 !== context.approvedMatchingSha256 ||
     scaffold.approvedAssessment.sha256 !== context.approvedAssessmentSha256
   ) throw new Error("Scaffold does not reference the current approved dependency chain.");
-  const planned = context.approvedPlan.sections
+  const planned = context.composition.sections
     .slice()
     .sort((a, b) => a.order - b.order || a.type.localeCompare(b.type));
-  if (scaffold.sections.length !== planned.length) throw new Error("Scaffold must preserve every approved-plan section.");
+  if (scaffold.sections.length !== planned.length) throw new Error("Scaffold must preserve every composition section.");
   for (let index = 0; index < planned.length; index += 1) {
-    const planSection = planned[index];
+    const compositionSection = planned[index];
     const section = scaffold.sections[index];
     if (
-      section.planSectionId !== planSection.id ||
-      section.sectionType !== planSection.type ||
-      section.status !== planSection.status ||
-      section.order !== planSection.order
-    ) throw new Error(`Scaffold section does not preserve approved plan structure: ${planSection.id}`);
-    const expectedExpectationIds = planSection.type === "headline"
-      ? uniqueSorted(context.approvedPlan.positioning.primaryThemes.flatMap((entry) => entry.sourceExpectationIds))
-      : planSection.sourceExpectationIds;
-    const expectedEvidenceIds = planSection.type === "headline"
-      ? uniqueSorted(context.approvedPlan.positioning.primaryThemes.flatMap((entry) => entry.evidenceIds))
-      : planSection.evidenceIds;
+      section.planSectionId !== compositionSection.planSectionId ||
+      section.sectionType !== compositionSection.type ||
+      section.status !== compositionSection.status ||
+      section.order !== compositionSection.order
+    ) throw new Error(`Scaffold section does not preserve composition structure: ${compositionSection.id}`);
+    const slots = context.composition.slots.filter((slot) => compositionSection.slotIds.includes(slot.id));
+    const expectedExpectationIds = uniqueSorted(slots.flatMap((slot) => slot.sourceExpectationIds));
+    const expectedEvidenceIds = uniqueSorted(slots.flatMap((slot) => slot.evidenceIds));
     if (!sameSet(section.allowedExpectationIds, expectedExpectationIds)) {
-      throw new Error(`Scaffold changed selected expectations for ${planSection.id}.`);
+      throw new Error(`Scaffold changed selected expectations for ${compositionSection.id}.`);
     }
     if (!sameSet(section.allowedEvidenceIds, expectedEvidenceIds)) {
-      throw new Error(`Scaffold changed selected evidence for ${planSection.id}.`);
+      throw new Error(`Scaffold changed selected evidence for ${compositionSection.id}.`);
     }
-    if (section.allowedClaimTypes.some((entry) => !planSection.allowedContentTypes.includes(entry))) {
-      throw new Error(`Scaffold expanded allowed claim types for ${planSection.id}.`);
-    }
-    if (section.prohibitedClaimTypes.some((entry) => !planSection.prohibitedContentTypes.includes(entry))) {
-      throw new Error(`Scaffold dropped approved prohibited claim types for ${planSection.id}.`);
+    if (!sameSet(section.compositionSlotIds, compositionSection.slotIds)
+      || !sameSet(section.requiredCompositionSlotIds, compositionSection.requiredSlotIds)) {
+      throw new Error(`Scaffold changed composition slots for ${compositionSection.id}.`);
     }
     if (section.status === "exclude" && section.placeholderIds.length) {
-      throw new Error(`Excluded scaffold section contains draft slots: ${planSection.id}`);
+      throw new Error(`Excluded scaffold section contains draft slots: ${compositionSection.id}`);
     }
   }
   if (stableJson(scaffold).match(/\b(?:Led|Built|Delivered|Managed|Results-driven)\b[^"]{12,}/)) {
@@ -406,6 +373,7 @@ export function deterministicRoleResumeDraftScaffoldId(context: RoleResumeDrafti
   return `role-resume-draft-scaffold_${hashText([
     context.target.id,
     context.approvedPlanSha256,
+    context.compositionSha256,
     ROLE_RESUME_DRAFTING_POLICY_VERSION,
   ].join("\0")).slice(0, 16)}`;
 }
@@ -448,6 +416,10 @@ export function createRoleResumeDraftScaffoldManifest(
     approvedAssessmentManifestSha256: context.approvedAssessmentManifestSha256,
     approvedPlanSha256: context.approvedPlanSha256,
     approvedPlanManifestSha256: context.approvedPlanManifestSha256,
+    compositionSha256: context.compositionSha256,
+    compositionManifestSha256: context.compositionManifestSha256,
+    careerProfileSha256: context.careerProfileSha256,
+    publicProfileSha256: context.publicProfileSha256,
     createdAt,
     updatedAt,
   });
@@ -491,6 +463,10 @@ function scaffoldProvenance(context: RoleResumeDraftingContext) {
     approvedAssessmentManifestSha256: context.approvedAssessmentManifestSha256,
     approvedPlanSha256: context.approvedPlanSha256,
     approvedPlanManifestSha256: context.approvedPlanManifestSha256,
+    compositionSha256: context.compositionSha256,
+    compositionManifestSha256: context.compositionManifestSha256,
+    careerProfileSha256: context.careerProfileSha256,
+    publicProfileSha256: context.publicProfileSha256,
     expectationSetSha256: context.expectationSetSha256,
     assessmentSetSha256: context.assessmentSetSha256,
     approvedMatchSetSha256: context.approvedMatchSetSha256,

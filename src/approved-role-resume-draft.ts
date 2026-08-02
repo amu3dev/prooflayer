@@ -36,6 +36,11 @@ import {
   loadRoleResumeDraftingContext,
   showRoleResumeDraftScaffold,
 } from "./role-resume-drafting.js";
+import {
+  evaluateRoleResumeDraftAgainstComposition,
+  getRoleResumeCompositionStatus,
+  showRoleResumeComposition,
+} from "./role-resume-composition.js";
 
 export interface ApproveRoleResumeDraftOptions {
   rebuild?: boolean;
@@ -49,7 +54,7 @@ export interface ApproveRoleResumeDraftResult {
   humanApprovedCount: number;
   humanEditedCount: number;
   rejectedItemCount: number;
-  completeness: "empty" | "partial" | "complete";
+  completeness: "complete" | "constrained-but-usable" | "incomplete" | "blocked";
   usableForRendering: boolean;
   draftPath: string;
   manifestPath: string;
@@ -61,6 +66,7 @@ export interface ApprovedRoleResumeDraftStatus {
   draftHashMatches: boolean | null;
   dependenciesMatch: boolean | null;
   scaffoldHashMatches: boolean | null;
+  compositionHashMatches: boolean | null;
   proposalHashMatches: boolean | null;
   reviewHashMatches: boolean | null;
   policyVersionMatches: boolean | null;
@@ -98,6 +104,7 @@ export async function approveRoleResumeDraftProposal(
     proposal.input.evidenceSnapshotSha256 !== context.evidenceSnapshotSha256 ||
     proposal.input.approvedAssessmentSha256 !== context.approvedAssessmentSha256 ||
     proposal.input.approvedPlanSha256 !== context.approvedPlanSha256 ||
+    proposal.input.compositionSha256 !== context.compositionSha256 ||
     proposal.input.draftScaffoldSha256 !== scaffoldSha256
   ) throw new Error("Role resume draft proposal dependencies changed and approval was refused.");
 
@@ -151,7 +158,17 @@ export async function approveRoleResumeDraftProposal(
   const claimLedger = buildClaimLedger(sections, context);
   const evidenceUsage = buildEvidenceUsage(sections, scaffold);
   const risks = deriveApprovedDraftRisks(sections, validated.validationIssues, evidenceUsage);
-  const completeness = deriveRoleResumeDraftCompleteness(scaffold, sections, claimLedger, risks, validated.ambiguities);
+  const completeness = deriveRoleResumeDraftCompleteness(
+    scaffold,
+    context.composition,
+    sections,
+    claimLedger,
+    risks,
+    validated.ambiguities,
+  );
+  if (!completeness.usableForRendering) {
+    throw new Error(`Role resume approval is blocked because composition completeness is ${completeness.status}: ${completeness.blockingReasons.join(" ")}`);
+  }
   const now = (options.now ?? (() => new Date()))().toISOString();
   let createdAt = now;
   if (await pathExists(paths.draftPath)) {
@@ -164,6 +181,7 @@ export async function approveRoleResumeDraftProposal(
   const draftId = `approved-role-resume-draft_${hashText([
     context.target.id,
     context.approvedPlanSha256,
+    context.compositionSha256,
     proposalManifest.proposalSha256,
     reviewManifest.reviewSha256,
     ROLE_RESUME_DRAFTING_POLICY_VERSION,
@@ -179,6 +197,7 @@ export async function approveRoleResumeDraftProposal(
     approvedMatching: scaffold.approvedMatching,
     approvedAssessment: scaffold.approvedAssessment,
     approvedPlan: scaffold.approvedPlan,
+    composition: scaffold.composition,
     draftingPolicy: {
       name: ROLE_RESUME_DRAFTING_POLICY_NAME,
       version: ROLE_RESUME_DRAFTING_POLICY_VERSION,
@@ -208,6 +227,8 @@ export async function approveRoleResumeDraftProposal(
       approvedAssessmentManifestSha256: context.approvedAssessmentManifestSha256,
       approvedPlanSha256: context.approvedPlanSha256,
       approvedPlanManifestSha256: context.approvedPlanManifestSha256,
+      compositionSha256: context.compositionSha256,
+      compositionManifestSha256: context.compositionManifestSha256,
       scaffoldSha256,
       proposalSha256: proposalManifest.proposalSha256,
       reviewSha256: reviewManifest.reviewSha256,
@@ -231,6 +252,7 @@ export async function approveRoleResumeDraftProposal(
     evidenceSnapshotSha256: context.evidenceSnapshotSha256,
     approvedAssessmentSha256: context.approvedAssessmentSha256,
     approvedPlanSha256: context.approvedPlanSha256,
+    compositionSha256: context.compositionSha256,
     scaffoldSha256,
     proposalId,
     proposalSha256: proposalManifest.proposalSha256,
@@ -297,16 +319,21 @@ export async function getApprovedRoleResumeDraftStatus(
   const reviewPath = roleResumeDraftReviewPaths(workspace, targetId, manifest.proposalId).reviewPath;
   const proposalHashMatches = await pathExists(proposalPath) && await hashFile(proposalPath) === manifest.proposalSha256;
   const reviewHashMatches = await pathExists(reviewPath) && await hashFile(reviewPath) === manifest.reviewSha256;
+  const compositionStatus = await getRoleResumeCompositionStatus(workspace, targetId);
+  const compositionHashMatches = compositionStatus.status === "current"
+    && context.compositionSha256 === manifest.compositionSha256;
   const dependenciesMatch = manifest.targetSha256 === context.targetSha256
     && manifest.approvedInterpretationSha256 === context.approvedInterpretationSha256
     && manifest.approvedMatchingSha256 === context.approvedMatchingSha256
     && manifest.evidenceSnapshotSha256 === context.evidenceSnapshotSha256
     && manifest.approvedAssessmentSha256 === context.approvedAssessmentSha256
-    && manifest.approvedPlanSha256 === context.approvedPlanSha256;
+    && manifest.approvedPlanSha256 === context.approvedPlanSha256
+    && manifest.compositionSha256 === context.compositionSha256;
   const policyVersionMatches = manifest.policyName === ROLE_RESUME_DRAFTING_POLICY_NAME
     && manifest.policyVersion === ROLE_RESUME_DRAFTING_POLICY_VERSION;
   const reasons = [
     ...(!dependenciesMatch ? ["Approved drafting dependencies changed."] : []),
+    ...(!compositionHashMatches ? ["Resume composition changed."] : []),
     ...(!scaffoldHashMatches ? ["Draft scaffold changed."] : []),
     ...(!proposalHashMatches ? ["Reviewed draft proposal changed or is missing."] : []),
     ...(!reviewHashMatches ? ["Draft review changed or is missing."] : []),
@@ -317,6 +344,7 @@ export async function getApprovedRoleResumeDraftStatus(
     draftHashMatches,
     dependenciesMatch,
     scaffoldHashMatches,
+    compositionHashMatches,
     proposalHashMatches,
     reviewHashMatches,
     policyVersionMatches,
@@ -328,6 +356,7 @@ export async function getApprovedRoleResumeDraftStatus(
 
 export function deriveRoleResumeDraftCompleteness(
   scaffold: Awaited<ReturnType<typeof showRoleResumeDraftScaffold>>,
+  composition: Awaited<ReturnType<typeof showRoleResumeComposition>>,
   sections: ApprovedRoleResumeDraft["sections"],
   claimLedger: ApprovedRoleResumeDraft["claimLedger"],
   risks: ApprovedRoleResumeDraft["risks"],
@@ -342,14 +371,23 @@ export function deriveRoleResumeDraftCompleteness(
   const validatedDraftItemCount = items.filter((entry) => entry.validation.status === "valid").length;
   const claimLedgerComplete = claimLedger.length === items.length
     && items.every((entry) => claimLedger.some((ledger) => ledger.draftItemId === entry.id));
-  const provenanceComplete = items.every((entry) =>
-    entry.evidenceIds.length > 0 &&
-    entry.claimBoundaryIds.length > 0 &&
-    entry.provenance.approvedPlanId.length > 0 &&
-    entry.provenance.reviewDecision);
+  const slotById = new Map(composition.slots.map((entry) => [entry.id, entry]));
+  const provenanceComplete = items.every((entry) => {
+    const slot = slotById.get(entry.compositionSlotId);
+    return Boolean(
+      slot
+      && entry.provenance.approvedPlanId.length > 0
+      && entry.provenance.compositionId === composition.id
+      && entry.provenance.compositionSlotId === entry.compositionSlotId
+      && entry.provenance.reviewDecision
+      && (slot.mode === "fixed" || entry.evidenceIds.length > 0 && entry.claimBoundaryIds.length > 0),
+    );
+  });
   const unresolvedCriticalIssueCount = risks.filter((entry) => entry.severity === "critical").length;
   const unresolvedAmbiguityCount = ambiguities.filter((entry) => !entry.resolved).length;
+  const compositionEvaluation = evaluateRoleResumeDraftAgainstComposition(composition, sections);
   const blockingReasons = [
+    ...compositionEvaluation.blockingReasons,
     ...(completedRequiredSectionCount !== required.length ? ["Required draft sections are incomplete."] : []),
     ...(validatedDraftItemCount !== items.length ? ["One or more draft items are not fully valid."] : []),
     ...(!claimLedgerComplete ? ["Claim ledger is incomplete."] : []),
@@ -357,11 +395,13 @@ export function deriveRoleResumeDraftCompleteness(
     ...(unresolvedCriticalIssueCount ? ["Critical draft risks remain."] : []),
     ...(unresolvedAmbiguityCount ? ["Draft ambiguities remain unresolved."] : []),
   ];
-  const status = items.length === 0
-    ? "empty"
+  const status: RoleResumeDraftCompleteness["status"] = compositionEvaluation.status === "blocked"
+    ? "blocked"
     : blockingReasons.length
-      ? "partial"
-      : "complete";
+      ? "incomplete"
+      : compositionEvaluation.status;
+  const usableForRendering = (status === "complete" || status === "constrained-but-usable")
+    && blockingReasons.length === 0;
   return {
     status,
     requiredSectionCount: required.length,
@@ -374,7 +414,15 @@ export function deriveRoleResumeDraftCompleteness(
     provenanceComplete: Boolean(provenanceComplete),
     unresolvedCriticalIssueCount,
     unresolvedAmbiguityCount,
-    usableForRendering: status === "complete",
+    identityPresent: compositionEvaluation.identityPresent,
+    chronologyComplete: compositionEvaluation.careerEntriesAccounted
+      && compositionEvaluation.includedExperienceCount === composition.experienceEntries.filter((entry) => entry.decision === "include").length,
+    selectedEvidenceAccounted: compositionEvaluation.selectedEvidenceAccounted,
+    experienceEntryCount: compositionEvaluation.includedExperienceCount,
+    projectEntryCount: compositionEvaluation.includedProjectCount,
+    skillCount: items.filter((entry) => entry.itemType === "technology").length,
+    evidenceBackedBulletCount: compositionEvaluation.evidenceBackedBulletSlotCount,
+    usableForRendering,
     blockingReasons,
   };
 }
@@ -391,14 +439,17 @@ export function assertApprovedRoleResumeDraft(draft: ApprovedRoleResumeDraft): v
   if (items.some((entry) => entry.trustState === "model-proposed" || entry.trustState === "deterministic-proposed")) {
     throw new Error("Approved draft contains proposed trust state.");
   }
-  if (items.some((entry) => !entry.evidenceIds.length || !entry.claimBoundaryIds.length || !entry.provenance.reviewDecision)) {
+  if (items.some((entry) => !entry.compositionSlotId || !entry.provenance.compositionId || !entry.provenance.reviewDecision)) {
     throw new Error("Approved draft contains a substantive statement without complete provenance.");
   }
   if (draft.claimLedger.length !== items.length || items.some((entry) => !draft.claimLedger.some((ledger) => ledger.draftItemId === entry.id))) {
     throw new Error("Approved draft claim ledger is incomplete.");
   }
-  if (draft.completeness.status === "complete" && !draft.completeness.usableForRendering) {
-    throw new Error("Complete approved draft must be structurally usable for rendering.");
+  if (["complete", "constrained-but-usable"].includes(draft.completeness.status) && !draft.completeness.usableForRendering) {
+    throw new Error("Usable approved draft must be structurally usable for rendering.");
+  }
+  if (["incomplete", "blocked"].includes(draft.completeness.status) || !draft.completeness.usableForRendering) {
+    throw new Error("Incomplete role resume drafts cannot be approved for rendering.");
   }
 }
 
@@ -435,6 +486,7 @@ export function formatApprovedRoleResumeDraftStatus(status: ApprovedRoleResumeDr
     `Usable for rendering: ${status.usableForRendering ? "yes" : "no"}`,
     `Draft hash matches: ${status.draftHashMatches ?? "n/a"}`,
     `Dependencies match: ${status.dependenciesMatch ?? "n/a"}`,
+    `Composition matches: ${status.compositionHashMatches ?? "n/a"}`,
     `Scaffold hash matches: ${status.scaffoldHashMatches ?? "n/a"}`,
     `Proposal hash matches: ${status.proposalHashMatches ?? "n/a"}`,
     `Review hash matches: ${status.reviewHashMatches ?? "n/a"}`,
@@ -561,6 +613,7 @@ function emptyStatus(
     draftHashMatches: null,
     dependenciesMatch: null,
     scaffoldHashMatches: null,
+    compositionHashMatches: null,
     proposalHashMatches: null,
     reviewHashMatches: null,
     policyVersionMatches: null,

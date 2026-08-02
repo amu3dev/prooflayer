@@ -167,6 +167,17 @@ export declare function inspectRoleResumeDraftForProduct(workspace: string, targ
     proposal: RoleResumeDraftProposal;
     review: RoleResumeDraftReview;
     reviewStatus: RoleResumeDraftReviewStatus;
+    composition: {
+        status: "complete" | "constrained-but-usable" | "incomplete" | "blocked";
+        experienceEntryCount: number;
+        projectEntryCount: number;
+        skillCount: number;
+        warnings: string[];
+        exclusions: Array<{
+            label: string;
+            reason: string;
+        }>;
+    };
     itemContext: Record<string, {
         evidence: Array<{
             id: string;

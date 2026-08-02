@@ -4,6 +4,7 @@ import { ApprovedRoleResumeDraftManifestSchema, ApprovedRoleResumeDraftSchema, R
 import { buildClaimLedger, buildEvidenceUsage, getRoleResumeDraftProposalStatus, showRoleResumeDraftProposal, validateRoleResumeDraftPayload, } from "./role-resume-draft-proposal.js";
 import { getRoleResumeDraftReviewStatus, mergeReviewedRoleResumeDraft, roleResumeDraftReviewPaths, showRoleResumeDraftReview, } from "./role-resume-draft-review.js";
 import { ROLE_RESUME_DRAFTING_POLICY_NAME, ROLE_RESUME_DRAFTING_POLICY_VERSION, getRoleResumeDraftScaffoldStatus, loadRoleResumeDraftingContext, showRoleResumeDraftScaffold, } from "./role-resume-drafting.js";
+import { evaluateRoleResumeDraftAgainstComposition, getRoleResumeCompositionStatus, } from "./role-resume-composition.js";
 export async function approveRoleResumeDraftProposal(workspace, proposalId, options = {}) {
     const proposalStatus = await getRoleResumeDraftProposalStatus(workspace, proposalId);
     if (proposalStatus.status !== "current" || !proposalStatus.readyForReview) {
@@ -27,6 +28,7 @@ export async function approveRoleResumeDraftProposal(workspace, proposalId, opti
         proposal.input.evidenceSnapshotSha256 !== context.evidenceSnapshotSha256 ||
         proposal.input.approvedAssessmentSha256 !== context.approvedAssessmentSha256 ||
         proposal.input.approvedPlanSha256 !== context.approvedPlanSha256 ||
+        proposal.input.compositionSha256 !== context.compositionSha256 ||
         proposal.input.draftScaffoldSha256 !== scaffoldSha256)
         throw new Error("Role resume draft proposal dependencies changed and approval was refused.");
     const proposalPaths = {
@@ -64,7 +66,10 @@ export async function approveRoleResumeDraftProposal(workspace, proposalId, opti
     const claimLedger = buildClaimLedger(sections, context);
     const evidenceUsage = buildEvidenceUsage(sections, scaffold);
     const risks = deriveApprovedDraftRisks(sections, validated.validationIssues, evidenceUsage);
-    const completeness = deriveRoleResumeDraftCompleteness(scaffold, sections, claimLedger, risks, validated.ambiguities);
+    const completeness = deriveRoleResumeDraftCompleteness(scaffold, context.composition, sections, claimLedger, risks, validated.ambiguities);
+    if (!completeness.usableForRendering) {
+        throw new Error(`Role resume approval is blocked because composition completeness is ${completeness.status}: ${completeness.blockingReasons.join(" ")}`);
+    }
     const now = (options.now ?? (() => new Date()))().toISOString();
     let createdAt = now;
     if (await pathExists(paths.draftPath)) {
@@ -78,6 +83,7 @@ export async function approveRoleResumeDraftProposal(workspace, proposalId, opti
     const draftId = `approved-role-resume-draft_${hashText([
         context.target.id,
         context.approvedPlanSha256,
+        context.compositionSha256,
         proposalManifest.proposalSha256,
         reviewManifest.reviewSha256,
         ROLE_RESUME_DRAFTING_POLICY_VERSION,
@@ -93,6 +99,7 @@ export async function approveRoleResumeDraftProposal(workspace, proposalId, opti
         approvedMatching: scaffold.approvedMatching,
         approvedAssessment: scaffold.approvedAssessment,
         approvedPlan: scaffold.approvedPlan,
+        composition: scaffold.composition,
         draftingPolicy: {
             name: ROLE_RESUME_DRAFTING_POLICY_NAME,
             version: ROLE_RESUME_DRAFTING_POLICY_VERSION,
@@ -122,6 +129,8 @@ export async function approveRoleResumeDraftProposal(workspace, proposalId, opti
             approvedAssessmentManifestSha256: context.approvedAssessmentManifestSha256,
             approvedPlanSha256: context.approvedPlanSha256,
             approvedPlanManifestSha256: context.approvedPlanManifestSha256,
+            compositionSha256: context.compositionSha256,
+            compositionManifestSha256: context.compositionManifestSha256,
             scaffoldSha256,
             proposalSha256: proposalManifest.proposalSha256,
             reviewSha256: reviewManifest.reviewSha256,
@@ -145,6 +154,7 @@ export async function approveRoleResumeDraftProposal(workspace, proposalId, opti
         evidenceSnapshotSha256: context.evidenceSnapshotSha256,
         approvedAssessmentSha256: context.approvedAssessmentSha256,
         approvedPlanSha256: context.approvedPlanSha256,
+        compositionSha256: context.compositionSha256,
         scaffoldSha256,
         proposalId,
         proposalSha256: proposalManifest.proposalSha256,
@@ -201,16 +211,21 @@ export async function getApprovedRoleResumeDraftStatus(workspace, targetId) {
     const reviewPath = roleResumeDraftReviewPaths(workspace, targetId, manifest.proposalId).reviewPath;
     const proposalHashMatches = await pathExists(proposalPath) && await hashFile(proposalPath) === manifest.proposalSha256;
     const reviewHashMatches = await pathExists(reviewPath) && await hashFile(reviewPath) === manifest.reviewSha256;
+    const compositionStatus = await getRoleResumeCompositionStatus(workspace, targetId);
+    const compositionHashMatches = compositionStatus.status === "current"
+        && context.compositionSha256 === manifest.compositionSha256;
     const dependenciesMatch = manifest.targetSha256 === context.targetSha256
         && manifest.approvedInterpretationSha256 === context.approvedInterpretationSha256
         && manifest.approvedMatchingSha256 === context.approvedMatchingSha256
         && manifest.evidenceSnapshotSha256 === context.evidenceSnapshotSha256
         && manifest.approvedAssessmentSha256 === context.approvedAssessmentSha256
-        && manifest.approvedPlanSha256 === context.approvedPlanSha256;
+        && manifest.approvedPlanSha256 === context.approvedPlanSha256
+        && manifest.compositionSha256 === context.compositionSha256;
     const policyVersionMatches = manifest.policyName === ROLE_RESUME_DRAFTING_POLICY_NAME
         && manifest.policyVersion === ROLE_RESUME_DRAFTING_POLICY_VERSION;
     const reasons = [
         ...(!dependenciesMatch ? ["Approved drafting dependencies changed."] : []),
+        ...(!compositionHashMatches ? ["Resume composition changed."] : []),
         ...(!scaffoldHashMatches ? ["Draft scaffold changed."] : []),
         ...(!proposalHashMatches ? ["Reviewed draft proposal changed or is missing."] : []),
         ...(!reviewHashMatches ? ["Draft review changed or is missing."] : []),
@@ -221,6 +236,7 @@ export async function getApprovedRoleResumeDraftStatus(workspace, targetId) {
         draftHashMatches,
         dependenciesMatch,
         scaffoldHashMatches,
+        compositionHashMatches,
         proposalHashMatches,
         reviewHashMatches,
         policyVersionMatches,
@@ -229,7 +245,7 @@ export async function getApprovedRoleResumeDraftStatus(workspace, targetId) {
         reasons,
     };
 }
-export function deriveRoleResumeDraftCompleteness(scaffold, sections, claimLedger, risks, ambiguities) {
+export function deriveRoleResumeDraftCompleteness(scaffold, composition, sections, claimLedger, risks, ambiguities) {
     const required = scaffold.sections.filter((entry) => entry.status === "include");
     const optional = scaffold.sections.filter((entry) => entry.status === "optional");
     const sectionById = new Map(sections.map((entry) => [entry.id, entry]));
@@ -239,13 +255,21 @@ export function deriveRoleResumeDraftCompleteness(scaffold, sections, claimLedge
     const validatedDraftItemCount = items.filter((entry) => entry.validation.status === "valid").length;
     const claimLedgerComplete = claimLedger.length === items.length
         && items.every((entry) => claimLedger.some((ledger) => ledger.draftItemId === entry.id));
-    const provenanceComplete = items.every((entry) => entry.evidenceIds.length > 0 &&
-        entry.claimBoundaryIds.length > 0 &&
-        entry.provenance.approvedPlanId.length > 0 &&
-        entry.provenance.reviewDecision);
+    const slotById = new Map(composition.slots.map((entry) => [entry.id, entry]));
+    const provenanceComplete = items.every((entry) => {
+        const slot = slotById.get(entry.compositionSlotId);
+        return Boolean(slot
+            && entry.provenance.approvedPlanId.length > 0
+            && entry.provenance.compositionId === composition.id
+            && entry.provenance.compositionSlotId === entry.compositionSlotId
+            && entry.provenance.reviewDecision
+            && (slot.mode === "fixed" || entry.evidenceIds.length > 0 && entry.claimBoundaryIds.length > 0));
+    });
     const unresolvedCriticalIssueCount = risks.filter((entry) => entry.severity === "critical").length;
     const unresolvedAmbiguityCount = ambiguities.filter((entry) => !entry.resolved).length;
+    const compositionEvaluation = evaluateRoleResumeDraftAgainstComposition(composition, sections);
     const blockingReasons = [
+        ...compositionEvaluation.blockingReasons,
         ...(completedRequiredSectionCount !== required.length ? ["Required draft sections are incomplete."] : []),
         ...(validatedDraftItemCount !== items.length ? ["One or more draft items are not fully valid."] : []),
         ...(!claimLedgerComplete ? ["Claim ledger is incomplete."] : []),
@@ -253,11 +277,13 @@ export function deriveRoleResumeDraftCompleteness(scaffold, sections, claimLedge
         ...(unresolvedCriticalIssueCount ? ["Critical draft risks remain."] : []),
         ...(unresolvedAmbiguityCount ? ["Draft ambiguities remain unresolved."] : []),
     ];
-    const status = items.length === 0
-        ? "empty"
+    const status = compositionEvaluation.status === "blocked"
+        ? "blocked"
         : blockingReasons.length
-            ? "partial"
-            : "complete";
+            ? "incomplete"
+            : compositionEvaluation.status;
+    const usableForRendering = (status === "complete" || status === "constrained-but-usable")
+        && blockingReasons.length === 0;
     return {
         status,
         requiredSectionCount: required.length,
@@ -270,7 +296,15 @@ export function deriveRoleResumeDraftCompleteness(scaffold, sections, claimLedge
         provenanceComplete: Boolean(provenanceComplete),
         unresolvedCriticalIssueCount,
         unresolvedAmbiguityCount,
-        usableForRendering: status === "complete",
+        identityPresent: compositionEvaluation.identityPresent,
+        chronologyComplete: compositionEvaluation.careerEntriesAccounted
+            && compositionEvaluation.includedExperienceCount === composition.experienceEntries.filter((entry) => entry.decision === "include").length,
+        selectedEvidenceAccounted: compositionEvaluation.selectedEvidenceAccounted,
+        experienceEntryCount: compositionEvaluation.includedExperienceCount,
+        projectEntryCount: compositionEvaluation.includedProjectCount,
+        skillCount: items.filter((entry) => entry.itemType === "technology").length,
+        evidenceBackedBulletCount: compositionEvaluation.evidenceBackedBulletSlotCount,
+        usableForRendering,
         blockingReasons,
     };
 }
@@ -285,14 +319,17 @@ export function assertApprovedRoleResumeDraft(draft) {
     if (items.some((entry) => entry.trustState === "model-proposed" || entry.trustState === "deterministic-proposed")) {
         throw new Error("Approved draft contains proposed trust state.");
     }
-    if (items.some((entry) => !entry.evidenceIds.length || !entry.claimBoundaryIds.length || !entry.provenance.reviewDecision)) {
+    if (items.some((entry) => !entry.compositionSlotId || !entry.provenance.compositionId || !entry.provenance.reviewDecision)) {
         throw new Error("Approved draft contains a substantive statement without complete provenance.");
     }
     if (draft.claimLedger.length !== items.length || items.some((entry) => !draft.claimLedger.some((ledger) => ledger.draftItemId === entry.id))) {
         throw new Error("Approved draft claim ledger is incomplete.");
     }
-    if (draft.completeness.status === "complete" && !draft.completeness.usableForRendering) {
-        throw new Error("Complete approved draft must be structurally usable for rendering.");
+    if (["complete", "constrained-but-usable"].includes(draft.completeness.status) && !draft.completeness.usableForRendering) {
+        throw new Error("Usable approved draft must be structurally usable for rendering.");
+    }
+    if (["incomplete", "blocked"].includes(draft.completeness.status) || !draft.completeness.usableForRendering) {
+        throw new Error("Incomplete role resume drafts cannot be approved for rendering.");
     }
 }
 export function approvedRoleResumeDraftPaths(workspace, targetId) {
@@ -328,6 +365,7 @@ export function formatApprovedRoleResumeDraftStatus(status) {
         `Usable for rendering: ${status.usableForRendering ? "yes" : "no"}`,
         `Draft hash matches: ${status.draftHashMatches ?? "n/a"}`,
         `Dependencies match: ${status.dependenciesMatch ?? "n/a"}`,
+        `Composition matches: ${status.compositionHashMatches ?? "n/a"}`,
         `Scaffold hash matches: ${status.scaffoldHashMatches ?? "n/a"}`,
         `Proposal hash matches: ${status.proposalHashMatches ?? "n/a"}`,
         `Review hash matches: ${status.reviewHashMatches ?? "n/a"}`,
@@ -437,6 +475,7 @@ function emptyStatus(base, status, reasons) {
         draftHashMatches: null,
         dependenciesMatch: null,
         scaffoldHashMatches: null,
+        compositionHashMatches: null,
         proposalHashMatches: null,
         reviewHashMatches: null,
         policyVersionMatches: null,

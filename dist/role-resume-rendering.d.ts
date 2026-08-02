@@ -1,7 +1,7 @@
 import { type RoleResumeDateFormat, type RoleResumePageSize, type RoleResumeRenderDocument, type RoleResumeRenderProfile, type RoleResumeRenderProfileName } from "./role-resume-render-schemas.js";
 export declare const ROLE_RESUME_RENDERING_POLICY_NAME = "role-resume-rendering-policy";
 export declare const ROLE_RESUME_RENDERING_POLICY_VERSION = "1";
-export declare const ROLE_RESUME_COMPOSITION_RULES_VERSION = "1";
+export declare const ROLE_RESUME_COMPOSITION_RULES_VERSION = "2";
 export declare const ROLE_RESUME_RENDER_PROFILE_VERSION = "1";
 export interface RoleResumeRenderOptions {
     profile?: RoleResumeRenderProfileName;

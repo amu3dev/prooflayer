@@ -47,6 +47,7 @@ import { buildRoleResumePlan, formatBuildRoleResumePlanResult, formatRoleResumeP
 import { formatRoleResumePlanProposalList, formatRoleResumePlanProposalResult, formatRoleResumePlanProposalStatus, generateRoleResumePlanProposal, getRoleResumePlanProposalStatus, listRoleResumePlanProposals, replayRoleResumePlanProposal, showRoleResumePlanProposal, } from "./role-resume-plan-proposal.js";
 import { completeRoleResumePlanReview, formatRoleResumePlanReviewStatus, getRoleResumePlanReviewStatus, initializeRoleResumePlanReview, readRoleResumePlanReviewEdit, setRoleResumePlanReviewDecision, showRoleResumePlanReview, } from "./role-resume-plan-review.js";
 import { approveRoleResumePlanProposal, formatApproveRoleResumePlanResult, } from "./approved-role-resume-plan.js";
+import { buildRoleResumeComposition, formatBuildRoleResumeCompositionResult, formatRoleResumeCompositionStatus, getRoleResumeCompositionStatus, showRoleResumeComposition, } from "./role-resume-composition.js";
 import { buildRoleResumeDraftScaffold, formatBuildRoleResumeDraftScaffoldResult, formatRoleResumeDraftScaffoldStatus, getRoleResumeDraftScaffoldStatus, showRoleResumeDraftScaffold, } from "./role-resume-drafting.js";
 import { formatRoleResumeDraftProposalList, formatRoleResumeDraftProposalResult, formatRoleResumeDraftProposalStatus, generateRoleResumeDraftProposal, getRoleResumeDraftProposalStatus, listRoleResumeDraftProposals, replayRoleResumeDraftProposal, showRoleResumeDraftProposal, } from "./role-resume-draft-proposal.js";
 import { completeRoleResumeDraftReview, formatRoleResumeDraftReviewStatus, getRoleResumeDraftReviewStatus, initializeRoleResumeDraftReview, readRoleResumeDraftReviewEdit, setRoleResumeDraftReviewDecision, showRoleResumeDraftReview, } from "./role-resume-draft-review.js";
@@ -1627,6 +1628,26 @@ resumePlanProposal
     .description("Complete review only after every proposed plan element has one valid decision.")
     .action(async (proposalId) => {
     console.log(formatRoleResumePlanReviewStatus(await completeRoleResumePlanReview(getWorkspace(), proposalId)));
+});
+const resumeComposition = target.command("resume-composition").description("Compose and inspect the deterministic complete Role resume structure before wording.");
+resumeComposition
+    .command("build <target-id>")
+    .option("--rebuild", "explicitly rebuild a stale or invalid composition after reviewing dependency changes")
+    .description("Compose Career Twin chronology, projects, skills, evidence allocation, and exclusions from the approved Role plan.")
+    .action(async (targetId, options) => {
+    console.log(formatBuildRoleResumeCompositionResult(await buildRoleResumeComposition(getWorkspace(), targetId, { rebuild: options.rebuild })));
+});
+resumeComposition
+    .command("show <target-id>")
+    .description("Print the deterministic Role Resume Composition as stable JSON.")
+    .action(async (targetId) => {
+    process.stdout.write(`${JSON.stringify(await showRoleResumeComposition(getWorkspace(), targetId), null, 2)}\n`);
+});
+resumeComposition
+    .command("status <target-id>")
+    .description("Inspect composition integrity, completeness, and Career Twin dependency freshness.")
+    .action(async (targetId) => {
+    console.log(formatRoleResumeCompositionStatus(await getRoleResumeCompositionStatus(getWorkspace(), targetId)));
 });
 const resumeDraft = target.command("resume-draft").description("Build deterministic role resume draft scaffolds and approve reviewed structured drafts.");
 resumeDraft

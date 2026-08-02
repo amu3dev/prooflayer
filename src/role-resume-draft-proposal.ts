@@ -39,8 +39,8 @@ import {
 import { stableJson } from "./target-proposal.js";
 
 export const ROLE_RESUME_DRAFT_PROMPT_TEMPLATE_ID = "target-role-resume-draft-proposal";
-export const ROLE_RESUME_DRAFT_PROMPT_TEMPLATE_VERSION = "1";
-export const ROLE_RESUME_DRAFT_PROMPT_POLICY_VERSION = "1";
+export const ROLE_RESUME_DRAFT_PROMPT_TEMPLATE_VERSION = "2";
+export const ROLE_RESUME_DRAFT_PROMPT_POLICY_VERSION = "2";
 
 export interface GenerateRoleResumeDraftProposalOptions {
   refresh?: boolean;
@@ -99,6 +99,7 @@ export async function generateRoleResumeDraftProposal(
     evidenceSnapshotSha256: context.evidenceSnapshotSha256,
     approvedAssessmentSha256: context.approvedAssessmentSha256,
     approvedPlanSha256: context.approvedPlanSha256,
+    compositionSha256: context.compositionSha256,
     draftScaffoldSha256,
     policy: { name: ROLE_RESUME_DRAFTING_POLICY_NAME, version: ROLE_RESUME_DRAFTING_POLICY_VERSION },
     provider: provider.providerId,
@@ -166,6 +167,7 @@ export async function generateRoleResumeDraftProposal(
       evidenceSnapshotSha256: context.evidenceSnapshotSha256,
       approvedAssessmentSha256: context.approvedAssessmentSha256,
       approvedPlanSha256: context.approvedPlanSha256,
+      compositionSha256: context.compositionSha256,
       draftScaffoldSha256,
       normalizedModelInputSha256,
     },
@@ -204,6 +206,7 @@ export async function generateRoleResumeDraftProposal(
     evidenceSnapshotSha256: context.evidenceSnapshotSha256,
     approvedAssessmentSha256: context.approvedAssessmentSha256,
     approvedPlanSha256: context.approvedPlanSha256,
+    compositionSha256: context.compositionSha256,
     draftScaffoldSha256,
     createdAt: now,
     updatedAt: now,
@@ -287,7 +290,8 @@ export async function getRoleResumeDraftProposalStatus(
       && context.approvedMatchingSha256 === manifest.approvedMatchingSha256
       && context.evidenceSnapshotSha256 === manifest.evidenceSnapshotSha256
       && context.approvedAssessmentSha256 === manifest.approvedAssessmentSha256
-      && context.approvedPlanSha256 === manifest.approvedPlanSha256;
+      && context.approvedPlanSha256 === manifest.approvedPlanSha256
+      && context.compositionSha256 === manifest.compositionSha256;
   } catch {
     dependenciesMatch = false;
   }
@@ -366,8 +370,10 @@ export function renderRoleResumeDraftPrompt(input: unknown): string {
     `${ROLE_RESUME_DRAFT_PROMPT_TEMPLATE_ID} v${ROLE_RESUME_DRAFT_PROMPT_TEMPLATE_VERSION}`,
     "Return strict JSON only using the supplied structured draft payload shape.",
     "The approved Role Resume Content Plan is a constraint system. Drafting may not exceed it.",
-    "Draft only supplied sections and return one structured item per resume statement.",
-    "Preserve exact target, scaffold-section, plan-section, expectation, assessment, match, evidence, and claim-boundary IDs.",
+    "Return the complete professional Role resume described by the deterministic Resume Composition brief.",
+    "Preserve every required composition slot. Fixed identity, contact, title, company, date, project, skill, education, and certification text must be returned exactly.",
+    "You may word only targeted headlines, professional summaries, capability phrases, and evidence-backed bullets.",
+    "Preserve exact target, composition-slot, scaffold-section, plan-section, expectation, assessment, match, evidence, and claim-boundary IDs.",
     "Every substantive statement must cite only the approved evidence actually used.",
     "Do not invent employers, projects, technologies, dates, metrics, team size, revenue, customers, users, geography, seniority, management scope, or authority.",
     "The target role title is positioning context. It is not current or historical employment evidence.",
@@ -408,6 +414,18 @@ export function createRoleResumeDraftModelInput(
       seniority: context.target.seniority,
       domain: context.target.domain,
     },
+    targetProfile: {
+      mode: "market-positioning",
+      positioningScope: context.approvedPlan.positioning.positioningScope,
+      primaryThemes: context.approvedPlan.positioning.primaryThemes.map((entry) => entry.label),
+      secondaryThemes: context.approvedPlan.positioning.secondaryThemes.map((entry) => entry.label),
+    },
+    pageProfile: {
+      name: "ats-standard",
+      pageSize: "A4",
+      layout: "single-column",
+      purpose: "Content-fit guidance only; rendering may change presentation but not approved wording.",
+    },
     approvedInterpretation: {
       expectations: context.approvedInterpretation.expectations,
     },
@@ -417,9 +435,11 @@ export function createRoleResumeDraftModelInput(
     },
     approvedAssessment: context.approvedAssessment,
     approvedPlan: context.approvedPlan,
+    resumeComposition: context.composition,
     draftScaffold: scaffold,
     selectedApprovedEvidence: selectedEvidence,
     reviewedMetricEvidenceIds: uniqueSorted([...context.reviewedMetricEvidenceIds]),
+    reviewedMetrics: context.reviewedMetrics,
     policy: {
       name: ROLE_RESUME_DRAFTING_POLICY_NAME,
       version: ROLE_RESUME_DRAFTING_POLICY_VERSION,
@@ -428,6 +448,8 @@ export function createRoleResumeDraftModelInput(
       targetTitleIsNotEmploymentEvidence: true,
       projectScopeIsNotEmploymentScope: true,
       jobSpecificContentForbidden: true,
+      fixedCompositionFactsMustRemainExact: true,
+      completeCareerChronologyRequired: true,
     },
   };
 }
@@ -446,6 +468,7 @@ export function validateRoleResumeDraftPayload(
   const assessmentById = new Map(context.approvedAssessment.expectationAssessments.map((entry) => [entry.id, entry]));
   const matchById = new Map(context.approvedMatching.matches.map((entry) => [entry.id, entry]));
   const boundaryById = new Map(context.approvedPlan.claimBoundaries.map((entry) => [entry.id, entry]));
+  const compositionSlotById = new Map(context.composition.slots.map((entry) => [entry.id, entry]));
   const expectedSectionIds = scaffold.sections.map((entry) => entry.id);
   const actualSectionIds = payload.sections.map((entry) => entry.id);
   if (!sameSet(expectedSectionIds, actualSectionIds)) {
@@ -478,6 +501,26 @@ export function validateRoleResumeDraftPayload(
     const allowedItemTypes = itemTypesForSection(guard.sectionType);
     const normalizedItems = section.items.map((item) => {
       const itemIssues: ResumeDraftValidationIssue[] = [];
+      const compositionSlot = compositionSlotById.get(item.compositionSlotId);
+      if (!compositionSlot || !guard.compositionSlotIds.includes(item.compositionSlotId)) {
+        itemIssues.push(issue("UNKNOWN_COMPOSITION_SLOT", "Draft item does not reference an allowed Resume Composition slot.", "critical", refs(item)));
+      } else {
+        if (compositionSlot.sectionType !== section.type || compositionSlot.itemType !== item.itemType) {
+          itemIssues.push(issue("COMPOSITION_SLOT_TYPE_CHANGED", "Draft item changed its composition section or item type.", "critical", refs(item)));
+        }
+        if (compositionSlot.mode === "fixed" && item.text !== compositionSlot.exactText) {
+          itemIssues.push(issue("FIXED_CAREER_FACT_CHANGED", `Fixed Career Twin content must remain exact: ${compositionSlot.sourceLabel}.`, "critical", refs(item)));
+        }
+        if (
+          !sameSet(item.sourceExpectationIds, compositionSlot.sourceExpectationIds)
+          || !sameSet(item.sourceAssessmentIds, compositionSlot.sourceAssessmentIds)
+          || !sameSet(item.approvedMatchIds, compositionSlot.approvedMatchIds)
+          || !sameSet(item.evidenceIds, compositionSlot.evidenceIds)
+          || !sameSet(item.claimBoundaryIds, compositionSlot.claimBoundaryIds)
+        ) {
+          itemIssues.push(issue("COMPOSITION_PROVENANCE_CHANGED", "Draft item references differ from its deterministic composition slot.", "critical", refs(item)));
+        }
+      }
       if (item.sectionId !== section.id || !allowedItemTypes.includes(item.itemType)) {
         itemIssues.push(issue("INVALID_ITEM_TYPE", "Draft item type or section reference is invalid.", "critical", {
           sectionIds: [section.id],
@@ -489,7 +532,7 @@ export function validateRoleResumeDraftPayload(
       validateReferenceSubset("match", item.approvedMatchIds, guard.allowedMatchIds, itemIssues, item);
       validateReferenceSubset("evidence", item.evidenceIds, guard.allowedEvidenceIds, itemIssues, item);
       validateReferenceSubset("claim boundary", item.claimBoundaryIds, guard.allowedClaimBoundaryIds, itemIssues, item);
-      if (!item.evidenceIds.length || !item.claimBoundaryIds.length) {
+      if (compositionSlot?.mode !== "fixed" && (!item.evidenceIds.length || !item.claimBoundaryIds.length)) {
         itemIssues.push(issue("PROVENANCE_INCOMPLETE", "Every substantive draft item requires evidence and claim-boundary references.", "critical", refs(item)));
       }
       if (item.claimTypes.some((entry) => !guard.allowedClaimTypes.includes(entry))) {
@@ -502,9 +545,11 @@ export function validateRoleResumeDraftPayload(
       for (const id of item.approvedMatchIds) if (!matchById.has(id)) itemIssues.push(issue("UNKNOWN_MATCH", `Unknown approved match: ${id}`, "critical", refs(item)));
       for (const id of item.evidenceIds) if (!evidenceById.has(id)) itemIssues.push(issue("UNKNOWN_EVIDENCE", `Unknown evidence: ${id}`, "critical", refs(item)));
       for (const id of item.claimBoundaryIds) if (!boundaryById.has(id)) itemIssues.push(issue("UNKNOWN_CLAIM_BOUNDARY", `Unknown claim boundary: ${id}`, "critical", refs(item)));
-      validateClaimBoundaries(item, boundaryById, itemIssues);
-      validateMetrics(item, guard.metricPermission, context, evidenceById, itemIssues);
-      validateLanguage(item, scaffold, context, evidenceById, itemIssues);
+      if (compositionSlot?.mode !== "fixed") {
+        validateClaimBoundaries(item, boundaryById, itemIssues);
+        validateMetrics(item, guard.metricPermission, context, evidenceById, itemIssues);
+        validateLanguage(item, scaffold, context, evidenceById, itemIssues);
+      }
       if (guard.maximumSentenceCount && sentenceCount(item.text) > guard.maximumSentenceCount) {
         itemIssues.push(issue("SENTENCE_LIMIT_EXCEEDED", "Draft item exceeds the approved sentence limit.", "high", refs(item)));
       }
@@ -514,6 +559,7 @@ export function validateRoleResumeDraftPayload(
       const id = `role-resume-draft-item_${hashText([
         proposalId,
         section.id,
+        item.compositionSlotId,
         item.itemType,
         normalizeText(item.text),
         uniqueSorted(item.sourceExpectationIds).join(","),
@@ -540,6 +586,8 @@ export function validateRoleResumeDraftPayload(
         provenance: {
           targetId: context.target.id,
           approvedPlanId: context.approvedPlan.id,
+          compositionId: context.composition.id,
+          compositionSlotId: item.compositionSlotId,
           planSectionId: guard.planSectionId,
           proposalId,
           draftingPolicy: {
@@ -551,6 +599,7 @@ export function validateRoleResumeDraftPayload(
             approvedMatchingSha256: context.approvedMatchingSha256,
             approvedAssessmentSha256: context.approvedAssessmentSha256,
             approvedPlanSha256: context.approvedPlanSha256,
+            compositionSha256: context.compositionSha256,
             scaffoldSha256,
           },
         },
@@ -574,6 +623,7 @@ export function validateRoleResumeDraftPayload(
       provenance: {
         targetId: context.target.id,
         approvedPlanId: context.approvedPlan.id,
+        compositionId: context.composition.id,
         planSectionId: guard.planSectionId,
         approvedPlanSha256: context.approvedPlanSha256,
         draftingPolicy: {
@@ -585,6 +635,15 @@ export function validateRoleResumeDraftPayload(
   });
 
   const itemIds = normalizedSections.flatMap((entry) => entry.items.map((item) => item.id));
+  const representedSlotIds = normalizedSections.flatMap((entry) => entry.items.map((item) => item.compositionSlotId));
+  const missingRequiredSlots = scaffold.sections.flatMap((entry) => entry.requiredCompositionSlotIds)
+    .filter((id) => !representedSlotIds.includes(id));
+  if (missingRequiredSlots.length) {
+    issues.push(issue("REQUIRED_COMPOSITION_CONTENT_MISSING", `Proposal omitted ${missingRequiredSlots.length} required Resume Composition slot(s).`, "critical"));
+  }
+  if (new Set(representedSlotIds).size !== representedSlotIds.length) {
+    issues.push(issue("DUPLICATE_COMPOSITION_SLOT", "Proposal represents one Resume Composition slot more than once.", "critical"));
+  }
   if (new Set(itemIds).size !== itemIds.length) {
     issues.push(issue("DUPLICATE_DRAFT_ITEM", "Proposal contains duplicate draft items.", "high"));
   }
@@ -819,6 +878,10 @@ function validateMetrics(
   if (numeric.length && !item.metricReferences.length) {
     issues.push(issue("METRIC_REFERENCE_MISSING", "Numeric wording requires an exact reviewed metric reference.", "critical", refs(item)));
   }
+  const referencedValues = new Set(item.metricReferences.map((metric) => metric.originalValue));
+  if (numeric.some((value) => !referencedValues.has(value))) {
+    issues.push(issue("ALTERED_METRIC", "Every visible numeric value must exactly match its reviewed metric reference.", "critical", refs(item)));
+  }
   if (item.metricReferences.length && !item.claimTypes.includes("quantified-outcome")) {
     issues.push(issue("METRIC_CLAIM_TYPE_MISSING", "Metric reference requires quantified-outcome claim permission.", "high", refs(item)));
   }
@@ -835,7 +898,7 @@ function validateLanguage(
   const evidenceText = item.evidenceIds
     .map((id) => evidenceById.get(id))
     .filter((entry) => Boolean(entry))
-    .map((entry) => `${entry!.text} ${entry!.normalizedSummary}`)
+    .map((entry) => `${entry!.text} ${entry!.normalizedSummary} ${entry!.company ?? ""} ${entry!.project ?? ""} ${entry!.dateRange ?? ""} ${(entry!.technologies ?? []).join(" ")}`)
     .join(" ");
   const approvedText = `${evidenceText} ${context.target.title} ${context.approvedPlan.positioning.primaryThemes.map((entry) => entry.label).join(" ")}`;
   const forbidden: Array<[RegExp, string, string]> = [
@@ -885,6 +948,9 @@ function validateLanguage(
   }
   if (/\b\d+\s+years?\s+(?:of\s+)?experience\b/i.test(text)) {
     issues.push(issue("UNSUPPORTED_AGGREGATE_DURATION", "Aggregate years of experience are not calculated in this slice.", "critical", refs(item)));
+  }
+  if (/\b(?:reviewed (?:role|project|professional|education|evidence)|within reviewed scope|evaluated .+ in a reviewed project)\b/i.test(text)) {
+    issues.push(issue("AUDIT_PLACEHOLDER_LANGUAGE", "Draft contains internal audit phrasing instead of market-facing resume language.", "high", refs(item)));
   }
   if (/\b(I|my|me)\b/.test(text)) {
     issues.push(issue("FIRST_PERSON_LANGUAGE", "First-person language requires review and is not permitted by the default drafting policy.", "medium", refs(item)));
@@ -966,12 +1032,12 @@ function duplicateIssues(sections: RoleResumeDraftSection[]): ResumeDraftValidat
 
 function itemTypesForSection(type: RoleResumeDraftScaffold["sections"][number]["sectionType"]): RoleResumeDraftItem["itemType"][] {
   return ({
-    headline: ["headline"],
+    headline: ["identity", "contact", "headline"],
     "professional-summary": ["summary"],
     "core-capabilities": ["capability"],
     "selected-impact": ["impact"],
     "professional-experience": ["experience-role", "experience-bullet"],
-    "selected-projects": ["project"],
+    "selected-projects": ["project", "project-bullet"],
     "technical-capabilities": ["technology"],
     "leadership-capabilities": ["leadership-capability"],
     education: ["education"],
