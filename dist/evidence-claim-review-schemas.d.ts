@@ -92,15 +92,10 @@ export declare const EvidenceClaimReviewInputSchema: z.ZodObject<{
     };
     warnings: string[];
     ambiguities: string[];
-    risks: {
-        code: string;
-        message: string;
-        severity: "high" | "medium" | "low" | "critical";
-    }[];
     reviewedClaimSha256: string;
     requiredQualifiers: string[];
     factualSupport: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-    scope: "exact" | "invalid" | "ambiguous" | "qualified" | "overstated" | "underspecified";
+    scope: "exact" | "invalid" | "qualified" | "overstated" | "underspecified" | "ambiguous";
     publicSafety: "private" | "indeterminate" | "public-safe" | "restricted";
     resumeReadiness: "needs-edit" | "indeterminate" | "resume-ready" | "not-resume-ready";
     eligibleForRoleMatching: boolean;
@@ -112,6 +107,11 @@ export declare const EvidenceClaimReviewInputSchema: z.ZodObject<{
         exactText?: string | undefined;
         unit?: string | undefined;
     };
+    risks: {
+        code: string;
+        message: string;
+        severity: "high" | "medium" | "low" | "critical";
+    }[];
     reviewerRationale: string;
     correctedClaim?: string | undefined;
     supersedesReviewId?: string | undefined;
@@ -125,7 +125,7 @@ export declare const EvidenceClaimReviewInputSchema: z.ZodObject<{
     };
     reviewedClaimSha256: string;
     factualSupport: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-    scope: "exact" | "invalid" | "ambiguous" | "qualified" | "overstated" | "underspecified";
+    scope: "exact" | "invalid" | "qualified" | "overstated" | "underspecified" | "ambiguous";
     publicSafety: "private" | "indeterminate" | "public-safe" | "restricted";
     resumeReadiness: "needs-edit" | "indeterminate" | "resume-ready" | "not-resume-ready";
     eligibleForRoleMatching: boolean;
@@ -140,13 +140,13 @@ export declare const EvidenceClaimReviewInputSchema: z.ZodObject<{
     reviewerRationale: string;
     warnings?: string[] | undefined;
     ambiguities?: string[] | undefined;
+    correctedClaim?: string | undefined;
+    requiredQualifiers?: string[] | undefined;
     risks?: {
         code: string;
         message: string;
         severity: "high" | "medium" | "low" | "critical";
     }[] | undefined;
-    correctedClaim?: string | undefined;
-    requiredQualifiers?: string[] | undefined;
     supersedesReviewId?: string | undefined;
 }>;
 export declare const EvidenceClaimReviewSourceReferenceSchema: z.ZodObject<{
@@ -440,21 +440,10 @@ export declare const EvidenceClaimReviewSchema: z.ZodObject<{
     };
     warnings: string[];
     ambiguities: string[];
-    risks: {
-        code: string;
-        message: string;
-        id: string;
-        severity: "high" | "medium" | "low" | "critical";
-    }[];
-    policy: {
-        name: "evidence-claim-review-policy";
-        version: "1";
-        mode: "human-controlled";
-    };
     reviewedClaimSha256: string;
     requiredQualifiers: string[];
     factualSupport: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-    scope: "exact" | "invalid" | "ambiguous" | "qualified" | "overstated" | "underspecified";
+    scope: "exact" | "invalid" | "qualified" | "overstated" | "underspecified" | "ambiguous";
     publicSafety: "private" | "indeterminate" | "public-safe" | "restricted";
     resumeReadiness: "needs-edit" | "indeterminate" | "resume-ready" | "not-resume-ready";
     eligibleForRoleMatching: boolean;
@@ -467,7 +456,18 @@ export declare const EvidenceClaimReviewSchema: z.ZodObject<{
         unit?: string | undefined;
         exactTextSha256?: string | undefined;
     };
+    risks: {
+        code: string;
+        message: string;
+        id: string;
+        severity: "high" | "medium" | "low" | "critical";
+    }[];
     reviewerRationale: string;
+    policy: {
+        name: "evidence-claim-review-policy";
+        version: "1";
+        mode: "human-controlled";
+    };
     primaryEvidenceItemId: string;
     evidenceItemIds: string[];
     reviewedClaimText: string;
@@ -510,21 +510,10 @@ export declare const EvidenceClaimReviewSchema: z.ZodObject<{
     };
     warnings: string[];
     ambiguities: string[];
-    risks: {
-        code: string;
-        message: string;
-        id: string;
-        severity: "high" | "medium" | "low" | "critical";
-    }[];
-    policy: {
-        name: "evidence-claim-review-policy";
-        version: "1";
-        mode: "human-controlled";
-    };
     reviewedClaimSha256: string;
     requiredQualifiers: string[];
     factualSupport: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-    scope: "exact" | "invalid" | "ambiguous" | "qualified" | "overstated" | "underspecified";
+    scope: "exact" | "invalid" | "qualified" | "overstated" | "underspecified" | "ambiguous";
     publicSafety: "private" | "indeterminate" | "public-safe" | "restricted";
     resumeReadiness: "needs-edit" | "indeterminate" | "resume-ready" | "not-resume-ready";
     eligibleForRoleMatching: boolean;
@@ -537,7 +526,18 @@ export declare const EvidenceClaimReviewSchema: z.ZodObject<{
         unit?: string | undefined;
         exactTextSha256?: string | undefined;
     };
+    risks: {
+        code: string;
+        message: string;
+        id: string;
+        severity: "high" | "medium" | "low" | "critical";
+    }[];
     reviewerRationale: string;
+    policy: {
+        name: "evidence-claim-review-policy";
+        version: "1";
+        mode: "human-controlled";
+    };
     primaryEvidenceItemId: string;
     evidenceItemIds: string[];
     reviewedClaimText: string;
@@ -590,11 +590,11 @@ export declare const EvidenceClaimReviewManifestSchema: z.ZodObject<{
     policyVersion: "1";
     reviewPath: string;
     reviewSha256: string;
-    policyName: "evidence-claim-review-policy";
     claimRecordSha256: string;
     evidenceInventorySha256: string;
     provenanceInventorySha256: string;
     reviewId: string;
+    policyName: "evidence-claim-review-policy";
     supersedesReviewId?: string | undefined;
 }, {
     claimId: string;
@@ -604,11 +604,11 @@ export declare const EvidenceClaimReviewManifestSchema: z.ZodObject<{
     policyVersion: "1";
     reviewPath: string;
     reviewSha256: string;
-    policyName: "evidence-claim-review-policy";
     claimRecordSha256: string;
     evidenceInventorySha256: string;
     provenanceInventorySha256: string;
     reviewId: string;
+    policyName: "evidence-claim-review-policy";
     supersedesReviewId?: string | undefined;
 }>;
 export declare const EvidenceClaimReviewSnapshotProjectionSchema: z.ZodObject<{

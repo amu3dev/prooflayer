@@ -390,13 +390,13 @@ export declare const JobRequirementCoverageSchema: z.ZodEffects<z.ZodObject<{
     warnings: z.ZodArray<z.ZodString, "many">;
 }, "strict", z.ZodTypeAny, {
     id: string;
-    necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+    necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
     category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
     warnings: string[];
     ambiguities: string[];
+    state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
     requirementId: string;
     normalizedLabel: string;
-    state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
     requirementProvenance: {
         sourceReferences: {
             sha256: string;
@@ -448,13 +448,13 @@ export declare const JobRequirementCoverageSchema: z.ZodEffects<z.ZodObject<{
     openQuestions: string[];
 }, {
     id: string;
-    necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+    necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
     category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
     warnings: string[];
     ambiguities: string[];
+    state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
     requirementId: string;
     normalizedLabel: string;
-    state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
     requirementProvenance: {
         sourceReferences: {
             sha256: string;
@@ -506,13 +506,13 @@ export declare const JobRequirementCoverageSchema: z.ZodEffects<z.ZodObject<{
     openQuestions: string[];
 }>, {
     id: string;
-    necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+    necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
     category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
     warnings: string[];
     ambiguities: string[];
+    state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
     requirementId: string;
     normalizedLabel: string;
-    state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
     requirementProvenance: {
         sourceReferences: {
             sha256: string;
@@ -564,13 +564,13 @@ export declare const JobRequirementCoverageSchema: z.ZodEffects<z.ZodObject<{
     openQuestions: string[];
 }, {
     id: string;
-    necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+    necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
     category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
     warnings: string[];
     ambiguities: string[];
+    state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
     requirementId: string;
     normalizedLabel: string;
-    state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
     requirementProvenance: {
         sourceReferences: {
             sha256: string;
@@ -1014,13 +1014,13 @@ export declare const JobRequirementCoverageModelSchema: z.ZodObject<{
         warnings: z.ZodArray<z.ZodString, "many">;
     }, "strict", z.ZodTypeAny, {
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         warnings: string[];
         ambiguities: string[];
+        state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
         requirementId: string;
         normalizedLabel: string;
-        state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
         requirementProvenance: {
             sourceReferences: {
                 sha256: string;
@@ -1072,13 +1072,13 @@ export declare const JobRequirementCoverageModelSchema: z.ZodObject<{
         openQuestions: string[];
     }, {
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         warnings: string[];
         ambiguities: string[];
+        state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
         requirementId: string;
         normalizedLabel: string;
-        state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
         requirementProvenance: {
             sourceReferences: {
                 sha256: string;
@@ -1130,13 +1130,13 @@ export declare const JobRequirementCoverageModelSchema: z.ZodObject<{
         openQuestions: string[];
     }>, {
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         warnings: string[];
         ambiguities: string[];
+        state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
         requirementId: string;
         normalizedLabel: string;
-        state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
         requirementProvenance: {
             sourceReferences: {
                 sha256: string;
@@ -1188,13 +1188,13 @@ export declare const JobRequirementCoverageModelSchema: z.ZodObject<{
         openQuestions: string[];
     }, {
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         warnings: string[];
         ambiguities: string[];
+        state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
         requirementId: string;
         normalizedLabel: string;
-        state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
         requirementProvenance: {
             sourceReferences: {
                 sha256: string;
@@ -1329,13 +1329,13 @@ export declare const JobRequirementCoverageModelSchema: z.ZodObject<{
     };
     requirements: {
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         warnings: string[];
         ambiguities: string[];
+        state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
         requirementId: string;
         normalizedLabel: string;
-        state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
         requirementProvenance: {
             sourceReferences: {
                 sha256: string;
@@ -1440,13 +1440,13 @@ export declare const JobRequirementCoverageModelSchema: z.ZodObject<{
     };
     requirements: {
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         warnings: string[];
         ambiguities: string[];
+        state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
         requirementId: string;
         normalizedLabel: string;
-        state: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
         requirementProvenance: {
             sourceReferences: {
                 sha256: string;

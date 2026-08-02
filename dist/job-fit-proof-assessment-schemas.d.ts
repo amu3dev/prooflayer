@@ -647,7 +647,7 @@ export declare const JobRequirementFitProofAssessmentSchema: z.ZodEffects<z.ZodO
     }>;
 }, "strict", z.ZodTypeAny, {
     id: string;
-    necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+    necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
     category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
     provenance: {
         coverage: {
@@ -694,17 +694,17 @@ export declare const JobRequirementFitProofAssessmentSchema: z.ZodEffects<z.ZodO
     requirementId: string;
     evidenceQuality: "strong" | "adequate" | "limited" | "mixed" | "unavailable";
     coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-    assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+    assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
     mappedEvidenceLinkIds: string[];
     proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
     assessmentStatement: string;
     riskIds: string[];
     warningIds: string[];
     ambiguityIds: string[];
-    gapType?: "contradiction" | "ambiguous" | "missing-proof" | "partial-proof" | "depth-gap" | "scope-gap" | "recency-gap" | "domain-gap" | "technology-gap" | "leadership-gap" | "experience-gap" | "language-gap" | "location-or-work-constraint-gap" | "education-or-certification-gap" | undefined;
+    gapType?: "ambiguous" | "contradiction" | "missing-proof" | "partial-proof" | "depth-gap" | "scope-gap" | "recency-gap" | "domain-gap" | "technology-gap" | "leadership-gap" | "experience-gap" | "language-gap" | "location-or-work-constraint-gap" | "education-or-certification-gap" | undefined;
 }, {
     id: string;
-    necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+    necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
     category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
     provenance: {
         coverage: {
@@ -751,17 +751,17 @@ export declare const JobRequirementFitProofAssessmentSchema: z.ZodEffects<z.ZodO
     requirementId: string;
     evidenceQuality: "strong" | "adequate" | "limited" | "mixed" | "unavailable";
     coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-    assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+    assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
     mappedEvidenceLinkIds: string[];
     proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
     assessmentStatement: string;
     riskIds: string[];
     warningIds: string[];
     ambiguityIds: string[];
-    gapType?: "contradiction" | "ambiguous" | "missing-proof" | "partial-proof" | "depth-gap" | "scope-gap" | "recency-gap" | "domain-gap" | "technology-gap" | "leadership-gap" | "experience-gap" | "language-gap" | "location-or-work-constraint-gap" | "education-or-certification-gap" | undefined;
+    gapType?: "ambiguous" | "contradiction" | "missing-proof" | "partial-proof" | "depth-gap" | "scope-gap" | "recency-gap" | "domain-gap" | "technology-gap" | "leadership-gap" | "experience-gap" | "language-gap" | "location-or-work-constraint-gap" | "education-or-certification-gap" | undefined;
 }>, {
     id: string;
-    necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+    necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
     category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
     provenance: {
         coverage: {
@@ -808,17 +808,17 @@ export declare const JobRequirementFitProofAssessmentSchema: z.ZodEffects<z.ZodO
     requirementId: string;
     evidenceQuality: "strong" | "adequate" | "limited" | "mixed" | "unavailable";
     coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-    assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+    assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
     mappedEvidenceLinkIds: string[];
     proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
     assessmentStatement: string;
     riskIds: string[];
     warningIds: string[];
     ambiguityIds: string[];
-    gapType?: "contradiction" | "ambiguous" | "missing-proof" | "partial-proof" | "depth-gap" | "scope-gap" | "recency-gap" | "domain-gap" | "technology-gap" | "leadership-gap" | "experience-gap" | "language-gap" | "location-or-work-constraint-gap" | "education-or-certification-gap" | undefined;
+    gapType?: "ambiguous" | "contradiction" | "missing-proof" | "partial-proof" | "depth-gap" | "scope-gap" | "recency-gap" | "domain-gap" | "technology-gap" | "leadership-gap" | "experience-gap" | "language-gap" | "location-or-work-constraint-gap" | "education-or-certification-gap" | undefined;
 }, {
     id: string;
-    necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+    necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
     category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
     provenance: {
         coverage: {
@@ -865,14 +865,14 @@ export declare const JobRequirementFitProofAssessmentSchema: z.ZodEffects<z.ZodO
     requirementId: string;
     evidenceQuality: "strong" | "adequate" | "limited" | "mixed" | "unavailable";
     coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-    assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+    assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
     mappedEvidenceLinkIds: string[];
     proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
     assessmentStatement: string;
     riskIds: string[];
     warningIds: string[];
     ambiguityIds: string[];
-    gapType?: "contradiction" | "ambiguous" | "missing-proof" | "partial-proof" | "depth-gap" | "scope-gap" | "recency-gap" | "domain-gap" | "technology-gap" | "leadership-gap" | "experience-gap" | "language-gap" | "location-or-work-constraint-gap" | "education-or-certification-gap" | undefined;
+    gapType?: "ambiguous" | "contradiction" | "missing-proof" | "partial-proof" | "depth-gap" | "scope-gap" | "recency-gap" | "domain-gap" | "technology-gap" | "leadership-gap" | "experience-gap" | "language-gap" | "location-or-work-constraint-gap" | "education-or-certification-gap" | undefined;
 }>;
 export declare const JobOverallFitProofAssessmentSchema: z.ZodObject<{
     state: z.ZodEnum<["strong", "credible", "mixed", "limited", "insufficient", "indeterminate"]>;
@@ -885,7 +885,7 @@ export declare const JobOverallFitProofAssessmentSchema: z.ZodObject<{
     statement: z.ZodString;
 }, "strict", z.ZodTypeAny, {
     statement: string;
-    state: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
+    state: "strong" | "indeterminate" | "limited" | "insufficient" | "mixed" | "credible";
     strengthRequirementIds: string[];
     supportedRequirementIds: string[];
     partialRequirementIds: string[];
@@ -894,7 +894,7 @@ export declare const JobOverallFitProofAssessmentSchema: z.ZodObject<{
     indeterminateRequirementIds: string[];
 }, {
     statement: string;
-    state: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
+    state: "strong" | "indeterminate" | "limited" | "insufficient" | "mixed" | "credible";
     strengthRequirementIds: string[];
     supportedRequirementIds: string[];
     partialRequirementIds: string[];
@@ -1398,7 +1398,7 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
         }>;
     }, "strict", z.ZodTypeAny, {
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         provenance: {
             coverage: {
@@ -1445,17 +1445,17 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
         requirementId: string;
         evidenceQuality: "strong" | "adequate" | "limited" | "mixed" | "unavailable";
         coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+        assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
         mappedEvidenceLinkIds: string[];
         proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
         assessmentStatement: string;
         riskIds: string[];
         warningIds: string[];
         ambiguityIds: string[];
-        gapType?: "contradiction" | "ambiguous" | "missing-proof" | "partial-proof" | "depth-gap" | "scope-gap" | "recency-gap" | "domain-gap" | "technology-gap" | "leadership-gap" | "experience-gap" | "language-gap" | "location-or-work-constraint-gap" | "education-or-certification-gap" | undefined;
+        gapType?: "ambiguous" | "contradiction" | "missing-proof" | "partial-proof" | "depth-gap" | "scope-gap" | "recency-gap" | "domain-gap" | "technology-gap" | "leadership-gap" | "experience-gap" | "language-gap" | "location-or-work-constraint-gap" | "education-or-certification-gap" | undefined;
     }, {
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         provenance: {
             coverage: {
@@ -1502,17 +1502,17 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
         requirementId: string;
         evidenceQuality: "strong" | "adequate" | "limited" | "mixed" | "unavailable";
         coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+        assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
         mappedEvidenceLinkIds: string[];
         proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
         assessmentStatement: string;
         riskIds: string[];
         warningIds: string[];
         ambiguityIds: string[];
-        gapType?: "contradiction" | "ambiguous" | "missing-proof" | "partial-proof" | "depth-gap" | "scope-gap" | "recency-gap" | "domain-gap" | "technology-gap" | "leadership-gap" | "experience-gap" | "language-gap" | "location-or-work-constraint-gap" | "education-or-certification-gap" | undefined;
+        gapType?: "ambiguous" | "contradiction" | "missing-proof" | "partial-proof" | "depth-gap" | "scope-gap" | "recency-gap" | "domain-gap" | "technology-gap" | "leadership-gap" | "experience-gap" | "language-gap" | "location-or-work-constraint-gap" | "education-or-certification-gap" | undefined;
     }>, {
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         provenance: {
             coverage: {
@@ -1559,17 +1559,17 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
         requirementId: string;
         evidenceQuality: "strong" | "adequate" | "limited" | "mixed" | "unavailable";
         coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+        assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
         mappedEvidenceLinkIds: string[];
         proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
         assessmentStatement: string;
         riskIds: string[];
         warningIds: string[];
         ambiguityIds: string[];
-        gapType?: "contradiction" | "ambiguous" | "missing-proof" | "partial-proof" | "depth-gap" | "scope-gap" | "recency-gap" | "domain-gap" | "technology-gap" | "leadership-gap" | "experience-gap" | "language-gap" | "location-or-work-constraint-gap" | "education-or-certification-gap" | undefined;
+        gapType?: "ambiguous" | "contradiction" | "missing-proof" | "partial-proof" | "depth-gap" | "scope-gap" | "recency-gap" | "domain-gap" | "technology-gap" | "leadership-gap" | "experience-gap" | "language-gap" | "location-or-work-constraint-gap" | "education-or-certification-gap" | undefined;
     }, {
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         provenance: {
             coverage: {
@@ -1616,14 +1616,14 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
         requirementId: string;
         evidenceQuality: "strong" | "adequate" | "limited" | "mixed" | "unavailable";
         coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+        assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
         mappedEvidenceLinkIds: string[];
         proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
         assessmentStatement: string;
         riskIds: string[];
         warningIds: string[];
         ambiguityIds: string[];
-        gapType?: "contradiction" | "ambiguous" | "missing-proof" | "partial-proof" | "depth-gap" | "scope-gap" | "recency-gap" | "domain-gap" | "technology-gap" | "leadership-gap" | "experience-gap" | "language-gap" | "location-or-work-constraint-gap" | "education-or-certification-gap" | undefined;
+        gapType?: "ambiguous" | "contradiction" | "missing-proof" | "partial-proof" | "depth-gap" | "scope-gap" | "recency-gap" | "domain-gap" | "technology-gap" | "leadership-gap" | "experience-gap" | "language-gap" | "location-or-work-constraint-gap" | "education-or-certification-gap" | undefined;
     }>, "many">;
     overall: z.ZodObject<{
         state: z.ZodEnum<["strong", "credible", "mixed", "limited", "insufficient", "indeterminate"]>;
@@ -1636,7 +1636,7 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
         statement: z.ZodString;
     }, "strict", z.ZodTypeAny, {
         statement: string;
-        state: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
+        state: "strong" | "indeterminate" | "limited" | "insufficient" | "mixed" | "credible";
         strengthRequirementIds: string[];
         supportedRequirementIds: string[];
         partialRequirementIds: string[];
@@ -1645,7 +1645,7 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
         indeterminateRequirementIds: string[];
     }, {
         statement: string;
-        state: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
+        state: "strong" | "indeterminate" | "limited" | "insufficient" | "mixed" | "credible";
         strengthRequirementIds: string[];
         supportedRequirementIds: string[];
         partialRequirementIds: string[];
@@ -1841,7 +1841,7 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
     };
     requirementAssessments: {
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         provenance: {
             coverage: {
@@ -1888,18 +1888,18 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
         requirementId: string;
         evidenceQuality: "strong" | "adequate" | "limited" | "mixed" | "unavailable";
         coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+        assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
         mappedEvidenceLinkIds: string[];
         proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
         assessmentStatement: string;
         riskIds: string[];
         warningIds: string[];
         ambiguityIds: string[];
-        gapType?: "contradiction" | "ambiguous" | "missing-proof" | "partial-proof" | "depth-gap" | "scope-gap" | "recency-gap" | "domain-gap" | "technology-gap" | "leadership-gap" | "experience-gap" | "language-gap" | "location-or-work-constraint-gap" | "education-or-certification-gap" | undefined;
+        gapType?: "ambiguous" | "contradiction" | "missing-proof" | "partial-proof" | "depth-gap" | "scope-gap" | "recency-gap" | "domain-gap" | "technology-gap" | "leadership-gap" | "experience-gap" | "language-gap" | "location-or-work-constraint-gap" | "education-or-certification-gap" | undefined;
     }[];
     overall: {
         statement: string;
-        state: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
+        state: "strong" | "indeterminate" | "limited" | "insufficient" | "mixed" | "credible";
         strengthRequirementIds: string[];
         supportedRequirementIds: string[];
         partialRequirementIds: string[];
@@ -1993,7 +1993,7 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
     };
     requirementAssessments: {
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         provenance: {
             coverage: {
@@ -2040,18 +2040,18 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
         requirementId: string;
         evidenceQuality: "strong" | "adequate" | "limited" | "mixed" | "unavailable";
         coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+        assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
         mappedEvidenceLinkIds: string[];
         proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
         assessmentStatement: string;
         riskIds: string[];
         warningIds: string[];
         ambiguityIds: string[];
-        gapType?: "contradiction" | "ambiguous" | "missing-proof" | "partial-proof" | "depth-gap" | "scope-gap" | "recency-gap" | "domain-gap" | "technology-gap" | "leadership-gap" | "experience-gap" | "language-gap" | "location-or-work-constraint-gap" | "education-or-certification-gap" | undefined;
+        gapType?: "ambiguous" | "contradiction" | "missing-proof" | "partial-proof" | "depth-gap" | "scope-gap" | "recency-gap" | "domain-gap" | "technology-gap" | "leadership-gap" | "experience-gap" | "language-gap" | "location-or-work-constraint-gap" | "education-or-certification-gap" | undefined;
     }[];
     overall: {
         statement: string;
-        state: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
+        state: "strong" | "indeterminate" | "limited" | "insufficient" | "mixed" | "credible";
         strengthRequirementIds: string[];
         supportedRequirementIds: string[];
         partialRequirementIds: string[];
@@ -2145,7 +2145,7 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
     };
     requirementAssessments: {
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         provenance: {
             coverage: {
@@ -2192,18 +2192,18 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
         requirementId: string;
         evidenceQuality: "strong" | "adequate" | "limited" | "mixed" | "unavailable";
         coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+        assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
         mappedEvidenceLinkIds: string[];
         proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
         assessmentStatement: string;
         riskIds: string[];
         warningIds: string[];
         ambiguityIds: string[];
-        gapType?: "contradiction" | "ambiguous" | "missing-proof" | "partial-proof" | "depth-gap" | "scope-gap" | "recency-gap" | "domain-gap" | "technology-gap" | "leadership-gap" | "experience-gap" | "language-gap" | "location-or-work-constraint-gap" | "education-or-certification-gap" | undefined;
+        gapType?: "ambiguous" | "contradiction" | "missing-proof" | "partial-proof" | "depth-gap" | "scope-gap" | "recency-gap" | "domain-gap" | "technology-gap" | "leadership-gap" | "experience-gap" | "language-gap" | "location-or-work-constraint-gap" | "education-or-certification-gap" | undefined;
     }[];
     overall: {
         statement: string;
-        state: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
+        state: "strong" | "indeterminate" | "limited" | "insufficient" | "mixed" | "credible";
         strengthRequirementIds: string[];
         supportedRequirementIds: string[];
         partialRequirementIds: string[];
@@ -2297,7 +2297,7 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
     };
     requirementAssessments: {
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         provenance: {
             coverage: {
@@ -2344,18 +2344,18 @@ export declare const JobFitProofAssessmentSchema: z.ZodEffects<z.ZodObject<{
         requirementId: string;
         evidenceQuality: "strong" | "adequate" | "limited" | "mixed" | "unavailable";
         coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+        assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
         mappedEvidenceLinkIds: string[];
         proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
         assessmentStatement: string;
         riskIds: string[];
         warningIds: string[];
         ambiguityIds: string[];
-        gapType?: "contradiction" | "ambiguous" | "missing-proof" | "partial-proof" | "depth-gap" | "scope-gap" | "recency-gap" | "domain-gap" | "technology-gap" | "leadership-gap" | "experience-gap" | "language-gap" | "location-or-work-constraint-gap" | "education-or-certification-gap" | undefined;
+        gapType?: "ambiguous" | "contradiction" | "missing-proof" | "partial-proof" | "depth-gap" | "scope-gap" | "recency-gap" | "domain-gap" | "technology-gap" | "leadership-gap" | "experience-gap" | "language-gap" | "location-or-work-constraint-gap" | "education-or-certification-gap" | undefined;
     }[];
     overall: {
         statement: string;
-        state: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
+        state: "strong" | "indeterminate" | "limited" | "insufficient" | "mixed" | "credible";
         strengthRequirementIds: string[];
         supportedRequirementIds: string[];
         partialRequirementIds: string[];
@@ -2398,10 +2398,10 @@ export declare const JobFitProofAssessmentManifestSchema: z.ZodObject<{
     analyzerName: string;
     analyzerVersion: string;
     policyVersion: string;
+    policyName: string;
     assessmentId: string;
     assessmentPath: string;
     assessmentSha256: string;
-    policyName: string;
     normalizedInputSha256: string;
     requirementModelType: "approved" | "deterministic";
     requirementModelSha256: string;
@@ -2421,10 +2421,10 @@ export declare const JobFitProofAssessmentManifestSchema: z.ZodObject<{
     analyzerName: string;
     analyzerVersion: string;
     policyVersion: string;
+    policyName: string;
     assessmentId: string;
     assessmentPath: string;
     assessmentSha256: string;
-    policyName: string;
     normalizedInputSha256: string;
     requirementModelType: "approved" | "deterministic";
     requirementModelSha256: string;

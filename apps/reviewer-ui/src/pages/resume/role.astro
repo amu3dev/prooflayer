@@ -2,7 +2,7 @@
 import ProgressSteps from "../../components/ProgressSteps.astro";
 import Layout from "../../layouts/Layout.astro";
 import { projectCareerTwin } from "../../../../../src/career-twin.ts";
-import { continueRoleResumeJourney, existingProductTargets, exportRoleResumeForProduct, inspectRoleResumeJourney, startRoleResumeJourney } from "../../../../../src/product-workflows.ts";
+import { confirmRoleDirectionForProduct, continueRoleResumeJourney, existingProductTargets, exportRoleResumeForProduct, inspectRoleResumeJourney, reviseRoleDirectionForProduct, startRoleResumeJourney } from "../../../../../src/product-workflows.ts";
 import { proofLayerUiRuntimeConfig } from "../../lib/runtime.js";
 import { field, productActionToken, productPostRejection, productTokenMatches } from "../../lib/product.js";
 import { PRODUCT_WORKFLOW_ACTIONS, type ProductWorkflowActionName } from "../../../../../src/prooflayer-ui-request-scope.ts";
@@ -13,6 +13,7 @@ const startActionName = PRODUCT_WORKFLOW_ACTIONS.startRoleWorkflow;
 const csrfToken = productActionToken(config, actionPath, startActionName);
 let error: string | undefined;
 let targetId = Astro.url.searchParams.get("target") ?? undefined;
+const attentionRequested = Astro.url.searchParams.get("attention") === "1";
 
 if (Astro.request.method === "POST") {
   const rejection = productPostRejection(Astro.request, config);
@@ -21,6 +22,9 @@ if (Astro.request.method === "POST") {
   const submittedAction = field(formData, "action");
   const submittedTargetId = field(formData, "targetId");
   const targetBoundAction = submittedAction === PRODUCT_WORKFLOW_ACTIONS.continueRoleWorkflow
+    || submittedAction === PRODUCT_WORKFLOW_ACTIONS.confirmRoleDirection
+    || submittedAction === PRODUCT_WORKFLOW_ACTIONS.editRoleDirection
+    || submittedAction === PRODUCT_WORKFLOW_ACTIONS.flagRoleDirection
     || submittedAction === PRODUCT_WORKFLOW_ACTIONS.exportRoleResume;
   const expectedToken = targetBoundAction && submittedTargetId
     ? productActionToken(config, actionPath, submittedAction as ProductWorkflowActionName, submittedTargetId)
@@ -29,6 +33,19 @@ if (Astro.request.method === "POST") {
     return new Response("The role form expired or failed local request verification.", { status: 403 });
   }
   try {
+    if (submittedAction === PRODUCT_WORKFLOW_ACTIONS.flagRoleDirection && submittedTargetId) {
+      return Astro.redirect(`/resume/role?target=${encodeURIComponent(submittedTargetId)}&attention=1`, 303);
+    }
+    if (submittedAction === PRODUCT_WORKFLOW_ACTIONS.confirmRoleDirection && submittedTargetId) {
+      await confirmRoleDirectionForProduct(config.workspace, submittedTargetId);
+      return Astro.redirect(`/resume/role?target=${encodeURIComponent(submittedTargetId)}`, 303);
+    }
+    if (submittedAction === PRODUCT_WORKFLOW_ACTIONS.editRoleDirection && submittedTargetId) {
+      const specialization = field(formData, "specialization");
+      if (!specialization) throw new Error("Choose a Role direction before saving the change.");
+      await reviseRoleDirectionForProduct(config.workspace, submittedTargetId, specialization);
+      return Astro.redirect(`/resume/role?target=${encodeURIComponent(submittedTargetId)}`, 303);
+    }
     if (submittedAction === PRODUCT_WORKFLOW_ACTIONS.exportRoleResume && submittedTargetId) {
       await exportRoleResumeForProduct(config.workspace, submittedTargetId);
       return Astro.redirect(`/resume/role?target=${encodeURIComponent(submittedTargetId)}`, 303);
@@ -59,11 +76,13 @@ try {
   journey = await inspectRoleResumeJourney(config.workspace);
   error ??= "That Role Target is not available in this workspace.";
 }
+const hasResumeOutcome = journey.draftPreview && journey.draftPreview.proposalId !== "guided-preview";
 ---
 
 <Layout title="Create Resume for a Role" batchId={config.batchId} readOnly={config.readOnly}>
   <section class="hero compact-hero"><div><p class="eyebrow">Create Resume</p><h1>What role do you want this resume for?</h1><p class="lede">Start with a title. ProofLayer uses your existing Career Twin, so you do not need to upload your background again.</p></div><div class="trust-card ready"><strong>{twin.status.trustLabel}</strong><p>{twin.roles.length} roles and {twin.projects.length} projects are already organized.</p></div></section>
   {error && <div class="notice error" role="alert">{error}</div>}
+  {attentionRequested && <div class="notice" role="status"><strong>Role direction needs attention</strong><p>No approval was created. Choose a different direction below or leave this target unchanged.</p></div>}
 
   {!journey.target && <form method="post" action={actionPath} class="target-form panel">
     <input type="hidden" name="csrfToken" value={csrfToken} />
@@ -77,29 +96,31 @@ try {
 
   {journey.target && <section aria-labelledby="role-progress-heading">
     <div class="section-heading"><div><p class="eyebrow">Role</p><h2 id="role-progress-heading">{journey.target.title}</h2></div></div>
-    {journey.primaryAction && <section class="primary-journey-action panel" aria-labelledby="role-action-heading">
+    {!hasResumeOutcome && journey.primaryAction && <section class="primary-journey-action panel" aria-labelledby="role-action-heading">
       <div><p class="eyebrow">Next step</p><h3 id="role-action-heading">{journey.primaryAction.label}</h3><p>{journey.primaryAction.detail}</p></div>
-      {journey.primaryAction.method === "GET" ? <a class="button" href={journey.primaryAction.href}>{journey.primaryAction.label}</a> : journey.primaryAction.action && <form method="post" action={journey.primaryAction.href}><input type="hidden" name="csrfToken" value={productActionToken(config, actionPath, journey.primaryAction.action, journey.target.id)} /><input type="hidden" name="action" value={journey.primaryAction.action} /><input type="hidden" name="targetId" value={journey.target.id} />{journey.primaryAction.action === PRODUCT_WORKFLOW_ACTIONS.continueRoleWorkflow && <input type="hidden" name="specialization" value="" />}<button type="submit" disabled={config.readOnly}>{journey.primaryAction.label}</button></form>}
+      {journey.primaryAction.method === "GET" ? <a class="button" href={journey.primaryAction.href}>{journey.primaryAction.label}</a> : journey.primaryAction.action && <form method="post" action={journey.primaryAction.href}><input type="hidden" name="csrfToken" value={productActionToken(config, actionPath, journey.primaryAction.action, journey.target.id)} /><input type="hidden" name="action" value={journey.primaryAction.action} /><input type="hidden" name="targetId" value={journey.target.id} />{journey.primaryAction.action === PRODUCT_WORKFLOW_ACTIONS.continueRoleWorkflow && <input type="hidden" name="specialization" value="" />}<button type="submit" disabled={config.readOnly}>{journey.primaryAction.action === PRODUCT_WORKFLOW_ACTIONS.confirmRoleDirection ? "Looks Right" : journey.primaryAction.label}</button></form>}
     </section>}
     {journey.draftPreview && journey.draftPreview.proposalId !== "guided-preview" && <section id="resume-preview" class="panel draft-preview" aria-labelledby="role-preview-heading"><p class="eyebrow">Resume preview</p><h3 id="role-preview-heading">{journey.draftPreview.state === "approved" ? "Approved role resume" : "Reviewable role resume draft"}</h3><p>{journey.draftPreview.requiresHumanReview ? "This wording is not approved. Review the actual sections and statements before approval." : "This wording is approved and can be exported without changing its meaning."}</p>{journey.draftPreview.sections.map((section) => <div class="draft-section"><h4>{section.heading}</h4>{section.items.length ? <ul>{section.items.map((item) => <li>{item}</li>)}</ul> : <p class="meta">No content in this section.</p>}</div>)}{journey.draftPreview.warnings.length > 0 && <div class="notice"><strong>Review notes</strong><ul>{journey.draftPreview.warnings.map((warning) => <li>{warning}</li>)}</ul></div>}{journey.draftPreview.review && <p class="audit">Review status: {journey.draftPreview.review.status}. {journey.draftPreview.review.unresolvedCount} decision(s) remain.</p>}</section>}
-    {journey.draftPreview && journey.draftPreview.proposalId === "guided-preview" && <section class="panel draft-preview" aria-labelledby="role-preview-heading"><p class="eyebrow">Resume preview</p><h3 id="role-preview-heading">Resume wording is not prepared yet</h3><p>These evidence-backed statements are available for the next drafting step. They are not a resume and are not approved.</p><ul>{journey.draftPreview.items.map((item) => <li>{item}</li>)}</ul><div class="notice"><strong>Human review required</strong><p>Resume wording must be reviewed before it can become an approved resume.</p></div></section>}
-    {journey.understanding && <div class="panel"><p class="eyebrow">ProofLayer's current understanding</p><h3>{journey.understanding.specialization}</h3><p>{journey.understanding.summary}</p><p class="audit">{journey.understanding.sourceLabel}. Generated guidance is not employment history and remains unapproved until human review.</p><ul>{journey.understanding.expectations.slice(0, 6).map((expectation) => <li>{expectation}</li>)}</ul></div>}
+    {hasResumeOutcome && journey.primaryAction && <section class="primary-journey-action panel" aria-labelledby="role-outcome-action-heading"><div><p class="eyebrow">Next step</p><h3 id="role-outcome-action-heading">{journey.primaryAction.label}</h3><p>{journey.primaryAction.detail}</p></div>{journey.primaryAction.method === "GET" ? <a class="button" href={journey.primaryAction.href}>{journey.primaryAction.label}</a> : journey.primaryAction.action && <form method="post" action={journey.primaryAction.href}><input type="hidden" name="csrfToken" value={productActionToken(config, actionPath, journey.primaryAction.action, journey.target.id)} /><input type="hidden" name="action" value={journey.primaryAction.action} /><input type="hidden" name="targetId" value={journey.target.id} /><button type="submit" disabled={config.readOnly}>{journey.primaryAction.label}</button></form>}</section>}
+    {journey.draftPreview && journey.draftPreview.proposalId === "guided-preview" && <section class="panel draft-preview" aria-labelledby="role-preview-heading"><p class="eyebrow">Selected Career Twin evidence</p><h3 id="role-preview-heading">Resume wording is not prepared yet</h3><p>These evidence-backed statements are available for the next drafting step. They are not a resume and are not approved wording.</p><ul>{journey.draftPreview.items.map((item) => <li>{item}</li>)}</ul><div class="notice"><strong>Human review required</strong><p>Any generated resume wording must be reviewed before it can become an approved resume.</p></div></section>}
+    {journey.understanding && <div class="panel"><p class="eyebrow">ProofLayer's current understanding</p><h3>{journey.understanding.specialization}</h3><p>{journey.understanding.summary}</p><p class="audit">{journey.understanding.sourceLabel}. {journey.understanding.state === "reviewed" ? "You confirmed this positioning direction; it remains separate from employment history." : "Generated guidance is not employment history and remains unapproved until you confirm it."}</p><ul>{journey.understanding.expectations.slice(0, 6).map((expectation) => <li>{expectation}</li>)}</ul>{journey.primaryAction?.action === PRODUCT_WORKFLOW_ACTIONS.confirmRoleDirection && <div class="direction-actions"><form method="post" action={actionPath}><input type="hidden" name="csrfToken" value={productActionToken(config, actionPath, PRODUCT_WORKFLOW_ACTIONS.flagRoleDirection, journey.target.id)} /><input type="hidden" name="action" value={PRODUCT_WORKFLOW_ACTIONS.flagRoleDirection} /><input type="hidden" name="targetId" value={journey.target.id} /><button class="secondary-action" type="submit" disabled={config.readOnly}>Needs Attention</button></form></div>}</div>}
     {journey.positioning && <div class="journey-grid">
       <article class="panel"><p class="eyebrow">Recommended positioning</p><h3>{journey.positioning.label}</h3><p><strong>Qualitative fit: </strong>{journey.positioning.fit}</p></article>
       <article class="panel"><p class="eyebrow">Your strongest match</p>{journey.positioning.strongestThemes.length ? journey.positioning.strongestThemes.map((entry) => <div class="evidence-theme"><strong>{entry.theme}</strong><p>{entry.evidence}</p></div>) : <p>No eligible reviewed evidence is currently connected to this role.</p>}</article>
       <article class="panel"><p class="eyebrow">Gaps and cautions</p>{journey.positioning.gaps.length ? <ul>{journey.positioning.gaps.map((gap) => <li>{gap}</li>)}</ul> : <p>No additional material gap was identified by the conservative projection.</p>}{journey.positioning.weakerThemes.length > 0 && <><h4>Adjacent or weaker matches</h4><ul>{journey.positioning.weakerThemes.map((theme) => <li>{theme}</li>)}</ul></>}<details><summary>Why ProofLayer is cautious</summary><ul>{journey.positioning.limitations.map((item) => <li>{item}</li>)}</ul></details></article>
     </div>}
     {journey.materialQuestion && <form method="post" action={actionPath} class="panel clarification-card">
-      <input type="hidden" name="csrfToken" value={productActionToken(config, actionPath, PRODUCT_WORKFLOW_ACTIONS.continueRoleWorkflow, journey.target.id)} />
-      <input type="hidden" name="action" value={PRODUCT_WORKFLOW_ACTIONS.continueRoleWorkflow} />
+      <input type="hidden" name="csrfToken" value={productActionToken(config, actionPath, PRODUCT_WORKFLOW_ACTIONS.editRoleDirection, journey.target.id)} />
+      <input type="hidden" name="action" value={PRODUCT_WORKFLOW_ACTIONS.editRoleDirection} />
       <input type="hidden" name="targetId" value={journey.target.id} />
       <p class="eyebrow">One optional clarification</p><h3>{journey.materialQuestion.question}</h3>
       <label>Direction <select name="specialization">{journey.materialQuestion.options.map((option) => <option value={option.id} selected={option.id === journey.materialQuestion?.selectedOptionId}>{option.label}</option>)}</select></label>
-      <button type="submit" disabled={config.readOnly}>Use This Direction</button>
+      <button type="submit" disabled={config.readOnly}>Edit Direction</button>
     </form>}
     <div class="section-heading"><div><p class="eyebrow">Progress</p><h2>Preparing your resume</h2></div></div><ProgressSteps steps={journey.progress} />
     <div class={journey.blocker ? "notice" : "notice success"}><strong>Current value</strong><p>{journey.currentValue}</p>{journey.blocker && <p>{journey.blocker}</p>}<strong>Smallest next action</strong><p>{journey.nextAction}</p></div>
-    {journey.exports && journey.exports.length > 0 && <section id="resume-exports" class="panel"><p class="eyebrow">Resume exports</p><h3>Download your current resume</h3><div class="export-links">{journey.exports.filter((entry) => entry.status === "current").map((entry) => <a class="button secondary-action" href={`/resume/role/download?exportId=${encodeURIComponent(entry.exportId)}`}>View or download {entry.format.toUpperCase()}</a>)}</div></section>}
+    {journey.primaryAction?.label === "Configure Writing Provider" && <section id="writing-provider" class="panel"><p class="eyebrow">Writing provider</p><h3>Connect the configured local provider</h3><p>Configure <code>PROOFLAYER_MODEL_PROVIDER</code> and the existing provider settings, restart the local app, then choose Continue Preparing Resume. No generated wording will be approved automatically.</p></section>}
+    {journey.exports && journey.exports.length > 0 && <section id="resume-exports" class="panel"><p class="eyebrow">Resume exports</p><h3>Download your current resume</h3><div class="export-links">{journey.exports.filter((entry) => entry.status === "current").map((entry) => <a class="button secondary-action" href={`/resume/role/download?target=${encodeURIComponent(journey.target.id)}&exportId=${encodeURIComponent(entry.exportId)}`}>View or download {entry.format.toUpperCase()}</a>)}</div></section>}
     <details><summary>Advanced Details</summary><div class="status-table">{journey.advanced.map((stage) => <div><span>{stage.label}</span><strong>{stage.status}</strong></div>)}</div><p class="audit">The Role Target title is positioning input only. It never becomes employment history or proof of seniority. Generated expectations do not alter the Evidence Foundation or become approved automatically.</p></details>
   </section>}
 </Layout>
@@ -117,5 +138,6 @@ try {
   .clarification-card { border-color: var(--accent); margin: 1.5rem 0; }
   .clarification-card label { display: grid; gap: .45rem; max-width: 32rem; }
   .clarification-card button { margin-top: 1rem; }
+  .direction-actions { display: flex; gap: .75rem; margin-top: 1rem; }
   @media (max-width: 880px) { .journey-grid { grid-template-columns: 1fr; } .primary-journey-action { align-items: stretch; flex-direction: column; } }
 </style>

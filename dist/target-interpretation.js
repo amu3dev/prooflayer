@@ -83,17 +83,21 @@ function roleProfileMatches(target, profile) {
     const expected = normalizedTitle(target.title);
     return [profile.title, ...profile.aliases].some((candidate) => normalizedTitle(candidate) === expected);
 }
-function resolveProfileInputPath(workspace, inputPath) {
+function resolveProfileInputPath(workspace, inputPath, target) {
     const direct = path.resolve(inputPath);
     const candidate = isWithin(workspace, direct) ? direct : path.resolve(workspace, inputPath);
     const profileRoot = path.resolve(workspace, ROLE_PROFILES_DIRECTORY);
-    if (!isWithin(profileRoot, candidate)) {
+    const targetGeneratedProfileRoot = target?.type === "role"
+        ? path.resolve(workspace, "targets", "roles", target.id, "guided-role")
+        : undefined;
+    if (!isWithin(profileRoot, candidate) &&
+        (!targetGeneratedProfileRoot || !isWithin(targetGeneratedProfileRoot, candidate))) {
         throw new Error(`Role profile must be stored under ${ROLE_PROFILES_DIRECTORY}/`);
     }
     return candidate;
 }
 export async function loadRoleProfile(workspace, inputPath, target) {
-    const absolutePath = resolveProfileInputPath(workspace, inputPath);
+    const absolutePath = resolveProfileInputPath(workspace, inputPath, target);
     if (path.extname(absolutePath).toLowerCase() !== ".json") {
         throw new Error("Role profile must be a JSON file.");
     }
@@ -154,13 +158,13 @@ async function resolveRoleProfile(workspace, target, explicitPath, storedPath) {
         try {
             return {
                 profile: await loadRoleProfile(workspace, selectedPath, target),
-                expectedPath: normalizeRelative(path.relative(workspace, resolveProfileInputPath(workspace, selectedPath))),
+                expectedPath: normalizeRelative(path.relative(workspace, resolveProfileInputPath(workspace, selectedPath, target))),
             };
         }
         catch (error) {
             let expectedPath;
             try {
-                expectedPath = normalizeRelative(path.relative(workspace, resolveProfileInputPath(workspace, selectedPath)));
+                expectedPath = normalizeRelative(path.relative(workspace, resolveProfileInputPath(workspace, selectedPath, target)));
             }
             catch {
                 expectedPath = selectedPath;

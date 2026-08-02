@@ -1,5 +1,5 @@
 import { type ApprovedTargetExpectation, type ApprovedTargetInterpretation, type EvidenceMatch, type EvidenceMatchConfidence, type EvidenceMatchCoverage, type EvidenceMatchType, type EvidenceMatchingCompleteness, type EvidenceMatchingWarning, type EvidenceSnapshot, type EvidenceSnapshotManifest, type EvidenceStrength, type ExpectationCoverageRecord, type ExpectationCoverageStatus, type ExpectationMatchProvenance, type MatchingManifest, type Target, type TargetEvidenceMatching, type TemporalRelevance } from "./schemas.js";
-export declare const EVIDENCE_ELIGIBILITY_POLICY_VERSION = "1";
+export declare const EVIDENCE_ELIGIBILITY_POLICY_VERSION = "2";
 export declare const EVIDENCE_MATCHER_NAME = "target-evidence-matcher";
 export declare const EVIDENCE_MATCHER_VERSION = "1";
 export declare const EVIDENCE_MATCHING_POLICY_VERSION = "1";
@@ -76,7 +76,7 @@ export declare function loadMatchingContext(workspace: string, targetId: string,
     rebuildSnapshot?: boolean;
     now?: () => Date;
 }): Promise<MatchingContext>;
-export declare function calculateEvidenceSnapshot(workspace: string, now?: (() => Date) | undefined): Promise<EvidenceSnapshot>;
+export declare function calculateEvidenceSnapshot(workspace: string, now?: (() => Date) | undefined, targetType?: "role" | "job"): Promise<EvidenceSnapshot>;
 export declare function addManualEvidenceMatch(workspace: string, targetId: string, input: ManualMatchInput, options?: {
     now?: () => Date;
 }): Promise<ManualMatchResult>;

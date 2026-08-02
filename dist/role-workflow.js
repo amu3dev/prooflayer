@@ -5,7 +5,11 @@ import { createModelProvider, loadModelProviderConfiguration, } from "./model-pr
 import { calculateEvidenceFoundationSnapshot } from "./evidence-snapshots.js";
 import { analyzeTarget, getTargetAnalysisStatus } from "./target-analysis.js";
 import { createRoleTarget, showTarget, } from "./targets.js";
-import { getApprovedInterpretationStatus } from "./approved-interpretation.js";
+import { RoleProfileSchema } from "./schemas.js";
+import { approveInterpretationProposal, getApprovedInterpretationStatus, } from "./approved-interpretation.js";
+import { getTargetInterpretationStatus, interpretTarget } from "./target-interpretation.js";
+import { createDeterministicRoleConfirmationProposal } from "./target-proposal.js";
+import { completeProposalReview, initializeProposalReview, } from "./target-proposal-review.js";
 import { getApprovedEvidenceMatchingStatus } from "./evidence-matching.js";
 import { getFitAssessmentStatus } from "./fit-assessment.js";
 import { getRoleResumePlanStatus } from "./role-resume-planning.js";
@@ -363,13 +367,13 @@ export async function inspectRoleWorkflow(workspace, targetId) {
                                 : "role-understanding";
     const noEvidence = projection.eligibleEvidenceCount === 0;
     const canonicalPreparationAction = approvedInterpretation.status !== "current"
-        ? "Review and approve the role interpretation before preparing the resume."
+        ? "Confirm the generated Role direction before selecting experience."
         : approvedMatching.status !== "current"
-            ? "Review and approve the selected role evidence before preparing the resume."
+            ? "Continue to confirm and prepare the selected Career Twin evidence."
             : assessment.status !== "current"
-                ? "Complete the approved role assessment before preparing the resume."
+                ? "Continue the deterministic Role fit assessment."
                 : plan.status !== "current"
-                    ? "Review and approve the Role Resume Content Plan before preparing the resume."
+                    ? "Continue deterministic resume content planning."
                     : undefined;
     const nextAction = exportsReady
         ? "No action is required; current Role resume exports are available."
@@ -437,6 +441,72 @@ export async function inspectRoleWorkflow(workspace, targetId) {
             approvedDraft: approvedDraft.status,
             rendering: rendering.status,
         },
+    };
+}
+export async function confirmGeneratedRoleDirection(workspace, targetId, options = {}) {
+    const target = await requireRoleTarget(workspace, targetId);
+    const understandingStatus = await getGeneratedRoleUnderstandingStatus(workspace, targetId);
+    if (understandingStatus.status !== "current") {
+        throw new Error(`Role direction can be confirmed only from a current generated understanding. Current status: ${understandingStatus.status}`);
+    }
+    const understanding = await showGeneratedRoleUnderstanding(workspace, targetId);
+    const profileRelativePath = `targets/roles/${targetId}/guided-role/role-profile.json`;
+    const profilePath = resolveWithin(workspace, profileRelativePath);
+    const profile = RoleProfileSchema.parse({
+        schemaVersion: 1,
+        id: `guided-${slug(target.title)}-${slug(understanding.specialization.id)}`,
+        title: target.title,
+        aliases: [],
+        ...(target.seniority ? { seniority: target.seniority } : understanding.seniority ? { seniority: understanding.seniority } : {}),
+        ...(target.domain ? { domain: target.domain } : {}),
+        ...(target.location ? { location: target.location } : {}),
+        ...(target.workingModel ? { workingModel: target.workingModel } : {}),
+        expectations: understanding.expectations.map((entry, index) => ({
+            id: `guided-${index + 1}-${hashText(stableJson({
+                kind: entry.kind,
+                statement: entry.statement,
+                necessity: entry.necessity,
+                importance: entry.importance,
+                capabilityTags: entry.capabilityTags,
+            })).slice(0, 10)}`,
+            kind: canonicalExpectationKind(entry.kind),
+            statement: entry.statement,
+            necessity: entry.necessity,
+            importance: entry.importance,
+            capabilityTags: [...entry.capabilityTags].sort(),
+            group: canonicalExpectationGroup(entry.group),
+            notes: [`Confirmed guided Role direction: ${understanding.specialization.label}.`],
+        })),
+        createdAt: understanding.createdAt,
+        updatedAt: understanding.updatedAt,
+    });
+    const serializedProfile = `${JSON.stringify(profile, null, 2)}\n`;
+    const profileIsCurrent = await pathExists(profilePath)
+        && await readJson(profilePath, null).then((stored) => stableJson(stored) === stableJson(profile)).catch(() => false);
+    if (!profileIsCurrent)
+        await writeBufferAtomic(profilePath, Buffer.from(serializedProfile, "utf8"));
+    const deterministicStatus = await getTargetInterpretationStatus(workspace, targetId, {
+        roleProfile: profileRelativePath,
+    });
+    await interpretTarget(workspace, targetId, {
+        roleProfile: profileRelativePath,
+        rebuild: !profileIsCurrent || ["stale", "invalid"].includes(deterministicStatus.status),
+        now: options.now,
+    });
+    const proposal = await createDeterministicRoleConfirmationProposal(workspace, targetId, { now: options.now });
+    await initializeProposalReview(workspace, proposal.proposalId, {
+        reviewerName: options.reviewerName,
+        now: options.now,
+    });
+    await completeProposalReview(workspace, proposal.proposalId, { now: options.now });
+    const approved = await approveInterpretationProposal(workspace, proposal.proposalId, { now: options.now });
+    return {
+        targetId,
+        understandingId: understanding.id,
+        specialization: understanding.specialization.label,
+        proposalId: proposal.proposalId,
+        result: approved.result,
+        providerCallMade: false,
     };
 }
 async function latestRoleDraftProposal(workspace, targetId) {
@@ -1001,6 +1071,26 @@ function pausedResult(mode, status, message) {
         providerCallMade: false,
         status: { ...status, overallState: "paused", blocker: { code: "EXPLICIT_REBUILD_REQUIRED", message }, nextAction: message },
     };
+}
+function canonicalExpectationKind(kind) {
+    return {
+        responsibility: "responsibility",
+        capability: "capability",
+        leadership: "leadership",
+        technical: "technical-skill",
+        business: "business-expectation",
+        "operating-context": "constraint",
+    }[kind];
+}
+function canonicalExpectationGroup(group) {
+    return {
+        responsibilities: "core-responsibilities",
+        capabilities: "candidate-attributes",
+        leadership: "leadership-expectations",
+        technical: "technical-expectations",
+        business: "business-expectations",
+        "operating-context": "constraints",
+    }[group];
 }
 function normalize(value) {
     return value.normalize("NFKC").toLowerCase().replace(/[^a-z0-9]+/g, " ").replace(/\s+/g, " ").trim();

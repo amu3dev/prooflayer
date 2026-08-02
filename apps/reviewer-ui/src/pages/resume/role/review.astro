@@ -1,0 +1,136 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import {
+  completeRoleResumeDraftReviewForProduct,
+  inspectRoleResumeDraftForProduct,
+  setRoleResumeDraftReviewDecisionForProduct,
+  approveRoleResumeDraftForProduct,
+} from "../../../../../../src/product-workflows.ts";
+import { proofLayerUiRuntimeConfig } from "../../../lib/runtime.js";
+import { field, productActionToken, productPostRejection, productTokenMatches } from "../../../lib/product.js";
+import { PRODUCT_WORKFLOW_ACTIONS, type ProductWorkflowActionName } from "../../../../../../src/prooflayer-ui-request-scope.ts";
+import type { RoleResumeDraftReviewDecision } from "../../../../../../src/role-resume-draft-schemas.ts";
+
+const config = proofLayerUiRuntimeConfig();
+const actionPath = "/resume/role/review";
+let targetId = Astro.url.searchParams.get("target") ?? undefined;
+let proposalId = Astro.url.searchParams.get("proposal") ?? undefined;
+let error: string | undefined;
+
+if (Astro.request.method === "POST") {
+  const rejection = productPostRejection(Astro.request, config);
+  if (rejection) return rejection;
+  const formData = await Astro.request.formData();
+  const action = field(formData, "action");
+  targetId = field(formData, "targetId");
+  proposalId = field(formData, "proposalId");
+  if (!targetId || !proposalId || !action) return new Response("Role review context is incomplete.", { status: 400 });
+  const expectedToken = productActionToken(config, actionPath, action as ProductWorkflowActionName, targetId);
+  if (!productTokenMatches(formData, expectedToken)) {
+    return new Response("The Role review form expired or failed local request verification.", { status: 403 });
+  }
+  try {
+    if (action === PRODUCT_WORKFLOW_ACTIONS.reviewRoleDraftDecision) {
+      const itemType = field(formData, "itemType") as RoleResumeDraftReviewDecision["itemType"] | undefined;
+      const itemId = field(formData, "itemId");
+      const decision = field(formData, "decision") as "accept" | "edit" | "reject" | undefined;
+      if (!itemType || !itemId || !decision) throw new Error("Role review decision is incomplete.");
+      let editedValue: unknown;
+      if (decision === "edit" && itemType === "draft-item") editedValue = field(formData, "editedText") ?? "";
+      if (decision === "edit" && itemType === "ambiguity") {
+        editedValue = {
+          id: itemId,
+          code: field(formData, "ambiguityCode") ?? "ROLE_RESUME_REVIEWED_AMBIGUITY",
+          message: field(formData, "ambiguityMessage") ?? "Reviewed ambiguity.",
+          resolved: true,
+          resolutionRationale: field(formData, "resolutionRationale") ?? "Resolved during human review.",
+          sectionIds: [],
+          draftItemIds: [],
+          expectationIds: [],
+          matchIds: [],
+          evidenceIds: [],
+          claimBoundaryIds: [],
+        };
+      }
+      await setRoleResumeDraftReviewDecisionForProduct(config.workspace, targetId, proposalId, itemType, itemId, {
+        decision,
+        ...(editedValue !== undefined ? { editedValue } : {}),
+        ...(field(formData, "reviewNote") ? { reviewNote: field(formData, "reviewNote") } : {}),
+      });
+    } else if (action === PRODUCT_WORKFLOW_ACTIONS.completeRoleDraftReview) {
+      await completeRoleResumeDraftReviewForProduct(config.workspace, targetId, proposalId);
+    } else if (action === PRODUCT_WORKFLOW_ACTIONS.approveRoleDraft) {
+      await approveRoleResumeDraftForProduct(config.workspace, targetId, proposalId);
+      return Astro.redirect(`/resume/role?target=${encodeURIComponent(targetId)}`, 303);
+    } else {
+      throw new Error("The requested Role review action is not registered.");
+    }
+    return Astro.redirect(`/resume/role/review?target=${encodeURIComponent(targetId)}&proposal=${encodeURIComponent(proposalId)}`, 303);
+  } catch (caught) {
+    error = caught instanceof Error ? caught.message : "The Role draft review could not be updated safely.";
+  }
+}
+
+let reviewData: Awaited<ReturnType<typeof inspectRoleResumeDraftForProduct>> | undefined;
+if (targetId) {
+  try {
+    reviewData = await inspectRoleResumeDraftForProduct(config.workspace, targetId, proposalId);
+    proposalId ??= reviewData.proposal.id;
+  } catch (caught) {
+    error ??= caught instanceof Error ? caught.message : "No current reviewable Role Resume Draft exists.";
+  }
+}
+
+const reviewToken = targetId && proposalId
+  ? productActionToken(config, actionPath, PRODUCT_WORKFLOW_ACTIONS.reviewRoleDraftDecision, targetId)
+  : undefined;
+
+function reviewDecision(itemType: RoleResumeDraftReviewDecision["itemType"], itemId: string): "pending" | "accept" | "edit" | "reject" {
+  return reviewData?.review.decisions.find((entry) => entry.itemType === itemType && entry.itemId === itemId)?.decision ?? "pending";
+}
+
+function reviewedText(itemId: string, original: string): string {
+  const decision = reviewData?.review.decisions.find((entry) => entry.itemType === "draft-item" && entry.itemId === itemId);
+  if (decision?.decision !== "edit") return original;
+  if (typeof decision.editedValue === "string") return decision.editedValue;
+  if (decision.editedValue && typeof decision.editedValue === "object" && "text" in decision.editedValue && typeof decision.editedValue.text === "string") return decision.editedValue.text;
+  return original;
+}
+
+const completedDecisionCount = reviewData
+  ? reviewData.review.decisions.length - reviewData.reviewStatus.counts.pending
+  : 0;
+const totalDecisionCount = reviewData?.review.decisions.length ?? 0;
+const sectionOrderId = reviewData ? `section-order_${reviewData.proposal.id}` : undefined;
+const sectionOrderDecision = sectionOrderId ? reviewDecision("section-order", sectionOrderId) : "pending";
+
+---
+
+<Layout title="Review Role Resume" batchId={config.batchId} readOnly={config.readOnly}>
+  <p class="eyebrow">Resume review</p><h1>Review the actual resume wording</h1>
+  <p class="lede">Check each statement against the approved Career Twin evidence. Nothing becomes an approved resume until this human review is complete.</p>
+  {error && <div class="notice error" role="alert">{error}</div>}
+  {!reviewData
+    ? <div class="empty-state large"><h2>No reviewable draft is available</h2><p>Return to the Role journey and continue preparation from the current Career Twin.</p><a class="button" href={`/resume/role${targetId ? `?target=${encodeURIComponent(targetId)}` : ""}`}>Back to Role Resume</a></div>
+    : <>
+      <div class="review-summary panel"><div><p class="eyebrow">Draft</p><h2>{reviewData.proposal.targetId}</h2><p>Proposal wording is unapproved until every required review decision is resolved.</p></div><div class="review-counts"><strong>{completedDecisionCount} of {totalDecisionCount}</strong><span>decisions completed</span></div></div>
+      <section class="panel review-structure"><div><p class="eyebrow">Structure</p><h2>Section order</h2><p>Confirm that the planned section order is safe before reviewing the statements.</p><p class="audit">Current decision: {sectionOrderDecision}.</p></div>{sectionOrderDecision === "pending" && <form method="post" action={actionPath}><input type="hidden" name="csrfToken" value={reviewToken} /><input type="hidden" name="action" value={PRODUCT_WORKFLOW_ACTIONS.reviewRoleDraftDecision} /><input type="hidden" name="targetId" value={targetId} /><input type="hidden" name="proposalId" value={proposalId} /><input type="hidden" name="itemType" value="section-order" /><input type="hidden" name="itemId" value={sectionOrderId} /><input type="hidden" name="decision" value="accept" /><button type="submit" disabled={config.readOnly}>Looks Good</button></form>}</section>
+      {reviewData.proposal.sections.slice().sort((a, b) => a.order - b.order).map((section) => <section class="panel review-section"><div class="section-heading"><div><p class="eyebrow">{section.type}</p><h2>{section.type.replaceAll("-", " ")}</h2></div><div><span class="pill">{reviewDecision("section", section.id)}</span>{reviewDecision("section", section.id) === "pending" && <form method="post" action={actionPath}><input type="hidden" name="csrfToken" value={reviewToken} /><input type="hidden" name="action" value={PRODUCT_WORKFLOW_ACTIONS.reviewRoleDraftDecision} /><input type="hidden" name="targetId" value={targetId} /><input type="hidden" name="proposalId" value={proposalId} /><input type="hidden" name="itemType" value="section" /><input type="hidden" name="itemId" value={section.id} /><input type="hidden" name="decision" value="accept" /><button class="secondary-action" type="submit" disabled={config.readOnly}>Accept section</button></form>}</div></div><p class="meta">{section.objective}</p>{section.items.map((item) => <article class="review-item"><p class="eyebrow">Proposed wording</p><p>{reviewedText(item.id, item.text)}</p><div class="support-context"><strong>Supporting evidence</strong>{reviewData.itemContext[item.id]?.evidence.length ? <ul>{reviewData.itemContext[item.id].evidence.map((entry) => <li>{entry.summary}</li>)}</ul> : <p>No supporting evidence summary is available.</p>}{reviewData.itemContext[item.id]?.claims.length ? <><strong>Approved claims</strong><ul>{reviewData.itemContext[item.id].claims.map((entry) => <li>{entry.text}</li>)}</ul></> : null}{reviewData.itemContext[item.id]?.boundaries.length ? <><strong>Claim boundaries</strong><ul>{reviewData.itemContext[item.id].boundaries.map((entry) => <li>{entry.rationale}{entry.qualifiers.length ? ` Qualifiers: ${entry.qualifiers.join(", ")}.` : ""}</li>)}</ul></> : null}<p class="audit">{reviewData.itemContext[item.id]?.ledgerEffect}</p></div>{reviewDecision("draft-item", item.id) === "pending" ? <div class="review-actions"><form method="post" action={actionPath}><input type="hidden" name="csrfToken" value={reviewToken} /><input type="hidden" name="action" value={PRODUCT_WORKFLOW_ACTIONS.reviewRoleDraftDecision} /><input type="hidden" name="targetId" value={targetId} /><input type="hidden" name="proposalId" value={proposalId} /><input type="hidden" name="itemType" value="draft-item" /><input type="hidden" name="itemId" value={item.id} /><input type="hidden" name="decision" value="accept" /><button type="submit" disabled={config.readOnly}>Looks Good</button></form><form method="post" action={actionPath} class="edit-form"><input type="hidden" name="csrfToken" value={reviewToken} /><input type="hidden" name="action" value={PRODUCT_WORKFLOW_ACTIONS.reviewRoleDraftDecision} /><input type="hidden" name="targetId" value={targetId} /><input type="hidden" name="proposalId" value={proposalId} /><input type="hidden" name="itemType" value="draft-item" /><input type="hidden" name="itemId" value={item.id} /><input type="hidden" name="decision" value="edit" /><label>Edit wording <textarea name="editedText" rows="3">{reviewedText(item.id, item.text)}</textarea></label><button class="secondary-action" type="submit" disabled={config.readOnly}>Edit</button></form><form method="post" action={actionPath}><input type="hidden" name="csrfToken" value={reviewToken} /><input type="hidden" name="action" value={PRODUCT_WORKFLOW_ACTIONS.reviewRoleDraftDecision} /><input type="hidden" name="targetId" value={targetId} /><input type="hidden" name="proposalId" value={proposalId} /><input type="hidden" name="itemType" value="draft-item" /><input type="hidden" name="itemId" value={item.id} /><input type="hidden" name="decision" value="reject" /><button class="secondary-action" type="submit" disabled={config.readOnly}>Remove</button></form><form method="post" action={actionPath}><input type="hidden" name="csrfToken" value={reviewToken} /><input type="hidden" name="action" value={PRODUCT_WORKFLOW_ACTIONS.reviewRoleDraftDecision} /><input type="hidden" name="targetId" value={targetId} /><input type="hidden" name="proposalId" value={proposalId} /><input type="hidden" name="itemType" value="draft-item" /><input type="hidden" name="itemId" value={item.id} /><input type="hidden" name="decision" value="reject" /><input type="hidden" name="reviewNote" value="Needs attention; excluded from this approval." /><button class="secondary-action" type="submit" disabled={config.readOnly}>Needs Attention</button></form></div> : <p class="audit">Current decision: {reviewDecision("draft-item", item.id)}. The claim-ledger effect is shown above.</p>}<p class="audit">Statement ID: {item.id}</p></article>)}</section>)}
+      {reviewData.proposal.ambiguities.length > 0 && <section class="panel"><p class="eyebrow">Clarifications</p><h2>Resolve remaining ambiguities</h2>{reviewData.proposal.ambiguities.map((ambiguity) => <article class="review-item"><p>{ambiguity.message}</p><form method="post" action={actionPath}><input type="hidden" name="csrfToken" value={reviewToken} /><input type="hidden" name="action" value={PRODUCT_WORKFLOW_ACTIONS.reviewRoleDraftDecision} /><input type="hidden" name="targetId" value={targetId} /><input type="hidden" name="proposalId" value={proposalId} /><input type="hidden" name="itemType" value="ambiguity" /><input type="hidden" name="itemId" value={ambiguity.id} /><input type="hidden" name="decision" value="edit" /><input type="hidden" name="ambiguityCode" value={ambiguity.code} /><input type="hidden" name="ambiguityMessage" value={ambiguity.message} /><label>Resolution <textarea name="resolutionRationale" rows="2" required></textarea></label><button type="submit" disabled={config.readOnly}>Resolve</button></form></article>)}</section>}
+      <div class="review-footer panel"><p><strong>Review status:</strong> {reviewData.reviewStatus.status}. {reviewData.reviewStatus.counts.accept} accepted, {reviewData.reviewStatus.counts.edit} edited, {reviewData.reviewStatus.counts.reject} removed, {reviewData.reviewStatus.counts.pending} pending.</p>{reviewData.reviewStatus.status !== "completed" && reviewData.reviewStatus.counts.pending === 0 && <form method="post" action={actionPath}><input type="hidden" name="csrfToken" value={productActionToken(config, actionPath, PRODUCT_WORKFLOW_ACTIONS.completeRoleDraftReview, targetId)} /><input type="hidden" name="action" value={PRODUCT_WORKFLOW_ACTIONS.completeRoleDraftReview} /><input type="hidden" name="targetId" value={targetId} /><input type="hidden" name="proposalId" value={proposalId} /><button type="submit" disabled={config.readOnly}>Complete Review</button></form>}{reviewData.reviewStatus.status !== "completed" && reviewData.reviewStatus.counts.pending > 0 && <p>Resolve every visible statement, section, order, and ambiguity decision before completion.</p>}{reviewData.reviewStatus.status === "completed" && <form method="post" action={actionPath}><input type="hidden" name="csrfToken" value={productActionToken(config, actionPath, PRODUCT_WORKFLOW_ACTIONS.approveRoleDraft, targetId)} /><input type="hidden" name="action" value={PRODUCT_WORKFLOW_ACTIONS.approveRoleDraft} /><input type="hidden" name="targetId" value={targetId} /><input type="hidden" name="proposalId" value={proposalId} /><button type="submit" disabled={config.readOnly}>Approve Resume</button></form>}</div>
+    </>}
+</Layout>
+
+<style>
+  .review-summary, .review-footer, .review-structure { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .review-counts { display: grid; text-align: center; }
+  .review-counts strong { color: var(--accent); font-size: 2rem; }
+  .review-item { border-top: 1px solid var(--line); padding: 1rem 0; }
+  .review-item > p { font-size: 1.05rem; }
+  .support-context { background: var(--surface-soft); border-left: 3px solid var(--line-strong); margin: .75rem 0 1rem; padding: .9rem 1rem; }
+  .review-actions { display: flex; align-items: start; flex-wrap: wrap; gap: .5rem; }
+  .edit-form { display: grid; gap: .5rem; flex: 1 1 28rem; }
+  .edit-form label, .review-item label { display: grid; gap: .35rem; width: 100%; }
+  .review-section + .review-section { margin-top: 1rem; }
+  @media (max-width: 720px) { .review-summary, .review-footer, .review-structure { align-items: stretch; flex-direction: column; } }
+</style>

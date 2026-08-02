@@ -428,7 +428,6 @@ import {
   runJobWorkflow,
 } from "./job-workflow.js";
 import {
-  continueRoleWorkflow,
   createGuidedRole,
   finalizeRoleWorkflow,
   formatFinalizeRoleWorkflowResult,
@@ -439,6 +438,7 @@ import {
   replayGeneratedRoleUnderstanding,
   runRoleWorkflow,
 } from "./role-workflow.js";
+import { continueGuidedRoleResumeWorkflow } from "./product-workflows.js";
 
 const program = new Command();
 
@@ -895,11 +895,12 @@ guidedRole
   .option("--dry-run", "inspect current state without writes or model calls")
   .description("Resume the guided Role workflow without bypassing review or approval.")
   .action(async (targetId: string, options: GuidedRoleRunCliOptions) => {
-    console.log(formatRoleWorkflowRunResult(await continueRoleWorkflow(
+    const result = await continueGuidedRoleResumeWorkflow(
       getWorkspace(),
       targetId,
       parseGuidedRoleRunOptions(options),
-    )));
+    );
+    console.log(formatRoleWorkflowRunResult(result.roleResult));
   });
 
 guidedRole

@@ -810,11 +810,6 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
             sha256: string;
             path: string;
         };
-        jobDescription: {
-            sha256: string;
-            path: string;
-        };
-        normalizedInputSha256: string;
         claims: {
             sha256: string;
             path: string;
@@ -823,6 +818,11 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
             sha256: string;
             path: string;
         };
+        jobDescription: {
+            sha256: string;
+            path: string;
+        };
+        normalizedInputSha256: string;
         requirementModelType: "approved" | "deterministic";
         requirementModel: {
             sha256: string;
@@ -863,11 +863,6 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
             sha256: string;
             path: string;
         };
-        jobDescription: {
-            sha256: string;
-            path: string;
-        };
-        normalizedInputSha256: string;
         claims: {
             sha256: string;
             path: string;
@@ -876,6 +871,11 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
             sha256: string;
             path: string;
         };
+        jobDescription: {
+            sha256: string;
+            path: string;
+        };
+        normalizedInputSha256: string;
         requirementModelType: "approved" | "deterministic";
         requirementModel: {
             sha256: string;
@@ -916,11 +916,6 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
             sha256: string;
             path: string;
         };
-        jobDescription: {
-            sha256: string;
-            path: string;
-        };
-        normalizedInputSha256: string;
         claims: {
             sha256: string;
             path: string;
@@ -929,6 +924,11 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
             sha256: string;
             path: string;
         };
+        jobDescription: {
+            sha256: string;
+            path: string;
+        };
+        normalizedInputSha256: string;
         requirementModelType: "approved" | "deterministic";
         requirementModel: {
             sha256: string;
@@ -969,11 +969,6 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
             sha256: string;
             path: string;
         };
-        jobDescription: {
-            sha256: string;
-            path: string;
-        };
-        normalizedInputSha256: string;
         claims: {
             sha256: string;
             path: string;
@@ -982,6 +977,11 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
             sha256: string;
             path: string;
         };
+        jobDescription: {
+            sha256: string;
+            path: string;
+        };
+        normalizedInputSha256: string;
         requirementModelType: "approved" | "deterministic";
         requirementModel: {
             sha256: string;
@@ -1525,11 +1525,6 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
             sha256: string;
             path: string;
         };
-        jobDescription: {
-            sha256: string;
-            path: string;
-        };
-        normalizedInputSha256: string;
         claims: {
             sha256: string;
             path: string;
@@ -1538,6 +1533,11 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
             sha256: string;
             path: string;
         };
+        jobDescription: {
+            sha256: string;
+            path: string;
+        };
+        normalizedInputSha256: string;
         requirementModelType: "approved" | "deterministic";
         requirementModel: {
             sha256: string;
@@ -1676,11 +1676,6 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
             sha256: string;
             path: string;
         };
-        jobDescription: {
-            sha256: string;
-            path: string;
-        };
-        normalizedInputSha256: string;
         claims: {
             sha256: string;
             path: string;
@@ -1689,6 +1684,11 @@ export declare const JobEvidenceMapSchema: z.ZodObject<{
             sha256: string;
             path: string;
         };
+        jobDescription: {
+            sha256: string;
+            path: string;
+        };
+        normalizedInputSha256: string;
         requirementModelType: "approved" | "deterministic";
         requirementModel: {
             sha256: string;

@@ -1868,10 +1868,10 @@ export declare const RoleResumeDraftScaffoldManifestSchema: z.ZodObject<{
     policyVersion: string;
     approvedInterpretationSha256: string;
     approvedInterpretationManifestSha256: string;
+    policyName: string;
     approvedMatchingSha256: string;
     approvedMatchingManifestSha256: string;
     evidenceSnapshotSha256: string;
-    policyName: string;
     scaffoldSha256: string;
     scaffoldId: string;
     scaffoldPath: string;
@@ -1888,10 +1888,10 @@ export declare const RoleResumeDraftScaffoldManifestSchema: z.ZodObject<{
     policyVersion: string;
     approvedInterpretationSha256: string;
     approvedInterpretationManifestSha256: string;
+    policyName: string;
     approvedMatchingSha256: string;
     approvedMatchingManifestSha256: string;
     evidenceSnapshotSha256: string;
-    policyName: string;
     scaffoldSha256: string;
     scaffoldId: string;
     scaffoldPath: string;
@@ -5913,12 +5913,6 @@ export declare const ApprovedRoleResumeDraftSchema: z.ZodObject<{
         manifestPath: string;
         manifestSha256: string;
     };
-    approvedMatching: {
-        sha256: string;
-        path: string;
-        manifestPath: string;
-        manifestSha256: string;
-    };
     risks: {
         code: string;
         message: string;
@@ -5931,6 +5925,12 @@ export declare const ApprovedRoleResumeDraftSchema: z.ZodObject<{
         claimBoundaryIds: string[];
         matchIds: string[];
     }[];
+    approvedMatching: {
+        sha256: string;
+        path: string;
+        manifestPath: string;
+        manifestSha256: string;
+    };
     exclusions: {
         reason: string;
         id: string;
@@ -6150,12 +6150,6 @@ export declare const ApprovedRoleResumeDraftSchema: z.ZodObject<{
         manifestPath: string;
         manifestSha256: string;
     };
-    approvedMatching: {
-        sha256: string;
-        path: string;
-        manifestPath: string;
-        manifestSha256: string;
-    };
     risks: {
         code: string;
         message: string;
@@ -6168,6 +6162,12 @@ export declare const ApprovedRoleResumeDraftSchema: z.ZodObject<{
         claimBoundaryIds: string[];
         matchIds: string[];
     }[];
+    approvedMatching: {
+        sha256: string;
+        path: string;
+        manifestPath: string;
+        manifestSha256: string;
+    };
     exclusions: {
         reason: string;
         id: string;
@@ -6259,9 +6259,9 @@ export declare const ApprovedRoleResumeDraftManifestSchema: z.ZodObject<{
     proposalSha256: string;
     reviewSha256: string;
     approvedInterpretationSha256: string;
+    policyName: string;
     approvedMatchingSha256: string;
     evidenceSnapshotSha256: string;
-    policyName: string;
     scaffoldSha256: string;
     draftId: string;
     draftPath: string;
@@ -6279,9 +6279,9 @@ export declare const ApprovedRoleResumeDraftManifestSchema: z.ZodObject<{
     proposalSha256: string;
     reviewSha256: string;
     approvedInterpretationSha256: string;
+    policyName: string;
     approvedMatchingSha256: string;
     evidenceSnapshotSha256: string;
-    policyName: string;
     scaffoldSha256: string;
     draftId: string;
     draftPath: string;

@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { type InterpretationModelProvider } from "./model-provider.js";
 import { type RoleTargetInput, type TargetCreationOptions, type TargetCreationResult } from "./targets.js";
-import type { RoleTarget } from "./schemas.js";
+import { type RoleTarget } from "./schemas.js";
 import { type RoleResumeRenderOptions } from "./role-resume-rendering.js";
 import { type ExportRoleResumeResult, type RoleResumeBinaryToolchain } from "./role-resume-render-export.js";
 import type { RoleResumeExportFormat } from "./role-resume-render-schemas.js";
@@ -228,12 +228,12 @@ export declare const GeneratedRoleUnderstandingSchema: z.ZodObject<{
         selectedOptionId: string;
         selectionSource: "conservative-default" | "target-metadata" | "user-choice";
     }[];
-    summary: string;
+    state: "generated" | "generated-with-ambiguity";
     policy: {
         name: "guided-role-resume-policy";
         version: "1";
     };
-    state: "generated" | "generated-with-ambiguity";
+    summary: string;
     positioning: string;
     specialization: {
         id: string;
@@ -295,12 +295,12 @@ export declare const GeneratedRoleUnderstandingSchema: z.ZodObject<{
         selectedOptionId: string;
         selectionSource: "conservative-default" | "target-metadata" | "user-choice";
     }[];
-    summary: string;
+    state: "generated" | "generated-with-ambiguity";
     policy: {
         name: "guided-role-resume-policy";
         version: "1";
     };
-    state: "generated" | "generated-with-ambiguity";
+    summary: string;
     positioning: string;
     specialization: {
         id: string;
@@ -470,10 +470,22 @@ export interface FinalizeRoleWorkflowResult {
         error: string;
     }>;
 }
+export interface ConfirmGeneratedRoleDirectionResult {
+    targetId: string;
+    understandingId: string;
+    specialization: string;
+    proposalId: string;
+    result: "created" | "already-current" | "updated";
+    providerCallMade: false;
+}
 export declare function createGuidedRole(workspace: string, input: RoleTargetInput, options?: TargetCreationOptions): Promise<TargetCreationResult>;
 export declare function runRoleWorkflow(workspace: string, targetId: string, options?: RunRoleWorkflowOptions): Promise<RunRoleWorkflowResult>;
 export declare function continueRoleWorkflow(workspace: string, targetId: string, options?: RunRoleWorkflowOptions): Promise<RunRoleWorkflowResult>;
 export declare function inspectRoleWorkflow(workspace: string, targetId: string): Promise<RoleWorkflowStatus>;
+export declare function confirmGeneratedRoleDirection(workspace: string, targetId: string, options?: {
+    reviewerName?: string;
+    now?: () => Date;
+}): Promise<ConfirmGeneratedRoleDirectionResult>;
 export declare function finalizeRoleWorkflow(workspace: string, targetId: string, options?: FinalizeRoleWorkflowOptions): Promise<FinalizeRoleWorkflowResult>;
 export declare function showGeneratedRoleUnderstanding(workspace: string, targetId: string): Promise<GeneratedRoleUnderstanding>;
 export declare function replayGeneratedRoleUnderstanding(workspace: string, targetId: string): Promise<{

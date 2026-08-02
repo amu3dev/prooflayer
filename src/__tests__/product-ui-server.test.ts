@@ -220,7 +220,7 @@ describe("ProofLayer product shell over real HTTP", () => {
     20_000,
   );
 
-  it("shows an evidence-backed Role draft preview only from reviewed eligible claims", async () => {
+  it("shows selected Career Twin evidence without presenting it as resume wording", async () => {
     const fixture = await createEvidenceReviewUiFixture();
     for (const claimId of ["claim_review_ui_1", "claim_review_ui_2", "claim_review_ui_3"]) {
       await submitEvidenceReviewUiClaim(fixture.workspace, fixture.batchId, claimId, validApprovedFields());
@@ -238,7 +238,8 @@ describe("ProofLayer product shell over real HTTP", () => {
     });
     expect(response.status).toBe(303);
     const html = await (await fetch(`${server.origin}${response.headers.get("location")}`)).text();
-    expect(html).toContain("Resume preview");
+    expect(html).toContain("Selected Career Twin evidence");
+    expect(html).toContain("Resume wording is not prepared yet");
     expect(html).toContain("Supported AI product workflows and engineering collaboration.");
     expect(html).toContain("Human review required");
     expect(html).not.toMatch(/role-expectations profile|auto-approved/i);
@@ -261,27 +262,27 @@ describe("ProofLayer product shell over real HTTP", () => {
     const initial = await fetch(`${server.origin}/resume/role?target=role-ai-product-manager`);
     const initialHtml = await initial.text();
     expect(initial.status).toBe(200);
-    expect(initialHtml).toContain("Continue Preparing Resume");
+    expect(initialHtml).toContain("Confirm Role Direction");
     expect(initialHtml).not.toContain("Create My Resume");
     expect(initialHtml).not.toContain("Review Resume");
 
-    const continued = await fetch(`${server.origin}/resume/role`, {
+    const confirmed = await fetch(`${server.origin}/resume/role`, {
       method: "POST",
       redirect: "manual",
       headers: { origin: server.origin, "content-type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({
         csrfToken: productToken(
           "/resume/role",
-          PRODUCT_WORKFLOW_ACTIONS.continueRoleWorkflow,
+          PRODUCT_WORKFLOW_ACTIONS.confirmRoleDirection,
           "role-ai-product-manager",
         ),
-        action: PRODUCT_WORKFLOW_ACTIONS.continueRoleWorkflow,
+        action: PRODUCT_WORKFLOW_ACTIONS.confirmRoleDirection,
         targetId: "role-ai-product-manager",
       }),
     });
-    expect(continued.status).toBe(303);
-    const after = await (await fetch(`${server.origin}${continued.headers.get("location")}`)).text();
-    expect(after).toContain("Review and approve the role interpretation before preparing the resume.");
+    expect(confirmed.status).toBe(303);
+    const after = await (await fetch(`${server.origin}${confirmed.headers.get("location")}`)).text();
+    expect(after).toContain("Your Role direction is confirmed");
     expect(after).toContain("Continue Preparing Resume");
     expect(after).not.toContain("Review Resume");
   }, 20_000);

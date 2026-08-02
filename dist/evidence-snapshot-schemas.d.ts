@@ -554,11 +554,11 @@ export declare const EvidenceSnapshotSourceArtifactSchema: z.ZodObject<{
 }, "strict", z.ZodTypeAny, {
     sha256: string;
     path: string;
-    id: "sources" | "evidence-items" | "claims";
+    id: "sources" | "claims" | "evidence-items";
 }, {
     sha256: string;
     path: string;
-    id: "sources" | "evidence-items" | "claims";
+    id: "sources" | "claims" | "evidence-items";
 }>;
 export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
     schemaVersion: z.ZodLiteral<1>;
@@ -607,11 +607,11 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
         }, "strict", z.ZodTypeAny, {
             sha256: string;
             path: string;
-            id: "sources" | "evidence-items" | "claims";
+            id: "sources" | "claims" | "evidence-items";
         }, {
             sha256: string;
             path: string;
-            id: "sources" | "evidence-items" | "claims";
+            id: "sources" | "claims" | "evidence-items";
         }>, "many">;
     }, "strict", z.ZodTypeAny, {
         id: "prooflayer-reviewed-evidence-foundation";
@@ -619,7 +619,7 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
         artifacts: {
             sha256: string;
             path: string;
-            id: "sources" | "evidence-items" | "claims";
+            id: "sources" | "claims" | "evidence-items";
         }[];
         reviewInventorySha256?: string | undefined;
     }, {
@@ -628,7 +628,7 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
         artifacts: {
             sha256: string;
             path: string;
-            id: "sources" | "evidence-items" | "claims";
+            id: "sources" | "claims" | "evidence-items";
         }[];
         reviewInventorySha256?: string | undefined;
     }>;
@@ -1277,7 +1277,7 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
         artifacts: {
             sha256: string;
             path: string;
-            id: "sources" | "evidence-items" | "claims";
+            id: "sources" | "claims" | "evidence-items";
         }[];
         reviewInventorySha256?: string | undefined;
     };
@@ -1441,7 +1441,7 @@ export declare const EvidenceFoundationSnapshotSchema: z.ZodObject<{
         artifacts: {
             sha256: string;
             path: string;
-            id: "sources" | "evidence-items" | "claims";
+            id: "sources" | "claims" | "evidence-items";
         }[];
         reviewInventorySha256?: string | undefined;
     };

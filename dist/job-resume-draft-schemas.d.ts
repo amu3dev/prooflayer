@@ -617,8 +617,8 @@ export declare const JobResumeDraftItemSchema: z.ZodObject<{
     };
     evidenceIds: string[];
     text: string;
-    requirementIds: string[];
     qualifiers: string[];
+    requirementIds: string[];
     claimIds: string[];
     coverageIds: string[];
     assessmentIds: string[];
@@ -695,8 +695,8 @@ export declare const JobResumeDraftItemSchema: z.ZodObject<{
     };
     evidenceIds: string[];
     text: string;
-    requirementIds: string[];
     qualifiers: string[];
+    requirementIds: string[];
     claimIds: string[];
     coverageIds: string[];
     assessmentIds: string[];
@@ -1049,8 +1049,8 @@ export declare const JobResumeDraftSectionSchema: z.ZodObject<{
         };
         evidenceIds: string[];
         text: string;
-        requirementIds: string[];
         qualifiers: string[];
+        requirementIds: string[];
         claimIds: string[];
         coverageIds: string[];
         assessmentIds: string[];
@@ -1127,8 +1127,8 @@ export declare const JobResumeDraftSectionSchema: z.ZodObject<{
         };
         evidenceIds: string[];
         text: string;
-        requirementIds: string[];
         qualifiers: string[];
+        requirementIds: string[];
         claimIds: string[];
         coverageIds: string[];
         assessmentIds: string[];
@@ -1244,8 +1244,8 @@ export declare const JobResumeDraftSectionSchema: z.ZodObject<{
         };
         evidenceIds: string[];
         text: string;
-        requirementIds: string[];
         qualifiers: string[];
+        requirementIds: string[];
         claimIds: string[];
         coverageIds: string[];
         assessmentIds: string[];
@@ -1340,8 +1340,8 @@ export declare const JobResumeDraftSectionSchema: z.ZodObject<{
         };
         evidenceIds: string[];
         text: string;
-        requirementIds: string[];
         qualifiers: string[];
+        requirementIds: string[];
         claimIds: string[];
         coverageIds: string[];
         assessmentIds: string[];
@@ -2780,8 +2780,8 @@ export declare const ModelJobResumeDraftPayloadSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             text: string;
-            requirementIds: string[];
             qualifiers: string[];
+            requirementIds: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -2858,8 +2858,8 @@ export declare const ModelJobResumeDraftPayloadSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             text: string;
-            requirementIds: string[];
             qualifiers: string[];
+            requirementIds: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -2975,8 +2975,8 @@ export declare const ModelJobResumeDraftPayloadSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             text: string;
-            requirementIds: string[];
             qualifiers: string[];
+            requirementIds: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -3071,8 +3071,8 @@ export declare const ModelJobResumeDraftPayloadSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             text: string;
-            requirementIds: string[];
             qualifiers: string[];
+            requirementIds: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -3237,8 +3237,8 @@ export declare const ModelJobResumeDraftPayloadSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             text: string;
-            requirementIds: string[];
             qualifiers: string[];
+            requirementIds: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -3359,8 +3359,8 @@ export declare const ModelJobResumeDraftPayloadSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             text: string;
-            requirementIds: string[];
             qualifiers: string[];
+            requirementIds: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -3863,8 +3863,8 @@ export declare const JobResumeDraftProposalSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             text: string;
-            requirementIds: string[];
             qualifiers: string[];
+            requirementIds: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -3941,8 +3941,8 @@ export declare const JobResumeDraftProposalSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             text: string;
-            requirementIds: string[];
             qualifiers: string[];
+            requirementIds: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -4058,8 +4058,8 @@ export declare const JobResumeDraftProposalSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             text: string;
-            requirementIds: string[];
             qualifiers: string[];
+            requirementIds: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -4154,8 +4154,8 @@ export declare const JobResumeDraftProposalSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             text: string;
-            requirementIds: string[];
             qualifiers: string[];
+            requirementIds: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -4742,8 +4742,8 @@ export declare const JobResumeDraftProposalSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             text: string;
-            requirementIds: string[];
             qualifiers: string[];
+            requirementIds: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -4998,8 +4998,8 @@ export declare const JobResumeDraftProposalSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             text: string;
-            requirementIds: string[];
             qualifiers: string[];
+            requirementIds: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -5775,8 +5775,8 @@ export declare const ApprovedJobResumeDraftSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             text: string;
-            requirementIds: string[];
             qualifiers: string[];
+            requirementIds: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -5853,8 +5853,8 @@ export declare const ApprovedJobResumeDraftSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             text: string;
-            requirementIds: string[];
             qualifiers: string[];
+            requirementIds: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -5970,8 +5970,8 @@ export declare const ApprovedJobResumeDraftSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             text: string;
-            requirementIds: string[];
             qualifiers: string[];
+            requirementIds: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -6066,8 +6066,8 @@ export declare const ApprovedJobResumeDraftSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             text: string;
-            requirementIds: string[];
             qualifiers: string[];
+            requirementIds: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -6710,8 +6710,8 @@ export declare const ApprovedJobResumeDraftSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             text: string;
-            requirementIds: string[];
             qualifiers: string[];
+            requirementIds: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -6970,8 +6970,8 @@ export declare const ApprovedJobResumeDraftSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             text: string;
-            requirementIds: string[];
             qualifiers: string[];
+            requirementIds: string[];
             claimIds: string[];
             coverageIds: string[];
             assessmentIds: string[];
@@ -7197,9 +7197,9 @@ export declare const ApprovedJobResumeDraftManifestSchema: z.ZodObject<{
     proposalId: string;
     proposalSha256: string;
     reviewSha256: string;
-    assessmentSha256: string;
-    policyName: string;
     reviewId: string;
+    policyName: string;
+    assessmentSha256: string;
     requirementModelSha256: string;
     evidenceMapSha256: string;
     coverageSha256: string;
@@ -7218,9 +7218,9 @@ export declare const ApprovedJobResumeDraftManifestSchema: z.ZodObject<{
     proposalId: string;
     proposalSha256: string;
     reviewSha256: string;
-    assessmentSha256: string;
-    policyName: string;
     reviewId: string;
+    policyName: string;
+    assessmentSha256: string;
     requirementModelSha256: string;
     evidenceMapSha256: string;
     coverageSha256: string;

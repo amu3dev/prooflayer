@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { hashText, pathExists, writeBufferAtomic } from "./fs-utils.js";
+import { hashText, pathExists, readJson, writeBufferAtomic } from "./fs-utils.js";
 import {
   approveRoleResumeDraftProposal,
   getApprovedRoleResumeDraftStatus,
@@ -9,8 +9,8 @@ import {
 import { getApprovedJobResumeDraftStatus } from "./approved-job-resume-draft.js";
 import { showJobFitProofAssessment, getJobFitProofAssessmentStatus } from "./job-fit-proof-assessment.js";
 import { showJobRequirementModel, getJobRequirementModelStatus } from "./job-requirements.js";
-import { buildRoleResumeDraftScaffold, getRoleResumeDraftScaffoldStatus, showRoleResumeDraftScaffold } from "./role-resume-drafting.js";
-import { buildRoleResumePlan, getRoleResumePlanStatus, showRoleResumePlan } from "./role-resume-planning.js";
+import { buildRoleResumeDraftScaffold, getRoleResumeDraftScaffoldStatus, loadRoleResumeDraftingContext, showRoleResumeDraftScaffold } from "./role-resume-drafting.js";
+import { buildRoleResumePlan, getRoleResumePlanStatus, promoteDeterministicRoleResumePlan, showRoleResumePlan } from "./role-resume-planning.js";
 import { getJobResumeDraftScaffoldStatus } from "./job-resume-drafting.js";
 import { getJobResumePlanStatus, showJobResumePlan } from "./job-resume-planning.js";
 import {
@@ -24,6 +24,7 @@ import {
   getRoleResumeDraftReviewStatus,
   initializeRoleResumeDraftReview,
   setRoleResumeDraftReviewDecision,
+  setRoleResumeDraftStatementReviewDecision,
   showRoleResumeDraftReview,
   type RoleResumeDraftReviewStatus,
 } from "./role-resume-draft-review.js";
@@ -32,17 +33,44 @@ import {
   listRoleResumeExports,
   type ExportRoleResumeResult,
 } from "./role-resume-render-export.js";
-import type { InterpretationModelProvider } from "./model-provider.js";
+import {
+  createModelProvider,
+  loadModelProviderConfiguration,
+  type InterpretationModelProvider,
+} from "./model-provider.js";
 import type { RoleResumeDraftProposal, RoleResumeDraftReview, RoleResumeDraftSection } from "./role-resume-draft-schemas.js";
 import type { RoleResumeExportFormat } from "./role-resume-render-schemas.js";
 import { inspectJobWorkflow, runJobWorkflow, type JobWorkflowStatus } from "./job-workflow.js";
 import {
   continueRoleWorkflow,
+  confirmGeneratedRoleDirection,
   inspectRoleWorkflow,
   runRoleWorkflow,
   type RoleWorkflowStatus,
 } from "./role-workflow.js";
-import type { RoleTarget, Target } from "./schemas.js";
+import {
+  EvidenceItemSchema,
+  type EvidenceMatch,
+  type ExpectationCoverageStatus,
+  type RoleTarget,
+  type Target,
+} from "./schemas.js";
+import {
+  EVIDENCE_MATCHER_NAME,
+  EVIDENCE_MATCHER_VERSION,
+  EVIDENCE_MATCHING_POLICY_VERSION,
+  expectationProvenance,
+  getApprovedEvidenceMatchingStatus,
+  loadMatchingContext,
+  manualMatchId,
+  writeApprovedMatching,
+} from "./evidence-matching.js";
+import { calculateEvidenceFoundationSnapshot } from "./evidence-snapshots.js";
+import {
+  buildFitAssessment,
+  getFitAssessmentStatus,
+  promoteDeterministicRoleFitAssessment,
+} from "./fit-assessment.js";
 import { analyzeTarget, getTargetAnalysisStatus } from "./target-analysis.js";
 import {
   createJobTarget,
@@ -159,13 +187,93 @@ export async function continueRoleResumeJourney(
   specialization?: string,
   options: { provider?: InterpretationModelProvider; now?: () => Date; rebuild?: boolean } = {},
 ): Promise<RoleJourneyProjection> {
-  await continueRoleWorkflow(workspace, targetId, {
+  await continueGuidedRoleResumeWorkflow(workspace, targetId, {
     offline: true,
     specialization,
     rebuildStale: Boolean(specialization),
+    provider: options.provider,
+    now: options.now,
+    rebuild: options.rebuild,
   });
-  await advanceRoleResumePreparation(workspace, targetId, options);
   return inspectRoleResumeJourney(workspace, targetId);
+}
+
+export async function confirmRoleDirectionForProduct(
+  workspace: string,
+  targetId: string,
+  options: { reviewerName?: string; now?: () => Date } = {},
+) {
+  return confirmGeneratedRoleDirection(workspace, targetId, options);
+}
+
+export async function reviseRoleDirectionForProduct(
+  workspace: string,
+  targetId: string,
+  specialization: string,
+  options: { now?: () => Date } = {},
+): Promise<RoleJourneyProjection> {
+  await continueRoleWorkflow(workspace, targetId, {
+    offline: true,
+    specialization,
+    rebuildStale: true,
+    now: options.now,
+  });
+  return inspectRoleResumeJourney(workspace, targetId);
+}
+
+export async function continueGuidedRoleResumeWorkflow(
+  workspace: string,
+  targetId: string,
+  options: {
+    providerName?: string;
+    provider?: InterpretationModelProvider;
+    environment?: NodeJS.ProcessEnv;
+    offline?: boolean;
+    specialization?: string;
+    rebuildStale?: boolean;
+    rebuild?: boolean;
+    dryRun?: boolean;
+    refresh?: boolean;
+    now?: () => Date;
+  } = {},
+) {
+  const roleResult = await continueRoleWorkflow(workspace, targetId, options);
+  if (options.dryRun || roleResult.result === "paused") {
+    return { roleResult, preparation: { result: options.dryRun ? "already-current" as const : "paused" as const, providerCallMade: false } };
+  }
+  let provider = options.provider;
+  if (!provider && options.providerName) {
+    const configuration = loadModelProviderConfiguration(options.environment ?? process.env);
+    if (configuration.providerId !== options.providerName) {
+      throw new Error(`Configured writing provider ${configuration.providerId} does not match requested provider ${options.providerName}.`);
+    }
+    if (configuration.providerId === "fake" && !options.offline) {
+      throw new Error("The fake writing provider requires explicit --offline.");
+    }
+    if (configuration.providerId !== "fake" && options.offline) {
+      throw new Error("--offline requires an explicitly configured fake writing provider.");
+    }
+    provider = createModelProvider(configuration);
+  }
+  const preparation = await advanceRoleResumePreparation(workspace, targetId, {
+    provider,
+    environment: options.environment,
+    rebuild: options.rebuild ?? options.rebuildStale,
+    now: options.now,
+  });
+  return {
+    roleResult: {
+      ...roleResult,
+      result: preparation.result === "paused"
+        ? "paused" as const
+        : roleResult.result === "already-current" && preparation.result === "already-current"
+          ? "already-current" as const
+          : "created" as const,
+      providerCallMade: roleResult.providerCallMade || preparation.providerCallMade,
+      status: await inspectRoleWorkflow(workspace, targetId),
+    },
+    preparation,
+  };
 }
 
 export async function inspectRoleResumeJourney(
@@ -198,38 +306,76 @@ export async function inspectRoleResumeJourney(
 export async function advanceRoleResumePreparation(
   workspace: string,
   targetId: string,
-  options: { provider?: InterpretationModelProvider; now?: () => Date; rebuild?: boolean } = {},
-): Promise<{ result: "advanced" | "paused" | "already-current"; message?: string }> {
-  const workflow = await inspectRoleWorkflow(workspace, targetId);
-  if (workflow.canonical.approvedDraft === "current") return { result: "already-current" };
-
-  if (workflow.canonical.scaffold !== "current") {
-    if (workflow.canonical.plan === "current") {
-      await buildRoleResumeDraftScaffold(workspace, targetId, { rebuild: options.rebuild, now: options.now });
-      return { result: "advanced" };
-    }
-    if (workflow.canonical.assessment === "current") {
-      const deterministicPlan = await getRoleResumePlanStatus(workspace, targetId, "deterministic");
-      if (deterministicPlan.status === "missing") {
-        await buildRoleResumePlan(workspace, targetId, { now: options.now });
-        return { result: "advanced" };
-      }
-      return {
-        result: "paused",
-        message: workflow.nextAction,
-      };
-    }
-    return { result: "paused", message: workflow.nextAction };
+  options: { provider?: InterpretationModelProvider; environment?: NodeJS.ProcessEnv; now?: () => Date; rebuild?: boolean } = {},
+): Promise<{ result: "advanced" | "paused" | "already-current"; message?: string; providerCallMade: boolean }> {
+  let advanced = false;
+  let workflow = await inspectRoleWorkflow(workspace, targetId);
+  if (workflow.canonical.approvedDraft === "current") return { result: "already-current", providerCallMade: false };
+  if (workflow.canonical.approvedInterpretation !== "current") {
+    return { result: "paused", message: "Confirm the generated Role direction before selecting experience.", providerCallMade: false };
   }
+
+  const matchingStatus = await getApprovedEvidenceMatchingStatus(workspace, targetId);
+  if (matchingStatus.status === "missing") {
+    await approveGuidedRoleEvidenceSelection(workspace, workflow, { now: options.now });
+    advanced = true;
+  } else if (["stale", "invalid"].includes(matchingStatus.status)) {
+    if (!options.rebuild) return { result: "paused", message: `Role evidence selection is ${matchingStatus.status}; rebuild is required.`, providerCallMade: false };
+    await approveGuidedRoleEvidenceSelection(workspace, workflow, { now: options.now, rebuild: true });
+    advanced = true;
+  }
+
+  let approvedAssessment = await getFitAssessmentStatus(workspace, targetId, "approved");
+  if (approvedAssessment.status !== "current") {
+    if (["stale", "invalid"].includes(approvedAssessment.status) && !options.rebuild) {
+      return { result: "paused", message: `Role fit assessment is ${approvedAssessment.status}; rebuild is required.`, providerCallMade: false };
+    }
+    const deterministic = await getFitAssessmentStatus(workspace, targetId, "deterministic");
+    if (deterministic.status !== "current") {
+      await buildFitAssessment(workspace, targetId, { rebuild: options.rebuild, now: options.now });
+    }
+    await promoteDeterministicRoleFitAssessment(workspace, targetId, { rebuild: options.rebuild, now: options.now });
+    approvedAssessment = await getFitAssessmentStatus(workspace, targetId, "approved");
+    advanced = true;
+  }
+
+  let approvedPlan = await getRoleResumePlanStatus(workspace, targetId, "approved");
+  if (approvedPlan.status !== "current") {
+    if (["stale", "invalid"].includes(approvedPlan.status) && !options.rebuild) {
+      return { result: "paused", message: `Role Resume Content Plan is ${approvedPlan.status}; rebuild is required.`, providerCallMade: false };
+    }
+    const deterministic = await getRoleResumePlanStatus(workspace, targetId, "deterministic");
+    if (deterministic.status !== "current") {
+      await buildRoleResumePlan(workspace, targetId, { rebuild: options.rebuild, now: options.now });
+    }
+    try {
+      await promoteDeterministicRoleResumePlan(workspace, targetId, { rebuild: options.rebuild, now: options.now });
+    } catch (error) {
+      return { result: "paused", message: errorMessage(error), providerCallMade: false };
+    }
+    approvedPlan = await getRoleResumePlanStatus(workspace, targetId, "approved");
+    advanced = true;
+  }
+
+  const scaffoldStatus = await getRoleResumeDraftScaffoldStatus(workspace, targetId);
+  if (scaffoldStatus.status !== "current") {
+    if (["stale", "invalid"].includes(scaffoldStatus.status) && !options.rebuild) {
+      return { result: "paused", message: `Resume structure is ${scaffoldStatus.status}; rebuild is required.`, providerCallMade: false };
+    }
+    await buildRoleResumeDraftScaffold(workspace, targetId, { rebuild: options.rebuild, now: options.now });
+    advanced = true;
+  }
+
+  workflow = await inspectRoleWorkflow(workspace, targetId);
 
   const latest = await latestRoleResumeDraftProposalForProduct(workspace, targetId);
   if (latest?.status === "current" && latest.readyForReview) {
     const review = await getRoleResumeDraftReviewStatus(workspace, latest.id);
     if (review.status === "missing") await initializeRoleResumeDraftReview(workspace, latest.id);
-    return { result: "advanced" };
+    return { result: advanced ? "advanced" : "already-current", providerCallMade: false };
   }
   if (latest && ["stale", "invalid"].includes(latest.status)) {
-    return { result: "paused", message: "The existing resume wording proposal needs an explicit rebuild before review." };
+    return { result: "paused", message: "The existing resume wording proposal needs an explicit rebuild before review.", providerCallMade: false };
   }
 
   try {
@@ -239,7 +385,7 @@ export async function advanceRoleResumePreparation(
     });
   } catch (error) {
     if (isMissingWritingProvider(error)) {
-      return { result: "paused", message: "A writing provider is needed to prepare the resume wording." };
+      return { result: "paused", message: "Configure a writing provider to prepare reviewable resume wording.", providerCallMade: false };
     }
     throw error;
   }
@@ -248,7 +394,76 @@ export async function advanceRoleResumePreparation(
   if (!proposal) throw new Error("The writing provider did not produce a stored resume proposal.");
   const status = await getRoleResumeDraftProposalStatus(workspace, proposal.id);
   if (status.status === "current" && status.readyForReview) await initializeRoleResumeDraftReview(workspace, proposal.id);
-  return { result: "advanced" };
+  return { result: "advanced", providerCallMade: true };
+}
+
+async function approveGuidedRoleEvidenceSelection(
+  workspace: string,
+  workflow: RoleWorkflowStatus,
+  options: { rebuild?: boolean; now?: () => Date } = {},
+) {
+  const context = await loadMatchingContext(workspace, workflow.target.id, {
+    persistSnapshot: true,
+    rebuildSnapshot: options.rebuild,
+    now: options.now,
+  });
+  const expectationByStatement = new Map(
+    context.eligibleExpectations.map((entry) => [normalizeText(entry.statement), entry]),
+  );
+  const matches: EvidenceMatch[] = [];
+  const matchedExpectations = new Set<string>();
+  const seen = new Set<string>();
+  for (const link of workflow.evidenceLinks) {
+    const expectation = expectationByStatement.get(normalizeText(link.expectation));
+    const evidence = context.snapshot.entries.find((entry) => entry.evidenceId === link.evidenceId);
+    if (!expectation || !evidence) continue;
+    const key = `${expectation.id}\u0000${evidence.evidenceId}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    matchedExpectations.add(expectation.id);
+    const direct = link.relationship === "supporting";
+    matches.push({
+      id: manualMatchId(
+        workflow.target.id,
+        expectation.id,
+        [evidence.evidenceId],
+        direct ? "direct" : "partial",
+      ),
+      expectationId: expectation.id,
+      evidenceIds: [evidence.evidenceId],
+      matchType: direct ? "direct" : "partial",
+      coverage: direct ? "full" : "partial",
+      evidenceStrength: direct ? "medium" : "weak",
+      temporalRelevance: "unknown",
+      rationale: link.rationale,
+      expectationProvenance: expectationProvenance(context, expectation),
+      evidenceProvenance: [evidence.provenance],
+      trustState: "manual-approved",
+      interpretation: {
+        method: "manual",
+        matcherName: EVIDENCE_MATCHER_NAME,
+        matcherVersion: EVIDENCE_MATCHER_VERSION,
+        policyVersion: EVIDENCE_MATCHING_POLICY_VERSION,
+      },
+      matchConfidence: direct ? "medium" : "low",
+      limitations: direct
+        ? ["The guided selection preserves the reviewed claim boundary and does not authorize broader scope."]
+        : ["This is adjacent or partial evidence and must remain qualified in downstream wording."],
+      notes: ["Confirmed through the guided Role Resume continuation after the selected evidence was shown."],
+    });
+  }
+  const explicitCoverage = new Map<string, ExpectationCoverageStatus>();
+  for (const expectation of context.eligibleExpectations) {
+    if (!matchedExpectations.has(expectation.id)) explicitCoverage.set(expectation.id, "unsupported");
+  }
+  return writeApprovedMatching(
+    workspace,
+    context,
+    matches,
+    explicitCoverage,
+    {},
+    { rebuild: options.rebuild, now: options.now },
+  );
 }
 
 export async function inspectRoleResumeDraftForProduct(
@@ -259,6 +474,12 @@ export async function inspectRoleResumeDraftForProduct(
   proposal: RoleResumeDraftProposal;
   review: RoleResumeDraftReview;
   reviewStatus: RoleResumeDraftReviewStatus;
+  itemContext: Record<string, {
+    evidence: Array<{ id: string; summary: string }>;
+    claims: Array<{ id: string; text: string }>;
+    boundaries: Array<{ id: string; rationale: string; qualifiers: string[] }>;
+    ledgerEffect: string;
+  }>;
 }> {
   const proposal = proposalId
     ? await showRoleResumeDraftProposal(workspace, proposalId)
@@ -268,10 +489,42 @@ export async function inspectRoleResumeDraftForProduct(
   if (reviewStatus.status === "missing") {
     await initializeRoleResumeDraftReview(workspace, proposal.id);
   }
+  const context = await loadRoleResumeDraftingContext(workspace, targetId);
+  const evidenceItems = (await readJson<unknown[]>(path.join(workspace, "kb/evidence-items.json"), []))
+    .map((entry) => EvidenceItemSchema.parse(entry));
+  const foundationSnapshot = await calculateEvidenceFoundationSnapshot(workspace);
+  const claims = foundationSnapshot.claims.flatMap((entry) => entry.content ? [entry.content] : []);
+  const evidenceById = new Map(evidenceItems.map((entry) => [entry.id, entry]));
+  const claimByEvidenceId = new Map<string, typeof claims>();
+  for (const claim of claims) {
+    for (const evidenceId of claim.supportingEvidenceIds) {
+      claimByEvidenceId.set(evidenceId, [...(claimByEvidenceId.get(evidenceId) ?? []), claim]);
+    }
+  }
+  const boundaryById = new Map(context.approvedPlan.claimBoundaries.map((entry) => [entry.id, entry]));
+  const itemContext = Object.fromEntries(proposal.sections.flatMap((section) => section.items).map((item) => {
+    const evidence = item.evidenceIds.flatMap((id) => {
+      const entry = evidenceById.get(id);
+      return entry ? [{ id, summary: entry.normalizedSummary ?? entry.text }] : [];
+    });
+    const itemClaims = [...new Map(item.evidenceIds.flatMap((id) => claimByEvidenceId.get(id) ?? [])
+      .map((claim) => [claim.id, { id: claim.id, text: claim.approvedWording ?? claim.claim }])).values()];
+    const boundaries = item.claimBoundaryIds.flatMap((id) => {
+      const entry = boundaryById.get(id);
+      return entry ? [{ id, rationale: entry.rationale, qualifiers: entry.requiredQualifiers }] : [];
+    });
+    return [item.id, {
+      evidence,
+      claims: itemClaims,
+      boundaries,
+      ledgerEffect: "Looks Good or a valid edit includes this statement in the claim ledger; Remove or Needs Attention excludes it from approval.",
+    }];
+  }));
   return {
     proposal,
     review: await showRoleResumeDraftReview(workspace, proposal.id),
     reviewStatus: await getRoleResumeDraftReviewStatus(workspace, proposal.id),
+    itemContext,
   };
 }
 
@@ -285,7 +538,11 @@ export async function setRoleResumeDraftReviewDecisionForProduct(
 ): Promise<RoleResumeDraftReviewStatus> {
   const proposal = await showRoleResumeDraftProposal(workspace, proposalId);
   if (proposal.targetId !== targetId) throw new Error("Role draft review belongs to a different Role Target.");
-  await setRoleResumeDraftReviewDecision(workspace, proposalId, itemType, itemId, input);
+  if (itemType === "draft-item") {
+    await setRoleResumeDraftStatementReviewDecision(workspace, proposalId, itemId, input);
+  } else {
+    await setRoleResumeDraftReviewDecision(workspace, proposalId, itemType, itemId, input);
+  }
   return getRoleResumeDraftReviewStatus(workspace, proposalId);
 }
 
@@ -392,19 +649,19 @@ async function roleDraftPreview(
 
 function rolePrimaryAction(
   workflow: RoleWorkflowStatus,
-  state: { prepared: boolean; proposalReady: boolean; reviewInProgress: boolean; reviewComplete: boolean; approved: boolean; exported: boolean },
+  state: { interpretationConfirmed: boolean; prepared: boolean; proposalReady: boolean; reviewInProgress: boolean; reviewComplete: boolean; approved: boolean; exported: boolean },
 ): RoleJourneyProjection["primaryAction"] {
   const targetQuery = `?target=${encodeURIComponent(workflow.target.id)}`;
   if (state.exported) return {
     kind: "view",
-    label: "View Resume",
+    label: "Download Resume",
     detail: "Your current role resume exports are ready.",
     method: "GET",
-    href: `/resume/role${targetQuery}#resume-exports`,
+    href: `/resume/role/download${targetQuery}`,
   };
   if (state.approved) return {
     kind: "export",
-    label: "Export Resume",
+    label: "Prepare Downloads",
     detail: "Export the approved wording as Markdown, HTML, and DOCX.",
     method: "POST",
     href: "/resume/role",
@@ -423,6 +680,21 @@ function rolePrimaryAction(
     detail: "Review the actual resume wording before it can be approved.",
     method: "GET",
     href: `/resume/role/review${targetQuery}&proposal=${encodeURIComponent(workflow.draftProposal.id)}`,
+  };
+  if (state.prepared) return {
+    kind: "blocked",
+    label: "Configure Writing Provider",
+    detail: "Resume structure is ready. Configure the local writing provider, then continue preparation.",
+    method: "GET",
+    href: `/resume/role${targetQuery}#writing-provider`,
+  };
+  if (workflow.understandingStatus === "current" && !state.interpretationConfirmed) return {
+    kind: "approve",
+    label: "Confirm Role Direction",
+    detail: "Review the generated role understanding and confirm it before ProofLayer selects experience.",
+    method: "POST",
+    href: "/resume/role",
+    action: PRODUCT_WORKFLOW_ACTIONS.confirmRoleDirection,
   };
   if (workflow.understandingStatus === "current") return {
     kind: "continue",
@@ -467,7 +739,8 @@ function isMissingWritingProvider(error: unknown): boolean {
 
 async function projectRoleJourney(workspace: string, workflow: RoleWorkflowStatus): Promise<RoleJourneyProjection> {
   const roleUnderstood = workflow.understandingStatus === "current";
-  const selected = workflow.selectedEvidenceIds.length > 0 || workflow.canonical.approvedMatching === "current";
+  const interpretationConfirmed = workflow.canonical.approvedInterpretation === "current";
+  const selected = workflow.canonical.approvedMatching === "current";
   const prepared = workflow.canonical.scaffold === "current";
   const proposalReady = workflow.draftProposal?.status === "current" && workflow.draftProposal.readyForReview;
   const reviewInProgress = workflow.draftReview?.status === "in-progress";
@@ -478,6 +751,7 @@ async function projectRoleJourney(workspace: string, workflow: RoleWorkflowStatu
   );
   const draft = await roleDraftPreview(workspace, workflow, proposalReady || reviewInProgress || reviewComplete || approved);
   const primaryAction = rolePrimaryAction(workflow, {
+    interpretationConfirmed,
     prepared,
     proposalReady,
     reviewInProgress,
@@ -492,7 +766,7 @@ async function projectRoleJourney(workspace: string, workflow: RoleWorkflowStatu
       selected ? `${workflow.selectedEvidenceIds.length} reviewed evidence item(s) support the current positioning.` : "No eligible evidence can yet be connected safely."),
     step("Resume prepared", prepared, selected && !prepared,
       prepared ? "The resume structure is prepared from the approved Role workflow." : "Resume preparation waits for current approved planning inputs."),
-    step("Ready for review", proposalReady || reviewInProgress, prepared && !proposalReady && !reviewInProgress,
+    step(proposalReady || reviewInProgress ? "Ready for review" : prepared ? "Writing provider required" : "Resume draft", proposalReady || reviewInProgress, prepared && !proposalReady && !reviewInProgress,
       proposalReady || reviewInProgress ? "A resume draft is ready for human review." : "No reviewable resume wording exists yet."),
     step("Approved", approved, reviewComplete && !approved,
       approved ? "The reviewed structured resume is approved." : reviewComplete ? "Review is complete; deterministic approval is the next action." : "Approval follows completed human review."),
@@ -509,15 +783,17 @@ async function projectRoleJourney(workspace: string, workflow: RoleWorkflowStatu
         : "A reviewable role resume draft is ready. The wording remains unapproved until you review it."
       : prepared
         ? "Resume structure is prepared from your existing Career Twin; wording still requires an explicit writing provider."
-        : roleUnderstood
-          ? "ProofLayer generated a conservative role understanding and checked it against your existing Career Twin. No source re-upload is required."
+        : interpretationConfirmed
+          ? "Your Role direction is confirmed. ProofLayer can now select and prepare only defensible Career Twin evidence."
+          : roleUnderstood
+            ? "ProofLayer generated a conservative role understanding for your confirmation. No source re-upload is required."
       : "Your target and existing Career Twin are saved; no source re-upload is required.",
     ...(workflow.blocker ? { blocker: workflow.blocker.message } : {}),
     nextAction: workflow.nextAction,
     primaryAction,
     ...(workflow.understanding ? {
       understanding: {
-        state: workflow.understanding.state,
+        state: interpretationConfirmed ? "reviewed" : workflow.understanding.state,
         summary: workflow.understanding.summary,
         sourceLabel: workflow.understanding.source.type === "built-in-taxonomy"
           ? "Conservative built-in role model"
@@ -827,4 +1103,12 @@ function slugify(value: string): string {
 
 function isMissingTarget(error: unknown): boolean {
   return error instanceof Error && error.message.startsWith("Target not found:");
+}
+
+function normalizeText(value: string): string {
+  return value.normalize("NFKC").toLowerCase().replace(/[^a-z0-9]+/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
 }

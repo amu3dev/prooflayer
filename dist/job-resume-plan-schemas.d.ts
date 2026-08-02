@@ -1130,7 +1130,7 @@ export declare const JobResumePositioningSchema: z.ZodObject<{
         };
     };
     state: "direct" | "insufficient-proof" | "indeterminate" | "adjacent" | "stretch";
-    sourceOverallAssessment: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
+    sourceOverallAssessment: "strong" | "indeterminate" | "limited" | "insufficient" | "mixed" | "credible";
     targetTitle: string;
     targetTitleUse: "positioning-only";
     primaryRequirementIds: string[];
@@ -1199,7 +1199,7 @@ export declare const JobResumePositioningSchema: z.ZodObject<{
         };
     };
     state: "direct" | "insufficient-proof" | "indeterminate" | "adjacent" | "stretch";
-    sourceOverallAssessment: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
+    sourceOverallAssessment: "strong" | "indeterminate" | "limited" | "insufficient" | "mixed" | "credible";
     targetTitle: string;
     targetTitleUse: "positioning-only";
     primaryRequirementIds: string[];
@@ -1613,7 +1613,7 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
 }, "strict", z.ZodTypeAny, {
     decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
     id: string;
-    necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+    necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
     category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
     provenance: {
         targetId: string;
@@ -1677,7 +1677,7 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
     materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
     requirementId: string;
     coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-    assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+    assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
     proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
     rationaleCode: "mandatory-strong-support" | "mandatory-defensible-support" | "preferred-defensible-support" | "contextual-defensible-support" | "mandatory-partial-support" | "nonmandatory-partial-support" | "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement";
     selectedLinkIds: string[];
@@ -1689,7 +1689,7 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
 }, {
     decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
     id: string;
-    necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+    necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
     category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
     provenance: {
         targetId: string;
@@ -1753,7 +1753,7 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
     materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
     requirementId: string;
     coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-    assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+    assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
     proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
     rationaleCode: "mandatory-strong-support" | "mandatory-defensible-support" | "preferred-defensible-support" | "contextual-defensible-support" | "mandatory-partial-support" | "nonmandatory-partial-support" | "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement";
     selectedLinkIds: string[];
@@ -1765,7 +1765,7 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
 }>, {
     decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
     id: string;
-    necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+    necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
     category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
     provenance: {
         targetId: string;
@@ -1829,7 +1829,7 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
     materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
     requirementId: string;
     coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-    assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+    assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
     proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
     rationaleCode: "mandatory-strong-support" | "mandatory-defensible-support" | "preferred-defensible-support" | "contextual-defensible-support" | "mandatory-partial-support" | "nonmandatory-partial-support" | "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement";
     selectedLinkIds: string[];
@@ -1841,7 +1841,7 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
 }, {
     decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
     id: string;
-    necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+    necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
     category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
     provenance: {
         targetId: string;
@@ -1905,7 +1905,7 @@ export declare const JobRequirementEmphasisSchema: z.ZodEffects<z.ZodObject<{
     materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
     requirementId: string;
     coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-    assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+    assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
     proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
     rationaleCode: "mandatory-strong-support" | "mandatory-defensible-support" | "preferred-defensible-support" | "contextual-defensible-support" | "mandatory-partial-support" | "nonmandatory-partial-support" | "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement";
     selectedLinkIds: string[];
@@ -4195,7 +4195,7 @@ export declare const JobGapHandlingRuleSchema: z.ZodObject<{
         };
     };
     requirementId: string;
-    assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+    assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
     adjacentEvidenceIds: string[];
     adjacentClaimIds: string[];
     constraintCodes: ("not-positive-positioning" | "not-direct-satisfaction" | "no-compensating-narrative" | "no-gap-closing-advice" | "no-application-advice")[];
@@ -4262,7 +4262,7 @@ export declare const JobGapHandlingRuleSchema: z.ZodObject<{
         };
     };
     requirementId: string;
-    assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+    assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
     adjacentEvidenceIds: string[];
     adjacentClaimIds: string[];
     constraintCodes: ("not-positive-positioning" | "not-direct-satisfaction" | "no-compensating-narrative" | "no-gap-closing-advice" | "no-application-advice")[];
@@ -5211,7 +5211,7 @@ export declare const JobResumeContentExclusionSchema: z.ZodObject<{
 }, "strict", z.ZodTypeAny, {
     type: "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement" | "project-as-employment" | "unverified-metric" | "target-title-history" | "non-resume-ready-evidence" | "private-evidence" | "unapproved-claim" | "unsupported-terminology" | "unsupported-seniority-or-scope" | "irrelevant-evidence" | "duplicate-evidence-use";
     id: string;
-    sourceType: "claim" | "target" | "evidence" | "policy" | "requirement";
+    sourceType: "claim" | "target" | "policy" | "evidence" | "requirement";
     provenance: {
         targetId: string;
         evidenceIds: string[];
@@ -5277,7 +5277,7 @@ export declare const JobResumeContentExclusionSchema: z.ZodObject<{
 }, {
     type: "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement" | "project-as-employment" | "unverified-metric" | "target-title-history" | "non-resume-ready-evidence" | "private-evidence" | "unapproved-claim" | "unsupported-terminology" | "unsupported-seniority-or-scope" | "irrelevant-evidence" | "duplicate-evidence-use";
     id: string;
-    sourceType: "claim" | "target" | "evidence" | "policy" | "requirement";
+    sourceType: "claim" | "target" | "policy" | "evidence" | "requirement";
     provenance: {
         targetId: string;
         evidenceIds: string[];
@@ -5426,8 +5426,8 @@ export declare const JobResumePlanCompletenessSchema: z.ZodEffects<z.ZodObject<{
 }, "strict", z.ZodTypeAny, {
     status: "empty" | "partial" | "complete";
     blockingReasons: string[];
-    requirementIds: string[];
     provenanceComplete: boolean;
+    requirementIds: string[];
     plannedRequirementIds: string[];
     selectedRequirementIds: string[];
     deferredRequirementIds: string[];
@@ -5439,8 +5439,8 @@ export declare const JobResumePlanCompletenessSchema: z.ZodEffects<z.ZodObject<{
 }, {
     status: "empty" | "partial" | "complete";
     blockingReasons: string[];
-    requirementIds: string[];
     provenanceComplete: boolean;
+    requirementIds: string[];
     plannedRequirementIds: string[];
     selectedRequirementIds: string[];
     deferredRequirementIds: string[];
@@ -5452,8 +5452,8 @@ export declare const JobResumePlanCompletenessSchema: z.ZodEffects<z.ZodObject<{
 }>, {
     status: "empty" | "partial" | "complete";
     blockingReasons: string[];
-    requirementIds: string[];
     provenanceComplete: boolean;
+    requirementIds: string[];
     plannedRequirementIds: string[];
     selectedRequirementIds: string[];
     deferredRequirementIds: string[];
@@ -5465,8 +5465,8 @@ export declare const JobResumePlanCompletenessSchema: z.ZodEffects<z.ZodObject<{
 }, {
     status: "empty" | "partial" | "complete";
     blockingReasons: string[];
-    requirementIds: string[];
     provenanceComplete: boolean;
+    requirementIds: string[];
     plannedRequirementIds: string[];
     selectedRequirementIds: string[];
     deferredRequirementIds: string[];
@@ -5629,11 +5629,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             sha256: string;
             path: string;
         };
-        jobDescription: {
-            sha256: string;
-            path: string;
-        };
-        normalizedInputSha256: string;
         claims: {
             sha256: string;
             path: string;
@@ -5642,6 +5637,11 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             sha256: string;
             path: string;
         };
+        jobDescription: {
+            sha256: string;
+            path: string;
+        };
+        normalizedInputSha256: string;
         requirementModelType: "approved" | "deterministic";
         requirementModel: {
             sha256: string;
@@ -5678,11 +5678,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             sha256: string;
             path: string;
         };
-        jobDescription: {
-            sha256: string;
-            path: string;
-        };
-        normalizedInputSha256: string;
         claims: {
             sha256: string;
             path: string;
@@ -5691,6 +5686,11 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             sha256: string;
             path: string;
         };
+        jobDescription: {
+            sha256: string;
+            path: string;
+        };
+        normalizedInputSha256: string;
         requirementModelType: "approved" | "deterministic";
         requirementModel: {
             sha256: string;
@@ -6169,7 +6169,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             };
         };
         state: "direct" | "insufficient-proof" | "indeterminate" | "adjacent" | "stretch";
-        sourceOverallAssessment: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
+        sourceOverallAssessment: "strong" | "indeterminate" | "limited" | "insufficient" | "mixed" | "credible";
         targetTitle: string;
         targetTitleUse: "positioning-only";
         primaryRequirementIds: string[];
@@ -6238,7 +6238,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             };
         };
         state: "direct" | "insufficient-proof" | "indeterminate" | "adjacent" | "stretch";
-        sourceOverallAssessment: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
+        sourceOverallAssessment: "strong" | "indeterminate" | "limited" | "insufficient" | "mixed" | "credible";
         targetTitle: string;
         targetTitleUse: "positioning-only";
         primaryRequirementIds: string[];
@@ -6652,7 +6652,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
     }, "strict", z.ZodTypeAny, {
         decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         provenance: {
             targetId: string;
@@ -6716,7 +6716,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
         materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
         requirementId: string;
         coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+        assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
         proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
         rationaleCode: "mandatory-strong-support" | "mandatory-defensible-support" | "preferred-defensible-support" | "contextual-defensible-support" | "mandatory-partial-support" | "nonmandatory-partial-support" | "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement";
         selectedLinkIds: string[];
@@ -6728,7 +6728,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
     }, {
         decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         provenance: {
             targetId: string;
@@ -6792,7 +6792,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
         materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
         requirementId: string;
         coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+        assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
         proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
         rationaleCode: "mandatory-strong-support" | "mandatory-defensible-support" | "preferred-defensible-support" | "contextual-defensible-support" | "mandatory-partial-support" | "nonmandatory-partial-support" | "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement";
         selectedLinkIds: string[];
@@ -6804,7 +6804,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
     }>, {
         decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         provenance: {
             targetId: string;
@@ -6868,7 +6868,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
         materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
         requirementId: string;
         coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+        assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
         proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
         rationaleCode: "mandatory-strong-support" | "mandatory-defensible-support" | "preferred-defensible-support" | "contextual-defensible-support" | "mandatory-partial-support" | "nonmandatory-partial-support" | "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement";
         selectedLinkIds: string[];
@@ -6880,7 +6880,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
     }, {
         decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         provenance: {
             targetId: string;
@@ -6944,7 +6944,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
         materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
         requirementId: string;
         coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+        assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
         proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
         rationaleCode: "mandatory-strong-support" | "mandatory-defensible-support" | "preferred-defensible-support" | "contextual-defensible-support" | "mandatory-partial-support" | "nonmandatory-partial-support" | "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement";
         selectedLinkIds: string[];
@@ -9764,7 +9764,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             };
         };
         requirementId: string;
-        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+        assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
         adjacentEvidenceIds: string[];
         adjacentClaimIds: string[];
         constraintCodes: ("not-positive-positioning" | "not-direct-satisfaction" | "no-compensating-narrative" | "no-gap-closing-advice" | "no-application-advice")[];
@@ -9831,7 +9831,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             };
         };
         requirementId: string;
-        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+        assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
         adjacentEvidenceIds: string[];
         adjacentClaimIds: string[];
         constraintCodes: ("not-positive-positioning" | "not-direct-satisfaction" | "no-compensating-narrative" | "no-gap-closing-advice" | "no-application-advice")[];
@@ -10231,7 +10231,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
     }, "strict", z.ZodTypeAny, {
         type: "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement" | "project-as-employment" | "unverified-metric" | "target-title-history" | "non-resume-ready-evidence" | "private-evidence" | "unapproved-claim" | "unsupported-terminology" | "unsupported-seniority-or-scope" | "irrelevant-evidence" | "duplicate-evidence-use";
         id: string;
-        sourceType: "claim" | "target" | "evidence" | "policy" | "requirement";
+        sourceType: "claim" | "target" | "policy" | "evidence" | "requirement";
         provenance: {
             targetId: string;
             evidenceIds: string[];
@@ -10297,7 +10297,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
     }, {
         type: "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement" | "project-as-employment" | "unverified-metric" | "target-title-history" | "non-resume-ready-evidence" | "private-evidence" | "unapproved-claim" | "unsupported-terminology" | "unsupported-seniority-or-scope" | "irrelevant-evidence" | "duplicate-evidence-use";
         id: string;
-        sourceType: "claim" | "target" | "evidence" | "policy" | "requirement";
+        sourceType: "claim" | "target" | "policy" | "evidence" | "requirement";
         provenance: {
             targetId: string;
             evidenceIds: string[];
@@ -10446,8 +10446,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
     }, "strict", z.ZodTypeAny, {
         status: "empty" | "partial" | "complete";
         blockingReasons: string[];
-        requirementIds: string[];
         provenanceComplete: boolean;
+        requirementIds: string[];
         plannedRequirementIds: string[];
         selectedRequirementIds: string[];
         deferredRequirementIds: string[];
@@ -10459,8 +10459,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
     }, {
         status: "empty" | "partial" | "complete";
         blockingReasons: string[];
-        requirementIds: string[];
         provenanceComplete: boolean;
+        requirementIds: string[];
         plannedRequirementIds: string[];
         selectedRequirementIds: string[];
         deferredRequirementIds: string[];
@@ -10472,8 +10472,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
     }>, {
         status: "empty" | "partial" | "complete";
         blockingReasons: string[];
-        requirementIds: string[];
         provenanceComplete: boolean;
+        requirementIds: string[];
         plannedRequirementIds: string[];
         selectedRequirementIds: string[];
         deferredRequirementIds: string[];
@@ -10485,8 +10485,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
     }, {
         status: "empty" | "partial" | "complete";
         blockingReasons: string[];
-        requirementIds: string[];
         provenanceComplete: boolean;
+        requirementIds: string[];
         plannedRequirementIds: string[];
         selectedRequirementIds: string[];
         deferredRequirementIds: string[];
@@ -10519,11 +10519,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             sha256: string;
             path: string;
         };
-        jobDescription: {
-            sha256: string;
-            path: string;
-        };
-        normalizedInputSha256: string;
         claims: {
             sha256: string;
             path: string;
@@ -10532,6 +10527,11 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             sha256: string;
             path: string;
         };
+        jobDescription: {
+            sha256: string;
+            path: string;
+        };
+        normalizedInputSha256: string;
         requirementModelType: "approved" | "deterministic";
         requirementModel: {
             sha256: string;
@@ -10650,8 +10650,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
     completeness: {
         status: "empty" | "partial" | "complete";
         blockingReasons: string[];
-        requirementIds: string[];
         provenanceComplete: boolean;
+        requirementIds: string[];
         plannedRequirementIds: string[];
         selectedRequirementIds: string[];
         deferredRequirementIds: string[];
@@ -10736,7 +10736,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             };
         };
         state: "direct" | "insufficient-proof" | "indeterminate" | "adjacent" | "stretch";
-        sourceOverallAssessment: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
+        sourceOverallAssessment: "strong" | "indeterminate" | "limited" | "insufficient" | "mixed" | "credible";
         targetTitle: string;
         targetTitleUse: "positioning-only";
         primaryRequirementIds: string[];
@@ -10748,7 +10748,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
     requirementEmphasis: {
         decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         provenance: {
             targetId: string;
@@ -10812,7 +10812,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
         materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
         requirementId: string;
         coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+        assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
         proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
         rationaleCode: "mandatory-strong-support" | "mandatory-defensible-support" | "preferred-defensible-support" | "contextual-defensible-support" | "mandatory-partial-support" | "nonmandatory-partial-support" | "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement";
         selectedLinkIds: string[];
@@ -11108,7 +11108,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             };
         };
         requirementId: string;
-        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+        assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
         adjacentEvidenceIds: string[];
         adjacentClaimIds: string[];
         constraintCodes: ("not-positive-positioning" | "not-direct-satisfaction" | "no-compensating-narrative" | "no-gap-closing-advice" | "no-application-advice")[];
@@ -11116,7 +11116,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
     exclusions: {
         type: "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement" | "project-as-employment" | "unverified-metric" | "target-title-history" | "non-resume-ready-evidence" | "private-evidence" | "unapproved-claim" | "unsupported-terminology" | "unsupported-seniority-or-scope" | "irrelevant-evidence" | "duplicate-evidence-use";
         id: string;
-        sourceType: "claim" | "target" | "evidence" | "policy" | "requirement";
+        sourceType: "claim" | "target" | "policy" | "evidence" | "requirement";
         provenance: {
             targetId: string;
             evidenceIds: string[];
@@ -11201,11 +11201,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             sha256: string;
             path: string;
         };
-        jobDescription: {
-            sha256: string;
-            path: string;
-        };
-        normalizedInputSha256: string;
         claims: {
             sha256: string;
             path: string;
@@ -11214,6 +11209,11 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             sha256: string;
             path: string;
         };
+        jobDescription: {
+            sha256: string;
+            path: string;
+        };
+        normalizedInputSha256: string;
         requirementModelType: "approved" | "deterministic";
         requirementModel: {
             sha256: string;
@@ -11332,8 +11332,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
     completeness: {
         status: "empty" | "partial" | "complete";
         blockingReasons: string[];
-        requirementIds: string[];
         provenanceComplete: boolean;
+        requirementIds: string[];
         plannedRequirementIds: string[];
         selectedRequirementIds: string[];
         deferredRequirementIds: string[];
@@ -11418,7 +11418,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             };
         };
         state: "direct" | "insufficient-proof" | "indeterminate" | "adjacent" | "stretch";
-        sourceOverallAssessment: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
+        sourceOverallAssessment: "strong" | "indeterminate" | "limited" | "insufficient" | "mixed" | "credible";
         targetTitle: string;
         targetTitleUse: "positioning-only";
         primaryRequirementIds: string[];
@@ -11430,7 +11430,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
     requirementEmphasis: {
         decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         provenance: {
             targetId: string;
@@ -11494,7 +11494,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
         materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
         requirementId: string;
         coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+        assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
         proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
         rationaleCode: "mandatory-strong-support" | "mandatory-defensible-support" | "preferred-defensible-support" | "contextual-defensible-support" | "mandatory-partial-support" | "nonmandatory-partial-support" | "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement";
         selectedLinkIds: string[];
@@ -11790,7 +11790,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             };
         };
         requirementId: string;
-        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+        assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
         adjacentEvidenceIds: string[];
         adjacentClaimIds: string[];
         constraintCodes: ("not-positive-positioning" | "not-direct-satisfaction" | "no-compensating-narrative" | "no-gap-closing-advice" | "no-application-advice")[];
@@ -11798,7 +11798,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
     exclusions: {
         type: "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement" | "project-as-employment" | "unverified-metric" | "target-title-history" | "non-resume-ready-evidence" | "private-evidence" | "unapproved-claim" | "unsupported-terminology" | "unsupported-seniority-or-scope" | "irrelevant-evidence" | "duplicate-evidence-use";
         id: string;
-        sourceType: "claim" | "target" | "evidence" | "policy" | "requirement";
+        sourceType: "claim" | "target" | "policy" | "evidence" | "requirement";
         provenance: {
             targetId: string;
             evidenceIds: string[];
@@ -11883,11 +11883,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             sha256: string;
             path: string;
         };
-        jobDescription: {
-            sha256: string;
-            path: string;
-        };
-        normalizedInputSha256: string;
         claims: {
             sha256: string;
             path: string;
@@ -11896,6 +11891,11 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             sha256: string;
             path: string;
         };
+        jobDescription: {
+            sha256: string;
+            path: string;
+        };
+        normalizedInputSha256: string;
         requirementModelType: "approved" | "deterministic";
         requirementModel: {
             sha256: string;
@@ -12014,8 +12014,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
     completeness: {
         status: "empty" | "partial" | "complete";
         blockingReasons: string[];
-        requirementIds: string[];
         provenanceComplete: boolean;
+        requirementIds: string[];
         plannedRequirementIds: string[];
         selectedRequirementIds: string[];
         deferredRequirementIds: string[];
@@ -12100,7 +12100,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             };
         };
         state: "direct" | "insufficient-proof" | "indeterminate" | "adjacent" | "stretch";
-        sourceOverallAssessment: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
+        sourceOverallAssessment: "strong" | "indeterminate" | "limited" | "insufficient" | "mixed" | "credible";
         targetTitle: string;
         targetTitleUse: "positioning-only";
         primaryRequirementIds: string[];
@@ -12112,7 +12112,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
     requirementEmphasis: {
         decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         provenance: {
             targetId: string;
@@ -12176,7 +12176,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
         materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
         requirementId: string;
         coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+        assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
         proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
         rationaleCode: "mandatory-strong-support" | "mandatory-defensible-support" | "preferred-defensible-support" | "contextual-defensible-support" | "mandatory-partial-support" | "nonmandatory-partial-support" | "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement";
         selectedLinkIds: string[];
@@ -12472,7 +12472,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             };
         };
         requirementId: string;
-        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+        assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
         adjacentEvidenceIds: string[];
         adjacentClaimIds: string[];
         constraintCodes: ("not-positive-positioning" | "not-direct-satisfaction" | "no-compensating-narrative" | "no-gap-closing-advice" | "no-application-advice")[];
@@ -12480,7 +12480,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
     exclusions: {
         type: "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement" | "project-as-employment" | "unverified-metric" | "target-title-history" | "non-resume-ready-evidence" | "private-evidence" | "unapproved-claim" | "unsupported-terminology" | "unsupported-seniority-or-scope" | "irrelevant-evidence" | "duplicate-evidence-use";
         id: string;
-        sourceType: "claim" | "target" | "evidence" | "policy" | "requirement";
+        sourceType: "claim" | "target" | "policy" | "evidence" | "requirement";
         provenance: {
             targetId: string;
             evidenceIds: string[];
@@ -12565,11 +12565,6 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             sha256: string;
             path: string;
         };
-        jobDescription: {
-            sha256: string;
-            path: string;
-        };
-        normalizedInputSha256: string;
         claims: {
             sha256: string;
             path: string;
@@ -12578,6 +12573,11 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             sha256: string;
             path: string;
         };
+        jobDescription: {
+            sha256: string;
+            path: string;
+        };
+        normalizedInputSha256: string;
         requirementModelType: "approved" | "deterministic";
         requirementModel: {
             sha256: string;
@@ -12696,8 +12696,8 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
     completeness: {
         status: "empty" | "partial" | "complete";
         blockingReasons: string[];
-        requirementIds: string[];
         provenanceComplete: boolean;
+        requirementIds: string[];
         plannedRequirementIds: string[];
         selectedRequirementIds: string[];
         deferredRequirementIds: string[];
@@ -12782,7 +12782,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             };
         };
         state: "direct" | "insufficient-proof" | "indeterminate" | "adjacent" | "stretch";
-        sourceOverallAssessment: "strong" | "limited" | "insufficient" | "indeterminate" | "mixed" | "credible";
+        sourceOverallAssessment: "strong" | "indeterminate" | "limited" | "insufficient" | "mixed" | "credible";
         targetTitle: string;
         targetTitleUse: "positioning-only";
         primaryRequirementIds: string[];
@@ -12794,7 +12794,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
     requirementEmphasis: {
         decision: "exclude" | "supporting" | "secondary" | "primary" | "defer";
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         provenance: {
             targetId: string;
@@ -12858,7 +12858,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
         materiality: "unknown" | "contextual" | "critical" | "material" | "secondary";
         requirementId: string;
         coverageState: "unsupported" | "supported" | "partially-supported" | "contradicted" | "indeterminate";
-        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+        assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
         proofStrength: "conflicting" | "strong" | "adequate" | "limited" | "unavailable";
         rationaleCode: "mandatory-strong-support" | "mandatory-defensible-support" | "preferred-defensible-support" | "contextual-defensible-support" | "mandatory-partial-support" | "nonmandatory-partial-support" | "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement";
         selectedLinkIds: string[];
@@ -13154,7 +13154,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
             };
         };
         requirementId: string;
-        assessmentState: "partial" | "supported" | "contradiction" | "indeterminate" | "strength" | "gap";
+        assessmentState: "partial" | "supported" | "indeterminate" | "contradiction" | "strength" | "gap";
         adjacentEvidenceIds: string[];
         adjacentClaimIds: string[];
         constraintCodes: ("not-positive-positioning" | "not-direct-satisfaction" | "no-compensating-narrative" | "no-gap-closing-advice" | "no-application-advice")[];
@@ -13162,7 +13162,7 @@ export declare const JobResumeContentPlanSchema: z.ZodEffects<z.ZodObject<{
     exclusions: {
         type: "unsupported-requirement" | "contradicted-requirement" | "indeterminate-requirement" | "project-as-employment" | "unverified-metric" | "target-title-history" | "non-resume-ready-evidence" | "private-evidence" | "unapproved-claim" | "unsupported-terminology" | "unsupported-seniority-or-scope" | "irrelevant-evidence" | "duplicate-evidence-use";
         id: string;
-        sourceType: "claim" | "target" | "evidence" | "policy" | "requirement";
+        sourceType: "claim" | "target" | "policy" | "evidence" | "requirement";
         provenance: {
             targetId: string;
             evidenceIds: string[];
@@ -13270,8 +13270,8 @@ export declare const JobResumeContentPlanManifestSchema: z.ZodObject<{
     sourcesSha256: string;
     evidenceItemsSha256: string;
     claimsSha256: string;
-    assessmentSha256: string;
     policyName: string;
+    assessmentSha256: string;
     normalizedInputSha256: string;
     requirementModelType: "approved" | "deterministic";
     requirementModelSha256: string;
@@ -13300,8 +13300,8 @@ export declare const JobResumeContentPlanManifestSchema: z.ZodObject<{
     sourcesSha256: string;
     evidenceItemsSha256: string;
     claimsSha256: string;
-    assessmentSha256: string;
     policyName: string;
+    assessmentSha256: string;
     normalizedInputSha256: string;
     requirementModelType: "approved" | "deterministic";
     requirementModelSha256: string;

@@ -129,8 +129,8 @@ export declare const TargetEvidencePinManifestSchema: z.ZodObject<{
     targetSha256: string;
     targetType: "role" | "job";
     targetId: string;
-    snapshotManifestSha256: string;
     snapshotId: string;
+    snapshotManifestSha256: string;
     pinId: string;
     pinPath: string;
     pinSha256: string;
@@ -144,8 +144,8 @@ export declare const TargetEvidencePinManifestSchema: z.ZodObject<{
     targetSha256: string;
     targetType: "role" | "job";
     targetId: string;
-    snapshotManifestSha256: string;
     snapshotId: string;
+    snapshotManifestSha256: string;
     pinId: string;
     pinPath: string;
     pinSha256: string;

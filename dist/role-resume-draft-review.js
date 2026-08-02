@@ -67,6 +67,50 @@ export async function setRoleResumeDraftReviewDecision(workspace, proposalId, it
     await writeReview(workspace, review, roleResumeDraftReviewPaths(workspace, review.targetId, proposalId));
     return review;
 }
+export async function setRoleResumeDraftStatementReviewDecision(workspace, proposalId, itemId, input) {
+    const proposal = await showRoleResumeDraftProposal(workspace, proposalId);
+    const ledger = proposal.claimLedger.find((entry) => entry.draftItemId === itemId);
+    if (!ledger)
+        throw new Error(`Claim ledger entry is missing for draft statement: ${itemId}`);
+    const review = await showRoleResumeDraftReview(workspace, proposalId);
+    if (review.status === "completed")
+        throw new Error("Completed role resume draft reviews are immutable.");
+    const itemIndex = review.decisions.findIndex((entry) => entry.itemType === "draft-item" && entry.itemId === itemId);
+    const ledgerIndex = review.decisions.findIndex((entry) => entry.itemType === "claim-ledger" && entry.itemId === ledger.id);
+    if (itemIndex < 0 || ledgerIndex < 0)
+        throw new Error(`Review decisions are incomplete for draft statement: ${itemId}`);
+    if (review.decisions[itemIndex].decision !== "pending" || review.decisions[ledgerIndex].decision !== "pending") {
+        throw new Error(`A statement or claim-ledger decision already exists for ${itemId}.`);
+    }
+    if (input.decision === "edit" && input.editedValue === undefined)
+        throw new Error("Edit requires edited content.");
+    if (input.decision !== "edit" && input.editedValue !== undefined)
+        throw new Error("Only edit may include edited content.");
+    const editedValue = input.decision === "edit"
+        ? await validateReviewEdit(workspace, proposalId, "draft-item", itemId, input.editedValue)
+        : undefined;
+    const now = (input.now ?? (() => new Date()))().toISOString();
+    review.decisions[itemIndex] = {
+        itemType: "draft-item",
+        itemId,
+        decision: input.decision,
+        ...(editedValue !== undefined ? { editedValue } : {}),
+        ...(input.reviewNote ? { reviewNote: input.reviewNote } : {}),
+        decidedAt: now,
+    };
+    review.decisions[ledgerIndex] = {
+        itemType: "claim-ledger",
+        itemId: ledger.id,
+        decision: input.decision === "edit" ? "accept" : input.decision,
+        reviewNote: input.decision === "reject"
+            ? "Excluded with the reviewed statement."
+            : "Included with the reviewed statement after claim-ledger validation.",
+        decidedAt: now,
+    };
+    review.updatedAt = now;
+    await writeReview(workspace, review, roleResumeDraftReviewPaths(workspace, review.targetId, proposalId));
+    return review;
+}
 export async function completeRoleResumeDraftReview(workspace, proposalId, options = {}) {
     const review = await showRoleResumeDraftReview(workspace, proposalId);
     if (review.status === "completed")

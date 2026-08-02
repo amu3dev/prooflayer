@@ -1490,8 +1490,8 @@ export declare const JobResumeRenderDocumentManifestSchema: z.ZodObject<{
     updatedAt: string;
     targetId: string;
     policyVersion: "1";
-    assessmentSha256: string;
     policyName: "job-resume-rendering-policy";
+    assessmentSha256: string;
     requirementModelSha256: string;
     evidenceMapSha256: string;
     coverageSha256: string;
@@ -1513,8 +1513,8 @@ export declare const JobResumeRenderDocumentManifestSchema: z.ZodObject<{
     updatedAt: string;
     targetId: string;
     policyVersion: "1";
-    assessmentSha256: string;
     policyName: "job-resume-rendering-policy";
+    assessmentSha256: string;
     requirementModelSha256: string;
     evidenceMapSha256: string;
     coverageSha256: string;

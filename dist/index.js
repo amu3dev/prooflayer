@@ -55,7 +55,8 @@ import { composeRoleResumeRenderDocument, formatComposeRoleResumeResult, formatR
 import { exportAllRoleResume, exportRoleResume, formatExportAllRoleResumeResult, formatExportRoleResumeResult, formatRoleResumeExportList, formatRoleResumeExportStatus, getRoleResumeExportStatus, listRoleResumeExports, showRoleResumeExport, validateStoredRoleResumeExport, } from "./role-resume-render-export.js";
 import { RoleResumeDateFormatSchema, RoleResumeExportFormatSchema, RoleResumePageSizeSchema, RoleResumeRenderProfileNameSchema, } from "./role-resume-render-schemas.js";
 import { continueJobWorkflow, createGuidedJob, finalizeJobWorkflow, formatFinalizeJobWorkflowResult, formatGuidedJobCreation, formatJobWorkflowJson, formatJobWorkflowRunResult, formatJobWorkflowStatus, inspectJobWorkflow, runJobWorkflow, } from "./job-workflow.js";
-import { continueRoleWorkflow, createGuidedRole, finalizeRoleWorkflow, formatFinalizeRoleWorkflowResult, formatRoleWorkflowJson, formatRoleWorkflowRunResult, formatRoleWorkflowStatus, inspectRoleWorkflow, replayGeneratedRoleUnderstanding, runRoleWorkflow, } from "./role-workflow.js";
+import { createGuidedRole, finalizeRoleWorkflow, formatFinalizeRoleWorkflowResult, formatRoleWorkflowJson, formatRoleWorkflowRunResult, formatRoleWorkflowStatus, inspectRoleWorkflow, replayGeneratedRoleUnderstanding, runRoleWorkflow, } from "./role-workflow.js";
+import { continueGuidedRoleResumeWorkflow } from "./product-workflows.js";
 const program = new Command();
 program
     .name("prooflayer")
@@ -414,7 +415,8 @@ guidedRole
     .option("--dry-run", "inspect current state without writes or model calls")
     .description("Resume the guided Role workflow without bypassing review or approval.")
     .action(async (targetId, options) => {
-    console.log(formatRoleWorkflowRunResult(await continueRoleWorkflow(getWorkspace(), targetId, parseGuidedRoleRunOptions(options))));
+    const result = await continueGuidedRoleResumeWorkflow(getWorkspace(), targetId, parseGuidedRoleRunOptions(options));
+    console.log(formatRoleWorkflowRunResult(result.roleResult));
 });
 guidedRole
     .command("status <target-id>")

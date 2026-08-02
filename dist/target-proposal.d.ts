@@ -3,6 +3,8 @@ import { type InterpretationModelProvider } from "./model-provider.js";
 export declare const PROPOSAL_PROMPT_TEMPLATE_ID = "target-interpretation-proposal";
 export declare const PROPOSAL_PROMPT_TEMPLATE_VERSION = "1";
 export declare const PROPOSAL_POLICY_VERSION = "1";
+export declare const DETERMINISTIC_ROLE_CONFIRMATION_PROVIDER = "prooflayer-deterministic";
+export declare const DETERMINISTIC_ROLE_CONFIRMATION_MODEL = "guided-role-confirmation";
 export interface ProposalGenerationOptions {
     provider?: InterpretationModelProvider;
     environment?: NodeJS.ProcessEnv;
@@ -52,6 +54,9 @@ export interface ProposalListEntry {
     createdAt: string;
 }
 export declare function generateInterpretationProposal(workspace: string, targetId: string, options?: ProposalGenerationOptions): Promise<ProposalGenerationResult>;
+export declare function createDeterministicRoleConfirmationProposal(workspace: string, targetId: string, options?: {
+    now?: () => Date;
+}): Promise<ProposalGenerationResult>;
 export declare function replayInterpretationProposal(workspace: string, proposalId: string): Promise<{
     proposalId: string;
     originalSha256: string;

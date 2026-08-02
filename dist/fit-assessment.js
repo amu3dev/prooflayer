@@ -92,6 +92,33 @@ export async function buildFitAssessment(workspace, targetId, options = {}) {
     await writeJsonAtomic(paths.manifestPath, manifest);
     return buildResult(assessment, paths, status.status === "missing" ? "created" : "rebuilt");
 }
+export async function promoteDeterministicRoleFitAssessment(workspace, targetId, options = {}) {
+    const target = await showTarget(workspace, targetId);
+    if (target.type !== "role")
+        throw new Error("Deterministic Role assessment promotion accepts Role Targets only.");
+    const deterministicStatus = await getFitAssessmentStatus(workspace, targetId, "deterministic");
+    if (deterministicStatus.status !== "current") {
+        throw new Error(`Deterministic Role assessment must be current before promotion. Current status: ${deterministicStatus.status}`);
+    }
+    const paths = assessmentPaths(workspace, target, "approved");
+    const approvedStatus = await getFitAssessmentStatus(workspace, targetId, "approved");
+    if (approvedStatus.status === "current") {
+        return buildResult(await showFitAssessment(workspace, targetId, "approved"), paths, "already-current");
+    }
+    if (["stale", "invalid"].includes(approvedStatus.status) && !options.rebuild) {
+        throw new Error(`Approved Role assessment is ${approvedStatus.status}; use explicit rebuild after reviewing dependency changes.`);
+    }
+    const assessment = await showFitAssessment(workspace, targetId, "deterministic");
+    if (assessment.targetType !== "role" || assessment.mode !== "role-positioning") {
+        throw new Error("Only a deterministic Role positioning assessment may be promoted.");
+    }
+    const context = await loadAssessmentContext(workspace, targetId);
+    assertAssessmentConsistency(assessment, context);
+    await writeJsonAtomic(paths.assessmentPath, assessment);
+    const manifest = createAssessmentManifest(assessment, context, paths.assessmentRelativePath, await hashFile(paths.assessmentPath), "approved", assessment.createdAt, assessment.updatedAt);
+    await writeJsonAtomic(paths.manifestPath, manifest);
+    return buildResult(assessment, paths, approvedStatus.status === "missing" ? "created" : "rebuilt");
+}
 export async function showFitAssessment(workspace, targetId, artifactType = "deterministic") {
     const target = await showTarget(workspace, targetId);
     const paths = assessmentPaths(workspace, target, artifactType);

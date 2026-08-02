@@ -1,10 +1,11 @@
 import { setRoleResumeDraftReviewDecision, type RoleResumeDraftReviewStatus } from "./role-resume-draft-review.js";
 import { type ExportRoleResumeResult } from "./role-resume-render-export.js";
-import type { InterpretationModelProvider } from "./model-provider.js";
+import { type InterpretationModelProvider } from "./model-provider.js";
 import type { RoleResumeDraftProposal, RoleResumeDraftReview } from "./role-resume-draft-schemas.js";
 import type { RoleResumeExportFormat } from "./role-resume-render-schemas.js";
 import { type JobWorkflowStatus } from "./job-workflow.js";
-import type { RoleTarget, Target } from "./schemas.js";
+import { type RoleWorkflowStatus } from "./role-workflow.js";
+import { type RoleTarget, type Target } from "./schemas.js";
 import { type JobTargetInput, type RoleTargetInput } from "./targets.js";
 import { type ProductWorkflowActionName } from "./prooflayer-ui-request-scope.js";
 export interface ProductProgressStep {
@@ -113,19 +114,75 @@ export declare function continueRoleResumeJourney(workspace: string, targetId: s
     now?: () => Date;
     rebuild?: boolean;
 }): Promise<RoleJourneyProjection>;
+export declare function confirmRoleDirectionForProduct(workspace: string, targetId: string, options?: {
+    reviewerName?: string;
+    now?: () => Date;
+}): Promise<import("./role-workflow.js").ConfirmGeneratedRoleDirectionResult>;
+export declare function reviseRoleDirectionForProduct(workspace: string, targetId: string, specialization: string, options?: {
+    now?: () => Date;
+}): Promise<RoleJourneyProjection>;
+export declare function continueGuidedRoleResumeWorkflow(workspace: string, targetId: string, options?: {
+    providerName?: string;
+    provider?: InterpretationModelProvider;
+    environment?: NodeJS.ProcessEnv;
+    offline?: boolean;
+    specialization?: string;
+    rebuildStale?: boolean;
+    rebuild?: boolean;
+    dryRun?: boolean;
+    refresh?: boolean;
+    now?: () => Date;
+}): Promise<{
+    roleResult: import("./role-workflow.js").RunRoleWorkflowResult;
+    preparation: {
+        result: "already-current" | "paused";
+        providerCallMade: boolean;
+    };
+} | {
+    roleResult: {
+        result: "created" | "already-current" | "paused";
+        providerCallMade: boolean;
+        status: RoleWorkflowStatus;
+        mode: "run" | "continue";
+        dryRun: boolean;
+    };
+    preparation: {
+        result: "advanced" | "paused" | "already-current";
+        message?: string;
+        providerCallMade: boolean;
+    };
+}>;
 export declare function inspectRoleResumeJourney(workspace: string, targetId?: string): Promise<RoleJourneyProjection>;
 export declare function advanceRoleResumePreparation(workspace: string, targetId: string, options?: {
     provider?: InterpretationModelProvider;
+    environment?: NodeJS.ProcessEnv;
     now?: () => Date;
     rebuild?: boolean;
 }): Promise<{
     result: "advanced" | "paused" | "already-current";
     message?: string;
+    providerCallMade: boolean;
 }>;
 export declare function inspectRoleResumeDraftForProduct(workspace: string, targetId: string, proposalId?: string): Promise<{
     proposal: RoleResumeDraftProposal;
     review: RoleResumeDraftReview;
     reviewStatus: RoleResumeDraftReviewStatus;
+    itemContext: Record<string, {
+        evidence: Array<{
+            id: string;
+            summary: string;
+        }>;
+        claims: Array<{
+            id: string;
+            text: string;
+        }>;
+        boundaries: Array<{
+            id: string;
+            rationale: string;
+            qualifiers: string[];
+        }>;
+        ledgerEffect: string;
+    }>;
 }>;
 export declare function setRoleResumeDraftReviewDecisionForProduct(workspace: string, targetId: string, proposalId: string, itemType: Parameters<typeof setRoleResumeDraftReviewDecision>[2], itemId: string, input: Parameters<typeof setRoleResumeDraftReviewDecision>[4]): Promise<RoleResumeDraftReviewStatus>;
 export declare function completeRoleResumeDraftReviewForProduct(workspace: string, targetId: string, proposalId: string): Promise<RoleResumeDraftReviewStatus>;

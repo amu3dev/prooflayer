@@ -24,6 +24,12 @@ export declare function setRoleResumeDraftReviewDecision(workspace: string, prop
     reviewNote?: string;
     now?: () => Date;
 }): Promise<RoleResumeDraftReview>;
+export declare function setRoleResumeDraftStatementReviewDecision(workspace: string, proposalId: string, itemId: string, input: {
+    decision: "accept" | "edit" | "reject";
+    editedValue?: unknown;
+    reviewNote?: string;
+    now?: () => Date;
+}): Promise<RoleResumeDraftReview>;
 export declare function completeRoleResumeDraftReview(workspace: string, proposalId: string, options?: {
     now?: () => Date;
 }): Promise<RoleResumeDraftReviewStatus>;

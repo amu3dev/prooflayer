@@ -692,7 +692,7 @@ export declare const ExpectationFitAssessmentSchema: z.ZodObject<{
         trustState: "deterministic-approved" | "human-approved" | "human-edited";
         text: string;
     };
-    supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+    supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
     proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
     evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
     defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -775,7 +775,7 @@ export declare const ExpectationFitAssessmentSchema: z.ZodObject<{
         trustState: "deterministic-approved" | "human-approved" | "human-edited";
         text: string;
     };
-    supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+    supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
     proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
     evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
     defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -1753,7 +1753,7 @@ export declare const RoleFitAssessmentSchema: z.ZodObject<{
             trustState: "deterministic-approved" | "human-approved" | "human-edited";
             text: string;
         };
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -1836,7 +1836,7 @@ export declare const RoleFitAssessmentSchema: z.ZodObject<{
             trustState: "deterministic-approved" | "human-approved" | "human-edited";
             text: string;
         };
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -1992,6 +1992,14 @@ export declare const RoleFitAssessmentSchema: z.ZodObject<{
         manifestPath: string;
         manifestSha256: string;
     };
+    risks: {
+        code: "CRITICAL_REQUIREMENT_UNSUPPORTED" | "REQUIRED_EXPECTATION_PARTIALLY_SUPPORTED" | "MATERIAL_CONTRADICTION" | "EVIDENCE_TOO_GENERAL" | "EVIDENCE_TOO_OLD" | "EVIDENCE_TOO_WEAK" | "COMPOUND_EXPECTATION_PARTIALLY_COVERED" | "ASSESSMENT_INCOMPLETE" | "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE";
+        message: string;
+        id: string;
+        expectationIds: string[];
+        evidenceIds: string[];
+        severity: "high" | "medium" | "low" | "critical";
+    }[];
     evidenceSnapshotSha256: string;
     assessmentPolicy: {
         name: string;
@@ -2084,7 +2092,7 @@ export declare const RoleFitAssessmentSchema: z.ZodObject<{
             trustState: "deterministic-approved" | "human-approved" | "human-edited";
             text: string;
         };
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -2099,14 +2107,6 @@ export declare const RoleFitAssessmentSchema: z.ZodObject<{
             priority: "high" | "medium" | "low";
             relatedEvidenceIds: string[];
         }[];
-    }[];
-    risks: {
-        code: "CRITICAL_REQUIREMENT_UNSUPPORTED" | "REQUIRED_EXPECTATION_PARTIALLY_SUPPORTED" | "MATERIAL_CONTRADICTION" | "EVIDENCE_TOO_GENERAL" | "EVIDENCE_TOO_OLD" | "EVIDENCE_TOO_WEAK" | "COMPOUND_EXPECTATION_PARTIALLY_COVERED" | "ASSESSMENT_INCOMPLETE" | "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE";
-        message: string;
-        id: string;
-        expectationIds: string[];
-        evidenceIds: string[];
-        severity: "high" | "medium" | "low" | "critical";
     }[];
 }, {
     schemaVersion: 1;
@@ -2145,6 +2145,14 @@ export declare const RoleFitAssessmentSchema: z.ZodObject<{
         manifestPath: string;
         manifestSha256: string;
     };
+    risks: {
+        code: "CRITICAL_REQUIREMENT_UNSUPPORTED" | "REQUIRED_EXPECTATION_PARTIALLY_SUPPORTED" | "MATERIAL_CONTRADICTION" | "EVIDENCE_TOO_GENERAL" | "EVIDENCE_TOO_OLD" | "EVIDENCE_TOO_WEAK" | "COMPOUND_EXPECTATION_PARTIALLY_COVERED" | "ASSESSMENT_INCOMPLETE" | "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE";
+        message: string;
+        id: string;
+        expectationIds: string[];
+        evidenceIds: string[];
+        severity: "high" | "medium" | "low" | "critical";
+    }[];
     evidenceSnapshotSha256: string;
     assessmentPolicy: {
         name: string;
@@ -2237,7 +2245,7 @@ export declare const RoleFitAssessmentSchema: z.ZodObject<{
             trustState: "deterministic-approved" | "human-approved" | "human-edited";
             text: string;
         };
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -2252,14 +2260,6 @@ export declare const RoleFitAssessmentSchema: z.ZodObject<{
             priority: "high" | "medium" | "low";
             relatedEvidenceIds: string[];
         }[];
-    }[];
-    risks: {
-        code: "CRITICAL_REQUIREMENT_UNSUPPORTED" | "REQUIRED_EXPECTATION_PARTIALLY_SUPPORTED" | "MATERIAL_CONTRADICTION" | "EVIDENCE_TOO_GENERAL" | "EVIDENCE_TOO_OLD" | "EVIDENCE_TOO_WEAK" | "COMPOUND_EXPECTATION_PARTIALLY_COVERED" | "ASSESSMENT_INCOMPLETE" | "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE";
-        message: string;
-        id: string;
-        expectationIds: string[];
-        evidenceIds: string[];
-        severity: "high" | "medium" | "low" | "critical";
     }[];
 }>;
 export declare const JobFitAssessmentSchema: z.ZodObject<{
@@ -2837,7 +2837,7 @@ export declare const JobFitAssessmentSchema: z.ZodObject<{
             trustState: "deterministic-approved" | "human-approved" | "human-edited";
             text: string;
         };
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -2920,7 +2920,7 @@ export declare const JobFitAssessmentSchema: z.ZodObject<{
             trustState: "deterministic-approved" | "human-approved" | "human-edited";
             text: string;
         };
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -3076,6 +3076,14 @@ export declare const JobFitAssessmentSchema: z.ZodObject<{
         manifestPath: string;
         manifestSha256: string;
     };
+    risks: {
+        code: "CRITICAL_REQUIREMENT_UNSUPPORTED" | "REQUIRED_EXPECTATION_PARTIALLY_SUPPORTED" | "MATERIAL_CONTRADICTION" | "EVIDENCE_TOO_GENERAL" | "EVIDENCE_TOO_OLD" | "EVIDENCE_TOO_WEAK" | "COMPOUND_EXPECTATION_PARTIALLY_COVERED" | "ASSESSMENT_INCOMPLETE" | "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE";
+        message: string;
+        id: string;
+        expectationIds: string[];
+        evidenceIds: string[];
+        severity: "high" | "medium" | "low" | "critical";
+    }[];
     evidenceSnapshotSha256: string;
     assessmentPolicy: {
         name: string;
@@ -3190,7 +3198,7 @@ export declare const JobFitAssessmentSchema: z.ZodObject<{
             trustState: "deterministic-approved" | "human-approved" | "human-edited";
             text: string;
         };
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -3205,14 +3213,6 @@ export declare const JobFitAssessmentSchema: z.ZodObject<{
             priority: "high" | "medium" | "low";
             relatedEvidenceIds: string[];
         }[];
-    }[];
-    risks: {
-        code: "CRITICAL_REQUIREMENT_UNSUPPORTED" | "REQUIRED_EXPECTATION_PARTIALLY_SUPPORTED" | "MATERIAL_CONTRADICTION" | "EVIDENCE_TOO_GENERAL" | "EVIDENCE_TOO_OLD" | "EVIDENCE_TOO_WEAK" | "COMPOUND_EXPECTATION_PARTIALLY_COVERED" | "ASSESSMENT_INCOMPLETE" | "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE";
-        message: string;
-        id: string;
-        expectationIds: string[];
-        evidenceIds: string[];
-        severity: "high" | "medium" | "low" | "critical";
     }[];
 }, {
     schemaVersion: 1;
@@ -3251,6 +3251,14 @@ export declare const JobFitAssessmentSchema: z.ZodObject<{
         manifestPath: string;
         manifestSha256: string;
     };
+    risks: {
+        code: "CRITICAL_REQUIREMENT_UNSUPPORTED" | "REQUIRED_EXPECTATION_PARTIALLY_SUPPORTED" | "MATERIAL_CONTRADICTION" | "EVIDENCE_TOO_GENERAL" | "EVIDENCE_TOO_OLD" | "EVIDENCE_TOO_WEAK" | "COMPOUND_EXPECTATION_PARTIALLY_COVERED" | "ASSESSMENT_INCOMPLETE" | "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE";
+        message: string;
+        id: string;
+        expectationIds: string[];
+        evidenceIds: string[];
+        severity: "high" | "medium" | "low" | "critical";
+    }[];
     evidenceSnapshotSha256: string;
     assessmentPolicy: {
         name: string;
@@ -3365,7 +3373,7 @@ export declare const JobFitAssessmentSchema: z.ZodObject<{
             trustState: "deterministic-approved" | "human-approved" | "human-edited";
             text: string;
         };
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -3380,14 +3388,6 @@ export declare const JobFitAssessmentSchema: z.ZodObject<{
             priority: "high" | "medium" | "low";
             relatedEvidenceIds: string[];
         }[];
-    }[];
-    risks: {
-        code: "CRITICAL_REQUIREMENT_UNSUPPORTED" | "REQUIRED_EXPECTATION_PARTIALLY_SUPPORTED" | "MATERIAL_CONTRADICTION" | "EVIDENCE_TOO_GENERAL" | "EVIDENCE_TOO_OLD" | "EVIDENCE_TOO_WEAK" | "COMPOUND_EXPECTATION_PARTIALLY_COVERED" | "ASSESSMENT_INCOMPLETE" | "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE";
-        message: string;
-        id: string;
-        expectationIds: string[];
-        evidenceIds: string[];
-        severity: "high" | "medium" | "low" | "critical";
     }[];
 }>;
 export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedUnion<"targetType", [z.ZodObject<{
@@ -3851,7 +3851,7 @@ export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedU
             trustState: "deterministic-approved" | "human-approved" | "human-edited";
             text: string;
         };
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -3934,7 +3934,7 @@ export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedU
             trustState: "deterministic-approved" | "human-approved" | "human-edited";
             text: string;
         };
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -4090,6 +4090,14 @@ export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedU
         manifestPath: string;
         manifestSha256: string;
     };
+    risks: {
+        code: "CRITICAL_REQUIREMENT_UNSUPPORTED" | "REQUIRED_EXPECTATION_PARTIALLY_SUPPORTED" | "MATERIAL_CONTRADICTION" | "EVIDENCE_TOO_GENERAL" | "EVIDENCE_TOO_OLD" | "EVIDENCE_TOO_WEAK" | "COMPOUND_EXPECTATION_PARTIALLY_COVERED" | "ASSESSMENT_INCOMPLETE" | "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE";
+        message: string;
+        id: string;
+        expectationIds: string[];
+        evidenceIds: string[];
+        severity: "high" | "medium" | "low" | "critical";
+    }[];
     evidenceSnapshotSha256: string;
     assessmentPolicy: {
         name: string;
@@ -4182,7 +4190,7 @@ export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedU
             trustState: "deterministic-approved" | "human-approved" | "human-edited";
             text: string;
         };
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -4197,14 +4205,6 @@ export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedU
             priority: "high" | "medium" | "low";
             relatedEvidenceIds: string[];
         }[];
-    }[];
-    risks: {
-        code: "CRITICAL_REQUIREMENT_UNSUPPORTED" | "REQUIRED_EXPECTATION_PARTIALLY_SUPPORTED" | "MATERIAL_CONTRADICTION" | "EVIDENCE_TOO_GENERAL" | "EVIDENCE_TOO_OLD" | "EVIDENCE_TOO_WEAK" | "COMPOUND_EXPECTATION_PARTIALLY_COVERED" | "ASSESSMENT_INCOMPLETE" | "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE";
-        message: string;
-        id: string;
-        expectationIds: string[];
-        evidenceIds: string[];
-        severity: "high" | "medium" | "low" | "critical";
     }[];
 }, {
     schemaVersion: 1;
@@ -4243,6 +4243,14 @@ export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedU
         manifestPath: string;
         manifestSha256: string;
     };
+    risks: {
+        code: "CRITICAL_REQUIREMENT_UNSUPPORTED" | "REQUIRED_EXPECTATION_PARTIALLY_SUPPORTED" | "MATERIAL_CONTRADICTION" | "EVIDENCE_TOO_GENERAL" | "EVIDENCE_TOO_OLD" | "EVIDENCE_TOO_WEAK" | "COMPOUND_EXPECTATION_PARTIALLY_COVERED" | "ASSESSMENT_INCOMPLETE" | "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE";
+        message: string;
+        id: string;
+        expectationIds: string[];
+        evidenceIds: string[];
+        severity: "high" | "medium" | "low" | "critical";
+    }[];
     evidenceSnapshotSha256: string;
     assessmentPolicy: {
         name: string;
@@ -4335,7 +4343,7 @@ export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedU
             trustState: "deterministic-approved" | "human-approved" | "human-edited";
             text: string;
         };
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -4350,14 +4358,6 @@ export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedU
             priority: "high" | "medium" | "low";
             relatedEvidenceIds: string[];
         }[];
-    }[];
-    risks: {
-        code: "CRITICAL_REQUIREMENT_UNSUPPORTED" | "REQUIRED_EXPECTATION_PARTIALLY_SUPPORTED" | "MATERIAL_CONTRADICTION" | "EVIDENCE_TOO_GENERAL" | "EVIDENCE_TOO_OLD" | "EVIDENCE_TOO_WEAK" | "COMPOUND_EXPECTATION_PARTIALLY_COVERED" | "ASSESSMENT_INCOMPLETE" | "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE";
-        message: string;
-        id: string;
-        expectationIds: string[];
-        evidenceIds: string[];
-        severity: "high" | "medium" | "low" | "critical";
     }[];
 }>, z.ZodObject<{
     targetType: z.ZodLiteral<"job">;
@@ -4934,7 +4934,7 @@ export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedU
             trustState: "deterministic-approved" | "human-approved" | "human-edited";
             text: string;
         };
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -5017,7 +5017,7 @@ export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedU
             trustState: "deterministic-approved" | "human-approved" | "human-edited";
             text: string;
         };
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -5173,6 +5173,14 @@ export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedU
         manifestPath: string;
         manifestSha256: string;
     };
+    risks: {
+        code: "CRITICAL_REQUIREMENT_UNSUPPORTED" | "REQUIRED_EXPECTATION_PARTIALLY_SUPPORTED" | "MATERIAL_CONTRADICTION" | "EVIDENCE_TOO_GENERAL" | "EVIDENCE_TOO_OLD" | "EVIDENCE_TOO_WEAK" | "COMPOUND_EXPECTATION_PARTIALLY_COVERED" | "ASSESSMENT_INCOMPLETE" | "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE";
+        message: string;
+        id: string;
+        expectationIds: string[];
+        evidenceIds: string[];
+        severity: "high" | "medium" | "low" | "critical";
+    }[];
     evidenceSnapshotSha256: string;
     assessmentPolicy: {
         name: string;
@@ -5287,7 +5295,7 @@ export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedU
             trustState: "deterministic-approved" | "human-approved" | "human-edited";
             text: string;
         };
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -5302,14 +5310,6 @@ export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedU
             priority: "high" | "medium" | "low";
             relatedEvidenceIds: string[];
         }[];
-    }[];
-    risks: {
-        code: "CRITICAL_REQUIREMENT_UNSUPPORTED" | "REQUIRED_EXPECTATION_PARTIALLY_SUPPORTED" | "MATERIAL_CONTRADICTION" | "EVIDENCE_TOO_GENERAL" | "EVIDENCE_TOO_OLD" | "EVIDENCE_TOO_WEAK" | "COMPOUND_EXPECTATION_PARTIALLY_COVERED" | "ASSESSMENT_INCOMPLETE" | "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE";
-        message: string;
-        id: string;
-        expectationIds: string[];
-        evidenceIds: string[];
-        severity: "high" | "medium" | "low" | "critical";
     }[];
 }, {
     schemaVersion: 1;
@@ -5348,6 +5348,14 @@ export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedU
         manifestPath: string;
         manifestSha256: string;
     };
+    risks: {
+        code: "CRITICAL_REQUIREMENT_UNSUPPORTED" | "REQUIRED_EXPECTATION_PARTIALLY_SUPPORTED" | "MATERIAL_CONTRADICTION" | "EVIDENCE_TOO_GENERAL" | "EVIDENCE_TOO_OLD" | "EVIDENCE_TOO_WEAK" | "COMPOUND_EXPECTATION_PARTIALLY_COVERED" | "ASSESSMENT_INCOMPLETE" | "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE";
+        message: string;
+        id: string;
+        expectationIds: string[];
+        evidenceIds: string[];
+        severity: "high" | "medium" | "low" | "critical";
+    }[];
     evidenceSnapshotSha256: string;
     assessmentPolicy: {
         name: string;
@@ -5462,7 +5470,7 @@ export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedU
             trustState: "deterministic-approved" | "human-approved" | "human-edited";
             text: string;
         };
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -5477,14 +5485,6 @@ export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedU
             priority: "high" | "medium" | "low";
             relatedEvidenceIds: string[];
         }[];
-    }[];
-    risks: {
-        code: "CRITICAL_REQUIREMENT_UNSUPPORTED" | "REQUIRED_EXPECTATION_PARTIALLY_SUPPORTED" | "MATERIAL_CONTRADICTION" | "EVIDENCE_TOO_GENERAL" | "EVIDENCE_TOO_OLD" | "EVIDENCE_TOO_WEAK" | "COMPOUND_EXPECTATION_PARTIALLY_COVERED" | "ASSESSMENT_INCOMPLETE" | "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE";
-        message: string;
-        id: string;
-        expectationIds: string[];
-        evidenceIds: string[];
-        severity: "high" | "medium" | "low" | "critical";
     }[];
 }>]>, {
     schemaVersion: 1;
@@ -5523,6 +5523,14 @@ export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedU
         manifestPath: string;
         manifestSha256: string;
     };
+    risks: {
+        code: "CRITICAL_REQUIREMENT_UNSUPPORTED" | "REQUIRED_EXPECTATION_PARTIALLY_SUPPORTED" | "MATERIAL_CONTRADICTION" | "EVIDENCE_TOO_GENERAL" | "EVIDENCE_TOO_OLD" | "EVIDENCE_TOO_WEAK" | "COMPOUND_EXPECTATION_PARTIALLY_COVERED" | "ASSESSMENT_INCOMPLETE" | "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE";
+        message: string;
+        id: string;
+        expectationIds: string[];
+        evidenceIds: string[];
+        severity: "high" | "medium" | "low" | "critical";
+    }[];
     evidenceSnapshotSha256: string;
     assessmentPolicy: {
         name: string;
@@ -5615,7 +5623,7 @@ export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedU
             trustState: "deterministic-approved" | "human-approved" | "human-edited";
             text: string;
         };
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -5630,14 +5638,6 @@ export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedU
             priority: "high" | "medium" | "low";
             relatedEvidenceIds: string[];
         }[];
-    }[];
-    risks: {
-        code: "CRITICAL_REQUIREMENT_UNSUPPORTED" | "REQUIRED_EXPECTATION_PARTIALLY_SUPPORTED" | "MATERIAL_CONTRADICTION" | "EVIDENCE_TOO_GENERAL" | "EVIDENCE_TOO_OLD" | "EVIDENCE_TOO_WEAK" | "COMPOUND_EXPECTATION_PARTIALLY_COVERED" | "ASSESSMENT_INCOMPLETE" | "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE";
-        message: string;
-        id: string;
-        expectationIds: string[];
-        evidenceIds: string[];
-        severity: "high" | "medium" | "low" | "critical";
     }[];
 } | {
     schemaVersion: 1;
@@ -5676,6 +5676,14 @@ export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedU
         manifestPath: string;
         manifestSha256: string;
     };
+    risks: {
+        code: "CRITICAL_REQUIREMENT_UNSUPPORTED" | "REQUIRED_EXPECTATION_PARTIALLY_SUPPORTED" | "MATERIAL_CONTRADICTION" | "EVIDENCE_TOO_GENERAL" | "EVIDENCE_TOO_OLD" | "EVIDENCE_TOO_WEAK" | "COMPOUND_EXPECTATION_PARTIALLY_COVERED" | "ASSESSMENT_INCOMPLETE" | "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE";
+        message: string;
+        id: string;
+        expectationIds: string[];
+        evidenceIds: string[];
+        severity: "high" | "medium" | "low" | "critical";
+    }[];
     evidenceSnapshotSha256: string;
     assessmentPolicy: {
         name: string;
@@ -5790,7 +5798,7 @@ export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedU
             trustState: "deterministic-approved" | "human-approved" | "human-edited";
             text: string;
         };
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -5805,14 +5813,6 @@ export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedU
             priority: "high" | "medium" | "low";
             relatedEvidenceIds: string[];
         }[];
-    }[];
-    risks: {
-        code: "CRITICAL_REQUIREMENT_UNSUPPORTED" | "REQUIRED_EXPECTATION_PARTIALLY_SUPPORTED" | "MATERIAL_CONTRADICTION" | "EVIDENCE_TOO_GENERAL" | "EVIDENCE_TOO_OLD" | "EVIDENCE_TOO_WEAK" | "COMPOUND_EXPECTATION_PARTIALLY_COVERED" | "ASSESSMENT_INCOMPLETE" | "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE";
-        message: string;
-        id: string;
-        expectationIds: string[];
-        evidenceIds: string[];
-        severity: "high" | "medium" | "low" | "critical";
     }[];
 }, {
     schemaVersion: 1;
@@ -5851,6 +5851,14 @@ export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedU
         manifestPath: string;
         manifestSha256: string;
     };
+    risks: {
+        code: "CRITICAL_REQUIREMENT_UNSUPPORTED" | "REQUIRED_EXPECTATION_PARTIALLY_SUPPORTED" | "MATERIAL_CONTRADICTION" | "EVIDENCE_TOO_GENERAL" | "EVIDENCE_TOO_OLD" | "EVIDENCE_TOO_WEAK" | "COMPOUND_EXPECTATION_PARTIALLY_COVERED" | "ASSESSMENT_INCOMPLETE" | "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE";
+        message: string;
+        id: string;
+        expectationIds: string[];
+        evidenceIds: string[];
+        severity: "high" | "medium" | "low" | "critical";
+    }[];
     evidenceSnapshotSha256: string;
     assessmentPolicy: {
         name: string;
@@ -5943,7 +5951,7 @@ export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedU
             trustState: "deterministic-approved" | "human-approved" | "human-edited";
             text: string;
         };
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -5958,14 +5966,6 @@ export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedU
             priority: "high" | "medium" | "low";
             relatedEvidenceIds: string[];
         }[];
-    }[];
-    risks: {
-        code: "CRITICAL_REQUIREMENT_UNSUPPORTED" | "REQUIRED_EXPECTATION_PARTIALLY_SUPPORTED" | "MATERIAL_CONTRADICTION" | "EVIDENCE_TOO_GENERAL" | "EVIDENCE_TOO_OLD" | "EVIDENCE_TOO_WEAK" | "COMPOUND_EXPECTATION_PARTIALLY_COVERED" | "ASSESSMENT_INCOMPLETE" | "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE";
-        message: string;
-        id: string;
-        expectationIds: string[];
-        evidenceIds: string[];
-        severity: "high" | "medium" | "low" | "critical";
     }[];
 } | {
     schemaVersion: 1;
@@ -6004,6 +6004,14 @@ export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedU
         manifestPath: string;
         manifestSha256: string;
     };
+    risks: {
+        code: "CRITICAL_REQUIREMENT_UNSUPPORTED" | "REQUIRED_EXPECTATION_PARTIALLY_SUPPORTED" | "MATERIAL_CONTRADICTION" | "EVIDENCE_TOO_GENERAL" | "EVIDENCE_TOO_OLD" | "EVIDENCE_TOO_WEAK" | "COMPOUND_EXPECTATION_PARTIALLY_COVERED" | "ASSESSMENT_INCOMPLETE" | "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE";
+        message: string;
+        id: string;
+        expectationIds: string[];
+        evidenceIds: string[];
+        severity: "high" | "medium" | "low" | "critical";
+    }[];
     evidenceSnapshotSha256: string;
     assessmentPolicy: {
         name: string;
@@ -6118,7 +6126,7 @@ export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedU
             trustState: "deterministic-approved" | "human-approved" | "human-edited";
             text: string;
         };
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -6133,14 +6141,6 @@ export declare const TargetFitAssessmentSchema: z.ZodEffects<z.ZodDiscriminatedU
             priority: "high" | "medium" | "low";
             relatedEvidenceIds: string[];
         }[];
-    }[];
-    risks: {
-        code: "CRITICAL_REQUIREMENT_UNSUPPORTED" | "REQUIRED_EXPECTATION_PARTIALLY_SUPPORTED" | "MATERIAL_CONTRADICTION" | "EVIDENCE_TOO_GENERAL" | "EVIDENCE_TOO_OLD" | "EVIDENCE_TOO_WEAK" | "COMPOUND_EXPECTATION_PARTIALLY_COVERED" | "ASSESSMENT_INCOMPLETE" | "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE";
-        message: string;
-        id: string;
-        expectationIds: string[];
-        evidenceIds: string[];
-        severity: "high" | "medium" | "low" | "critical";
     }[];
 }>;
 export declare const FitAssessmentManifestSchema: z.ZodObject<{
@@ -6178,6 +6178,7 @@ export declare const FitAssessmentManifestSchema: z.ZodObject<{
     policyVersion: string;
     approvedInterpretationSha256: string;
     approvedInterpretationManifestSha256: string;
+    policyName: string;
     approvedMatchingSha256: string;
     approvedMatchingManifestSha256: string;
     evidenceSnapshotSha256: string;
@@ -6185,7 +6186,6 @@ export declare const FitAssessmentManifestSchema: z.ZodObject<{
     assessmentId: string;
     assessmentPath: string;
     assessmentSha256: string;
-    policyName: string;
     expectationSetSha256: string;
     approvedMatchSetSha256: string;
     proposalId?: string | undefined;
@@ -6202,6 +6202,7 @@ export declare const FitAssessmentManifestSchema: z.ZodObject<{
     policyVersion: string;
     approvedInterpretationSha256: string;
     approvedInterpretationManifestSha256: string;
+    policyName: string;
     approvedMatchingSha256: string;
     approvedMatchingManifestSha256: string;
     evidenceSnapshotSha256: string;
@@ -6209,7 +6210,6 @@ export declare const FitAssessmentManifestSchema: z.ZodObject<{
     assessmentId: string;
     assessmentPath: string;
     assessmentSha256: string;
-    policyName: string;
     expectationSetSha256: string;
     approvedMatchSetSha256: string;
     proposalId?: string | undefined;
@@ -6562,7 +6562,7 @@ export declare const ModelProposedExpectationFitAssessmentSchema: z.ZodObject<{
     evidenceIds: string[];
     limitations: string[];
     approvedMatchIds: string[];
-    supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+    supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
     proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
     evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
     defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -6637,7 +6637,7 @@ export declare const ModelProposedExpectationFitAssessmentSchema: z.ZodObject<{
     evidenceIds: string[];
     limitations: string[];
     approvedMatchIds: string[];
-    supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+    supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
     proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
     evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
     defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -7004,7 +7004,7 @@ export declare const ProposedExpectationFitAssessmentSchema: z.ZodObject<{
     evidenceIds: string[];
     limitations: string[];
     approvedMatchIds: string[];
-    supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+    supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
     proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
     evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
     defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -7081,7 +7081,7 @@ export declare const ProposedExpectationFitAssessmentSchema: z.ZodObject<{
     evidenceIds: string[];
     limitations: string[];
     approvedMatchIds: string[];
-    supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+    supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
     proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
     evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
     defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -7445,7 +7445,7 @@ export declare const ModelFitAssessmentPayloadSchema: z.ZodObject<{
         evidenceIds: string[];
         limitations: string[];
         approvedMatchIds: string[];
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -7520,7 +7520,7 @@ export declare const ModelFitAssessmentPayloadSchema: z.ZodObject<{
         evidenceIds: string[];
         limitations: string[];
         approvedMatchIds: string[];
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -7830,7 +7830,7 @@ export declare const ModelFitAssessmentPayloadSchema: z.ZodObject<{
         evidenceIds: string[];
         limitations: string[];
         approvedMatchIds: string[];
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -7966,7 +7966,7 @@ export declare const ModelFitAssessmentPayloadSchema: z.ZodObject<{
         evidenceIds: string[];
         limitations: string[];
         approvedMatchIds: string[];
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -8493,7 +8493,7 @@ export declare const FitAssessmentProposalSchema: z.ZodObject<{
         evidenceIds: string[];
         limitations: string[];
         approvedMatchIds: string[];
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -8570,7 +8570,7 @@ export declare const FitAssessmentProposalSchema: z.ZodObject<{
         evidenceIds: string[];
         limitations: string[];
         approvedMatchIds: string[];
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -8950,7 +8950,7 @@ export declare const FitAssessmentProposalSchema: z.ZodObject<{
         evidenceIds: string[];
         limitations: string[];
         approvedMatchIds: string[];
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -9135,7 +9135,7 @@ export declare const FitAssessmentProposalSchema: z.ZodObject<{
         evidenceIds: string[];
         limitations: string[];
         approvedMatchIds: string[];
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -9248,9 +9248,9 @@ export declare const FitAssessmentProposalManifestSchema: z.ZodObject<{
     promptTemplateId: string;
     promptTemplateVersion: string;
     approvedInterpretationSha256: string;
+    policyName: string;
     approvedMatchingSha256: string;
     evidenceSnapshotSha256: string;
-    policyName: string;
     deterministicAssessmentSha256: string;
 }, {
     schemaVersion: 1;
@@ -9274,9 +9274,9 @@ export declare const FitAssessmentProposalManifestSchema: z.ZodObject<{
     promptTemplateId: string;
     promptTemplateVersion: string;
     approvedInterpretationSha256: string;
+    policyName: string;
     approvedMatchingSha256: string;
     evidenceSnapshotSha256: string;
-    policyName: string;
     deterministicAssessmentSha256: string;
 }>;
 export declare const EditedExpectationFitAssessmentSchema: z.ZodObject<{
@@ -9314,7 +9314,7 @@ export declare const EditedExpectationFitAssessmentSchema: z.ZodObject<{
     evidenceIds: string[];
     limitations: string[];
     approvedMatchIds: string[];
-    supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+    supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
     proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
     evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
     defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -9334,7 +9334,7 @@ export declare const EditedExpectationFitAssessmentSchema: z.ZodObject<{
     evidenceIds: string[];
     limitations: string[];
     approvedMatchIds: string[];
-    supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+    supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
     proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
     evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
     defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -9388,7 +9388,7 @@ export declare const FitAssessmentReviewDecisionSchema: z.ZodEffects<z.ZodObject
         evidenceIds: string[];
         limitations: string[];
         approvedMatchIds: string[];
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -9408,7 +9408,7 @@ export declare const FitAssessmentReviewDecisionSchema: z.ZodEffects<z.ZodObject
         evidenceIds: string[];
         limitations: string[];
         approvedMatchIds: string[];
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -9436,7 +9436,7 @@ export declare const FitAssessmentReviewDecisionSchema: z.ZodEffects<z.ZodObject
         evidenceIds: string[];
         limitations: string[];
         approvedMatchIds: string[];
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -9462,7 +9462,7 @@ export declare const FitAssessmentReviewDecisionSchema: z.ZodEffects<z.ZodObject
         evidenceIds: string[];
         limitations: string[];
         approvedMatchIds: string[];
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -9488,7 +9488,7 @@ export declare const FitAssessmentReviewDecisionSchema: z.ZodEffects<z.ZodObject
         evidenceIds: string[];
         limitations: string[];
         approvedMatchIds: string[];
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -9514,7 +9514,7 @@ export declare const FitAssessmentReviewDecisionSchema: z.ZodEffects<z.ZodObject
         evidenceIds: string[];
         limitations: string[];
         approvedMatchIds: string[];
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
         evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -9970,7 +9970,7 @@ export declare const FitAssessmentProposalReviewSchema: z.ZodObject<{
             evidenceIds: string[];
             limitations: string[];
             approvedMatchIds: string[];
-            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
             proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
             evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
             defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -9990,7 +9990,7 @@ export declare const FitAssessmentProposalReviewSchema: z.ZodObject<{
             evidenceIds: string[];
             limitations: string[];
             approvedMatchIds: string[];
-            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
             proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
             evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
             defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -10018,7 +10018,7 @@ export declare const FitAssessmentProposalReviewSchema: z.ZodObject<{
             evidenceIds: string[];
             limitations: string[];
             approvedMatchIds: string[];
-            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
             proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
             evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
             defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -10044,7 +10044,7 @@ export declare const FitAssessmentProposalReviewSchema: z.ZodObject<{
             evidenceIds: string[];
             limitations: string[];
             approvedMatchIds: string[];
-            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
             proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
             evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
             defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -10070,7 +10070,7 @@ export declare const FitAssessmentProposalReviewSchema: z.ZodObject<{
             evidenceIds: string[];
             limitations: string[];
             approvedMatchIds: string[];
-            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
             proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
             evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
             defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -10096,7 +10096,7 @@ export declare const FitAssessmentProposalReviewSchema: z.ZodObject<{
             evidenceIds: string[];
             limitations: string[];
             approvedMatchIds: string[];
-            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
             proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
             evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
             defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -10542,7 +10542,7 @@ export declare const FitAssessmentProposalReviewSchema: z.ZodObject<{
             evidenceIds: string[];
             limitations: string[];
             approvedMatchIds: string[];
-            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
             proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
             evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
             defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -10632,7 +10632,7 @@ export declare const FitAssessmentProposalReviewSchema: z.ZodObject<{
             evidenceIds: string[];
             limitations: string[];
             approvedMatchIds: string[];
-            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
             proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
             evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
             defensibility: "high" | "medium" | "low" | "none" | "uncertain";

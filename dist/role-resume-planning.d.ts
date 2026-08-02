@@ -61,6 +61,7 @@ export declare function loadRoleResumePlanningContext(workspace: string, targetI
     allowPartial?: boolean;
 }): Promise<RoleResumePlanningContext>;
 export declare function buildRoleResumePlan(workspace: string, targetId: string, options?: BuildRoleResumePlanOptions): Promise<BuildRoleResumePlanResult>;
+export declare function promoteDeterministicRoleResumePlan(workspace: string, targetId: string, options?: BuildRoleResumePlanOptions): Promise<BuildRoleResumePlanResult>;
 export declare function showRoleResumePlan(workspace: string, targetId: string, artifactType?: "deterministic" | "approved"): Promise<RoleResumeContentPlan>;
 export declare function getRoleResumePlanStatus(workspace: string, targetId: string, artifactType?: "deterministic" | "approved"): Promise<RoleResumePlanStatus>;
 export declare function deriveRoleResumeContentPlan(context: RoleResumePlanningContext, createdAt: string, updatedAt: string, allowPartial?: boolean): RoleResumeContentPlan;

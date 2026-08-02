@@ -191,7 +191,7 @@ export declare const JobRequirementSchema: z.ZodObject<{
 }, "strict", z.ZodTypeAny, {
     notes: string[];
     id: string;
-    necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+    necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
     category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
     explicitness: "explicit" | "inferred";
     trustState: "proposed" | "human-approved" | "human-edited" | "deterministic-unreviewed";
@@ -221,7 +221,7 @@ export declare const JobRequirementSchema: z.ZodObject<{
 }, {
     notes: string[];
     id: string;
-    necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+    necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
     category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
     explicitness: "explicit" | "inferred";
     trustState: "proposed" | "human-approved" | "human-edited" | "deterministic-unreviewed";
@@ -692,7 +692,7 @@ export declare const JobRequirementModelSchema: z.ZodObject<{
     }, "strict", z.ZodTypeAny, {
         notes: string[];
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         explicitness: "explicit" | "inferred";
         trustState: "proposed" | "human-approved" | "human-edited" | "deterministic-unreviewed";
@@ -722,7 +722,7 @@ export declare const JobRequirementModelSchema: z.ZodObject<{
     }, {
         notes: string[];
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         explicitness: "explicit" | "inferred";
         trustState: "proposed" | "human-approved" | "human-edited" | "deterministic-unreviewed";
@@ -1051,7 +1051,7 @@ export declare const JobRequirementModelSchema: z.ZodObject<{
     requirements: {
         notes: string[];
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         explicitness: "explicit" | "inferred";
         trustState: "proposed" | "human-approved" | "human-edited" | "deterministic-unreviewed";
@@ -1086,13 +1086,13 @@ export declare const JobRequirementModelSchema: z.ZodObject<{
         severity: "high" | "medium" | "low";
         requirementIds: string[];
     }[];
-    namedTechnologies: string[];
-    keywords: string[];
     policy: {
         name: string;
         version: string;
         mode: "deterministic";
     };
+    namedTechnologies: string[];
+    keywords: string[];
     contradictions: {
         message: string;
         id: string;
@@ -1169,7 +1169,7 @@ export declare const JobRequirementModelSchema: z.ZodObject<{
     requirements: {
         notes: string[];
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         explicitness: "explicit" | "inferred";
         trustState: "proposed" | "human-approved" | "human-edited" | "deterministic-unreviewed";
@@ -1204,13 +1204,13 @@ export declare const JobRequirementModelSchema: z.ZodObject<{
         severity: "high" | "medium" | "low";
         requirementIds: string[];
     }[];
-    namedTechnologies: string[];
-    keywords: string[];
     policy: {
         name: string;
         version: string;
         mode: "deterministic";
     };
+    namedTechnologies: string[];
+    keywords: string[];
     contradictions: {
         message: string;
         id: string;
@@ -1346,7 +1346,7 @@ export declare const ModelProposedJobRequirementSchema: z.ZodObject<{
     rationale: z.ZodString;
     ambiguityNotes: z.ZodArray<z.ZodString, "many">;
 }, "strict", z.ZodTypeAny, {
-    necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+    necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
     category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
     sourceReferences: {
         sha256: string;
@@ -1373,7 +1373,7 @@ export declare const ModelProposedJobRequirementSchema: z.ZodObject<{
     keywords: string[];
     sourceRequirementIds: string[];
 }, {
-    necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+    necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
     category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
     sourceReferences: {
         sha256: string;
@@ -1473,7 +1473,7 @@ export declare const ProposedJobRequirementSchema: z.ZodObject<{
     id: z.ZodString;
 }, "strict", z.ZodTypeAny, {
     id: string;
-    necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+    necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
     category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
     sourceReferences: {
         sha256: string;
@@ -1502,7 +1502,7 @@ export declare const ProposedJobRequirementSchema: z.ZodObject<{
     sourceRequirementIds: string[];
 }, {
     id: string;
-    necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+    necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
     category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
     sourceReferences: {
         sha256: string;
@@ -1601,7 +1601,7 @@ export declare const ModelJobRequirementPayloadSchema: z.ZodObject<{
         rationale: z.ZodString;
         ambiguityNotes: z.ZodArray<z.ZodString, "many">;
     }, "strict", z.ZodTypeAny, {
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         sourceReferences: {
             sha256: string;
@@ -1628,7 +1628,7 @@ export declare const ModelJobRequirementPayloadSchema: z.ZodObject<{
         keywords: string[];
         sourceRequirementIds: string[];
     }, {
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         sourceReferences: {
             sha256: string;
@@ -1659,7 +1659,7 @@ export declare const ModelJobRequirementPayloadSchema: z.ZodObject<{
 }, "strict", z.ZodTypeAny, {
     warnings: string[];
     proposedRequirements: {
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         sourceReferences: {
             sha256: string;
@@ -1689,7 +1689,7 @@ export declare const ModelJobRequirementPayloadSchema: z.ZodObject<{
 }, {
     warnings: string[];
     proposedRequirements: {
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         sourceReferences: {
             sha256: string;
@@ -1876,7 +1876,7 @@ export declare const JobRequirementProposalSchema: z.ZodObject<{
         id: z.ZodString;
     }, "strict", z.ZodTypeAny, {
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         sourceReferences: {
             sha256: string;
@@ -1905,7 +1905,7 @@ export declare const JobRequirementProposalSchema: z.ZodObject<{
         sourceRequirementIds: string[];
     }, {
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         sourceReferences: {
             sha256: string;
@@ -2014,7 +2014,7 @@ export declare const JobRequirementProposalSchema: z.ZodObject<{
     rawResponseSha256: string;
     proposedRequirements: {
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         sourceReferences: {
             sha256: string;
@@ -2090,7 +2090,7 @@ export declare const JobRequirementProposalSchema: z.ZodObject<{
     rawResponseSha256: string;
     proposedRequirements: {
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         sourceReferences: {
             sha256: string;
@@ -2210,7 +2210,7 @@ export declare const EditedJobRequirementSchema: z.ZodObject<{
     notes: z.ZodArray<z.ZodString, "many">;
 }, "strict", z.ZodTypeAny, {
     notes: string[];
-    necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+    necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
     category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
     explicitness: "explicit" | "inferred";
     confidence: "high" | "medium" | "low";
@@ -2223,7 +2223,7 @@ export declare const EditedJobRequirementSchema: z.ZodObject<{
     keywords: string[];
 }, {
     notes: string[];
-    necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+    necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
     category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
     explicitness: "explicit" | "inferred";
     confidence: "high" | "medium" | "low";
@@ -2260,7 +2260,7 @@ export declare const JobRequirementReviewDecisionSchema: z.ZodEffects<z.ZodObjec
         notes: z.ZodArray<z.ZodString, "many">;
     }, "strict", z.ZodTypeAny, {
         notes: string[];
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         explicitness: "explicit" | "inferred";
         confidence: "high" | "medium" | "low";
@@ -2273,7 +2273,7 @@ export declare const JobRequirementReviewDecisionSchema: z.ZodEffects<z.ZodObjec
         keywords: string[];
     }, {
         notes: string[];
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         explicitness: "explicit" | "inferred";
         confidence: "high" | "medium" | "low";
@@ -2295,7 +2295,7 @@ export declare const JobRequirementReviewDecisionSchema: z.ZodEffects<z.ZodObjec
     reviewNote?: string | undefined;
     editedRequirement?: {
         notes: string[];
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         explicitness: "explicit" | "inferred";
         confidence: "high" | "medium" | "low";
@@ -2315,7 +2315,7 @@ export declare const JobRequirementReviewDecisionSchema: z.ZodEffects<z.ZodObjec
     reviewNote?: string | undefined;
     editedRequirement?: {
         notes: string[];
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         explicitness: "explicit" | "inferred";
         confidence: "high" | "medium" | "low";
@@ -2335,7 +2335,7 @@ export declare const JobRequirementReviewDecisionSchema: z.ZodEffects<z.ZodObjec
     reviewNote?: string | undefined;
     editedRequirement?: {
         notes: string[];
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         explicitness: "explicit" | "inferred";
         confidence: "high" | "medium" | "low";
@@ -2355,7 +2355,7 @@ export declare const JobRequirementReviewDecisionSchema: z.ZodEffects<z.ZodObjec
     reviewNote?: string | undefined;
     editedRequirement?: {
         notes: string[];
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         explicitness: "explicit" | "inferred";
         confidence: "high" | "medium" | "low";
@@ -2398,7 +2398,7 @@ export declare const JobRequirementProposalReviewSchema: z.ZodObject<{
             notes: z.ZodArray<z.ZodString, "many">;
         }, "strict", z.ZodTypeAny, {
             notes: string[];
-            necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+            necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
             category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
             explicitness: "explicit" | "inferred";
             confidence: "high" | "medium" | "low";
@@ -2411,7 +2411,7 @@ export declare const JobRequirementProposalReviewSchema: z.ZodObject<{
             keywords: string[];
         }, {
             notes: string[];
-            necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+            necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
             category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
             explicitness: "explicit" | "inferred";
             confidence: "high" | "medium" | "low";
@@ -2433,7 +2433,7 @@ export declare const JobRequirementProposalReviewSchema: z.ZodObject<{
         reviewNote?: string | undefined;
         editedRequirement?: {
             notes: string[];
-            necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+            necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
             category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
             explicitness: "explicit" | "inferred";
             confidence: "high" | "medium" | "low";
@@ -2453,7 +2453,7 @@ export declare const JobRequirementProposalReviewSchema: z.ZodObject<{
         reviewNote?: string | undefined;
         editedRequirement?: {
             notes: string[];
-            necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+            necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
             category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
             explicitness: "explicit" | "inferred";
             confidence: "high" | "medium" | "low";
@@ -2473,7 +2473,7 @@ export declare const JobRequirementProposalReviewSchema: z.ZodObject<{
         reviewNote?: string | undefined;
         editedRequirement?: {
             notes: string[];
-            necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+            necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
             category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
             explicitness: "explicit" | "inferred";
             confidence: "high" | "medium" | "low";
@@ -2493,7 +2493,7 @@ export declare const JobRequirementProposalReviewSchema: z.ZodObject<{
         reviewNote?: string | undefined;
         editedRequirement?: {
             notes: string[];
-            necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+            necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
             category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
             explicitness: "explicit" | "inferred";
             confidence: "high" | "medium" | "low";
@@ -2531,7 +2531,7 @@ export declare const JobRequirementProposalReviewSchema: z.ZodObject<{
         reviewNote?: string | undefined;
         editedRequirement?: {
             notes: string[];
-            necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+            necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
             category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
             explicitness: "explicit" | "inferred";
             confidence: "high" | "medium" | "low";
@@ -2563,7 +2563,7 @@ export declare const JobRequirementProposalReviewSchema: z.ZodObject<{
         reviewNote?: string | undefined;
         editedRequirement?: {
             notes: string[];
-            necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+            necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
             category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
             explicitness: "explicit" | "inferred";
             confidence: "high" | "medium" | "low";
@@ -2759,7 +2759,7 @@ export declare const ApprovedJobRequirementSchema: z.ZodObject<{
 }, "strict", z.ZodTypeAny, {
     notes: string[];
     id: string;
-    necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+    necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
     category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
     explicitness: "explicit" | "inferred";
     trustState: "human-approved" | "human-edited";
@@ -2802,7 +2802,7 @@ export declare const ApprovedJobRequirementSchema: z.ZodObject<{
 }, {
     notes: string[];
     id: string;
-    necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+    necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
     category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
     explicitness: "explicit" | "inferred";
     trustState: "human-approved" | "human-edited";
@@ -2936,16 +2936,16 @@ export declare const ApprovedJobRequirementModelSchema: z.ZodObject<{
             sha256: string;
             path: string;
         };
+        review: {
+            sha256: string;
+            path: string;
+        };
         jobDescription: {
             sha256: string;
             path: string;
         };
         normalizedInputSha256: string;
         deterministicModel: {
-            sha256: string;
-            path: string;
-        };
-        review: {
             sha256: string;
             path: string;
         };
@@ -2962,16 +2962,16 @@ export declare const ApprovedJobRequirementModelSchema: z.ZodObject<{
             sha256: string;
             path: string;
         };
+        review: {
+            sha256: string;
+            path: string;
+        };
         jobDescription: {
             sha256: string;
             path: string;
         };
         normalizedInputSha256: string;
         deterministicModel: {
-            sha256: string;
-            path: string;
-        };
-        review: {
             sha256: string;
             path: string;
         };
@@ -3121,7 +3121,7 @@ export declare const ApprovedJobRequirementModelSchema: z.ZodObject<{
     }, "strict", z.ZodTypeAny, {
         notes: string[];
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         explicitness: "explicit" | "inferred";
         trustState: "human-approved" | "human-edited";
@@ -3164,7 +3164,7 @@ export declare const ApprovedJobRequirementModelSchema: z.ZodObject<{
     }, {
         notes: string[];
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         explicitness: "explicit" | "inferred";
         trustState: "human-approved" | "human-edited";
@@ -3463,16 +3463,16 @@ export declare const ApprovedJobRequirementModelSchema: z.ZodObject<{
             sha256: string;
             path: string;
         };
+        review: {
+            sha256: string;
+            path: string;
+        };
         jobDescription: {
             sha256: string;
             path: string;
         };
         normalizedInputSha256: string;
         deterministicModel: {
-            sha256: string;
-            path: string;
-        };
-        review: {
             sha256: string;
             path: string;
         };
@@ -3514,7 +3514,7 @@ export declare const ApprovedJobRequirementModelSchema: z.ZodObject<{
     requirements: {
         notes: string[];
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         explicitness: "explicit" | "inferred";
         trustState: "human-approved" | "human-edited";
@@ -3562,13 +3562,13 @@ export declare const ApprovedJobRequirementModelSchema: z.ZodObject<{
         severity: "high" | "medium" | "low";
         requirementIds: string[];
     }[];
-    namedTechnologies: string[];
-    keywords: string[];
     policy: {
         name: string;
         version: string;
         mode: "manual";
     };
+    namedTechnologies: string[];
+    keywords: string[];
     contradictions: {
         message: string;
         id: string;
@@ -3602,16 +3602,16 @@ export declare const ApprovedJobRequirementModelSchema: z.ZodObject<{
             sha256: string;
             path: string;
         };
+        review: {
+            sha256: string;
+            path: string;
+        };
         jobDescription: {
             sha256: string;
             path: string;
         };
         normalizedInputSha256: string;
         deterministicModel: {
-            sha256: string;
-            path: string;
-        };
-        review: {
             sha256: string;
             path: string;
         };
@@ -3653,7 +3653,7 @@ export declare const ApprovedJobRequirementModelSchema: z.ZodObject<{
     requirements: {
         notes: string[];
         id: string;
-        necessity: "preferred" | "contextual" | "mandatory" | "ambiguous";
+        necessity: "preferred" | "contextual" | "ambiguous" | "mandatory";
         category: "unknown" | "responsibility" | "required-capability" | "preferred-capability" | "technical-expectation" | "domain-expectation" | "leadership-expectation" | "operating-context" | "experience-seniority" | "education-certification" | "language" | "location-travel-visa-work-mode" | "screening" | "metric-scale";
         explicitness: "explicit" | "inferred";
         trustState: "human-approved" | "human-edited";
@@ -3701,13 +3701,13 @@ export declare const ApprovedJobRequirementModelSchema: z.ZodObject<{
         severity: "high" | "medium" | "low";
         requirementIds: string[];
     }[];
-    namedTechnologies: string[];
-    keywords: string[];
     policy: {
         name: string;
         version: string;
         mode: "manual";
     };
+    namedTechnologies: string[];
+    keywords: string[];
     contradictions: {
         message: string;
         id: string;

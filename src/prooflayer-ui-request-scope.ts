@@ -2,6 +2,9 @@ export const EVIDENCE_REVIEW_SUBMIT_ACTION = "submit-claim-review" as const;
 
 export const PRODUCT_WORKFLOW_ACTIONS = {
   startRoleWorkflow: "start-role-workflow",
+  confirmRoleDirection: "confirm-role-direction",
+  editRoleDirection: "edit-role-direction",
+  flagRoleDirection: "flag-role-direction",
   continueRoleWorkflow: "continue-role-workflow",
   reviewRoleDraftDecision: "review-role-draft-decision",
   completeRoleDraftReview: "complete-role-draft-review",
@@ -38,6 +41,9 @@ const CLAIM_ROUTE_PATTERN = /^\/review\/(evidence-review-batch_[a-f0-9]{20})\/cl
 const PRODUCT_WORKFLOW_ROUTE_ACTIONS = {
   "/resume/role": [
     PRODUCT_WORKFLOW_ACTIONS.startRoleWorkflow,
+    PRODUCT_WORKFLOW_ACTIONS.confirmRoleDirection,
+    PRODUCT_WORKFLOW_ACTIONS.editRoleDirection,
+    PRODUCT_WORKFLOW_ACTIONS.flagRoleDirection,
     PRODUCT_WORKFLOW_ACTIONS.continueRoleWorkflow,
     PRODUCT_WORKFLOW_ACTIONS.exportRoleResume,
   ],
@@ -103,6 +109,9 @@ export function productWorkflowActionRequiresTarget(
   actionName: ProductWorkflowActionName,
 ): boolean {
   return actionName === PRODUCT_WORKFLOW_ACTIONS.continueJobWorkflow
+    || actionName === PRODUCT_WORKFLOW_ACTIONS.confirmRoleDirection
+    || actionName === PRODUCT_WORKFLOW_ACTIONS.editRoleDirection
+    || actionName === PRODUCT_WORKFLOW_ACTIONS.flagRoleDirection
     || actionName === PRODUCT_WORKFLOW_ACTIONS.continueRoleWorkflow
     || actionName === PRODUCT_WORKFLOW_ACTIONS.exportRoleResume
     || actionName === PRODUCT_WORKFLOW_ACTIONS.reviewRoleDraftDecision

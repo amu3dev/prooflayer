@@ -65,6 +65,7 @@ export interface FitAssessmentStatus {
 }
 export declare function loadAssessmentContext(workspace: string, targetId: string): Promise<AssessmentContext>;
 export declare function buildFitAssessment(workspace: string, targetId: string, options?: BuildFitAssessmentOptions): Promise<BuildFitAssessmentResult>;
+export declare function promoteDeterministicRoleFitAssessment(workspace: string, targetId: string, options?: BuildFitAssessmentOptions): Promise<BuildFitAssessmentResult>;
 export declare function showFitAssessment(workspace: string, targetId: string, artifactType?: "deterministic" | "approved"): Promise<TargetFitAssessment>;
 export declare function getFitAssessmentStatus(workspace: string, targetId: string, artifactType?: "deterministic" | "approved"): Promise<FitAssessmentStatus>;
 export declare function deriveTargetFitAssessment(context: AssessmentContext, createdAt: string, updatedAt: string): TargetFitAssessment;

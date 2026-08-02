@@ -16,8 +16,8 @@ export declare const EvidenceReviewBatchClaimSchema: z.ZodObject<{
     reviewInputTemplatePath: z.ZodOptional<z.ZodEffects<z.ZodString, string, string>>;
 }, "strict", z.ZodTypeAny, {
     claimId: string;
-    priority: "high" | "medium" | "low";
     evidenceItemIds: string[];
+    priority: "high" | "medium" | "low";
     claimSha256: string;
     priorityBasis: ("mandatory-requirement-terminology" | "preferred-requirement-terminology" | "contextual-requirement-terminology" | "named-technology-or-domain" | "reviewed-category" | "potential-metric" | "no-explicit-overlap")[];
     matchingRequirementIds: string[];
@@ -27,8 +27,8 @@ export declare const EvidenceReviewBatchClaimSchema: z.ZodObject<{
     reviewInputTemplatePath?: string | undefined;
 }, {
     claimId: string;
-    priority: "high" | "medium" | "low";
     evidenceItemIds: string[];
+    priority: "high" | "medium" | "low";
     claimSha256: string;
     priorityBasis: ("mandatory-requirement-terminology" | "preferred-requirement-terminology" | "contextual-requirement-terminology" | "named-technology-or-domain" | "reviewed-category" | "potential-metric" | "no-explicit-overlap")[];
     matchingRequirementIds: string[];
@@ -106,8 +106,8 @@ export declare const EvidenceReviewBatchSchema: z.ZodObject<{
         reviewInputTemplatePath: z.ZodOptional<z.ZodEffects<z.ZodString, string, string>>;
     }, "strict", z.ZodTypeAny, {
         claimId: string;
-        priority: "high" | "medium" | "low";
         evidenceItemIds: string[];
+        priority: "high" | "medium" | "low";
         claimSha256: string;
         priorityBasis: ("mandatory-requirement-terminology" | "preferred-requirement-terminology" | "contextual-requirement-terminology" | "named-technology-or-domain" | "reviewed-category" | "potential-metric" | "no-explicit-overlap")[];
         matchingRequirementIds: string[];
@@ -117,8 +117,8 @@ export declare const EvidenceReviewBatchSchema: z.ZodObject<{
         reviewInputTemplatePath?: string | undefined;
     }, {
         claimId: string;
-        priority: "high" | "medium" | "low";
         evidenceItemIds: string[];
+        priority: "high" | "medium" | "low";
         claimSha256: string;
         priorityBasis: ("mandatory-requirement-terminology" | "preferred-requirement-terminology" | "contextual-requirement-terminology" | "named-technology-or-domain" | "reviewed-category" | "potential-metric" | "no-explicit-overlap")[];
         matchingRequirementIds: string[];
@@ -173,8 +173,8 @@ export declare const EvidenceReviewBatchSchema: z.ZodObject<{
     };
     claims: {
         claimId: string;
-        priority: "high" | "medium" | "low";
         evidenceItemIds: string[];
+        priority: "high" | "medium" | "low";
         claimSha256: string;
         priorityBasis: ("mandatory-requirement-terminology" | "preferred-requirement-terminology" | "contextual-requirement-terminology" | "named-technology-or-domain" | "reviewed-category" | "potential-metric" | "no-explicit-overlap")[];
         matchingRequirementIds: string[];
@@ -219,8 +219,8 @@ export declare const EvidenceReviewBatchSchema: z.ZodObject<{
     };
     claims: {
         claimId: string;
-        priority: "high" | "medium" | "low";
         evidenceItemIds: string[];
+        priority: "high" | "medium" | "low";
         claimSha256: string;
         priorityBasis: ("mandatory-requirement-terminology" | "preferred-requirement-terminology" | "contextual-requirement-terminology" | "named-technology-or-domain" | "reviewed-category" | "potential-metric" | "no-explicit-overlap")[];
         matchingRequirementIds: string[];
@@ -299,7 +299,6 @@ export declare const EvidenceReviewInputTemplateSchema: z.ZodObject<{
         };
         warnings: never[];
         ambiguities: never[];
-        risks: never[];
         reviewedClaimSha256: string;
         correctedClaim: null;
         requiredQualifiers: never[];
@@ -316,6 +315,7 @@ export declare const EvidenceReviewInputTemplateSchema: z.ZodObject<{
             unit: null;
             qualifiers: never[];
         };
+        risks: never[];
         reviewerRationale: null;
     }, {
         claimId: string;
@@ -327,7 +327,6 @@ export declare const EvidenceReviewInputTemplateSchema: z.ZodObject<{
         };
         warnings: never[];
         ambiguities: never[];
-        risks: never[];
         reviewedClaimSha256: string;
         correctedClaim: null;
         requiredQualifiers: never[];
@@ -344,6 +343,7 @@ export declare const EvidenceReviewInputTemplateSchema: z.ZodObject<{
             unit: null;
             qualifiers: never[];
         };
+        risks: never[];
         reviewerRationale: null;
     }>;
 }, "strict", z.ZodTypeAny, {
@@ -361,7 +361,6 @@ export declare const EvidenceReviewInputTemplateSchema: z.ZodObject<{
         };
         warnings: never[];
         ambiguities: never[];
-        risks: never[];
         reviewedClaimSha256: string;
         correctedClaim: null;
         requiredQualifiers: never[];
@@ -378,6 +377,7 @@ export declare const EvidenceReviewInputTemplateSchema: z.ZodObject<{
             unit: null;
             qualifiers: never[];
         };
+        risks: never[];
         reviewerRationale: null;
     };
 }, {
@@ -395,7 +395,6 @@ export declare const EvidenceReviewInputTemplateSchema: z.ZodObject<{
         };
         warnings: never[];
         ambiguities: never[];
-        risks: never[];
         reviewedClaimSha256: string;
         correctedClaim: null;
         requiredQualifiers: never[];
@@ -412,6 +411,7 @@ export declare const EvidenceReviewInputTemplateSchema: z.ZodObject<{
             unit: null;
             qualifiers: never[];
         };
+        risks: never[];
         reviewerRationale: null;
     };
 }>;

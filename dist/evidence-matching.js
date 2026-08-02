@@ -2,9 +2,11 @@ import path from "node:path";
 import { hashFile, hashText, pathExists, readJson, walkFiles, writeJsonAtomic, } from "./fs-utils.js";
 import { ApprovedTargetInterpretationManifestSchema, ClaimSchema, EvidenceItemSchema, EvidenceSnapshotManifestSchema, EvidenceSnapshotSchema, ManualEvidenceMatchingSchema, ManualMatchingManifestSchema, MatchingManifestSchema, SourceSchema, TargetEvidenceMatchingSchema, } from "./schemas.js";
 import { getApprovedInterpretationStatus, showApprovedTargetInterpretation, } from "./approved-interpretation.js";
+import { loadEffectiveEvidenceClaimReviews } from "./evidence-claim-review.js";
+import { calculateEvidenceFoundationSnapshot } from "./evidence-snapshots.js";
 import { showTarget } from "./targets.js";
 import { stableJson } from "./target-proposal.js";
-export const EVIDENCE_ELIGIBILITY_POLICY_VERSION = "1";
+export const EVIDENCE_ELIGIBILITY_POLICY_VERSION = "2";
 export const EVIDENCE_MATCHER_NAME = "target-evidence-matcher";
 export const EVIDENCE_MATCHER_VERSION = "1";
 export const EVIDENCE_MATCHING_POLICY_VERSION = "1";
@@ -29,7 +31,7 @@ export async function loadMatchingContext(workspace, targetId, options = {}) {
         throw new Error("Approved interpretation contains duplicate expectation IDs.");
     }
     const paths = matchingPaths(workspace, target);
-    const currentSnapshot = await calculateEvidenceSnapshot(workspace, options.now);
+    const currentSnapshot = await calculateEvidenceSnapshot(workspace, options.now, target.type);
     let snapshot = currentSnapshot;
     let snapshotManifest;
     if (options.persistSnapshot !== false) {
@@ -68,7 +70,7 @@ export async function loadMatchingContext(workspace, targetId, options = {}) {
             : await hashFile(paths.snapshotManifestPath),
     };
 }
-export async function calculateEvidenceSnapshot(workspace, now = undefined) {
+export async function calculateEvidenceSnapshot(workspace, now = undefined, targetType = "role") {
     const sourcesPath = path.join(workspace, "kb", "sources.json");
     const evidencePath = path.join(workspace, "kb", "evidence-items.json");
     const claimsPath = path.join(workspace, "kb", "claims.json");
@@ -83,20 +85,33 @@ export async function calculateEvidenceSnapshot(workspace, now = undefined) {
     assertUnique(evidenceItems.map((entry) => entry.id), "evidence");
     assertUnique(claims.map((entry) => entry.id), "claim");
     const sourceById = new Map(sources.map((source) => [source.id, source]));
+    const foundationSnapshot = await calculateEvidenceFoundationSnapshot(workspace);
+    const effectiveReviews = await loadEffectiveEvidenceClaimReviews(workspace);
+    const reviewedClaimIds = new Set(targetType === "role"
+        ? foundationSnapshot.eligibleRoleClaimIds
+        : foundationSnapshot.eligibleJobClaimIds);
+    const projectedClaimById = new Map(foundationSnapshot.claims
+        .filter((record) => record.content)
+        .map((record) => [record.id, record.content]));
     const eligibleClaimsByEvidence = new Map();
     for (const claim of claims) {
-        if (!isReviewedClaim(claim))
+        const effectiveReview = effectiveReviews.get(claim.id);
+        const eligibleClaim = effectiveReview
+            ? reviewedClaimIds.has(claim.id) ? projectedClaimById.get(claim.id) : undefined
+            : isReviewedClaim(claim) ? claim : undefined;
+        if (!eligibleClaim)
             continue;
-        for (const evidenceId of claim.supportingEvidenceIds) {
+        for (const evidenceId of eligibleClaim.supportingEvidenceIds) {
             const list = eligibleClaimsByEvidence.get(evidenceId) ?? [];
-            list.push(claim);
+            list.push({ claim: eligibleClaim, reviewSha256: effectiveReview?.reviewSha256 });
             eligibleClaimsByEvidence.set(evidenceId, list);
         }
     }
     const entries = [];
     for (const evidence of evidenceItems) {
-        const supportingClaims = (eligibleClaimsByEvidence.get(evidence.id) ?? [])
-            .sort((a, b) => a.id.localeCompare(b.id));
+        const supporting = (eligibleClaimsByEvidence.get(evidence.id) ?? [])
+            .sort((a, b) => a.claim.id.localeCompare(b.claim.id));
+        const supportingClaims = supporting.map(({ claim }) => claim);
         const evidenceSources = evidence.sourceIds.map((id) => sourceById.get(id));
         if (supportingClaims.length === 0)
             continue;
@@ -113,7 +128,10 @@ export async function calculateEvidenceSnapshot(workspace, now = undefined) {
             reviewedStatus: "approved",
             active: true,
             evidenceArtifactSha256: hashText(stableJson(evidence)),
-            reviewArtifactSha256: hashText(stableJson(supportingClaims)),
+            reviewArtifactSha256: hashText(stableJson(supporting.map(({ claim, reviewSha256 }) => ({
+                claim,
+                ...(reviewSha256 ? { reviewSha256 } : {}),
+            })))),
             supportingClaimIds: supportingClaims.map((claim) => claim.id),
             sources: concreteSources
                 .map((source) => ({
@@ -328,6 +346,7 @@ export async function getApprovedEvidenceMatchingStatus(workspace, targetId) {
     const snapshotManifest = await storedSnapshotManifest(paths);
     const evidenceSnapshotManifestHashMatches = Boolean(snapshotManifest &&
         (await hashFile(paths.snapshotManifestPath)) === manifest.evidenceSnapshotManifestSha256 &&
+        snapshotManifest.policyVersion === EVIDENCE_ELIGIBILITY_POLICY_VERSION &&
         snapshotManifest.eligibleEvidenceSetSha256 === context.snapshot.eligibleEvidenceSetSha256);
     const manualStoreHashMatches = manifest.manualStoreSha256
         ? (await pathExists(paths.manualPath)) && (await hashFile(paths.manualPath)) === manifest.manualStoreSha256

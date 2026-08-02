@@ -2941,7 +2941,7 @@ export declare const ResumeExpectationSelectionSchema: z.ZodObject<{
     };
     evidenceIds: string[];
     approvedMatchIds: string[];
-    supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+    supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
     defensibility: "high" | "medium" | "low" | "none" | "uncertain";
     materiality: "unknown" | "high" | "medium" | "low" | "critical";
     assessmentId: string;
@@ -3000,7 +3000,7 @@ export declare const ResumeExpectationSelectionSchema: z.ZodObject<{
     };
     evidenceIds: string[];
     approvedMatchIds: string[];
-    supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+    supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
     defensibility: "high" | "medium" | "low" | "none" | "uncertain";
     materiality: "unknown" | "high" | "medium" | "low" | "critical";
     assessmentId: string;
@@ -6617,7 +6617,7 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
         };
         evidenceIds: string[];
         approvedMatchIds: string[];
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
         materiality: "unknown" | "high" | "medium" | "low" | "critical";
         assessmentId: string;
@@ -6676,7 +6676,7 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
         };
         evidenceIds: string[];
         approvedMatchIds: string[];
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
         materiality: "unknown" | "high" | "medium" | "low" | "critical";
         assessmentId: string;
@@ -7997,12 +7997,6 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
         manifestPath: string;
         manifestSha256: string;
     };
-    approvedMatching: {
-        sha256: string;
-        path: string;
-        manifestPath: string;
-        manifestSha256: string;
-    };
     risks: {
         code: "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE" | "NO_PRIMARY_POSITIONING_THEME" | "CRITICAL_EXPECTATION_EXCLUDED" | "PRIMARY_THEME_PARTIALLY_SUPPORTED" | "PRIMARY_THEME_USES_LIMITED_EVIDENCE" | "HISTORICAL_EVIDENCE_OVERRELIANCE" | "INSUFFICIENT_RECENT_EVIDENCE" | "INSUFFICIENT_SPECIFICITY" | "QUANTIFIED_OUTCOME_NOT_AVAILABLE" | "CONTRADICTORY_EVIDENCE_PRESENT" | "EVIDENCE_REUSED_EXCESSIVELY" | "PLAN_INCOMPLETE" | "ASSESSMENT_STALE";
         message: string;
@@ -8012,6 +8006,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
         approvedMatchIds: string[];
         severity: "high" | "medium" | "low" | "critical";
     }[];
+    approvedMatching: {
+        sha256: string;
+        path: string;
+        manifestPath: string;
+        manifestSha256: string;
+    };
     planningPolicy: {
         name: string;
         version: string;
@@ -8483,7 +8483,7 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
         };
         evidenceIds: string[];
         approvedMatchIds: string[];
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
         materiality: "unknown" | "high" | "medium" | "low" | "critical";
         assessmentId: string;
@@ -8609,12 +8609,6 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
         manifestPath: string;
         manifestSha256: string;
     };
-    approvedMatching: {
-        sha256: string;
-        path: string;
-        manifestPath: string;
-        manifestSha256: string;
-    };
     risks: {
         code: "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE" | "NO_PRIMARY_POSITIONING_THEME" | "CRITICAL_EXPECTATION_EXCLUDED" | "PRIMARY_THEME_PARTIALLY_SUPPORTED" | "PRIMARY_THEME_USES_LIMITED_EVIDENCE" | "HISTORICAL_EVIDENCE_OVERRELIANCE" | "INSUFFICIENT_RECENT_EVIDENCE" | "INSUFFICIENT_SPECIFICITY" | "QUANTIFIED_OUTCOME_NOT_AVAILABLE" | "CONTRADICTORY_EVIDENCE_PRESENT" | "EVIDENCE_REUSED_EXCESSIVELY" | "PLAN_INCOMPLETE" | "ASSESSMENT_STALE";
         message: string;
@@ -8624,6 +8618,12 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
         approvedMatchIds: string[];
         severity: "high" | "medium" | "low" | "critical";
     }[];
+    approvedMatching: {
+        sha256: string;
+        path: string;
+        manifestPath: string;
+        manifestSha256: string;
+    };
     planningPolicy: {
         name: string;
         version: string;
@@ -9095,7 +9095,7 @@ export declare const RoleResumeContentPlanSchema: z.ZodObject<{
         };
         evidenceIds: string[];
         approvedMatchIds: string[];
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
         materiality: "unknown" | "high" | "medium" | "low" | "critical";
         assessmentId: string;
@@ -9140,11 +9140,11 @@ export declare const RoleResumePlanManifestSchema: z.ZodObject<{
     policyVersion: string;
     approvedInterpretationSha256: string;
     approvedInterpretationManifestSha256: string;
+    policyName: string;
     approvedMatchingSha256: string;
     approvedMatchingManifestSha256: string;
     evidenceSnapshotSha256: string;
     artifactType: "approved" | "deterministic";
-    policyName: string;
     expectationSetSha256: string;
     approvedMatchSetSha256: string;
     planId: string;
@@ -9167,11 +9167,11 @@ export declare const RoleResumePlanManifestSchema: z.ZodObject<{
     policyVersion: string;
     approvedInterpretationSha256: string;
     approvedInterpretationManifestSha256: string;
+    policyName: string;
     approvedMatchingSha256: string;
     approvedMatchingManifestSha256: string;
     evidenceSnapshotSha256: string;
     artifactType: "approved" | "deterministic";
-    policyName: string;
     expectationSetSha256: string;
     approvedMatchSetSha256: string;
     planId: string;
@@ -11538,7 +11538,7 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
         };
         evidenceIds: string[];
         approvedMatchIds: string[];
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
         materiality: "unknown" | "high" | "medium" | "low" | "critical";
         assessmentId: string;
@@ -11597,7 +11597,7 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
         };
         evidenceIds: string[];
         approvedMatchIds: string[];
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
         materiality: "unknown" | "high" | "medium" | "low" | "critical";
         assessmentId: string;
@@ -13234,7 +13234,7 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
         };
         evidenceIds: string[];
         approvedMatchIds: string[];
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
         materiality: "unknown" | "high" | "medium" | "low" | "critical";
         assessmentId: string;
@@ -13780,7 +13780,7 @@ export declare const ModelRoleResumePlanPayloadSchema: z.ZodObject<{
         };
         evidenceIds: string[];
         approvedMatchIds: string[];
-        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+        supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
         defensibility: "high" | "medium" | "low" | "none" | "uncertain";
         materiality: "unknown" | "high" | "medium" | "low" | "critical";
         assessmentId: string;
@@ -16256,7 +16256,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             approvedMatchIds: string[];
-            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
             defensibility: "high" | "medium" | "low" | "none" | "uncertain";
             materiality: "unknown" | "high" | "medium" | "low" | "critical";
             assessmentId: string;
@@ -16315,7 +16315,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             approvedMatchIds: string[];
-            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
             defensibility: "high" | "medium" | "low" | "none" | "uncertain";
             materiality: "unknown" | "high" | "medium" | "low" | "critical";
             assessmentId: string;
@@ -17952,7 +17952,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             approvedMatchIds: string[];
-            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
             defensibility: "high" | "medium" | "low" | "none" | "uncertain";
             materiality: "unknown" | "high" | "medium" | "low" | "critical";
             assessmentId: string;
@@ -18498,7 +18498,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             approvedMatchIds: string[];
-            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
             defensibility: "high" | "medium" | "low" | "none" | "uncertain";
             materiality: "unknown" | "high" | "medium" | "low" | "critical";
             assessmentId: string;
@@ -19109,7 +19109,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             approvedMatchIds: string[];
-            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
             defensibility: "high" | "medium" | "low" | "none" | "uncertain";
             materiality: "unknown" | "high" | "medium" | "low" | "critical";
             assessmentId: string;
@@ -19703,7 +19703,7 @@ export declare const RoleResumePlanProposalSchema: z.ZodObject<{
             };
             evidenceIds: string[];
             approvedMatchIds: string[];
-            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
             defensibility: "high" | "medium" | "low" | "none" | "uncertain";
             materiality: "unknown" | "high" | "medium" | "low" | "critical";
             assessmentId: string;

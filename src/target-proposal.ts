@@ -42,6 +42,8 @@ import { showTarget } from "./targets.js";
 export const PROPOSAL_PROMPT_TEMPLATE_ID = "target-interpretation-proposal";
 export const PROPOSAL_PROMPT_TEMPLATE_VERSION = "1";
 export const PROPOSAL_POLICY_VERSION = "1";
+export const DETERMINISTIC_ROLE_CONFIRMATION_PROVIDER = "prooflayer-deterministic";
+export const DETERMINISTIC_ROLE_CONFIRMATION_MODEL = "guided-role-confirmation";
 
 const PROPOSAL_FILE = "proposal.json";
 const PROPOSAL_MANIFEST_FILE = "proposal-manifest.json";
@@ -229,6 +231,103 @@ export async function generateInterpretationProposal(
     location,
     normalized.status === "ready-for-review" ? "created" : "validation-failed",
   );
+}
+
+export async function createDeterministicRoleConfirmationProposal(
+  workspace: string,
+  targetId: string,
+  options: { now?: () => Date } = {},
+): Promise<ProposalGenerationResult> {
+  const dependencies = await loadCurrentDependencies(workspace, targetId);
+  if (dependencies.target.type !== "role" || !dependencies.roleProfileSha256) {
+    throw new Error("Guided Role confirmation requires a current Role interpretation backed by its generated Role Profile.");
+  }
+  const normalizedInput = normalizedModelInput(dependencies);
+  const normalizedModelInputSha256 = hashText(stableJson(normalizedInput));
+  const renderedPrompt = [
+    "Deterministic guided Role confirmation; no model call.",
+    `Policy: ${PROPOSAL_POLICY_VERSION}`,
+    `Input SHA-256: ${normalizedModelInputSha256}`,
+  ].join("\n");
+  const renderedPromptSha256 = hashText(renderedPrompt);
+  const rawText = stableJson({
+    proposedExpectations: [],
+    proposedGroups: [],
+    proposedAmbiguities: [],
+    warnings: [],
+  });
+  const rawBytes = Buffer.from(rawText, "utf8");
+  const rawResponseSha256 = hashBuffer(rawBytes);
+  const requestFingerprint = hashText(stableJson({
+    mode: DETERMINISTIC_ROLE_CONFIRMATION_MODEL,
+    targetSha256: dependencies.targetSha256,
+    structuralAnalysisSha256: dependencies.analysisSha256,
+    deterministicInterpretationSha256: dependencies.interpretationSha256,
+    roleProfileSha256: dependencies.roleProfileSha256,
+    promptTemplateId: PROPOSAL_PROMPT_TEMPLATE_ID,
+    promptTemplateVersion: PROPOSAL_PROMPT_TEMPLATE_VERSION,
+    policyVersion: PROPOSAL_POLICY_VERSION,
+    normalizedModelInputSha256,
+  }));
+  const cached = await findCachedProposal(workspace, targetId, requestFingerprint);
+  if (cached) {
+    const proposal = await showInterpretationProposal(workspace, cached.proposalId);
+    return resultFromProposal(proposal, cached.location, "cache-hit");
+  }
+  const now = (options.now ?? (() => new Date()))().toISOString();
+  const proposalId = `proposal_${hashText([
+    requestFingerprint,
+    rawResponseSha256,
+    DETERMINISTIC_ROLE_CONFIRMATION_MODEL,
+  ].join("\u0000")).slice(0, 16)}`;
+  const location = proposalLocation(workspace, dependencies.target, proposalId);
+  const proposal = normalizeRawProposal({
+    rawText,
+    proposalId,
+    targetId,
+    targetType: "role",
+    requestFingerprint,
+    provider: DETERMINISTIC_ROLE_CONFIRMATION_PROVIDER,
+    model: DETERMINISTIC_ROLE_CONFIRMATION_MODEL,
+    settings: { responseFormat: "json_object" },
+    promptVersion: PROPOSAL_PROMPT_TEMPLATE_VERSION,
+    policyVersion: PROPOSAL_POLICY_VERSION,
+    renderedPromptSha256,
+    dependencies,
+    normalizedModelInputSha256,
+    rawResponsePath: location.rawResponseRelativePath,
+    rawResponseSha256,
+    createdAt: now,
+    updatedAt: now,
+  });
+  await writeBufferAtomic(location.rawResponsePath, rawBytes);
+  await writeJsonAtomic(location.proposalPath, proposal);
+  const manifest = InterpretationProposalManifestSchema.parse({
+    schemaVersion: 1,
+    proposalId,
+    requestFingerprint,
+    targetId,
+    targetType: "role",
+    proposalPath: location.proposalRelativePath,
+    proposalSha256: await hashFile(location.proposalPath),
+    rawResponsePath: location.rawResponseRelativePath,
+    rawResponseSha256,
+    provider: DETERMINISTIC_ROLE_CONFIRMATION_PROVIDER,
+    model: DETERMINISTIC_ROLE_CONFIRMATION_MODEL,
+    promptTemplateId: PROPOSAL_PROMPT_TEMPLATE_ID,
+    promptTemplateVersion: PROPOSAL_PROMPT_TEMPLATE_VERSION,
+    policyVersion: PROPOSAL_POLICY_VERSION,
+    renderedPromptSha256,
+    targetSha256: dependencies.targetSha256,
+    structuralAnalysisSha256: dependencies.analysisSha256,
+    deterministicInterpretationSha256: dependencies.interpretationSha256,
+    roleProfileSha256: dependencies.roleProfileSha256,
+    normalizedModelInputSha256,
+    createdAt: now,
+    updatedAt: now,
+  });
+  await writeJsonAtomic(location.manifestPath, manifest);
+  return resultFromProposal(proposal, location, "created");
 }
 
 export async function replayInterpretationProposal(

@@ -176,6 +176,42 @@ export async function buildRoleResumePlan(
   return planResult(plan, paths, status.status === "missing" ? "created" : "rebuilt");
 }
 
+export async function promoteDeterministicRoleResumePlan(
+  workspace: string,
+  targetId: string,
+  options: BuildRoleResumePlanOptions = {},
+): Promise<BuildRoleResumePlanResult> {
+  const deterministicStatus = await getRoleResumePlanStatus(workspace, targetId, "deterministic");
+  if (deterministicStatus.status !== "current") {
+    throw new Error(`Deterministic Role Resume Content Plan must be current before promotion. Current status: ${deterministicStatus.status}`);
+  }
+  const plan = await showRoleResumePlan(workspace, targetId, "deterministic");
+  if (plan.completeness.status !== "complete" || !plan.completeness.usableForResumeDrafting) {
+    throw new Error(`Deterministic Role Resume Content Plan is not usable for drafting: ${plan.completeness.blockingReasons.join(" ")}`);
+  }
+  const context = await loadRoleResumePlanningContext(workspace, targetId);
+  assertRoleResumePlanConsistency(plan, context);
+  const paths = roleResumePlanPaths(workspace, targetId, "approved");
+  const approvedStatus = await getRoleResumePlanStatus(workspace, targetId, "approved");
+  if (approvedStatus.status === "current") {
+    return planResult(await showRoleResumePlan(workspace, targetId, "approved"), paths, "already-current");
+  }
+  if (["stale", "invalid"].includes(approvedStatus.status) && !options.rebuild) {
+    throw new Error(`Approved Role Resume Content Plan is ${approvedStatus.status}; use explicit rebuild after reviewing dependency changes.`);
+  }
+  await writeJsonAtomic(paths.planPath, plan);
+  await writeJsonAtomic(paths.manifestPath, createRoleResumePlanManifest(
+    plan,
+    context,
+    paths.planRelativePath,
+    await hashFile(paths.planPath),
+    "approved",
+    plan.createdAt,
+    plan.updatedAt,
+  ));
+  return planResult(plan, paths, approvedStatus.status === "missing" ? "created" : "rebuilt");
+}
+
 export async function showRoleResumePlan(
   workspace: string,
   targetId: string,

@@ -242,6 +242,14 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
             manifestPath: string;
             manifestSha256: string;
         };
+        risks: {
+            code: "CRITICAL_REQUIREMENT_UNSUPPORTED" | "REQUIRED_EXPECTATION_PARTIALLY_SUPPORTED" | "MATERIAL_CONTRADICTION" | "EVIDENCE_TOO_GENERAL" | "EVIDENCE_TOO_OLD" | "EVIDENCE_TOO_WEAK" | "COMPOUND_EXPECTATION_PARTIALLY_COVERED" | "ASSESSMENT_INCOMPLETE" | "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE";
+            message: string;
+            id: string;
+            expectationIds: string[];
+            evidenceIds: string[];
+            severity: "high" | "medium" | "low" | "critical";
+        }[];
         evidenceSnapshotSha256: string;
         assessmentPolicy: {
             name: string;
@@ -334,7 +342,7 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
                 trustState: "deterministic-approved" | "human-approved" | "human-edited";
                 text: string;
             };
-            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
             proofQuality: "unknown" | "none" | "conflicting" | "strong" | "weak" | "adequate" | "limited";
             evidenceSufficiency: "sufficient" | "partially-sufficient" | "insufficient" | "not-evaluated";
             defensibility: "high" | "medium" | "low" | "none" | "uncertain";
@@ -349,14 +357,6 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
                 priority: "high" | "medium" | "low";
                 relatedEvidenceIds: string[];
             }[];
-        }[];
-        risks: {
-            code: "CRITICAL_REQUIREMENT_UNSUPPORTED" | "REQUIRED_EXPECTATION_PARTIALLY_SUPPORTED" | "MATERIAL_CONTRADICTION" | "EVIDENCE_TOO_GENERAL" | "EVIDENCE_TOO_OLD" | "EVIDENCE_TOO_WEAK" | "COMPOUND_EXPECTATION_PARTIALLY_COVERED" | "ASSESSMENT_INCOMPLETE" | "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE";
-            message: string;
-            id: string;
-            expectationIds: string[];
-            evidenceIds: string[];
-            severity: "high" | "medium" | "low" | "critical";
         }[];
     } & {
         targetType: "role";
@@ -481,12 +481,6 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
             manifestPath: string;
             manifestSha256: string;
         };
-        approvedMatching: {
-            sha256: string;
-            path: string;
-            manifestPath: string;
-            manifestSha256: string;
-        };
         risks: {
             code: "MATCHING_STALE" | "INTERPRETATION_STALE" | "PROVENANCE_INCOMPLETE" | "NO_PRIMARY_POSITIONING_THEME" | "CRITICAL_EXPECTATION_EXCLUDED" | "PRIMARY_THEME_PARTIALLY_SUPPORTED" | "PRIMARY_THEME_USES_LIMITED_EVIDENCE" | "HISTORICAL_EVIDENCE_OVERRELIANCE" | "INSUFFICIENT_RECENT_EVIDENCE" | "INSUFFICIENT_SPECIFICITY" | "QUANTIFIED_OUTCOME_NOT_AVAILABLE" | "CONTRADICTORY_EVIDENCE_PRESENT" | "EVIDENCE_REUSED_EXCESSIVELY" | "PLAN_INCOMPLETE" | "ASSESSMENT_STALE";
             message: string;
@@ -496,6 +490,12 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
             approvedMatchIds: string[];
             severity: "high" | "medium" | "low" | "critical";
         }[];
+        approvedMatching: {
+            sha256: string;
+            path: string;
+            manifestPath: string;
+            manifestSha256: string;
+        };
         planningPolicy: {
             name: string;
             version: string;
@@ -967,7 +967,7 @@ export declare function createRoleResumeDraftModelInput(context: Awaited<ReturnT
             };
             evidenceIds: string[];
             approvedMatchIds: string[];
-            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "strongly-supported" | "supported" | "partially-supported";
+            supportStatus: "conflicting" | "unsupported" | "not-assessed" | "supported" | "partially-supported" | "strongly-supported";
             defensibility: "high" | "medium" | "low" | "none" | "uncertain";
             materiality: "unknown" | "high" | "medium" | "low" | "critical";
             assessmentId: string;
