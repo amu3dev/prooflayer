@@ -6,6 +6,10 @@ ProofLayer is a local-first career evidence system for turning private career ma
 
 It keeps source evidence, claims, reviews, approvals, provenance, and generated outputs separate so a model can propose wording without silently becoming the source of truth.
 
+![Synthetic Career Twin review flow — no real personal data](docs/assets/career-twin-synthetic.svg)
+
+> **Synthetic UI proof:** generated labels and no personal data; this illustrates the Career Twin and review boundary rather than a captured user session.
+
 ## In 30 seconds
 
 ```bash
