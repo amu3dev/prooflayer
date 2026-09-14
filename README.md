@@ -1,54 +1,43 @@
 # ProofLayer
 
-ProofLayer is a local-first career evidence system.
+ProofLayer is a local-first career evidence system for turning private career material into reviewable, evidence-backed resumes and professional profiles.
 
-This repository contains MVP Slice 1: **Career Vault Builder v1**.
+> **Current state:** `main` contains the Role and Job pipeline through Slice 2.7G. The latest public release is [`v0.2.0`](https://github.com/amu3dev/prooflayer/releases/tag/v0.2.0); `main` includes newer unreleased work.
 
-Implementation agents and contributors should begin with [`AGENTS.md`](AGENTS.md), which links the reusable engineering, proof, testing, and Git policies under `docs/agent/`.
+It keeps source evidence, claims, reviews, approvals, provenance, and generated outputs separate so a model can propose wording without silently becoming the source of truth.
 
-Slice 1.1 hardens deterministic parsing for structured Markdown resumes so headings, dates, and fragments do not pollute the career profile.
+## In 30 seconds
 
-Slice 1.2 separates successful extraction from factual trust and public-output approval.
+```bash
+npm install
+npm run build
+npm run ui:start
+```
 
-Slice 1.3 adds a living knowledge refresh loop and privacy-safe update impact reporting.
+Then open the local Career Twin interface, create a Role or Job target, inspect the evidence and positioning, approve the reviewed output, and export Markdown, HTML, DOCX, or PDF where the local adapter is available.
 
-Slice 1.4 generates deterministic role-specific draft resume and website-copy packages from non-blocked evidence.
+For a deterministic offline Role walkthrough:
 
-Slice 1.5 adds output-specific review and final/public candidate generation for the TPM variant.
+```bash
+prooflayer role create --title "CTO"
+prooflayer role run role-cto --offline
+prooflayer role status role-cto
+prooflayer role finalize role-cto --formats markdown,html,docx
+```
 
-Slice 1.6 adds manually approved public profile metadata and final wording overrides without changing source evidence or draft outputs.
+## What it demonstrates
 
-Slice 1.6.1 hardens atomic KB persistence, context-aware claim identity, and documentation of the global-trust/output-review boundary.
+- Local-first career evidence and profile generation without a hosted database or cloud sync.
+- Explicit human-review gates before evidence, wording, and public output become eligible.
+- Deterministic lifecycle, provenance, privacy, and stale-artifact checks around optional model proposals.
+- One canonical path from reviewed evidence to role- or job-specific resume exports.
 
-Slice 1.7 extends the proven output-specific review and final/public boundary to the AI Product variant while preserving TPM behavior.
+## Verification
 
-Slice 1.7.1 improves AI Product final content selection so reviewed evaluation, traceability, validation, and evidence-support claims are surfaced before generic platform wording.
+- `npm run build` passes on the audited `main` commit.
+- `npm test` covers the full suite; some integration and export paths remain timeout-sensitive under parallel execution, so this repository does not claim a clean remote CI gate yet.
 
-Slice 1.7.2 polishes the reviewed AI Product final package with project role/timeline and maturity labels, a compact product/platform career foundation, and less repetitive recruiter-facing copy.
-
-Slice 1.8 exports immutable reviewed AI Product and TPM final Markdown to hash-tracked DOCX and PDF artifacts.
-
-Slice 1.8.1 packages an exact Markdown copy alongside each reviewed DOCX/PDF export.
-
-Phase 2 Slice 2.1 introduces deterministic role and job targets without extracting requirements, calculating fit, or generating resumes.
-
-Phase 2 Slice 2.2 adds separately versioned, deterministic target-structure analysis with exact Markdown provenance and no semantic inference.
-
-Phase 2 Slice 2.3A adds a separately versioned semantic interpretation contract for explicit role profiles and structurally supported job expectations.
-
-Phase 2 Slice 2.4 links current approved target expectations to reviewed active candidate evidence without calculating overall fit or generating application content.
-
-Phase 2 Slice 2.5 interprets approved evidence matching into expectation-level fit and proof assessments, with optional model proposals and an explicit human approval boundary.
-
-Phase 2 Slice 2.7A builds deterministic, reviewable Job Requirement Models from current Job Targets and their preserved Job Descriptions without consuming candidate evidence or producing fit or application content.
-
-Phase 2 Slice 2.7B maps usable Job Requirements to approved, resume-ready, public-safe candidate evidence using explicit deterministic signals without calculating fit or generating application content.
-
-Phase 2 Slice 2.7F converts a current usable Job Resume Content Plan into a constrained structured draft through a prose-free scaffold, explicit model proposal, strict validation, human review, and deterministic approval.
-
-Phase 2 Slice 2.7G renders a current approved Job Resume Draft through one canonical document into faithful Markdown, HTML, DOCX, and adapter-based PDF exports.
-
-Human-controlled Evidence Foundation claim reviews now provide the reusable eligibility boundary projected into immutable Evidence Snapshot Contract v1 exports.
+Contribution and agent instructions begin in [`AGENTS.md`](AGENTS.md). The deeper slice ledger, contracts, and architecture notes remain below and under [`docs/`](docs/).
 
 ## Product Experience
 
